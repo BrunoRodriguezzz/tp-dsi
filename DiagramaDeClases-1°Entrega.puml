@@ -1,4 +1,19 @@
 @startuml
+
+Hecho --> Contribuyente
+HechoTexto --|> Hecho
+HechoMultimedia --|> Hecho
+Hecho --> Etiqueta
+Hecho --> Origen
+Hecho --> Categoria
+Hecho --> Ubicación
+Administrador --> Solicitud
+Solicitud --* Hecho
+Hecho --o Coleccion
+Coleccion --> CriterioPertenencia
+CriterioPertenencia --> Categoria
+CriterioPertenencia --> RangoFechas
+
 class Contribuyente {
     -nombre: String
     -apellido: String
