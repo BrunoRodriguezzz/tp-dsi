@@ -1,0 +1,95 @@
+@startuml
+class Contribuyente {
+    -nombre: String
+    -apellido: String
+    -edad: Integer
+    +solicitarEliminar(hecho: Hecho): Solicitud
+    +subirHecho(): Boolean
+}
+
+abstract Hecho {
+    -titulo: String
+    -descripcion: String
+    -categoria: Categoria
+    -ubicacion: Ubicacion
+    -etiqueta: Etiqueta
+    -fechaAcontecimiento: Date
+    -fechaCarga: Date
+    -origen: Origen
+    -contribuyente: Contribuyente
+    -eliminado: Boolean
+    -solicitudes: <List> Solicitud
+    -colecciones: <List> Coleccion
+    +admitirSolicitud(solicitud: Solicitud)
+    +eliminarDeColecciones(): Boolean
+}
+
+class Etiqueta {
+    -id: Integer
+}
+
+enum Origen {
+    MANUAL
+    DATASET
+    CONTRIBUYENTE
+}
+
+class Categoria {
+    -titulo: String
+}
+
+class Ubicacion {
+    -pais: String
+    -latitud: String
+    -longitud: String
+}
+
+class HechoTexto extends Hecho{
+}
+
+class HechoMultimedia extends Hecho {
+    -imagenes: <List> String
+    -audios: <List> String
+    -videos: <List> String
+}
+
+class Solicitud {
+    -hecho: Hecho
+    -fundamento: String
+    +eliminarHecho(): Boolean
+}
+
+class Administrador {
+    -nombre: String
+    +crearColeccion(criterio CriterioPertenencia): Coleccion
+    +importarDataSet(): Boolean
+    +rechazarSolicitud(solicitud: Solicitud): Boolean
+}
+
+class Coleccion {
+    -hechos: <Set> Hecho
+    -titulo: String
+    -descripcion: String
+    -origen: Origen
+    -etiqueta: Etiqueta
+    -cumpleCriterioPertenencia(hecho: Hecho):Booleano
+    +agregarHecho(hecho: Hecho): Boolean
+    +eliminarHecho(hecho: Hecho): Boolean
+    +eliminarColeccion(): Boolean
+    +consultarHechos(coleccion: Coleccion): Coleccion
+    +consultarHechos(coleccion: Coleccion, filtros: Filtros): Coleccion
+}
+
+class CriterioPertenencia {
+    -categoria: Categoria
+    -ubicacion: Ubicacion
+    -rangoFechas: RangoFechas
+    -cumpleCriterioPertenencia(hecho: Hecho): Boolean
+}
+
+class RangoFechas {
+    -fechaInicio: Date
+    -fechaFin: Date
+    +estaEntre(date: Date): Boolean
+}
+@enduml
