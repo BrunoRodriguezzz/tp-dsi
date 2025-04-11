@@ -6,7 +6,7 @@ HechoMultimedia --|> Hecho
 Hecho --> Etiqueta
 Hecho --> Origen
 Hecho --> Categoria
-Hecho --> Ubicación
+Hecho --> Ubicacion
 Administrador --> Solicitud
 Solicitud --* Hecho
 Hecho --o Coleccion
@@ -59,10 +59,10 @@ class Ubicacion {
     -longitud: String
 }
 
-class HechoTexto extends Hecho{
+class HechoTexto{
 }
 
-class HechoMultimedia extends Hecho {
+class HechoMultimedia{
     -imagenes: <List> String
     -audios: <List> String
     -videos: <List> String
