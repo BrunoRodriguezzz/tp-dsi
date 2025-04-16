@@ -1,46 +1,63 @@
 @startuml
-
+'Hecho
 Hecho --> Contribuyente
-HechoTexto --|> Hecho
-HechoMultimedia --|> Hecho
-Hecho --> Etiqueta
 Hecho --> Origen
 Hecho --> Categoria
 Hecho --> Ubicacion
-Administrador --> Solicitud
-Solicitud --* Hecho
+Hecho -->"*" Etiqueta
 Hecho --o Coleccion
-Coleccion --> CriterioPertenencia
-CriterioPertenencia --> Categoria
-CriterioPertenencia --> RangoFechas
+
+Solicitud --* Hecho
+
+Coleccion --> Criterio
+Coleccion ..> Criterio
+
+'Criterio
+Criterio --> RangoFechas
+Criterio --> Origen
+Criterio --> Categoria
+Criterio --> Ubicacion
+
+Solicitud --> EstadoSolicitud
+
+'Interface
+ElementoCriterio <|-- Ubicacion
+ElementoCriterio <|-- Categoria
+ElementoCriterio <|-- Etiqueta
+ElementoCriterio <|-- RangoFechas
 
 class Contribuyente {
     -nombre: String
-    -apellido: String
+    -apellido:
     -edad: Integer
-    +solicitarEliminar(hecho: Hecho): Solicitud
-    +subirHecho(): Boolean
 }
 
-abstract Hecho {
+enum EstadoSolicitud {
+    ACEPTADA,
+    RECHAZADA,
+    PENDIENTE
+}
+
+class Hecho {
     -titulo: String
     -descripcion: String
     -categoria: Categoria
     -ubicacion: Ubicacion
-    -etiqueta: Etiqueta
+    -etiquetas: <List>Etiqueta
     -fechaAcontecimiento: Date
     -fechaCarga: Date
     -origen: Origen
     -contribuyente: Contribuyente
     -eliminado: Boolean
-    -solicitudes: <List> Solicitud
-    -colecciones: <List> Coleccion
-    +admitirSolicitud(solicitud: Solicitud)
-    +eliminarDeColecciones(): Boolean
+    -imagenes: <List>String
+    -audios: <List>String
+    -videos: <List>String
+    +eliminar(): Integer
+    +tieneContenidoMultimedia(): Boolean
 }
 
 class Etiqueta {
-    -id: Integer
+
 }
 
 enum Origen {
@@ -54,57 +71,52 @@ class Categoria {
 }
 
 class Ubicacion {
-    -pais: String
     -latitud: String
     -longitud: String
-}
-
-class HechoTexto{
-}
-
-class HechoMultimedia{
-    -imagenes: <List> String
-    -audios: <List> String
-    -videos: <List> String
 }
 
 class Solicitud {
     -hecho: Hecho
     -fundamento: String
-    +eliminarHecho(): Boolean
-}
-
-class Administrador {
-    -nombre: String
-    +crearColeccion(criterio CriterioPertenencia): Coleccion
-    +importarDataSet(): Boolean
-    +rechazarSolicitud(solicitud: Solicitud): Boolean
+    -rechazada: Boolean
+    +serAceptada(): Integer
+    +serRechazada(): Integer
 }
 
 class Coleccion {
     -hechos: <Set> Hecho
     -titulo: String
     -descripcion: String
-    -origen: Origen
-    -etiqueta: Etiqueta
-    -cumpleCriterioPertenencia(hecho: Hecho):Booleano
-    +agregarHecho(hecho: Hecho): Boolean
-    +eliminarHecho(hecho: Hecho): Boolean
-    +eliminarColeccion(): Boolean
-    +consultarHechos(coleccion: Coleccion): Coleccion
-    +consultarHechos(coleccion: Coleccion, filtros: Filtros): Coleccion
+    -criterio: Criterio
+    +agregarHecho(hecho: Hecho): Integer
+    +eliminarHecho(hecho: Hecho): Integer
+    'Solo para representar overload
+    +consultarHechos(): <Set> Hecho
+    +consultarHechos(filtros: <Set> Filtros): <Set> Hecho
 }
 
-class CriterioPertenencia {
+class Criterio{
+    -requisitoTitulo: String
+    -requisitoDescripcion: String
     -categoria: Categoria
+    -tieneContenidoMultimedia: Boolean
     -ubicacion: Ubicacion
-    -rangoFechas: RangoFechas
-    -cumpleCriterioPertenencia(hecho: Hecho): Boolean
+    -fechaAcontecimientoEntre: RangoFechas
+    -fechaDeCargaEntre: RangoFechas
+    -origen: Origen
+    +cumpleCriterio(hecho: Hecho): Boolean
+    -tituloContiene(titulo: String): Boolean
+    -descripcionContiene(descripcion: String): Boolean
+    -cumpleOrigen(origen: Origen): Boolean
 }
 
 class RangoFechas {
     -fechaInicio: Date
     -fechaFin: Date
-    +estaEntre(date: Date): Boolean
+    +coincide(date: Date): Boolean
+}
+
+interface ElementoCriterio{
+    +coincide(algo): Boolean
 }
 @enduml
