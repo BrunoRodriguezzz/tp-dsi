@@ -17,18 +17,22 @@ public class Hecho {
     private Origen origen;
     private Contribuyente contribuyente;
     private Boolean eliminado;
-    private List<String> imagenes;
-    private List<String> audios;
-    private List<String> videos;
+    private List<ContenidoMultimedia> contenidoMultimedia;
 
-    public Integer eliminar(){
+    public Integer eliminar() {
         this.eliminado = true;
         return 1;
     }
 
-
     // Metodos
-    public Boolean tieneContenidoMultimedia(){
-        return true; // TODO Agregar contenido multimedia Clase + Completar este método
+    public Boolean tieneContenidoMultimedia() {
+        return !this.contenidoMultimedia.isEmpty();
+    }
+
+    public Integer serEtiquetado(Etiqueta etiqueta) throws RuntimeException {
+        if (this.etiquetas.add(etiqueta) && this.etiquetas.stream().noneMatch(e -> e.coincide(etiqueta))) { //TODO Revisar porque devuelve siempre true
+            return 1;
+        }
+        return 0;
     }
 }

@@ -6,9 +6,9 @@ public class Categoria implements ElementoCriterio<Categoria> {
     private String titulo;
 
     @Override
-    public Boolean coincide(Categoria categoria) throws Exception {
+    public Boolean coincide(Categoria categoria) throws RuntimeException {
         if(!(categoria instanceof Categoria)){
-            throw new Exception("Categoria Invalida");
+            throw new RuntimeException("Categoria Invalida");
         }
         return this.titulo.equals(categoria.titulo);
     }

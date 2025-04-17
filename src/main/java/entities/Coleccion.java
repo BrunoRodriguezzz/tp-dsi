@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 public class Coleccion {
     private String titulo;
     private String descripcion;
-    private Criterio criterio;
+    private List<Criterio> criterios;
     private Set<Hecho> hechos;
 
     public Integer eliminarHecho(Hecho hecho) {
@@ -18,7 +18,9 @@ public class Coleccion {
     }
 
     public Integer agregarHecho(Hecho hecho) {
-        if (this.hechos.add(hecho)) {
+        if (this.cumpleTodosLosCriterios(hecho)
+                && !hecho.getEliminado()
+                && this.hechos.add(hecho)) {
             return 1;
         }
         return 0;
@@ -34,5 +36,9 @@ public class Coleccion {
                 .filter(hecho -> criterio.cumpleCriterio(hecho))
                 .collect(Collectors.toSet());
         return hechosQueCumplen;
+    }
+
+    private Boolean cumpleTodosLosCriterios(Hecho hecho) {
+        return this.criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho));
     }
 }

@@ -5,9 +5,9 @@ public class Ubicacion implements ElementoCriterio<Ubicacion> {
     private String longitud;
 
     @Override
-    public Boolean coincide(Ubicacion ubicacion) throws Exception {
+    public Boolean coincide(Ubicacion ubicacion) throws RuntimeException {
         if(!(ubicacion instanceof Ubicacion)){
-            throw new Exception("Ubicacion Invalida");
+            throw new RuntimeException("Ubicacion Invalida");
         }
         return  this.latitud.equals(ubicacion.latitud) &&
                 this.longitud.equals(ubicacion.longitud);

@@ -12,10 +12,10 @@ public class Criterio {
     public Boolean cumpleCriterio(Hecho hecho) {
         return (this.tituloContiene(hecho.getTitulo()) &&
                 this.descripcionContiene(hecho.getDescripcion()) &&
-                this.cumpleOrigen(hecho.getOrigen())
-//                this.categoria.coincide(hecho.getCategoria()) && TODO: Try Catch
-//                this.fechaAcontecimientoEntre.coincide(hecho.getfechaAcontecimiento()) && TODO: Try Catch
-//                this.fechaAcontecimientoEntre.coincide(hecho.getfechaCarga()) && TODO: Try Catch
+                this.cumpleOrigen(hecho.getOrigen()) &&
+                this.categoria.coincide(hecho.getCategoria()) &&
+                this.fechaAcontecimientoEntre.coincide(hecho.getFechaAcontecimiento()) &&
+                this.fechaAcontecimientoEntre.coincide(hecho.getFechaCarga())
         );
     }
 

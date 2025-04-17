@@ -26,6 +26,10 @@ ElementoCriterio <|-- Categoria
 ElementoCriterio <|-- Etiqueta
 ElementoCriterio <|-- RangoFechas
 
+Multimedia --> Formato
+Hecho --> ContenidoMultimedia
+Coleccion --> Fuente
+
 class Contribuyente {
     -nombre: String
     -apellido:
@@ -36,6 +40,18 @@ enum EstadoSolicitud {
     ACEPTADA,
     RECHAZADA,
     PENDIENTE
+}
+
+class ContenidoMultimedia {
+    -nombre: String
+    -ruta: String
+    -formato: Formato
+}
+
+enum Formato {
+    VIDEO
+    AUDIO
+    IMAGEN
 }
 
 class Hecho {
@@ -49,15 +65,18 @@ class Hecho {
     -origen: Origen
     -contribuyente: Contribuyente
     -eliminado: Boolean
-    -imagenes: <List>String
-    -audios: <List>String
-    -videos: <List>String
+    -contenidoMultimedia: List<ContenidoMultimedia>
     +eliminar(): Integer
     +tieneContenidoMultimedia(): Boolean
 }
 
-class Etiqueta {
+class Fuente {
+    -rutaArchivo: String
+    +cargarColeccion(Coleccion coleccion): Integer
+}
 
+class Etiqueta {
+    -titulo: String
 }
 
 enum Origen {
@@ -79,6 +98,7 @@ class Solicitud {
     -hecho: Hecho
     -fundamento: String
     -rechazada: Boolean
+    -fechaResolucion: Date
     +serAceptada(): Integer
     +serRechazada(): Integer
 }
@@ -87,7 +107,7 @@ class Coleccion {
     -hechos: <Set> Hecho
     -titulo: String
     -descripcion: String
-    -criterio: Criterio
+    -criterios: <List> Criterio
     +agregarHecho(hecho: Hecho): Integer
     +eliminarHecho(hecho: Hecho): Integer
     'Solo para representar overload

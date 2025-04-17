@@ -3,13 +3,13 @@ package entities;
 import java.time.LocalDate;
 
 public class Etiqueta implements ElementoCriterio<Etiqueta> {
+    private String titulo;
 
     @Override
-    public Boolean coincide(Etiqueta etiqueta) throws Exception {
-        // TODO
-        /*if(!(fecha instanceof LocalDate)){
-            throw new Exception("Fecha Inválida");
-        }*/
-        return true;
+    public Boolean coincide(Etiqueta etiqueta) throws RuntimeException {
+        if(!(etiqueta instanceof Etiqueta)){
+            throw new RuntimeException("Etiqueta Invalida");
+        }
+        return this.titulo.equals(etiqueta.titulo);
     }
 }
