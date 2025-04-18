@@ -1,7 +1,7 @@
 package entities;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Coleccion {
@@ -10,11 +10,21 @@ public class Coleccion {
     private List<Criterio> criterios;
     private Set<Hecho> hechos;
 
+    public Coleccion(){
+        this.hechos = new HashSet<>();
+    }
+
     public Integer eliminarHecho(Hecho hecho) {
         if (this.hechos.remove(hecho)) {
             return 1;
         }
         return 0;
+    }
+
+    // TODO: esta rompiendo cumpleTodosLosCriterios = NULL, porque parece que no siempre hay un criterio para la colección
+    // Método para Testear Solicitud
+    public void agregarHecho(Hecho ... hechos){
+        for(Hecho hecho: hechos) if(!hecho.estaEliminado()) this.hechos.add(hecho);
     }
 
     public Integer agregarHecho(Hecho hecho) {

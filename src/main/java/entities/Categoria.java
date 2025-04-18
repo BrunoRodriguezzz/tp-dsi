@@ -13,4 +13,7 @@ public class Categoria implements ElementoCriterio<Categoria> {
         return this.titulo.equals(categoria.titulo);
     }
 
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
 }

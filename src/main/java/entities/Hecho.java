@@ -4,13 +4,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class Hecho {
     private String titulo;
     private String descripcion;
     private Categoria categoria;
-    private String ubicacion;
+    private Ubicacion ubicacion;
     private List<Etiqueta> etiquetas;
     private LocalDate fechaAcontecimiento;
     private LocalDate fechaCarga;
@@ -39,4 +40,29 @@ public class Hecho {
     public Boolean estaEliminado(){
         return this.eliminado;
     }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
+    }
+
+    public void setFechaAcontecimiento(LocalDate fechaAcontecimiento) {
+        this.fechaAcontecimiento = fechaAcontecimiento;
+    }
+
+    public void setUbicacion(Ubicacion ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
 }
