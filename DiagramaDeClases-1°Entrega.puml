@@ -59,8 +59,8 @@ class Hecho {
     -categoria: Categoria
     -ubicacion: Ubicacion
     -etiquetas: <List>Etiqueta
-    -fechaAcontecimiento: Date
-    -fechaCarga: Date
+    -fechaAcontecimiento: LocalDate
+    -fechaCarga: LocalDate
     -origen: Origen
     -contribuyente: Contribuyente
     -eliminado: Boolean
@@ -98,7 +98,7 @@ class Solicitud {
     -hecho: Hecho
     -fundamento: String
     -rechazada: Boolean
-    -fechaResolucion: Date
+    -fechaResolucion: LocalDate
     +serAceptada(): Integer
     +serRechazada(): Integer
 }
@@ -133,9 +133,9 @@ class Criterio{
 }
 
 class RangoFechas {
-    -fechaInicio: Date
-    -fechaFin: Date
-    +coincide(date: Date): Boolean
+    -fechaInicio: LocalDate
+    -fechaFin: LocalDate
+    +coincide(date: LocalDate): Boolean
 }
 
 interface ElementoCriterio{
