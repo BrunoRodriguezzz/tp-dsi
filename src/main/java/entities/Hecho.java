@@ -28,6 +28,7 @@ public class Hecho {
         this.fechaAcontecimiento = fechaAcontecimiento;
         this.origen = origen;
         this.fechaCarga = LocalDate.now();
+        this.eliminado = false;
         //TODO Usar patron builder
     }
 

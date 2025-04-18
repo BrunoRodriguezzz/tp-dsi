@@ -11,19 +11,15 @@ public class Solicitud {
     public Solicitud(Hecho hecho, String fundamento) {
         this.hecho = hecho;
         this.fundamento = fundamento;
-        this.estadoSolicitud = EstadoSolicitud.PENDIENTE;
+        estadoSolicitud = EstadoSolicitud.PENDIENTE;
+        fechaResolucion = LocalDateTime.now();
     }
+
     //TODO Validación del fundamento <=500, por ahora se usa el Constructor
     public void setFundamento(String fundamento){
         if(fundamento.length() <= 500) throw new RuntimeException();
     }
 
-    public Solicitud(Hecho hecho, String fundamento) {
-        this.hecho = hecho;
-        this.fundamento = fundamento;
-        estadoSolicitud = EstadoSolicitud.PENDIENTE;
-        fechaResolucion = new Date();
-    }
     public Integer serAceptada(){
         estadoSolicitud = EstadoSolicitud.ACEPTADA;
         this.hecho.eliminar();
