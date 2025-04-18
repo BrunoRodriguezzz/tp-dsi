@@ -68,6 +68,7 @@ class Hecho {
     -contenidoMultimedia: List<ContenidoMultimedia>
     +eliminar(): Integer
     +tieneContenidoMultimedia(): Boolean
+    +estaEliminado(): Boolean
 }
 
 class Fuente {
@@ -125,8 +126,8 @@ class Criterio{
     -fechaDeCargaEntre: RangoFechas
     -origen: Origen
     +cumpleCriterio(hecho: Hecho): Boolean
-    -tituloContiene(titulo: String): Boolean
-    -descripcionContiene(descripcion: String): Boolean
+    -cumpleTitulo(titulo: String): Boolean
+    -cumpleDescripcion(descripcion: String): Boolean
     -cumpleOrigen(origen: Origen): Boolean
 }
 
