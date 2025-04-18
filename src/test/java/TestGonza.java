@@ -49,11 +49,18 @@ public class TestGonza {
             categoria5, ubicacion5, LocalDate.of(2016, 6, 4), origen5);
 
     Coleccion coleccion = new Coleccion("Colección prueba", "Esto es una prueba");
-    coleccion.agregarHecho(hecho1);
-    coleccion.agregarHecho(hecho2);
-    coleccion.agregarHecho(hecho3);
-    coleccion.agregarHecho(hecho4);
-    coleccion.agregarHecho(hecho5);
+
+    ImportadorHechos importador = new ImportadorHechos();
+    //importador.cargarColeccion(coleccion, [hecho1, hecho2, hecho3, hecho4, hecho5]);
+
+    //Assertions.assertEquals(coleccion.size(), 5);
+
+//    coleccion.agregarHecho(hecho1);
+//    coleccion.agregarHecho(hecho2);
+//    coleccion.agregarHecho(hecho3);
+//    coleccion.agregarHecho(hecho4);
+//    coleccion.agregarHecho(hecho5);
+
 
 
 

@@ -18,7 +18,7 @@ public class TestCSV {
         Coleccion coleccionPrueba = new Coleccion("Colección de prueba", "Esto es una prueba");
         fuenteEstatica.cargarColeccion(coleccionPrueba);
         List<Hecho> hechosEnLaColeccion = coleccionPrueba.consultarHechos();
-        hechosEnLaColeccion.forEach(hecho -> System.out.println(hecho.getTitulo()));
+        hechosEnLaColeccion.forEach(hecho -> System.out.println(hecho.getTitulo())); //TODO ver una forma correcta de validación
     }
 
 }
