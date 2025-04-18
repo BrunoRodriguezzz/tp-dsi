@@ -19,7 +19,7 @@ public class Coleccion {
 
     public Integer agregarHecho(Hecho hecho) {
         if (this.cumpleTodosLosCriterios(hecho)
-                && !hecho.getEliminado()
+                && !hecho.estaEliminado()
                 && this.hechos.add(hecho)) {
             return 1;
         }

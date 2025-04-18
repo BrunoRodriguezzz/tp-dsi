@@ -1,9 +1,9 @@
 package entities;
 
-import lombok.Getter;
-
 import java.time.LocalDate;
 import java.util.List;
+
+import lombok.Getter;
 
 @Getter
 public class Hecho {
@@ -34,5 +34,9 @@ public class Hecho {
             return 1;
         }
         return 0;
+    }
+
+    public Boolean estaEliminado(){
+        return this.eliminado;
     }
 }
