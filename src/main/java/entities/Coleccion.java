@@ -1,14 +1,23 @@
 package entities;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Coleccion {
     private String titulo;
     private String descripcion;
     private List<Criterio> criterios;
-    private Set<Hecho> hechos;
+    private List<Hecho> hechos;
+    private List<ImportadorHechos> fuentes;
+
+    public Coleccion(String titulo, String descripcion) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.criterios = new ArrayList<>();
+        this.hechos = new ArrayList<>();
+        this.fuentes = new ArrayList<>();
+    }
 
     public Integer eliminarHecho(Hecho hecho) {
         if (this.hechos.remove(hecho)) {
@@ -26,15 +35,15 @@ public class Coleccion {
         return 0;
     }
 
-    public Set<Hecho> consultarHechos() {
+    public List<Hecho> consultarHechos() {
         return this.hechos;
     }
 
-    public Set<Hecho> consultarHechos(Criterio criterio) {
-        Set<Hecho> hechosQueCumplen = this.hechos
+    public List<Hecho> consultarHechos(Criterio criterio) {
+        List<Hecho> hechosQueCumplen = this.hechos
                 .stream()
                 .filter(hecho -> criterio.cumpleCriterio(hecho))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         return hechosQueCumplen;
     }
 

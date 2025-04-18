@@ -9,6 +9,16 @@ public class Criterio {
     private RangoFechas fechaAcontecimientoEntre;
     private RangoFechas fechaDeCargaEntre;
 
+    public Criterio(String requisitoTitulo, String requisitoDescripcion, Origen origen, Categoria categoria,
+                    RangoFechas fechaAcontecimientoEntre, RangoFechas fechaDeCargaEntre) {
+        this.requisitoTitulo = requisitoTitulo;
+        this.requisitoDescripcion = requisitoDescripcion;
+        this.origen = origen;
+        this.categoria = categoria;
+        this.fechaAcontecimientoEntre = fechaAcontecimientoEntre;
+        this.fechaDeCargaEntre = fechaDeCargaEntre;
+    }
+
     public Boolean cumpleCriterio(Hecho hecho) {
         return (this.tituloContiene(hecho.getTitulo()) &&
                 this.descripcionContiene(hecho.getDescripcion()) &&

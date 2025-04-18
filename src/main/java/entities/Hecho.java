@@ -2,7 +2,7 @@ package entities;
 
 import lombok.Getter;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -10,14 +10,27 @@ public class Hecho {
     private String titulo;
     private String descripcion;
     private Categoria categoria;
-    private String ubicacion;
+    private Ubicacion ubicacion;
     private List<Etiqueta> etiquetas;
-    private LocalDate fechaAcontecimiento;
-    private LocalDate fechaCarga;
+    private Date fechaAcontecimiento;
+    private Date fechaCarga;
+    private ImportadorHechos fuente;
     private Origen origen;
     private Contribuyente contribuyente;
     private Boolean eliminado;
     private List<ContenidoMultimedia> contenidoMultimedia;
+
+    public Hecho(String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, Date fechaAcontecimiento, ImportadorHechos fuente, Origen origen) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.categoria = categoria;
+        this.ubicacion = ubicacion;
+        this.fechaAcontecimiento = fechaAcontecimiento;
+        this.fuente = fuente;
+        this.origen = origen;
+        this.fechaCarga = new Date();
+        //TODO Usar patron builder
+    }
 
     public Integer eliminar() {
         this.eliminado = true;

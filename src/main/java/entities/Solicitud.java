@@ -8,6 +8,12 @@ public class Solicitud {
     private EstadoSolicitud estadoSolicitud;
     private Date fechaResolucion;
 
+    public Solicitud(Hecho hecho, String fundamento) {
+        this.hecho = hecho;
+        this.fundamento = fundamento;
+        estadoSolicitud = EstadoSolicitud.PENDIENTE;
+        fechaResolucion = new Date();
+    }
     public Integer serAceptada(){
         estadoSolicitud = EstadoSolicitud.ACEPTADA;
         this.fechaResolucion = new Date();

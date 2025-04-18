@@ -10,7 +10,6 @@ Hecho --o Coleccion
 Solicitud --* Hecho
 
 Coleccion --> Criterio
-Coleccion ..> Criterio
 
 'Criterio
 Criterio --> RangoFechas
@@ -26,9 +25,9 @@ ElementoCriterio <|-- Categoria
 ElementoCriterio <|-- Etiqueta
 ElementoCriterio <|-- RangoFechas
 
-Multimedia --> Formato
+ContenidoMultimedia --> Formato
 Hecho --> ContenidoMultimedia
-Coleccion --> Fuente
+Coleccion <.. ImportadorHechos
 
 class Contribuyente {
     -nombre: String
@@ -70,7 +69,7 @@ class Hecho {
     +tieneContenidoMultimedia(): Boolean
 }
 
-class Fuente {
+class ImportadorHechos {
     -rutaArchivo: String
     +cargarColeccion(Coleccion coleccion): Integer
 }
@@ -104,15 +103,17 @@ class Solicitud {
 }
 
 class Coleccion {
-    -hechos: <Set> Hecho
+    -hechos: <List> Hecho
     -titulo: String
     -descripcion: String
     -criterios: <List> Criterio
+    -fuentes: <List> Fuente
     +agregarHecho(hecho: Hecho): Integer
     +eliminarHecho(hecho: Hecho): Integer
     'Solo para representar overload
-    +consultarHechos(): <Set> Hecho
-    +consultarHechos(filtros: <Set> Filtros): <Set> Hecho
+    +consultarHechos(): <List> Hecho
+    +consultarHechos(filtros: <List> Filtros): <List> Hecho
+
 }
 
 class Criterio{
