@@ -10,8 +10,8 @@ public class Criterio {
     private RangoFechas fechaDeCargaEntre;
 
     public Boolean cumpleCriterio(Hecho hecho) {
-        return (this.tituloContiene(hecho.getTitulo()) &&
-                this.descripcionContiene(hecho.getDescripcion()) &&
+        return (this.cumpleTitulo(hecho.getTitulo()) &&
+                this.cumpleDescripcion(hecho.getDescripcion()) &&
                 this.cumpleOrigen(hecho.getOrigen()) &&
                 this.categoria.coincide(hecho.getCategoria()) &&
                 this.fechaAcontecimientoEntre.coincide(hecho.getFechaAcontecimiento()) &&
@@ -19,14 +19,14 @@ public class Criterio {
         );
     }
 
-    private Boolean tituloContiene(String titulo) {
+    private Boolean cumpleTitulo(String titulo) {
         if(titulo == null || titulo.isEmpty()) {
             return true;
         }
         return titulo.contains(this.requisitoTitulo);
     }
 
-    private Boolean descripcionContiene(String descripcion) {
+    private Boolean cumpleDescripcion(String descripcion) {
         if(descripcion == null || descripcion.isEmpty()) {
             return true;
         }
