@@ -1,5 +1,8 @@
 package entities;
 
+import lombok.Getter;
+
+@Getter
 public class Ubicacion implements ElementoCriterio<Ubicacion> {
     private String latitud;
     private String longitud;
