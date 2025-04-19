@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import lombok.Getter;
 
-@Getters
+@Getter
 public class Categoria implements ElementoCriterio<Categoria> {
     private String titulo;
 
