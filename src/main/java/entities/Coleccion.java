@@ -50,4 +50,19 @@ public class Coleccion {
     private Boolean cumpleTodosLosCriterios(Hecho hecho) {
         return this.criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho));
     }
+
+    public Integer agregarCriterio(Criterio criterio) {
+        this.criterios.add(criterio);
+        return 1;
+    }
+
+    public Integer recalcularHechos() {
+        if (hechos == null) {
+            return 0;
+        }
+        // Usar removeIf para eliminar hechos que no cumplen los criterios
+        this.hechos.removeIf(hecho -> !this.cumpleTodosLosCriterios(hecho));
+        return 1;
+    }
+
 }

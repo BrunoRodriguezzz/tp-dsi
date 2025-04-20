@@ -1,8 +1,10 @@
 package entities;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class Hecho {
         this.origen = origen;
         this.fechaCarga = LocalDate.now();
         this.eliminado = false;
+        this.etiquetas = new ArrayList<>();
         //TODO Usar patron builder
     }
 
@@ -42,7 +45,7 @@ public class Hecho {
         return !this.contenidoMultimedia.isEmpty();
     }
 
-    public Integer serEtiquetado(Etiqueta etiqueta) throws RuntimeException {
+    public Integer agregarEtiqueta(Etiqueta etiqueta) throws RuntimeException {
         if (this.etiquetas.add(etiqueta) && this.etiquetas.stream().noneMatch(e -> e.coincide(etiqueta))) { //TODO Revisar porque devuelve siempre true
             return 1;
         }

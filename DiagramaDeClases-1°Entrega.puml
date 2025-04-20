@@ -114,6 +114,7 @@ class Coleccion {
     'Solo para representar overload
     +consultarHechos(): <List> Hecho
     +consultarHechos(filtros: <List> Filtros): <List> Hecho
+    +recalcularHechos(): Integer
 
 }
 
