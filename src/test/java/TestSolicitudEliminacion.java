@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class TestSolicitudEliminacion {
-    Solicitud solicitudEliminacion;
+    SolicitudEliminacion solicitudEliminacion;
     ImportadorHechos importador = new ImportadorHechos();
     Hecho hecho = new Hecho(
         "Brote de enfermedad contagiosa causa estragos en San Lorenzo, Santa Fe",
@@ -29,9 +29,9 @@ public class TestSolicitudEliminacion {
     @Test
     @DisplayName("Solicitud Rechazada 1 día después de su creación.")
     public void rechazarSolicitud(){
-        solicitudEliminacion = new Solicitud(hecho, "a".repeat(500) + " Esto esta bien fundado");
+        solicitudEliminacion = new SolicitudEliminacion(hecho, "a".repeat(500) + " Esto esta bien fundado");
         // Al crear una solicitud queda en estado pendiente
-        Assertions.assertEquals(EstadoSolicitud.PENDIENTE,solicitudEliminacion.getEstadoSolicitud());
+        Assertions.assertEquals(EstadoSolicitudEliminacion.PENDIENTE,solicitudEliminacion.getEstadoSolicitudEliminacion());
         // Rechazar esta solicitud un día después de su creación.
         solicitudEliminacion.serRechazada();
         solicitudEliminacion.setFechaResolucion(LocalDateTime.now().plusDays(1));
@@ -40,14 +40,14 @@ public class TestSolicitudEliminacion {
         coleccion.agregarHecho(hecho);
         Assertions.assertFalse(coleccion.consultarHechos().isEmpty()); // Se agrega a una coleccion vacía, luego no debe estarlo
         // Verificar que la solicitud haya quedado en estado rechazada.
-        Assertions.assertEquals(EstadoSolicitud.RECHAZADA,solicitudEliminacion.getEstadoSolicitud()); 
+        Assertions.assertEquals(EstadoSolicitudEliminacion.RECHAZADA,solicitudEliminacion.getEstadoSolicitudEliminacion());
         
     }
     @Test
     @DisplayName("Solicitud Aceptada a las 2 horas.")
     public void aceptarSolicitud(){
         // Generar otra solicitud para el mismo hecho.
-        solicitudEliminacion = new Solicitud(hecho, "a".repeat(500) + " Esto esta bien fundado");
+        solicitudEliminacion = new SolicitudEliminacion(hecho, "a".repeat(500) + " Esto esta bien fundado");
         
         // Es aceptada a las 2 horas
         solicitudEliminacion.serAceptada();
@@ -58,7 +58,7 @@ public class TestSolicitudEliminacion {
         Assertions.assertTrue(coleccion.consultarHechos().isEmpty());
 
         // Verificar que la solicitud haya quedado en estado aceptada.
-        Assertions.assertEquals(EstadoSolicitud.ACEPTADA, solicitudEliminacion.getEstadoSolicitud());
+        Assertions.assertEquals(EstadoSolicitudEliminacion.ACEPTADA, solicitudEliminacion.getEstadoSolicitudEliminacion());
     }
 
 }

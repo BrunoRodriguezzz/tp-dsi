@@ -1,4 +1,4 @@
-@startuml
+    @startuml
 'Hecho
 Hecho --> Contribuyente
 Hecho --> Origen
@@ -7,23 +7,31 @@ Hecho --> Ubicacion
 Hecho -->"*" Etiqueta
 Hecho --o Coleccion
 
-Solicitud --* Hecho
+SolicitudEliminacion --* Hecho
 
 Coleccion --> Criterio
 
 'Criterio
-Criterio --> RangoFechas
-Criterio --> Origen
-Criterio --> Categoria
-Criterio --> Ubicacion
+Criterio --> EstrategiaCriterio
 
-Solicitud --> EstadoSolicitud
+'ElementoCriterio
+EstrategiaCriterio <|.. EstrategiaTitulo
+EstrategiaCriterio <|.. EstrategiaCategoria
+EstrategiaCriterio <|.. EstrategiaContenidoMultimedia
+EstrategiaCriterio <|.. EstrategiaUbicacion
+EstrategiaCriterio <|.. EstrategiaFechaAcontecimiento
+EstrategiaCriterio <|.. EstrategiaFechaCarga
+EstrategiaCriterio <|.. EstrategiaOrigen
+EstrategiaCriterio <|.. EstrategiaDescripcion
 
-'Interface
-ElementoCriterio <|-- Ubicacion
-ElementoCriterio <|-- Categoria
-ElementoCriterio <|-- Etiqueta
-ElementoCriterio <|-- RangoFechas
+'Estrategias
+EstrategiaCategoria --> Categoria
+EstrategiaUbicacion --> Ubicacion
+EstrategiaFechaAcontecimiento --> RangoFechas
+EstrategiaFechaCarga --> RangoFechas
+EstrategiaOrigen --> Origen
+
+SolicitudEliminacion --> EstadoSolicitudEliminacion
 
 ContenidoMultimedia --> Formato
 Hecho --> ContenidoMultimedia
@@ -35,7 +43,7 @@ class Contribuyente {
     -edad: Integer
 }
 
-enum EstadoSolicitud {
+enum EstadoSolicitudEliminacion {
     ACEPTADA,
     RECHAZADA,
     PENDIENTE
@@ -62,7 +70,6 @@ class Hecho {
     -fechaAcontecimiento: LocalDate
     -fechaCarga: LocalDate
     -origen: Origen
-    -contribuyente: Contribuyente
     -eliminado: Boolean
     -contenidoMultimedia: List<ContenidoMultimedia>
     +eliminar(): Integer
@@ -94,7 +101,7 @@ class Ubicacion {
     -longitud: String
 }
 
-class Solicitud {
+class SolicitudEliminacion {
     -hecho: Hecho
     -fundamento: String
     -rechazada: Boolean
@@ -119,18 +126,9 @@ class Coleccion {
 }
 
 class Criterio{
-    -requisitoTitulo: String
-    -requisitoDescripcion: String
-    -categoria: Categoria
-    -tieneContenidoMultimedia: Boolean
-    -ubicacion: Ubicacion
-    -fechaAcontecimientoEntre: RangoFechas
-    -fechaDeCargaEntre: RangoFechas
-    -origen: Origen
+    -elementosCriterio: <List> EstrategiaCriterio
+
     +cumpleCriterio(hecho: Hecho): Boolean
-    -cumpleTitulo(titulo: String): Boolean
-    -cumpleDescripcion(descripcion: String): Boolean
-    -cumpleOrigen(origen: Origen): Boolean
 }
 
 class RangoFechas {
@@ -139,7 +137,48 @@ class RangoFechas {
     +coincide(date: LocalDate): Boolean
 }
 
-interface ElementoCriterio{
+interface EstrategiaCriterio{
     +coincide(algo): Boolean
 }
+
+class EstrategiaTitulo{
+    -titulo: String
+    +coincide(algo): Boolean
+}
+
+class EstrategiaDescripcion{
+    -descripcion: String
+    +coincide(algo): Boolean
+}
+
+class EstrategiaOrigen{
+    -origen: Origen
+    +coincide(algo): Boolean
+}
+
+class EstrategiaContenidoMultimedia{
+    -tieneMultimedia: Boolean
+    +coincide(algo): Boolean
+}
+
+class EstrategiaFechaAcontecimiento{
+    -fechaAcontecimientoEntre: RangoFechas
+    +coincide(algo): Boolean
+}
+
+class EstrategiaFechaCarga{
+    -fechaDeCargaEntre: RangoFechas
+    +coincide(algo): Boolean
+}
+
+class EstrategiaCategoria{
+    -categoria: Categoria
+    +coincide(algo): Boolean
+}
+
+class EstrategiaUbicacion{
+    -ubicacion: Ubicacion
+    +coincide(algo): Boolean
+}
+
 @enduml

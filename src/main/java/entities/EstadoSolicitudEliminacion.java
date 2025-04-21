@@ -1,6 +1,6 @@
 package entities;
 
-public enum EstadoSolicitud {
+public enum EstadoSolicitudEliminacion {
     ACEPTADA,
     RECHAZADA,
     PENDIENTE

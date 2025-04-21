@@ -2,16 +2,16 @@ package entities;
 
 import java.time.LocalDateTime;
 
-public class Solicitud {
+public class SolicitudEliminacion {
     private Hecho hecho;
     private String fundamento;
-    private EstadoSolicitud estadoSolicitud;
+    private EstadoSolicitudEliminacion estadoSolicitudEliminacion;
     private LocalDateTime fechaResolucion;
 
-    public Solicitud(Hecho hecho, String fundamento) {
+    public SolicitudEliminacion(Hecho hecho, String fundamento) {
         this.hecho = hecho;
         this.fundamento = fundamento;
-        estadoSolicitud = EstadoSolicitud.PENDIENTE;
+        estadoSolicitudEliminacion = EstadoSolicitudEliminacion.PENDIENTE;
         fechaResolucion = LocalDateTime.now();
     }
 
@@ -21,13 +21,13 @@ public class Solicitud {
     }
 
     public Integer serAceptada(){
-        estadoSolicitud = EstadoSolicitud.ACEPTADA;
+        estadoSolicitudEliminacion = EstadoSolicitudEliminacion.ACEPTADA;
         this.hecho.eliminar();
         return 1;
     }
 
     public Integer serRechazada(){
-        estadoSolicitud = EstadoSolicitud.RECHAZADA;
+        estadoSolicitudEliminacion = EstadoSolicitudEliminacion.RECHAZADA;
         return 1;
     }
 
@@ -35,7 +35,7 @@ public class Solicitud {
         this.fechaResolucion = fechaResolucion;
     }
 
-    public EstadoSolicitud getEstadoSolicitud() {
-        return estadoSolicitud;
+    public EstadoSolicitudEliminacion getEstadoSolicitudEliminacion() {
+        return this.estadoSolicitudEliminacion;
     }
 }
