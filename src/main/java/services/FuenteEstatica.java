@@ -1,9 +1,13 @@
-package entities.services;
+package services;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
-import entities.*;
+import models.entities.enums.Origen;
+import models.entities.filtros.Categoria;
+import models.entities.filtros.Ubicacion;
+import models.entities.hechos.Coleccion;
+import models.entities.hechos.Hecho;
 
 import javax.swing.*;
 import java.io.FileReader;

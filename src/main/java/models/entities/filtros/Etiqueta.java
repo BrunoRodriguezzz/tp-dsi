@@ -1,8 +1,9 @@
-package entities;
+package models.entities.filtros;
 
-import java.time.LocalDate;
-
-public class Etiqueta implements ElementoCriterio<Etiqueta> {
+import lombok.Getter;
+import models.entities.criterios.ElementoCriterio;
+@Getter
+public class Etiqueta {
     private String titulo;
 
     public Etiqueta(String titulo) {

@@ -1,4 +1,11 @@
-import entities.*;
+import models.entities.*;
+import models.entities.enums.EstadoSolicitudEliminacion;
+import models.entities.enums.Origen;
+import models.entities.filtros.Categoria;
+import models.entities.filtros.Ubicacion;
+import models.entities.hechos.Coleccion;
+import models.entities.hechos.Hecho;
+import models.entities.hechos.ImportadorHechos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

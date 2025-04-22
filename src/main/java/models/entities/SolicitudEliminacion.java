@@ -1,4 +1,7 @@
-package entities;
+package models.entities;
+
+import models.entities.enums.EstadoSolicitudEliminacion;
+import models.entities.hechos.Hecho;
 
 import java.time.LocalDateTime;
 

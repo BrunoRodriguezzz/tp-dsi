@@ -1,4 +1,6 @@
-package entities;
+package models.entities;
+
+import models.entities.enums.Formato;
 
 public class ContenidoMultimedia {
     private String nombre;

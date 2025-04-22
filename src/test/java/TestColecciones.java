@@ -1,10 +1,14 @@
-import entities.*;
-
+import models.entities.criterios.Criterio;
+import models.entities.criterios.ElementoCriterio;
+import models.entities.enums.Origen;
+import models.entities.filtros.*;
+import models.entities.hechos.Coleccion;
+import models.entities.hechos.Hecho;
+import models.entities.hechos.ImportadorHechos;
 import org.junit.jupiter.api.*;
 
 import java.util.Arrays;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestColecciones {
@@ -98,7 +102,7 @@ public class TestColecciones {
         filtro1.setCategoria(categoria1);
         filtro1.setRequisitoTitulo("un titulo");
 
-        Assertions.assertTrue(coleccion.consultarHechos(filtro1).isEmpty());
+        Assertions.assertTrue(coleccion.consultarHechos(criterioPruebas).isEmpty());
     }
 
     @Test

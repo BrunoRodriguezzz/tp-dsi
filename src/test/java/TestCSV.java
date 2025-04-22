@@ -1,13 +1,12 @@
-import entities.*;
-import entities.services.FuenteEstatica;
+import models.entities.hechos.Coleccion;
+import models.entities.hechos.Hecho;
+import services.FuenteEstatica;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.nio.file.Paths;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class TestCSV {

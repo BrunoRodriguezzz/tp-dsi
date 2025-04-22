@@ -1,11 +1,15 @@
-package entities;
+package models.entities.hechos;
 
 import lombok.Getter;
-import lombok.Setter;
+import models.entities.ContenidoMultimedia;
+import models.entities.enums.Origen;
+import models.entities.filtros.Categoria;
+import models.entities.filtros.Etiqueta;
+import models.entities.filtros.Ubicacion;
+import models.entities.usuarios.Contribuyente;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter

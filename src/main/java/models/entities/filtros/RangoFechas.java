@@ -1,7 +1,8 @@
-package entities;
+package models.entities.filtros;
+
+import models.entities.criterios.ElementoCriterio;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class RangoFechas implements ElementoCriterio<LocalDate> {
     private LocalDate fechaInicio;

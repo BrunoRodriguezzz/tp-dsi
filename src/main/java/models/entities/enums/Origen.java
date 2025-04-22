@@ -1,4 +1,4 @@
-package entities;
+package models.entities.enums;
 
 public enum Origen {
     MANUAL,

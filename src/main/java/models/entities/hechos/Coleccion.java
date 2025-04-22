@@ -1,4 +1,6 @@
-package entities;
+package models.entities.hechos;
+
+import models.entities.criterios.Criterio;
 
 import java.util.ArrayList;
 import java.util.List;

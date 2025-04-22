@@ -1,8 +1,5 @@
-package entities;
+package models.entities.hechos;
 
-import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.List;
 
 public class ImportadorHechos {

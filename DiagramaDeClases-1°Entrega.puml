@@ -12,17 +12,12 @@ SolicitudEliminacion --* Hecho
 Coleccion --> Criterio
 
 'Criterio
-Criterio --> EstrategiaCriterio
+Criterio --> ElementoCriterio
 
 'ElementoCriterio
-EstrategiaCriterio <|.. EstrategiaTitulo
-EstrategiaCriterio <|.. EstrategiaCategoria
-EstrategiaCriterio <|.. EstrategiaContenidoMultimedia
-EstrategiaCriterio <|.. EstrategiaUbicacion
-EstrategiaCriterio <|.. EstrategiaFechaAcontecimiento
-EstrategiaCriterio <|.. EstrategiaFechaCarga
-EstrategiaCriterio <|.. EstrategiaOrigen
-EstrategiaCriterio <|.. EstrategiaDescripcion
+ElementoCriterio <|.. ElementoCriterioTitulo
+ElementoCriterio <|.. ElementoCriterioCategoria
+ElementoCriterio <|.. ElementoCriterioFechaAcontecimiento
 
 'Estrategias
 EstrategiaCategoria --> Categoria
@@ -126,7 +121,7 @@ class Coleccion {
 }
 
 class Criterio{
-    -elementosCriterio: <List> EstrategiaCriterio
+    -elementosCriterio: <List> ElementoCriterio
 
     +cumpleCriterio(hecho: Hecho): Boolean
 }
@@ -137,11 +132,11 @@ class RangoFechas {
     +coincide(date: LocalDate): Boolean
 }
 
-interface EstrategiaCriterio{
+interface ElementoCriterio{
     +coincide(algo): Boolean
 }
 
-class EstrategiaTitulo{
+class ElementoCriterioTitulo{
     -titulo: String
     +coincide(algo): Boolean
 }
@@ -161,17 +156,12 @@ class EstrategiaContenidoMultimedia{
     +coincide(algo): Boolean
 }
 
-class EstrategiaFechaAcontecimiento{
+class ElementoCriterioFechaAcontecimiento{
     -fechaAcontecimientoEntre: RangoFechas
     +coincide(algo): Boolean
 }
 
-class EstrategiaFechaCarga{
-    -fechaDeCargaEntre: RangoFechas
-    +coincide(algo): Boolean
-}
-
-class EstrategiaCategoria{
+class ElementoCriterioCategoria{
     -categoria: Categoria
     +coincide(algo): Boolean
 }
