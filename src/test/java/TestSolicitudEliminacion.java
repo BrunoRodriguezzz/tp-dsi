@@ -1,5 +1,5 @@
-import models.entities.*;
-import models.entities.enums.EstadoSolicitudEliminacion;
+import models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
+import models.entities.solicitudEliminacion.SolicitudEliminacion;
 import models.entities.valueObjectsHecho.Origen;
 import models.entities.valueObjectsHecho.Categoria;
 import models.entities.valueObjectsHecho.Ubicacion;

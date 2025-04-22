@@ -1,8 +1,8 @@
 package models.entities.hechos;
 
 import lombok.Setter;
-import models.entities.criterios.Criterio;
-import models.entities.filtros.Filtro;
+import models.entities.criterio.Criterio;
+import models.entities.criterio.Filtro;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,4 @@
-package models.entities;
-
-import models.entities.enums.Formato;
+package models.entities.valueObjectsHecho;
 
 public class ContenidoMultimedia {
     private String nombre;

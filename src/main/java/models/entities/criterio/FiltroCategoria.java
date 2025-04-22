@@ -1,4 +1,4 @@
-package models.entities.filtros;
+package models.entities.criterio;
 
 import models.entities.valueObjectsHecho.Categoria;
 import models.entities.hechos.Hecho;

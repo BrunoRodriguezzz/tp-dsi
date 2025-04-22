@@ -1,4 +1,4 @@
-package models.entities.enums;
+package models.entities.solicitudEliminacion;
 
 public enum EstadoSolicitudEliminacion {
     ACEPTADA,

@@ -1,6 +1,5 @@
-import models.entities.criterios.*;
 import models.entities.valueObjectsHecho.*;
-import models.entities.filtros.*;
+import models.entities.criterio.*;
 import models.entities.hechos.Coleccion;
 import models.entities.hechos.Hecho;
 import models.entities.hechos.ImportadorHechos;

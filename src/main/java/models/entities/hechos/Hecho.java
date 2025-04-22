@@ -1,7 +1,7 @@
 package models.entities.hechos;
 
 import lombok.Getter;
-import models.entities.ContenidoMultimedia;
+import models.entities.valueObjectsHecho.ContenidoMultimedia;
 import models.entities.valueObjectsHecho.Origen;
 import models.entities.valueObjectsHecho.Categoria;
 import models.entities.valueObjectsHecho.Etiqueta;

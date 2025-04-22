@@ -1,8 +1,7 @@
-package models.entities;
+package models.entities.solicitudEliminacion;
 
 import lombok.Getter;
 import lombok.Setter;
-import models.entities.enums.EstadoSolicitudEliminacion;
 import models.entities.hechos.Hecho;
 
 import java.time.LocalDateTime;
