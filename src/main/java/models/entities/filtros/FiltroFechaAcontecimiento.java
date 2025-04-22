@@ -1,12 +1,12 @@
 package models.entities.filtros;
 
-import models.entities.criterios.ElementoCriterio;
+import models.entities.criterios.Filtro;
 import models.entities.hechos.Hecho;
 
-public class ElementoCriterioFechaAcontecimiento implements ElementoCriterio {
+public class FiltroFechaAcontecimiento implements Filtro {
     private RangoFechas fechaAcontecimiento;
 
-    public ElementoCriterioFechaAcontecimiento(RangoFechas fechaAcontecimiento) {
+    public FiltroFechaAcontecimiento(RangoFechas fechaAcontecimiento) {
         this.fechaAcontecimiento = fechaAcontecimiento;
     }
 

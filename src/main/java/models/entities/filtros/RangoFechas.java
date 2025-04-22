@@ -1,7 +1,5 @@
 package models.entities.filtros;
 
-import models.entities.criterios.ElementoCriterio;
-
 import java.time.LocalDate;
 
 public class RangoFechas {

@@ -8,20 +8,17 @@ import java.util.List;
 
 @Setter
 public class Criterio {
-    private List<ElementoCriterio> elementosCriterios;
+    private List<Filtro> elementosCriterios;
 
     public Criterio() {
         this.elementosCriterios = new ArrayList<>();
     }
 
-    public Boolean cumpleCriterio(Hecho hecho) throws RuntimeException{
-        if(!(hecho instanceof Hecho)) {  //no me convence
-            throw new RuntimeException("Instancia de hecho no valida");
-        }
+    public Boolean cumpleCriterio(Hecho hecho) {
         return this.elementosCriterios.stream().allMatch(elemento -> elemento.coincide(hecho));
     }
 
-    public void agregarCriterio(ElementoCriterio criterio) {
+    public void agregarElementoCriterio(Filtro criterio) {
         this.elementosCriterios.add(criterio);
     }
 }

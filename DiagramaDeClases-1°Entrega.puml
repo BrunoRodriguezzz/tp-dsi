@@ -14,21 +14,22 @@ SolicitudEliminacion --> EstadoSolicitudEliminacion
 
 'Colecciones
 Coleccion --> Criterio
+Coleccion ..> Filtro
 
 'Importador de Hechos
 Coleccion <.. ImportadorHechos
 
 'Criterio
-Criterio --> ElementoCriterio
+Criterio --> Filtro
 
 'ElementoCriterio
-ElementoCriterio <|.. ElementoCriterioTitulo
-ElementoCriterio <|.. ElementoCriterioCategoria
-ElementoCriterio <|.. ElementoCriterioFechaAcontecimiento
+Filtro <|.. FiltroTitulo
+Filtro <|.. FiltroCategoria
+Filtro <|.. FiltroFechaAcontecimiento
 
 'Estrategias
-ElementoCriterioCategoria --> Categoria
-ElementoCriterioFechaAcontecimiento --> RangoFechas
+FiltroCategoria --> Categoria
+FiltroFechaAcontecimiento --> RangoFechas
 
 'Contenido Multimedia
 ContenidoMultimedia --> Formato
@@ -115,15 +116,15 @@ class Coleccion {
     +eliminarHecho(hecho: Hecho): Integer
     'Solo para representar overload
     +consultarHechos(): <List> Hecho
-    +consultarHechos(Criterio filtro): <List> Hecho
-    +recalcularHechos(): Integer
+    +consultarHechos(filtros: <List> Filtro): <List> Hecho
+    +recalcularHechos(): Void
 }
 
 class Criterio{
-    -elementosCriterio: <List> ElementoCriterio
+    -elementosCriterio: <List> Filtro
 
     +cumpleCriterio(hecho: Hecho): Boolean
-    +agregarCriterio((ElementoCriterio criterio): Void
+    +agregarElementoCriterio((ElementoCriterio criterio): Void
 }
 
 class RangoFechas {
@@ -132,21 +133,21 @@ class RangoFechas {
     +coincide(date: LocalDate): Boolean
 }
 
-interface ElementoCriterio{
+interface Filtro{
     +coincide(algo): Boolean
 }
 
-class ElementoCriterioTitulo{
+class FiltroTitulo{
     -titulo: String
     +coincide(algo): Boolean
 }
 
-class ElementoCriterioFechaAcontecimiento{
+class FiltroFechaAcontecimiento{
     -fechaAcontecimientoEntre: RangoFechas
     +coincide(algo): Boolean
 }
 
-class ElementoCriterioCategoria{
+class FiltroCategoria{
     -categoria: Categoria
     +coincide(algo): Boolean
 }

@@ -1,5 +1,5 @@
 import models.entities.criterios.Criterio;
-import models.entities.criterios.ElementoCriterio;
+import models.entities.criterios.Filtro;
 import models.entities.enums.Origen;
 import models.entities.filtros.*;
 import models.entities.hechos.Coleccion;
@@ -7,6 +7,7 @@ import models.entities.hechos.Hecho;
 import models.entities.hechos.ImportadorHechos;
 import org.junit.jupiter.api.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.time.LocalDate;
 
@@ -52,25 +53,24 @@ public class TestColecciones {
             "Un grave derrumbe en obra en construcción se registró en Presidencia Roque Sáenz Peña, Chaco. El incidente generó preocupación entre las autoridades provinciales. El intendente local se ha trasladado al lugar para supervisar las operaciones.",
             categoria5, ubicacion5, LocalDate.of(2016, 6, 4), origen5);
 
-    Coleccion coleccion = new Coleccion("Colección prueba", "Esto es una prueba");
+    Coleccion coleccion;
 
-    Criterio criterioPruebas = new Criterio();
+    Criterio criterioPruebas;
 
-    @BeforeAll
+    @BeforeEach
     public void setUp(){
-//        ImportadorHechos importador = new ImportadorHechos();
-//        importador.cargarColeccion(coleccion, Arrays.asList(hecho1, hecho2, hecho3, hecho4, hecho5));
-//        coleccion.setCriterio(criterioPruebas);
+        ImportadorHechos importador = new ImportadorHechos();
+        coleccion = new Coleccion("Colección prueba", "Esto es una prueba");
+        criterioPruebas = new Criterio();
+
+        importador.cargarColeccion(coleccion, Arrays.asList(hecho1, hecho2, hecho3, hecho4, hecho5));
+        coleccion.setCriterio(criterioPruebas);
     }
 
     @Test
     @DisplayName("Validar que se puedan obtener los hechos a partir de la colección.\n")
     public void obtenerHechos(){
-        ImportadorHechos importador = new ImportadorHechos();
-        importador.cargarColeccion(coleccion, Arrays.asList(hecho1, hecho2, hecho3, hecho4, hecho5));
-        coleccion.setCriterio(criterioPruebas);
-        System.out.println("Hola");
-        Assertions.assertEquals(hecho1, coleccion.consultarHechos());
+        Assertions.assertEquals(hecho1, coleccion.consultarHechos().get(0));
     }
 
     //Criterios de pertenencia
@@ -78,20 +78,17 @@ public class TestColecciones {
     @DisplayName("Al agregar un criterio de pertenencia y recalcular la coleccion deberían quedar solo los primeros tres")
     public void pruebaCriterios1(){
         RangoFechas rangoFechasCriterio = new RangoFechas(LocalDate.parse("2000-01-01"), LocalDate.parse("2010-01-01"));
-        ElementoCriterioFechaAcontecimiento criterioFechas = new ElementoCriterioFechaAcontecimiento(rangoFechasCriterio);
-        criterioPruebas.agregarCriterio(criterioFechas);
+        FiltroFechaAcontecimiento elementoCriterioFechas = new FiltroFechaAcontecimiento(rangoFechasCriterio);
 
+        criterioPruebas.agregarElementoCriterio(elementoCriterioFechas);
         Assertions.assertEquals(3,coleccion.consultarHechos().size());
         Assertions.assertTrue(coleccion.consultarHechos().contains(hecho1));
         Assertions.assertTrue(coleccion.consultarHechos().contains(hecho2));
         Assertions.assertTrue(coleccion.consultarHechos().contains(hecho3));
-    }
 
-    @Test
-    @DisplayName("Al agregar un nuevo criterio de pertenencia y recalcular la coleccion el segundo ya no debería estar presente")
-    public void pruebaCriterios2(){
-        ElementoCriterioCategoria criterioCategoria = new ElementoCriterioCategoria(categoria1);
-        criterioPruebas.agregarCriterio(criterioCategoria);
+//        Al agregar un nuevo criterio de pertenencia y recalcular la coleccion el segundo ya no debería estar presente
+        FiltroCategoria criterioCategoria = new FiltroCategoria(categoria1);
+        criterioPruebas.agregarElementoCriterio(criterioCategoria);
 
         Assertions.assertEquals(2,coleccion.consultarHechos().size());
         Assertions.assertTrue(coleccion.consultarHechos().contains(hecho1));
@@ -102,12 +99,13 @@ public class TestColecciones {
     @Test
     @DisplayName("Sobre la colección aplicar un filtro de tipo categoría = “Caída de Aeronave” y título = ”un título”. Ningún hecho de la colección cumple con este filtro.")
     public void pruebaFiltros(){
-        ElementoCriterioTitulo filtroTitulo = new ElementoCriterioTitulo("un titulo");
-        ElementoCriterioCategoria filtroCategoria = new ElementoCriterioCategoria(categoria1);
-        criterioPruebas.agregarCriterio(filtroTitulo);
-        criterioPruebas.agregarCriterio(filtroCategoria);
+        FiltroTitulo filtroTitulo = new FiltroTitulo("un titulo");
+        FiltroCategoria filtroCategoria = new FiltroCategoria(categoria1);
+        ArrayList<Filtro> filtros = new ArrayList<>();
+        filtros.add(filtroTitulo);
+        filtros.add(filtroCategoria);
 
-        Assertions.assertTrue(coleccion.consultarHechos(criterioPruebas).isEmpty());
+        Assertions.assertTrue(coleccion.consultarHechos(filtros).isEmpty());
     }
 
     @Test

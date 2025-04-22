@@ -1,6 +1,7 @@
 package models.entities.hechos;
 
 import models.entities.criterios.Criterio;
+import models.entities.criterios.Filtro;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +40,11 @@ public class Coleccion {
         return this.hechos;
     }
 
-    public List<Hecho> consultarHechos(Criterio criterio) {
+    public List<Hecho> consultarHechos(List<Filtro> filtros) {
         this.recalcularHechos();
         List<Hecho> hechosQueCumplen = this.hechos
                 .stream()
-                .filter(hecho -> criterio.cumpleCriterio(hecho))
+                .filter(hecho -> filtros.stream().allMatch(filtro -> filtro.coincide(hecho)))
                 .collect(Collectors.toList());
         return hechosQueCumplen;
     }
@@ -52,7 +53,7 @@ public class Coleccion {
     if(this.criterio == null){
         return true;
     }
-    return this.criterio.cumpleCriterio(hecho);
+        return this.criterio.cumpleCriterio(hecho);
     }
 
     public Integer setCriterio(Criterio criterio) {
@@ -60,9 +61,10 @@ public class Coleccion {
         return 1;
     }
 
-    private void recalcularHechos() {  //TODO: Cambiar en plant (void)
+    private void recalcularHechos() {
         if (!this.hechos.isEmpty()) {
-            this.hechos.removeIf(hecho -> !this.cumpleCriterio(hecho));
+            this.hechos = this.hechos.stream().filter(hecho -> this.cumpleCriterio(hecho)).toList();
+//            this.hechos.removeIf(hecho -> !this.cumpleCriterio(hecho));
         }
     }
 }

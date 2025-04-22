@@ -13,14 +13,10 @@ public class SolicitudEliminacion {
 
     public SolicitudEliminacion(Hecho hecho, String fundamento) {
         this.hecho = hecho;
+        if (fundamento.length() < 500) throw new RuntimeException("El fundamento debe tener al menos 500 caracteres");
         this.fundamento = fundamento;
         estadoSolicitudEliminacion = EstadoSolicitudEliminacion.PENDIENTE;
         fechaResolucion = LocalDateTime.now();
-    }
-
-    //TODO Validación del fundamento <=500, por ahora se usa el Constructor
-    public void setFundamento(String fundamento){
-        if(fundamento.length() <= 500) throw new RuntimeException();
     }
 
     public Integer serAceptada(){
