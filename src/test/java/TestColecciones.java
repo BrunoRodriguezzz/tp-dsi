@@ -58,7 +58,9 @@ public class TestColecciones {
 
     @BeforeAll
     public void setUp(){
-
+//        ImportadorHechos importador = new ImportadorHechos();
+//        importador.cargarColeccion(coleccion, Arrays.asList(hecho1, hecho2, hecho3, hecho4, hecho5));
+//        coleccion.setCriterio(criterioPruebas);
     }
 
     @Test
@@ -67,7 +69,8 @@ public class TestColecciones {
         ImportadorHechos importador = new ImportadorHechos();
         importador.cargarColeccion(coleccion, Arrays.asList(hecho1, hecho2, hecho3, hecho4, hecho5));
         coleccion.setCriterio(criterioPruebas);
-        Assertions.assertEquals(hecho1, coleccion.consultarHechos().get(0));
+        System.out.println("Hola");
+        Assertions.assertEquals(hecho1, coleccion.consultarHechos());
     }
 
     //Criterios de pertenencia
@@ -77,7 +80,6 @@ public class TestColecciones {
         RangoFechas rangoFechasCriterio = new RangoFechas(LocalDate.parse("2000-01-01"), LocalDate.parse("2010-01-01"));
         ElementoCriterioFechaAcontecimiento criterioFechas = new ElementoCriterioFechaAcontecimiento(rangoFechasCriterio);
         criterioPruebas.agregarCriterio(criterioFechas);
-        coleccion.recalcularHechos();
 
         Assertions.assertEquals(3,coleccion.consultarHechos().size());
         Assertions.assertTrue(coleccion.consultarHechos().contains(hecho1));
@@ -90,7 +92,6 @@ public class TestColecciones {
     public void pruebaCriterios2(){
         ElementoCriterioCategoria criterioCategoria = new ElementoCriterioCategoria(categoria1);
         criterioPruebas.agregarCriterio(criterioCategoria);
-        coleccion.recalcularHechos();
 
         Assertions.assertEquals(2,coleccion.consultarHechos().size());
         Assertions.assertTrue(coleccion.consultarHechos().contains(hecho1));

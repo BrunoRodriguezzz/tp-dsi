@@ -27,8 +27,8 @@ public class Coleccion {
 
     public Integer agregarHecho(Hecho hecho) {
         if (this.cumpleCriterio(hecho)
-                && !hecho.getEliminado()
-                && this.hechos.add(hecho)) {
+                && !hecho.getEliminado()) {
+            this.hechos.add(hecho);
             return 1;
         }
         return 0;
@@ -60,13 +60,9 @@ public class Coleccion {
         return 1;
     }
 
-    public Integer recalcularHechos() {
-        if (this.hechos == null) {
-            return 0;
+    private void recalcularHechos() {  //TODO: Cambiar en plant (void)
+        if (!this.hechos.isEmpty()) {
+            this.hechos.removeIf(hecho -> !this.cumpleCriterio(hecho));
         }
-        // Usar removeIf para eliminar hechos que no cumplen los criterios
-        this.hechos.removeIf(hecho -> !this.cumpleCriterio(hecho));
-        return 1;
     }
-
 }
