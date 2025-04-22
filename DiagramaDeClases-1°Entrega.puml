@@ -6,10 +6,17 @@ Hecho --> Categoria
 Hecho --> Ubicacion
 Hecho -->"*" Etiqueta
 Hecho --o Coleccion
+Hecho --> ContenidoMultimedia
 
+'Solicitudes de Eliminacion
 SolicitudEliminacion --* Hecho
+SolicitudEliminacion --> EstadoSolicitudEliminacion
 
+'Colecciones
 Coleccion --> Criterio
+
+'Importador de Hechos
+Coleccion <.. ImportadorHechos
 
 'Criterio
 Criterio --> ElementoCriterio
@@ -20,17 +27,11 @@ ElementoCriterio <|.. ElementoCriterioCategoria
 ElementoCriterio <|.. ElementoCriterioFechaAcontecimiento
 
 'Estrategias
-EstrategiaCategoria --> Categoria
-EstrategiaUbicacion --> Ubicacion
-EstrategiaFechaAcontecimiento --> RangoFechas
-EstrategiaFechaCarga --> RangoFechas
-EstrategiaOrigen --> Origen
+ElementoCriterioCategoria --> Categoria
+ElementoCriterioFechaAcontecimiento --> RangoFechas
 
-SolicitudEliminacion --> EstadoSolicitudEliminacion
-
+'Contenido Multimedia
 ContenidoMultimedia --> Formato
-Hecho --> ContenidoMultimedia
-Coleccion <.. ImportadorHechos
 
 class Contribuyente {
     -nombre: String
@@ -74,7 +75,7 @@ class Hecho {
 
 class ImportadorHechos {
     -rutaArchivo: String
-    +cargarColeccion(Coleccion coleccion): Integer
+    +cargarColeccion(Coleccion coleccion, List<Hecho> hechos): Integer
 }
 
 class Etiqueta {
@@ -109,21 +110,20 @@ class Coleccion {
     -hechos: <List> Hecho
     -titulo: String
     -descripcion: String
-    -criterios: <List> Criterio
-    -fuentes: <List> Fuente
+    -criterio: Criterio
     +agregarHecho(hecho: Hecho): Integer
     +eliminarHecho(hecho: Hecho): Integer
     'Solo para representar overload
     +consultarHechos(): <List> Hecho
-    +consultarHechos(filtros: <List> Filtros): <List> Hecho
+    +consultarHechos(Criterio filtro): <List> Hecho
     +recalcularHechos(): Integer
-
 }
 
 class Criterio{
     -elementosCriterio: <List> ElementoCriterio
 
     +cumpleCriterio(hecho: Hecho): Boolean
+    +agregarCriterio((ElementoCriterio criterio): Void
 }
 
 class RangoFechas {
@@ -141,21 +141,6 @@ class ElementoCriterioTitulo{
     +coincide(algo): Boolean
 }
 
-class EstrategiaDescripcion{
-    -descripcion: String
-    +coincide(algo): Boolean
-}
-
-class EstrategiaOrigen{
-    -origen: Origen
-    +coincide(algo): Boolean
-}
-
-class EstrategiaContenidoMultimedia{
-    -tieneMultimedia: Boolean
-    +coincide(algo): Boolean
-}
-
 class ElementoCriterioFechaAcontecimiento{
     -fechaAcontecimientoEntre: RangoFechas
     +coincide(algo): Boolean
@@ -163,11 +148,6 @@ class ElementoCriterioFechaAcontecimiento{
 
 class ElementoCriterioCategoria{
     -categoria: Categoria
-    +coincide(algo): Boolean
-}
-
-class EstrategiaUbicacion{
-    -ubicacion: Ubicacion
     +coincide(algo): Boolean
 }
 

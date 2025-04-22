@@ -9,12 +9,4 @@ public class Etiqueta {
     public Etiqueta(String titulo) {
         this.titulo = titulo;
     }
-
-    @Override
-    public Boolean coincide(Etiqueta etiqueta) throws RuntimeException {
-        if(!(etiqueta instanceof Etiqueta)){
-            throw new RuntimeException("Etiqueta Invalida");
-        }
-        return this.titulo.equals(etiqueta.titulo);
-    }
 }

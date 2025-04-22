@@ -4,7 +4,7 @@ import lombok.Getter;
 import models.entities.criterios.ElementoCriterio;
 
 @Getter
-public class Ubicacion implements ElementoCriterio<Ubicacion> {
+public class Ubicacion {
     private String latitud;
     private String longitud;
 
@@ -20,7 +20,6 @@ public class Ubicacion implements ElementoCriterio<Ubicacion> {
         this.longitud = longitud;
     }
 
-    @Override
     public Boolean coincide(Ubicacion ubicacion) throws RuntimeException {
         if(!(ubicacion instanceof Ubicacion)){
             throw new RuntimeException("Ubicacion Invalida");

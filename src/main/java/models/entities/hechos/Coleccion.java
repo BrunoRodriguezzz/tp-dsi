@@ -9,16 +9,13 @@ import java.util.stream.Collectors;
 public class Coleccion {
     private String titulo;
     private String descripcion;
-    private List<Criterio> criterios;
+    private Criterio criterio; // TODO FIX Métodos
     private List<Hecho> hechos;
-    private List<ImportadorHechos> fuentes;
 
     public Coleccion(String titulo, String descripcion) {
         this.titulo = titulo;
         this.descripcion = descripcion;
-        this.criterios = new ArrayList<>();
         this.hechos = new ArrayList<>();
-        this.fuentes = new ArrayList<>();
     }
 
     public Integer eliminarHecho(Hecho hecho) {
@@ -29,7 +26,7 @@ public class Coleccion {
     }
 
     public Integer agregarHecho(Hecho hecho) {
-        if (this.cumpleTodosLosCriterios(hecho)
+        if (this.cumpleCriterio(hecho)
                 && !hecho.getEliminado()
                 && this.hechos.add(hecho)) {
             return 1;
@@ -38,10 +35,12 @@ public class Coleccion {
     }
 
     public List<Hecho> consultarHechos() {
+        this.recalcularHechos();
         return this.hechos;
     }
 
     public List<Hecho> consultarHechos(Criterio criterio) {
+        this.recalcularHechos();
         List<Hecho> hechosQueCumplen = this.hechos
                 .stream()
                 .filter(hecho -> criterio.cumpleCriterio(hecho))
@@ -49,21 +48,24 @@ public class Coleccion {
         return hechosQueCumplen;
     }
 
-    private Boolean cumpleTodosLosCriterios(Hecho hecho) {
-        return this.criterios.stream().allMatch(criterio -> criterio.cumpleCriterio(hecho));
+    private Boolean cumpleCriterio(Hecho hecho){
+    if(this.criterio == null){
+        return true;
+    }
+    return this.criterio.cumpleCriterio(hecho);
     }
 
-    public Integer agregarCriterio(Criterio criterio) {
-        this.criterios.add(criterio);
+    public Integer setCriterio(Criterio criterio) {
+        this.criterio = criterio;
         return 1;
     }
 
     public Integer recalcularHechos() {
-        if (hechos == null) {
+        if (this.hechos == null) {
             return 0;
         }
         // Usar removeIf para eliminar hechos que no cumplen los criterios
-        this.hechos.removeIf(hecho -> !this.cumpleTodosLosCriterios(hecho));
+        this.hechos.removeIf(hecho -> !this.cumpleCriterio(hecho));
         return 1;
     }
 

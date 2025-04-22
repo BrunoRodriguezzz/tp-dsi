@@ -4,14 +4,13 @@ import lombok.Getter;
 import models.entities.criterios.ElementoCriterio;
 
 @Getter
-public class Categoria implements ElementoCriterio<Categoria> {
+public class Categoria {
     private String titulo;
 
     public Categoria(String titulo) {
         this.titulo = titulo;
     }
 
-    @Override
     public Boolean coincide(Categoria categoria) throws RuntimeException {
         if(!(categoria instanceof Categoria)){
             throw new RuntimeException("Categoria Invalida");

@@ -53,15 +53,20 @@ public class TestColecciones {
             categoria5, ubicacion5, LocalDate.of(2016, 6, 4), origen5);
 
     Coleccion coleccion = new Coleccion("Colección prueba", "Esto es una prueba");
+
+    Criterio criterioPruebas = new Criterio();
+
     @BeforeAll
     public void setUp(){
-        ImportadorHechos importador = new ImportadorHechos();
-        importador.cargarColeccion(coleccion, Arrays.asList(hecho1, hecho2, hecho3, hecho4, hecho5));
+
     }
 
     @Test
     @DisplayName("Validar que se puedan obtener los hechos a partir de la colección.\n")
     public void obtenerHechos(){
+        ImportadorHechos importador = new ImportadorHechos();
+        importador.cargarColeccion(coleccion, Arrays.asList(hecho1, hecho2, hecho3, hecho4, hecho5));
+        coleccion.setCriterio(criterioPruebas);
         Assertions.assertEquals(hecho1, coleccion.consultarHechos().get(0));
     }
 
@@ -69,10 +74,9 @@ public class TestColecciones {
     @Test
     @DisplayName("Al agregar un criterio de pertenencia y recalcular la coleccion deberían quedar solo los primeros tres")
     public void pruebaCriterios1(){
-        Criterio criterioFechas = new Criterio();
         RangoFechas rangoFechasCriterio = new RangoFechas(LocalDate.parse("2000-01-01"), LocalDate.parse("2010-01-01"));
-        criterioFechas.setFechaAcontecimientoEntre(rangoFechasCriterio);
-        coleccion.agregarCriterio(criterioFechas);
+        ElementoCriterioFechaAcontecimiento criterioFechas = new ElementoCriterioFechaAcontecimiento(rangoFechasCriterio);
+        criterioPruebas.agregarCriterio(criterioFechas);
         coleccion.recalcularHechos();
 
         Assertions.assertEquals(3,coleccion.consultarHechos().size());
@@ -84,9 +88,8 @@ public class TestColecciones {
     @Test
     @DisplayName("Al agregar un nuevo criterio de pertenencia y recalcular la coleccion el segundo ya no debería estar presente")
     public void pruebaCriterios2(){
-        Criterio criterioCategoria = new Criterio();
-        criterioCategoria.setCategoria(categoria1);
-        coleccion.agregarCriterio(criterioCategoria);
+        ElementoCriterioCategoria criterioCategoria = new ElementoCriterioCategoria(categoria1);
+        criterioPruebas.agregarCriterio(criterioCategoria);
         coleccion.recalcularHechos();
 
         Assertions.assertEquals(2,coleccion.consultarHechos().size());
@@ -98,9 +101,10 @@ public class TestColecciones {
     @Test
     @DisplayName("Sobre la colección aplicar un filtro de tipo categoría = “Caída de Aeronave” y título = ”un título”. Ningún hecho de la colección cumple con este filtro.")
     public void pruebaFiltros(){
-        Criterio filtro1 = new Criterio();
-        filtro1.setCategoria(categoria1);
-        filtro1.setRequisitoTitulo("un titulo");
+        ElementoCriterioTitulo filtroTitulo = new ElementoCriterioTitulo("un titulo");
+        ElementoCriterioCategoria filtroCategoria = new ElementoCriterioCategoria(categoria1);
+        criterioPruebas.agregarCriterio(filtroTitulo);
+        criterioPruebas.agregarCriterio(filtroCategoria);
 
         Assertions.assertTrue(coleccion.consultarHechos(criterioPruebas).isEmpty());
     }
@@ -108,7 +112,6 @@ public class TestColecciones {
     @Test
     @DisplayName("Etiquetar al hecho titulado “Caída de aeronave impacta en Olavarría” como “Olavarría” .\n" + "Etiquetar al mismo hecho como “Grave”.\n" + "Verificar que el hecho retenga las 2 etiquetas correspondientes.\n")
     public void pruebaEtiquetas(){
-
         Etiqueta etiquetaOlavarria = new Etiqueta("Olavarría");
         Etiqueta etiquetaGrave = new Etiqueta("Grave");
 

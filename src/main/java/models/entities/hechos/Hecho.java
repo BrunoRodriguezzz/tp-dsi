@@ -50,7 +50,7 @@ public class Hecho {
     }
 
     public Integer agregarEtiqueta(Etiqueta etiqueta) throws RuntimeException {
-        if (this.etiquetas.add(etiqueta) && this.etiquetas.stream().noneMatch(e -> e.coincide(etiqueta))) { //TODO Revisar porque devuelve siempre true
+        if (this.etiquetas.add(etiqueta) && this.etiquetas.stream().noneMatch(e -> e.getTitulo().equals(etiqueta.getTitulo()))){ //TODO Revisar porque devuelve siempre true
             return 1;
         }
         return 0;
