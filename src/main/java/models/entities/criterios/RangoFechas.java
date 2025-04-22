@@ -1,4 +1,4 @@
-package models.entities.filtros;
+package models.entities.criterios;
 
 import java.time.LocalDate;
 
@@ -12,7 +12,7 @@ public class RangoFechas {
     }
 
     public Boolean coincide(LocalDate fecha) {
-        if(fecha == null){ //TODO Averiguar porque dice que siempre es redundante
+        if(fecha == null){
             throw new RuntimeException("Fecha Inválida");
         }
         return !fecha.isBefore(this.fechaInicio) && !fecha.isAfter(this.fechaFin);

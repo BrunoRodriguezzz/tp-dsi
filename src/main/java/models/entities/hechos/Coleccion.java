@@ -1,5 +1,6 @@
 package models.entities.hechos;
 
+import lombok.Setter;
 import models.entities.criterios.Criterio;
 import models.entities.criterios.Filtro;
 
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 public class Coleccion {
     private String titulo;
     private String descripcion;
+    @Setter
     private Criterio criterio; // TODO FIX Métodos
     private List<Hecho> hechos;
 
@@ -19,20 +21,20 @@ public class Coleccion {
         this.hechos = new ArrayList<>();
     }
 
-    public Integer eliminarHecho(Hecho hecho) {
+    public Boolean eliminarHecho(Hecho hecho) {
         if (this.hechos.remove(hecho)) {
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
-    public Integer agregarHecho(Hecho hecho) {
+    public Boolean agregarHecho(Hecho hecho) {
         if (this.cumpleCriterio(hecho)
                 && !hecho.getEliminado()) {
             this.hechos.add(hecho);
-            return 1;
+            return true;
         }
-        return 0;
+        return false;
     }
 
     public List<Hecho> consultarHechos() {
@@ -54,11 +56,6 @@ public class Coleccion {
         return true;
     }
         return this.criterio.cumpleCriterio(hecho);
-    }
-
-    public Integer setCriterio(Criterio criterio) {
-        this.criterio = criterio;
-        return 1;
     }
 
     private void recalcularHechos() {

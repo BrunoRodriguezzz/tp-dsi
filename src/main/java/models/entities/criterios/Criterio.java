@@ -8,17 +8,17 @@ import java.util.List;
 
 @Setter
 public class Criterio {
-    private List<Filtro> elementosCriterios;
+    private List<Filtro> filtros;
 
     public Criterio() {
-        this.elementosCriterios = new ArrayList<>();
+        this.filtros = new ArrayList<>();
     }
 
     public Boolean cumpleCriterio(Hecho hecho) {
-        return this.elementosCriterios.stream().allMatch(elemento -> elemento.coincide(hecho));
+        return this.filtros.stream().allMatch(elemento -> elemento.coincide(hecho));
     }
 
-    public void agregarElementoCriterio(Filtro criterio) {
-        this.elementosCriterios.add(criterio);
+    public void agregarFiltro(Filtro filtro) {
+        this.filtros.add(filtro);
     }
 }

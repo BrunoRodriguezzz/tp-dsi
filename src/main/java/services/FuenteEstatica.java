@@ -4,8 +4,8 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 import models.entities.enums.Origen;
-import models.entities.filtros.Categoria;
-import models.entities.filtros.Ubicacion;
+import models.entities.criterios.Categoria;
+import models.entities.criterios.Ubicacion;
 import models.entities.hechos.Coleccion;
 import models.entities.hechos.Hecho;
 

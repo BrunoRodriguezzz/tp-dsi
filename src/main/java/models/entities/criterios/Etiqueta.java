@@ -1,9 +1,11 @@
-package models.entities.filtros;
+package models.entities.criterios;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 public class Etiqueta {
+    @Setter
     private String titulo;
 
     public Etiqueta(String titulo) {

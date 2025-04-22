@@ -69,7 +69,7 @@ class Hecho {
     -origen: Origen
     -eliminado: Boolean
     -contenidoMultimedia: List<ContenidoMultimedia>
-    +eliminar(): Integer
+    +eliminar(): Void
     +tieneContenidoMultimedia(): Boolean
     +estaEliminado(): Boolean
 }
@@ -103,8 +103,8 @@ class SolicitudEliminacion {
     -fundamento: String
     -rechazada: Boolean
     -fechaResolucion: LocalDate
-    +serAceptada(): Integer
-    +serRechazada(): Integer
+    +serAceptada(): Void
+    +serRechazada(): Void
 }
 
 class Coleccion {
@@ -112,8 +112,8 @@ class Coleccion {
     -titulo: String
     -descripcion: String
     -criterio: Criterio
-    +agregarHecho(hecho: Hecho): Integer
-    +eliminarHecho(hecho: Hecho): Integer
+    +agregarHecho(hecho: Hecho): Boolean
+    +eliminarHecho(hecho: Hecho): Boolean
     'Solo para representar overload
     +consultarHechos(): <List> Hecho
     +consultarHechos(filtros: <List> Filtro): <List> Hecho
@@ -121,10 +121,10 @@ class Coleccion {
 }
 
 class Criterio{
-    -elementosCriterio: <List> Filtro
+    -filtros: <List> Filtro
 
     +cumpleCriterio(hecho: Hecho): Boolean
-    +agregarElementoCriterio((ElementoCriterio criterio): Void
+    +agregarFiltro((Filtro filtro): Void
 }
 
 class RangoFechas {

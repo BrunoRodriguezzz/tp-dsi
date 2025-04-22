@@ -1,5 +1,6 @@
 package models.entities.filtros;
 
+import models.entities.criterios.Categoria;
 import models.entities.criterios.Filtro;
 import models.entities.hechos.Hecho;
 

@@ -1,11 +1,13 @@
 package models.entities.hechos;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import models.entities.ContenidoMultimedia;
 import models.entities.enums.Origen;
-import models.entities.filtros.Categoria;
-import models.entities.filtros.Etiqueta;
-import models.entities.filtros.Ubicacion;
+import models.entities.criterios.Categoria;
+import models.entities.criterios.Etiqueta;
+import models.entities.criterios.Ubicacion;
 import models.entities.usuarios.Contribuyente;
 
 import java.time.LocalDate;
@@ -26,7 +28,7 @@ public class Hecho {
     private Boolean eliminado;
     private List<ContenidoMultimedia> contenidoMultimedia;
 
-    public Hecho(String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) {
+    public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.categoria = categoria;
@@ -39,9 +41,8 @@ public class Hecho {
         //TODO Usar patron builder
     }
 
-    public Integer eliminar() {
+    public void eliminar() {
         this.eliminado = true;
-        return 1;
     }
 
     // Metodos
@@ -49,10 +50,11 @@ public class Hecho {
         return !this.contenidoMultimedia.isEmpty();
     }
 
-    public Integer agregarEtiqueta(Etiqueta etiqueta) throws RuntimeException {
-        if (this.etiquetas.add(etiqueta) && this.etiquetas.stream().noneMatch(e -> e.getTitulo().equals(etiqueta.getTitulo()))){ //TODO Revisar porque devuelve siempre true
-            return 1;
+    public Boolean agregarEtiqueta(Etiqueta etiqueta) throws RuntimeException {
+        if (this.etiquetas.stream().noneMatch(e -> e.getTitulo().equals(etiqueta.getTitulo()))){ //TODO Revisar porque devuelve siempre true
+            this.etiquetas.add(etiqueta);
+            return true;
         }
-        return 0;
+        return false;
     }
 }

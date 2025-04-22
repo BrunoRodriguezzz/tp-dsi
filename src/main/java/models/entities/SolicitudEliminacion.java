@@ -1,5 +1,7 @@
 package models.entities;
 
+import lombok.Getter;
+import lombok.Setter;
 import models.entities.enums.EstadoSolicitudEliminacion;
 import models.entities.hechos.Hecho;
 
@@ -8,7 +10,9 @@ import java.time.LocalDateTime;
 public class SolicitudEliminacion {
     private Hecho hecho;
     private String fundamento;
+    @Getter
     private EstadoSolicitudEliminacion estadoSolicitudEliminacion;
+    @Setter
     private LocalDateTime fechaResolucion;
 
     public SolicitudEliminacion(Hecho hecho, String fundamento) {
@@ -19,22 +23,12 @@ public class SolicitudEliminacion {
         fechaResolucion = LocalDateTime.now();
     }
 
-    public Integer serAceptada(){
+    public void serAceptada(){
         estadoSolicitudEliminacion = EstadoSolicitudEliminacion.ACEPTADA;
         this.hecho.eliminar();
-        return 1;
     }
 
-    public Integer serRechazada(){
+    public void serRechazada(){
         estadoSolicitudEliminacion = EstadoSolicitudEliminacion.RECHAZADA;
-        return 1;
-    }
-
-    public void setFechaResolucion(LocalDateTime fechaResolucion) {
-        this.fechaResolucion = fechaResolucion;
-    }
-
-    public EstadoSolicitudEliminacion getEstadoSolicitudEliminacion() {
-        return this.estadoSolicitudEliminacion;
     }
 }
