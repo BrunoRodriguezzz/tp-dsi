@@ -1,8 +1,8 @@
 import models.entities.*;
 import models.entities.enums.EstadoSolicitudEliminacion;
-import models.entities.enums.Origen;
-import models.entities.criterios.Categoria;
-import models.entities.criterios.Ubicacion;
+import models.entities.valueObjectsHecho.Origen;
+import models.entities.valueObjectsHecho.Categoria;
+import models.entities.valueObjectsHecho.Ubicacion;
 import models.entities.hechos.Coleccion;
 import models.entities.hechos.Hecho;
 import models.entities.hechos.ImportadorHechos;

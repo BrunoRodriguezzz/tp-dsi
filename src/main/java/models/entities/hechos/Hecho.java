@@ -1,13 +1,11 @@
 package models.entities.hechos;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import models.entities.ContenidoMultimedia;
-import models.entities.enums.Origen;
-import models.entities.criterios.Categoria;
-import models.entities.criterios.Etiqueta;
-import models.entities.criterios.Ubicacion;
+import models.entities.valueObjectsHecho.Origen;
+import models.entities.valueObjectsHecho.Categoria;
+import models.entities.valueObjectsHecho.Etiqueta;
+import models.entities.valueObjectsHecho.Ubicacion;
 import models.entities.usuarios.Contribuyente;
 
 import java.time.LocalDate;

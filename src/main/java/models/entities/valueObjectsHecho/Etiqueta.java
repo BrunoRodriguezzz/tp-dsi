@@ -1,4 +1,4 @@
-package models.entities.criterios;
+package models.entities.valueObjectsHecho;
 
 import lombok.Getter;
 import lombok.Setter;

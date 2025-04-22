@@ -2,7 +2,7 @@ package models.entities.hechos;
 
 import lombok.Setter;
 import models.entities.criterios.Criterio;
-import models.entities.criterios.Filtro;
+import models.entities.filtros.Filtro;
 
 import java.util.ArrayList;
 import java.util.List;
