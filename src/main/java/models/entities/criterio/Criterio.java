@@ -15,7 +15,10 @@ public class Criterio {
     }
 
     public Boolean cumpleCriterio(Hecho hecho) {
-        return this.filtros.stream().allMatch(elemento -> elemento.coincide(hecho));
+        Boolean resultado = this.filtros.stream().allMatch(filtro ->
+            filtro.coincide(hecho)
+        );
+        return resultado;
     }
 
     public void agregarFiltro(Filtro filtro) {

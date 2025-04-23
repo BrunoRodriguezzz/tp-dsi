@@ -10,7 +10,6 @@ public class FiltroTitulo implements Filtro {
     }
 
     public Boolean coincide(Hecho hecho) {
-        Boolean resultado = this.titulo.equals(hecho.getTitulo());
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        return resultado;
+        return this.titulo.equals(hecho.getTitulo());
     }
 }

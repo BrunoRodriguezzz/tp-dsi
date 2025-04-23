@@ -1,3 +1,4 @@
+import models.entities.hechos.Fuente;
 import models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
 import models.entities.solicitudEliminacion.SolicitudEliminacion;
 import models.entities.valueObjectsHecho.Origen;
@@ -5,7 +6,6 @@ import models.entities.valueObjectsHecho.Categoria;
 import models.entities.valueObjectsHecho.Ubicacion;
 import models.entities.hechos.Coleccion;
 import models.entities.hechos.Hecho;
-import models.entities.hechos.ImportadorHechos;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,10 +13,13 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestSolicitudEliminacion {
     SolicitudEliminacion solicitudEliminacion;
-    ImportadorHechos importador = new ImportadorHechos();
     Hecho hecho = new Hecho(
         "Brote de enfermedad contagiosa causa estragos en San Lorenzo, Santa Fe",
         "Grave brote de enfermedad contagiosa ocurrió en las inmediaciones de San Lorenzo, Santa Fe. El incidente dejó varios heridos y daños materiales. Se ha declarado estado de emergencia en la región para facilitar la asistencia.",
@@ -25,12 +28,15 @@ public class TestSolicitudEliminacion {
         LocalDate.parse("2005-07-05"),
         Origen.MANUAL
         );
-        
+
     Coleccion coleccion;
+
+    Fuente fuenteMockeada = mock(Fuente.class);
 
     @BeforeEach
     public void setUpColeccion() {
         coleccion = new Coleccion("Coleccion1", "Una conexion");
+        when(fuenteMockeada.importarHechos()).thenReturn(Arrays.asList(hecho));
     }
 
     @Test
@@ -43,26 +49,28 @@ public class TestSolicitudEliminacion {
         solicitudEliminacion.serRechazada();
         solicitudEliminacion.setFechaResolucion(LocalDateTime.now().plusDays(1));
 
-        // Dado que fue rechazada, el hecho puede ser agregado a cualquier colección. 
-        coleccion.agregarHecho(hecho);
+        // Dado que fue rechazada, el hecho puede ser agregado a cualquier colección.
+        coleccion = new Coleccion("Colección sin criterio", "Esto es una prueba");
+        coleccion.setFuente(fuenteMockeada);
         Assertions.assertFalse(coleccion.consultarHechos().isEmpty()); // Se agrega a una coleccion vacía, luego no debe estarlo
         // Verificar que la solicitud haya quedado en estado rechazada.
         Assertions.assertEquals(EstadoSolicitudEliminacion.RECHAZADA,solicitudEliminacion.getEstadoSolicitudEliminacion());
-        
+
     }
     @Test
     @DisplayName("Solicitud Aceptada a las 2 horas.")
     public void aceptarSolicitud(){
         // Generar otra solicitud para el mismo hecho.
         solicitudEliminacion = new SolicitudEliminacion(hecho, "a".repeat(500) + " Esto esta bien fundado");
-        
+
         // Es aceptada a las 2 horas
         solicitudEliminacion.serAceptada();
         solicitudEliminacion.setFechaResolucion(LocalDateTime.now().plusHours(2));
-        
+
         // Esta vez el hecho no debería poder agregarse a una colección, puesto que este fue eliminado.
-        coleccion.agregarHecho(hecho);
-        Assertions.assertTrue(coleccion.consultarHechos().isEmpty());
+        coleccion = new Coleccion("Colección sin criterio", "Esto es una prueba");
+        coleccion.setFuente(fuenteMockeada);
+        Assertions.assertTrue(coleccion.consultarHechos().isEmpty()); // Se agrega a una coleccion vacía, luego no debe estarlo
 
         // Verificar que la solicitud haya quedado en estado aceptada.
         Assertions.assertEquals(EstadoSolicitudEliminacion.ACEPTADA, solicitudEliminacion.getEstadoSolicitudEliminacion());

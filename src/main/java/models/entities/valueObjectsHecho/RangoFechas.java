@@ -15,6 +15,7 @@ public class RangoFechas {
         if(fecha == null){
             throw new RuntimeException("Fecha Inválida");
         }
+
         return !fecha.isBefore(this.fechaInicio) && !fecha.isAfter(this.fechaFin);
     }
 }

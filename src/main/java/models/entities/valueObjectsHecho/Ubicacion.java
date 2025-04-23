@@ -9,11 +9,11 @@ public class Ubicacion {
 
     public Ubicacion(String latitud, String longitud) throws RuntimeException{
         if(this.latitudInvalida(latitud)){
-            throw new RuntimeException("Latitud invalida");
+            throw new RuntimeException("Latitud invalida: " + latitud);
         }
 
         if(this.longitudInvalida(longitud)){
-            throw new RuntimeException("Longitud invalida");
+            throw new RuntimeException("Longitud invalida: " + longitud);
         }
 
         this.latitud = latitud;
@@ -29,11 +29,11 @@ public class Ubicacion {
     }
 
     public boolean latitudInvalida(String latitud) {
-        return !(Double.parseDouble(latitud) < -90) && !(Double.parseDouble(latitud) > 90);
+        return (Double.parseDouble(latitud) < -90) || (Double.parseDouble(latitud) > 90);
     }
 
     public boolean longitudInvalida(String longitud){
-        return !(Double.parseDouble(longitud) < -180) && !(Double.parseDouble(longitud) > 180);
+        return (Double.parseDouble(longitud) < -180) || (Double.parseDouble(longitud) > 180);
     }
 
 

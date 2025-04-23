@@ -1,13 +1,17 @@
+import models.entities.hechos.Fuente;
 import models.entities.valueObjectsHecho.*;
 import models.entities.criterio.*;
 import models.entities.hechos.Coleccion;
 import models.entities.hechos.Hecho;
-import models.entities.hechos.ImportadorHechos;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.time.LocalDate;
+import java.util.List;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestColecciones {
@@ -51,18 +55,20 @@ public class TestColecciones {
             "Un grave derrumbe en obra en construcción se registró en Presidencia Roque Sáenz Peña, Chaco. El incidente generó preocupación entre las autoridades provinciales. El intendente local se ha trasladado al lugar para supervisar las operaciones.",
             categoria5, ubicacion5, LocalDate.of(2016, 6, 4), origen5);
 
+    List<Hecho> hechos = Arrays.asList(hecho1, hecho2, hecho3, hecho4, hecho5);
+
+    Fuente fuenteMockeada = mock(Fuente.class);
+
     Coleccion coleccion;
 
     Criterio criterioPruebas;
 
     @BeforeEach
     public void setUp(){
-        ImportadorHechos importador = new ImportadorHechos();
         coleccion = new Coleccion("Colección prueba", "Esto es una prueba");
         criterioPruebas = new Criterio();
-
-        importador.cargarColeccion(coleccion, Arrays.asList(hecho1, hecho2, hecho3, hecho4, hecho5));
-        coleccion.setCriterio(criterioPruebas);
+        coleccion.setFuente(fuenteMockeada);
+        when(fuenteMockeada.importarHechos()).thenReturn(hechos);
     }
 
     @Test
@@ -75,18 +81,19 @@ public class TestColecciones {
     @Test
     @DisplayName("Al agregar un criterio de pertenencia y recalcular la coleccion deberían quedar solo los primeros tres")
     public void pruebaCriterios1(){
-        RangoFechas rangoFechasCriterio = new RangoFechas(LocalDate.parse("2000-01-01"), LocalDate.parse("2010-01-01"));
-        FiltroFechaAcontecimiento elementoCriterioFechas = new FiltroFechaAcontecimiento(rangoFechasCriterio);
+        RangoFechas rangoFechasFiltro = new RangoFechas(LocalDate.parse("2000-01-01"), LocalDate.parse("2010-01-01"));
+        FiltroFechaAcontecimiento filtroFechas = new FiltroFechaAcontecimiento(rangoFechasFiltro);
+        criterioPruebas.agregarFiltro(filtroFechas);
+        coleccion.setCriterio(criterioPruebas);
 
-        criterioPruebas.agregarElementoCriterio(elementoCriterioFechas);
         Assertions.assertEquals(3,coleccion.consultarHechos().size());
         Assertions.assertTrue(coleccion.consultarHechos().contains(hecho1));
         Assertions.assertTrue(coleccion.consultarHechos().contains(hecho2));
         Assertions.assertTrue(coleccion.consultarHechos().contains(hecho3));
 
-//        Al agregar un nuevo criterio de pertenencia y recalcular la coleccion el segundo ya no debería estar presente
-        FiltroCategoria criterioCategoria = new FiltroCategoria(categoria1);
-        criterioPruebas.agregarElementoCriterio(criterioCategoria);
+//      Al agregar un nuevo criterio de pertenencia y recalcular la coleccion el segundo ya no debería estar presente
+        FiltroCategoria filtroCategoria = new FiltroCategoria(categoria1);
+        criterioPruebas.agregarFiltro(filtroCategoria);
 
         Assertions.assertEquals(2,coleccion.consultarHechos().size());
         Assertions.assertTrue(coleccion.consultarHechos().contains(hecho1));

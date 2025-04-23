@@ -16,8 +16,9 @@ SolicitudEliminacion --> EstadoSolicitudEliminacion
 Coleccion --> Criterio
 Coleccion ..> Filtro
 
-'Importador de Hechos
-Coleccion <.. ImportadorHechos
+'Fuente
+Coleccion ..> Fuente
+Fuente ..> Hecho
 
 'Criterio
 Criterio --> Filtro
@@ -74,9 +75,8 @@ class Hecho {
     +estaEliminado(): Boolean
 }
 
-class ImportadorHechos {
-    -rutaArchivo: String
-    +cargarColeccion(Coleccion coleccion, List<Hecho> hechos): Integer
+interface Fuente {
+    +importarHechos(): List<Hecho> hechos
 }
 
 class Etiqueta {
@@ -108,16 +108,13 @@ class SolicitudEliminacion {
 }
 
 class Coleccion {
-    -hechos: <List> Hecho
+    -importador: ImportadorHechos
     -titulo: String
     -descripcion: String
     -criterio: Criterio
-    +agregarHecho(hecho: Hecho): Boolean
-    +eliminarHecho(hecho: Hecho): Boolean
     'Solo para representar overload
     +consultarHechos(): <List> Hecho
     +consultarHechos(filtros: <List> Filtro): <List> Hecho
-    +recalcularHechos(): Void
 }
 
 class Criterio{

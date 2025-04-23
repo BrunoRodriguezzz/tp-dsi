@@ -23,7 +23,7 @@ public class Hecho {
     private LocalDate fechaCarga;
     private Origen origen;
     private Contribuyente contribuyente;
-    private Boolean eliminado;
+    private Boolean estaEliminado;
     private List<ContenidoMultimedia> contenidoMultimedia;
 
     public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) {
@@ -34,13 +34,13 @@ public class Hecho {
         this.fechaAcontecimiento = fechaAcontecimiento;
         this.origen = origen;
         this.fechaCarga = LocalDate.now();
-        this.eliminado = false;
+        this.estaEliminado = false;
         this.etiquetas = new ArrayList<>();
         //TODO Usar patron builder
     }
 
     public void eliminar() {
-        this.eliminado = true;
+        this.estaEliminado = true;
     }
 
     // Metodos
