@@ -61,3 +61,7 @@ La importación de hechos quedó delegada a la capa de servicios. Es la fuente e
 ### Etiquetas
 
 Las etiquetas poseen un atributo de tipo String. Un Hecho puede tener muchas etiquetas. Las cuales conserva en una lista.
+
+## Diagrama de Casos de Uso
+
+![Diagrama De Clases](./public/DiagramaDeCasosDeUso-1ºEntrega.png)
