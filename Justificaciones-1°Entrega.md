@@ -18,17 +18,17 @@ Esta clase será llamada por la respectiva clase de la fuente que se encuentre e
 
 En el caso de las Colecciones, se las diseñó con sus respectivos atributos identificatorios y también con una lista de Hechos. Las Colecciones poseen un Criterio, que será quien tendrá la responsabilidad de determinar si un Hecho cumple con los requisitos para pertenecer a la Colección.
 
-Las Colecciones, al ser consultadas, devuelven los Hechos que pertenecen a ellas; contemplando que se podrían consultar utilizando filtros. Cada vez que se consultan los hechos de la colección es necesario recalcular en caso de que se hayan eliminado del sistema.
+Las `Colecciones`, al ser consultadas, devuelven los `Hechos` que pertenecen a ellas; contemplando que se podrían consultar utilizando filtros. Cada vez que se consultan los hechos de la colección es necesario recalcular en caso de que se hayan eliminado del sistema algun `Hecho`.
 
 ### Criterios de pertenencia
 
-Los Criterios de pertenencia fueron representados como una clase. Para el Criterio, se decidió utilizar el Patrón Strategy. Cada Criterio tiene una lista de `ElementoCriterio`, encargados de que para un Hecho se cumpla una característica en particular, en esta primera iteración: que el hecho tenga un cierto título, una cierta categoría o que su fecha de acontecimiento esté contenida dentro de un rango.
+Los `Criterios` de pertenencia fueron representados como una clase. Para el `Criterio`, se decidió utilizar el **Patrón Strategy**. Cada `Criterio` tiene una lista de `Filtro`, encargados de que para un `Hecho` se cumpla una característica en particular, en esta primera iteración: que el hecho tenga un cierto título, una cierta categoría o que su fecha de acontecimiento esté contenida dentro de un rango.
 
-Cada elemento criterio implementa una interfaz criterio, la cual define un método `coincide`; cada elemento se encarga de definir este método a su conveniencia.
+Cada filtro implementa una interfaz `Filtro`, la cual define un método `coincide`; cada elemento se encarga de definir este método a su conveniencia.
 
 ### Filtros vs Criterios
 
-Para los filtros y los criterios, encontramos una similitud entre los mismos: ambos definen si un Hecho cumple o no con los mismos, utilizando los mismos atributos y las mismas comparaciones. Por lo mismo se decidió que al consultar a una Colección utilizando un filtro se esté consultando a la Colección utilizando un Criterio.
+Queda definida una diferencia entre `Filtros` y `Criterios`: un `Filtro` es una interface que determina el método coincide, para que los filtros que la utilicen definan la lógica. Esto permite que en un futuro se agreguen más filtros pero que no se modifique la lógica, dando mayor **extensibilidad**, aplicando el **Principio Open-Close**.
 
 ### Contribuyentes y visualizadores
 
