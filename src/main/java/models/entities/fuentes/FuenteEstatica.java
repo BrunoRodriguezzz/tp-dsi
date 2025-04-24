@@ -32,39 +32,22 @@ public class FuenteEstatica implements Fuente {
             JOptionPane.showMessageDialog(null, "Error de lectura: " + e.getMessage()); //TODO: Revisar JOPTIONPANE
             return null;
         } catch (CsvException e) {
-            JOptionPane.showMessageDialog(null, "Error CSV: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error en CSV de formato: " + e.getMessage());
             return null;
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error inesperado: " + e.getMessage());
             return null;
         }
-         //TODO: Tirar excepción si falla?
-    }
-
-    private static LocalDate convertirFecha(String fechaStr) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            return LocalDate.parse(fechaStr, formatter);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error en formato de fecha: " + fechaStr);
-            return LocalDate.now(); // O manejar el error como prefieras
-        }
-    }
-
-    private CSVReader crearLectorCSV() throws IOException {
-        CSVReader reader = new CSVReaderBuilder(new FileReader(rutaArchivo))
-                .withSkipLines(1) // Saltar encabezados
-                .withCSVParser(new com.opencsv.CSVParserBuilder()
-                        .withSeparator(',')
-                        .withQuoteChar('\"')
-                        .build())
-                .build();
-        return reader;
     }
 
     private List<Hecho> instanciarHechosSegunCSV(CSVReader lector) throws IOException, CsvException {
-        List<Hecho> hechos = new java.util.ArrayList<>();
         List<String[]> filas = lector.readAll();
+        List<Hecho> listaDeHechos = this.crearListaDeHechosSegunFilas(filas);
+        return listaDeHechos;
+    }
+
+    private List<Hecho> crearListaDeHechosSegunFilas(List<String[]> filas) {
+        List<Hecho> listaDeHechos = new java.util.ArrayList<>();
         for (String[] campos : filas) {
             if (campos.length >= 6) {
                 try {
@@ -76,10 +59,10 @@ public class FuenteEstatica implements Fuente {
                             campos[1],
                             categoria,
                             ubicacion,
-                            convertirFecha(campos[5]),
+                            parsearFechaALocalDate(campos[5]),
                             Origen.DATASET
                     );
-                    hechos.add(hecho);
+                    listaDeHechos.add(hecho);
                 } catch (UbicacionInvalidaException e) {
                     System.err.println("Ubicación inválida para fila: " + Arrays.toString(campos));
                 }
@@ -103,6 +86,30 @@ public class FuenteEstatica implements Fuente {
 
             }
         }
-        return hechos;
+        return listaDeHechos;
     }
+
+    private static LocalDate parsearFechaALocalDate(String fechaStr) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return LocalDate.parse(fechaStr, formatter);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error en formato de fecha: " + fechaStr);
+            return LocalDate.now();
+        }
+    }
+
+    private CSVReader crearLectorCSV() throws IOException {
+        CSVReader reader = new CSVReaderBuilder(new FileReader(rutaArchivo))
+                .withSkipLines(1) // Saltar encabezados
+                .withCSVParser(new com.opencsv.CSVParserBuilder()
+                        .withSeparator(',')
+                        .withQuoteChar('\"')
+                        .build())
+                .build();
+        return reader;
+    }
+
+
+
 }
