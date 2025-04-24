@@ -1,6 +1,8 @@
 import models.entities.hechos.Fuente;
 import models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
 import models.entities.solicitudEliminacion.SolicitudEliminacion;
+import models.entities.usuarios.Administrador;
+import models.entities.usuarios.Contribuyente;
 import models.entities.valueObjectsHecho.Origen;
 import models.entities.valueObjectsHecho.Categoria;
 import models.entities.valueObjectsHecho.Ubicacion;
@@ -19,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class TestSolicitudEliminacion {
-    SolicitudEliminacion solicitudEliminacion;
     Hecho hecho = new Hecho(
         "Brote de enfermedad contagiosa causa estragos en San Lorenzo, Santa Fe",
         "Grave brote de enfermedad contagiosa ocurrió en las inmediaciones de San Lorenzo, Santa Fe. El incidente dejó varios heridos y daños materiales. Se ha declarado estado de emergencia en la región para facilitar la asistencia.",
@@ -30,23 +31,30 @@ public class TestSolicitudEliminacion {
         );
 
     Coleccion coleccion;
-
     Fuente fuenteMockeada = mock(Fuente.class);
+    SolicitudEliminacion solicitudEliminacion;
+    Contribuyente contribuyente;
+    Administrador administrador;
 
     @BeforeEach
     public void setUpColeccion() {
         coleccion = new Coleccion("Coleccion1", "Una conexion");
         when(fuenteMockeada.importarHechos()).thenReturn(Arrays.asList(hecho));
+        contribuyente = new Contribuyente("Anonimo","Anonimo", LocalDate.now());
+        administrador = new Administrador("Anonimo","Anonimo");
     }
 
     @Test
     @DisplayName("Solicitud Rechazada 1 día después de su creación.")
     public void rechazarSolicitud(){
-        solicitudEliminacion = new SolicitudEliminacion(hecho, "a".repeat(500) + " Esto esta bien fundado");
+        String fundamento = "a".repeat(500) + " Esto esta bien fundado";
+        contribuyente.crearSolicitudEliminacion(hecho, fundamento);
+
         // Al crear una solicitud queda en estado pendiente
         Assertions.assertEquals(EstadoSolicitudEliminacion.PENDIENTE,solicitudEliminacion.getEstadoSolicitudEliminacion());
+
         // Rechazar esta solicitud un día después de su creación.
-        solicitudEliminacion.serRechazada();
+        solicitudEliminacion.serRechazada(administrador);
         solicitudEliminacion.setFechaResolucion(LocalDateTime.now().plusDays(1));
 
         // Dado que fue rechazada, el hecho puede ser agregado a cualquier colección.
@@ -61,10 +69,12 @@ public class TestSolicitudEliminacion {
     @DisplayName("Solicitud Aceptada a las 2 horas.")
     public void aceptarSolicitud(){
         // Generar otra solicitud para el mismo hecho.
-        solicitudEliminacion = new SolicitudEliminacion(hecho, "a".repeat(500) + " Esto esta bien fundado");
+        String fundamento = "a".repeat(500) + " Esto esta bien fundado";
+        contribuyente.crearSolicitudEliminacion(hecho, fundamento);
+
 
         // Es aceptada a las 2 horas
-        solicitudEliminacion.serAceptada();
+        solicitudEliminacion.serAceptada(administrador);
         solicitudEliminacion.setFechaResolucion(LocalDateTime.now().plusHours(2));
 
         // Esta vez el hecho no debería poder agregarse a una colección, puesto que este fue eliminado.

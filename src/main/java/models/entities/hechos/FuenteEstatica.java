@@ -1,4 +1,4 @@
-package services;
+package models.entities.hechos;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
@@ -6,8 +6,6 @@ import com.opencsv.exceptions.CsvException;
 import models.entities.valueObjectsHecho.Origen;
 import models.entities.valueObjectsHecho.Categoria;
 import models.entities.valueObjectsHecho.Ubicacion;
-import models.entities.hechos.Coleccion;
-import models.entities.hechos.Hecho;
 
 import javax.swing.*;
 import java.io.FileReader;
@@ -16,7 +14,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class FuenteEstatica {
+public class FuenteEstatica implements Fuente {
     private String rutaArchivo;
 
     public FuenteEstatica(String rutaArchivo) {

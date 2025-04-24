@@ -11,6 +11,9 @@ Hecho -->"*" ContenidoMultimedia
 'Solicitudes de Eliminacion
 SolicitudEliminacion --* Hecho
 SolicitudEliminacion --> EstadoSolicitudEliminacion
+SolicitudEliminacion -->"*" CambioDeEstadoSolicitud
+SolicitudEliminacion --> Contribuyente
+SolicitudEliminacion --> Administrador
 
 'Colecciones
 Coleccion --> Criterio
@@ -19,6 +22,8 @@ Coleccion ..> Filtro
 'Fuente
 Coleccion --> Fuente
 Fuente ..> Hecho
+FuenteEstatica ..|> Fuente
+FuenteDinamica ..|> Fuente
 
 'Criterio
 Criterio --> Filtro
@@ -35,16 +40,32 @@ FiltroFechaAcontecimiento --> RangoFechas
 'Contenido Multimedia
 ContenidoMultimedia --> Formato
 
+
 class Contribuyente {
     -nombre: String
     -apellido:
-    -edad: Integer
+    -fechaNacimiento: LocalDate
+    +laEdadEs(): Integer
+    +crearSolicitudEliminacion(Hecho hecho, String fundamento): SolicitudEliminacion
+}
+
+class Administrador {
+    -nombre: String
+    -apellido:
+    +aceptarSolicitud(SolicitudEliminacion solicitudEliminacion): Boolean
+    +rechazarSolicitudSolicitud(SolicitudEliminacion solicitudEliminacion): Boolean
 }
 
 enum EstadoSolicitudEliminacion {
     ACEPTADA,
     RECHAZADA,
     PENDIENTE
+}
+
+class CambioDeEstadoSolicitud {
+    -solicitudEliminacion: SolicitudEliminacion
+    -estadoSolicitudEliminacion: EstadoSolicitudEliminacion
+    -fechaCambioEstadoSolicitud: LocalDateTime
 }
 
 class ContenidoMultimedia {
@@ -79,6 +100,14 @@ interface Fuente {
     +importarHechos(): List<Hecho> hechos
 }
 
+class FuenteEstatica {
+    -rutaArchivo: String
+}
+
+class FuenteDinamica {
+    -contribuyente: Contribuyente
+}
+
 class Etiqueta {
     -titulo: String
 }
@@ -101,8 +130,11 @@ class Ubicacion {
 class SolicitudEliminacion {
     -hecho: Hecho
     -fundamento: String
-    -rechazada: Boolean
+    -estadoSolicitudEliminacion: EstadoSolicitudEliminacion
+    -cambiosEstadoSolicitud: List<CambioDeEstadoSolicitud>
     -fechaResolucion: LocalDate
+    -contribuyente: Contribuyente
+    -administrador: Administrador
     +serAceptada(): Void
     +serRechazada(): Void
 }
