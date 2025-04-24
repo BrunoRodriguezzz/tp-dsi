@@ -1,4 +1,5 @@
 import models.entities.fuentes.Fuente;
+import models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
 import models.entities.valueObjectsHecho.*;
 import models.entities.criterio.*;
 import models.entities.hechos.Coleccion;
@@ -12,11 +13,12 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestColecciones {
     // ------------------------------------------------ Instanciacion de Hechos ------------------------------------------------
-    Ubicacion ubicacion1 = new Ubicacion("-36.868375", "-60.343297");
+    Ubicacion ubicacion1;
     Categoria categoria1 = new Categoria("Caída de aeronave");
     Origen origen1 = Origen.MANUAL;
     Hecho hecho1 = new Hecho("Caída de aeronave impacta en Olavarría",
@@ -27,7 +29,7 @@ public class TestColecciones {
             origen1
     );
 
-    Ubicacion ubicacion2 = new Ubicacion("-37.345571", "-70.241485");
+    Ubicacion ubicacion2;
     Categoria categoria2 = new Categoria("Accidente con maquinaria industrial");
     Origen origen2 = Origen.MANUAL;
     Hecho hecho2 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
@@ -38,7 +40,7 @@ public class TestColecciones {
             origen2
     );
 
-    Ubicacion ubicacion3 = new Ubicacion("-33.768051", "-61.921032");
+    Ubicacion ubicacion3;
     Categoria categoria3 = new Categoria("Caída de aeronave");
     Origen origen3 = Origen.MANUAL;
     Hecho hecho3 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
@@ -49,7 +51,7 @@ public class TestColecciones {
             origen3
     );
 
-    Ubicacion ubicacion4 = new Ubicacion("-35.855811", "-61.940589");
+    Ubicacion ubicacion4;
     Categoria categoria4 = new Categoria("Accidente en paso a nivel");
     Origen origen4 = Origen.MANUAL;
     Hecho hecho4 = new Hecho("Accidente en paso a nivel deja múltiples daños en Pehuajó, Buenos Aires",
@@ -60,7 +62,7 @@ public class TestColecciones {
             origen4
     );
 
-    Ubicacion ubicacion5 = new Ubicacion("-26.780008", "-60.458782");
+    Ubicacion ubicacion5;
     Categoria categoria5 = new Categoria("Derrumbe en obra en construcción");
     Origen origen5 = Origen.MANUAL;
     Hecho hecho5 = new Hecho("Devastador Derrumbe en obra en construcción afecta a Presidencia Roque Sáenz Peña",
@@ -82,8 +84,20 @@ public class TestColecciones {
 
     @BeforeEach
     public void setUp(){
+        try {
+            ubicacion1 = new Ubicacion("-36.868375", "-60.343297");
+            ubicacion2 = new Ubicacion("-37.345571", "-70.241485");
+            ubicacion3 = new Ubicacion("-33.768051", "-61.921032");
+            ubicacion4 = new Ubicacion("-35.855811", "-61.940589");
+            ubicacion5 = new Ubicacion("-26.780008", "-60.458782");
+        } catch (UbicacionInvalidaException e) {
+            fail("No debería fallar para coordenadas válidas");
+        }
+
+
         coleccion = new Coleccion("Colección prueba", "Esto es una prueba");
         criterioPruebas = new Criterio();
+
         coleccion.setFuente(fuenteMockeada);
         when(fuenteMockeada.importarHechos()).thenReturn(hechos);
     }

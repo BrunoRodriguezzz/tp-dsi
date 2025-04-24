@@ -4,6 +4,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 import models.entities.hechos.Hecho;
+import models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
 import models.entities.valueObjectsHecho.Origen;
 import models.entities.valueObjectsHecho.Categoria;
 import models.entities.valueObjectsHecho.Ubicacion;
@@ -13,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
 public class FuenteEstatica implements Fuente {
@@ -65,15 +67,21 @@ public class FuenteEstatica implements Fuente {
         List<String[]> filas = lector.readAll();
         for (String[] campos : filas) {
             if (campos.length >= 6) {
-                Hecho hecho = new Hecho(
-                        campos[0],
-                        campos[1],
-                        new Categoria(campos[2]),
-                        new Ubicacion(campos[3], campos[4]),
-                        convertirFecha(campos[5]),
-                        Origen.DATASET
-                );
-                hechos.add(hecho);
+                try {
+                    Ubicacion ubicacion = new Ubicacion(campos[3], campos[4]);
+
+                    Hecho hecho = new Hecho(
+                            campos[0],
+                            campos[1],
+                            new Categoria(campos[2]),
+                            ubicacion,
+                            convertirFecha(campos[5]),
+                            Origen.DATASET
+                    );
+                    hechos.add(hecho);
+                } catch (UbicacionInvalidaException e) {
+                    System.err.println("Ubicación inválida para fila: " + Arrays.toString(campos));
+                }
             }
         }
         return hechos;

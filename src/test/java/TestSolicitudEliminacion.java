@@ -3,6 +3,7 @@ import models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
 import models.entities.solicitudEliminacion.SolicitudEliminacion;
 import models.entities.usuarios.Administrador;
 import models.entities.usuarios.Contribuyente;
+import models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
 import models.entities.valueObjectsHecho.Origen;
 import models.entities.valueObjectsHecho.Categoria;
 import models.entities.valueObjectsHecho.Ubicacion;
@@ -17,16 +18,20 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class TestSolicitudEliminacion {
+    // ------------------------------------------------ Instanciacion de Ubicaciones ------------------------------------------------
+    Ubicacion ubicacion;
+
     // ------------------------------------------------ Instanciacion de Hechos ------------------------------------------------
     Hecho hecho = new Hecho(
         "Brote de enfermedad contagiosa causa estragos en San Lorenzo, Santa Fe",
         "Grave brote de enfermedad contagiosa ocurrió en las inmediaciones de San Lorenzo, Santa Fe. El incidente dejó varios heridos y daños materiales. Se ha declarado estado de emergencia en la región para facilitar la asistencia.",
         new Categoria("Desastre tecnológico"),
-        new Ubicacion("-32.786098", "-60.741543"),
+        ubicacion,
         LocalDate.parse("2005-07-05"),
         Origen.MANUAL
     );
@@ -40,8 +45,15 @@ public class TestSolicitudEliminacion {
 
     @BeforeEach
     public void setUp() {
+        try {
+            ubicacion = new Ubicacion("-32.786098", "-60.741543");
+        } catch (UbicacionInvalidaException e) {
+            fail("No debería fallar para coordenadas válidas");
+        }
+
         coleccion = new Coleccion("Coleccion1", "Una coleccion");
         when(fuenteMockeada.importarHechos()).thenReturn(Arrays.asList(hecho));
+
         contribuyente = new Contribuyente("Anonimo","Anonimo", LocalDate.now());
         administrador = new Administrador("Anonimo","Anonimo");
     }
