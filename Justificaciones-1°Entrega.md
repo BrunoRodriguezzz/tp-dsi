@@ -40,7 +40,8 @@ Cada filtro implementa una interfaz `Filtro`, la cual define un método `coincid
 ### Filtros vs Criterios
 
 Queda definida una diferencia entre `Filtros` y `Criterios`: un `Filtro` es una interface que determina el método coincide, para que los filtros que la utilicen definan la lógica. Esto permite que en un futuro se agreguen más filtros pero que no se modifique la lógica, dando mayor **extensibilidad**, aplicando el **Principio Open-Close**.
-Para los `Filtros` usamos el principio de abierto cerrado, ya que con la interfaz `Filtro` estamos abiertos a la expansion futura de posibles filtros a implementar, pero estamos cerrados a la modificacion del comportamiento de estos filtros
+
+Para los `Filtros` usamos el principio de abierto cerrado, ya que con la interfaz `Filtro` estamos abiertos a la expansion futura de posibles filtros a implementar, pero estamos cerrados a la modificacion del comportamiento de estos filtros.
 
 ### Contribuyentes y visualizadores
 
