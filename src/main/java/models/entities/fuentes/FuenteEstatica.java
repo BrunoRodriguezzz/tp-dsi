@@ -4,6 +4,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 import models.entities.hechos.Hecho;
+import models.entities.utils.Errores.ER_ValueObjects.CategoriaInvalidaException;
 import models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
 import models.entities.valueObjectsHecho.Origen;
 import models.entities.valueObjectsHecho.Categoria;
@@ -69,11 +70,12 @@ public class FuenteEstatica implements Fuente {
             if (campos.length >= 6) {
                 try {
                     Ubicacion ubicacion = new Ubicacion(campos[3], campos[4]);
+                    Categoria categoria = new Categoria(campos[2]);
 
                     Hecho hecho = new Hecho(
                             campos[0],
                             campos[1],
-                            new Categoria(campos[2]),
+                            categoria,
                             ubicacion,
                             convertirFecha(campos[5]),
                             Origen.DATASET
@@ -81,6 +83,10 @@ public class FuenteEstatica implements Fuente {
                     hechos.add(hecho);
                 } catch (UbicacionInvalidaException e) {
                     System.err.println("Ubicación inválida para fila: " + Arrays.toString(campos));
+                }
+
+                catch (CategoriaInvalidaException e) {
+                    System.err.println("Categoria inválida para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
                 }
             }
         }

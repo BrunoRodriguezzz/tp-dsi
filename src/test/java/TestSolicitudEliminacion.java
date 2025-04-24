@@ -26,11 +26,14 @@ public class TestSolicitudEliminacion {
     // ------------------------------------------------ Instanciacion de Ubicaciones ------------------------------------------------
     Ubicacion ubicacion;
 
+    // ------------------------------------------------ Instanciacion de Categorias ------------------------------------------------
+    Categoria categoria;
+
     // ------------------------------------------------ Instanciacion de Hechos ------------------------------------------------
     Hecho hecho = new Hecho(
         "Brote de enfermedad contagiosa causa estragos en San Lorenzo, Santa Fe",
         "Grave brote de enfermedad contagiosa ocurrió en las inmediaciones de San Lorenzo, Santa Fe. El incidente dejó varios heridos y daños materiales. Se ha declarado estado de emergencia en la región para facilitar la asistencia.",
-        new Categoria("Desastre tecnológico"),
+        categoria,
         ubicacion,
         LocalDate.parse("2005-07-05"),
         Origen.MANUAL
@@ -47,8 +50,11 @@ public class TestSolicitudEliminacion {
     public void setUp() {
         try {
             ubicacion = new Ubicacion("-32.786098", "-60.741543");
+            categoria = new Categoria("Desastre tecnológico");
         } catch (UbicacionInvalidaException e) {
             fail("No debería fallar para coordenadas válidas");
+        } catch (Exception e){
+            fail("No debería fallar por: " + e.getMessage());
         }
 
         coleccion = new Coleccion("Coleccion1", "Una coleccion");

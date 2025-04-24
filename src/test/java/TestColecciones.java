@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class TestColecciones {
     // ------------------------------------------------ Instanciacion de Hechos ------------------------------------------------
     Ubicacion ubicacion1;
-    Categoria categoria1 = new Categoria("Caída de aeronave");
+    Categoria categoria1;
     Origen origen1 = Origen.MANUAL;
     Hecho hecho1 = new Hecho("Caída de aeronave impacta en Olavarría",
             "Grave caída de aeronave ocurrió en las inmediaciones de Olavarría, Buenos Aires. El incidente provocó pánico entre los residentes locales. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
@@ -30,7 +30,7 @@ public class TestColecciones {
     );
 
     Ubicacion ubicacion2;
-    Categoria categoria2 = new Categoria("Accidente con maquinaria industrial");
+    Categoria categoria2;
     Origen origen2 = Origen.MANUAL;
     Hecho hecho2 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
             "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
@@ -41,7 +41,7 @@ public class TestColecciones {
     );
 
     Ubicacion ubicacion3;
-    Categoria categoria3 = new Categoria("Caída de aeronave");
+    Categoria categoria3;
     Origen origen3 = Origen.MANUAL;
     Hecho hecho3 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
             "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
@@ -52,7 +52,7 @@ public class TestColecciones {
     );
 
     Ubicacion ubicacion4;
-    Categoria categoria4 = new Categoria("Accidente en paso a nivel");
+    Categoria categoria4;
     Origen origen4 = Origen.MANUAL;
     Hecho hecho4 = new Hecho("Accidente en paso a nivel deja múltiples daños en Pehuajó, Buenos Aires",
             "Grave accidente en paso a nivel ocurrió en las inmediaciones de Pehuajó, Buenos Aires. El incidente generó preocupación entre las autoridades provinciales. El Ministerio de Desarrollo Social está brindando apoyo a los damnificados.",
@@ -63,7 +63,7 @@ public class TestColecciones {
     );
 
     Ubicacion ubicacion5;
-    Categoria categoria5 = new Categoria("Derrumbe en obra en construcción");
+    Categoria categoria5;
     Origen origen5 = Origen.MANUAL;
     Hecho hecho5 = new Hecho("Devastador Derrumbe en obra en construcción afecta a Presidencia Roque Sáenz Peña",
             "Un grave derrumbe en obra en construcción se registró en Presidencia Roque Sáenz Peña, Chaco. El incidente generó preocupación entre las autoridades provinciales. El intendente local se ha trasladado al lugar para supervisar las operaciones.",
@@ -95,6 +95,15 @@ public class TestColecciones {
             ubicacion5 = new Ubicacion("-26.780008", "-60.458782");
         } catch (UbicacionInvalidaException e) {
             fail("No debería fallar para coordenadas válidas");
+        }
+        try {
+            categoria1= new Categoria("Caída de aeronave");
+            categoria2= new Categoria("Accidente con maquinaria industrial");
+            categoria3= new Categoria("Caída de aeronave");
+            categoria4= new Categoria("Accidente en paso a nivel");
+            categoria5= new Categoria("Derrumbe en obra en construcción");
+        } catch (Exception e) {
+            fail("No debería fallar por categoría inválida: " + e.getMessage() + "");
         }
 
         try {
