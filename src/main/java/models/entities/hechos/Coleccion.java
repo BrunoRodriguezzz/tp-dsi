@@ -58,6 +58,8 @@ public class Coleccion {
                     try {
                         return filtro.coincide(hecho);
                     } catch (Exception e) {
+                        //TODO: Throw exception acá y en todos los que devuelvan false para que lo agarre el que los llamo y eventualmente una capa superior
+                        // throw new Exception("No se pudo aplicar los filtros de búsqueda")
                         System.out.println("Error en filtro: " + filtro.getClass().getSimpleName());
                         return false;
                     }
