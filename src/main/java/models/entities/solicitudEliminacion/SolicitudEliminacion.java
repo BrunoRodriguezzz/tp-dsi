@@ -37,7 +37,8 @@ public class SolicitudEliminacion {
         this.fechaResolucion = LocalDateTime.now();
         this.administrador = administrador;
 
-        this.cambiosEstadoSolicitud.add(new CambioDeEstadoSolicitud(this, EstadoSolicitudEliminacion.ACEPTADA));
+        CambioDeEstadoSolicitud cambioDeEstado = new CambioDeEstadoSolicitud(this, EstadoSolicitudEliminacion.ACEPTADA);
+        this.cambiosEstadoSolicitud.add(cambioDeEstado);
 
         this.hecho.eliminar();
     }
@@ -47,6 +48,7 @@ public class SolicitudEliminacion {
         this.fechaResolucion = LocalDateTime.now();
         this.administrador = administrador;
 
-        this.cambiosEstadoSolicitud.add(new CambioDeEstadoSolicitud(this, EstadoSolicitudEliminacion.RECHAZADA));
+        CambioDeEstadoSolicitud cambioDeEstado = new CambioDeEstadoSolicitud(this, EstadoSolicitudEliminacion.RECHAZADA);
+        this.cambiosEstadoSolicitud.add(cambioDeEstado);
     }
 }
