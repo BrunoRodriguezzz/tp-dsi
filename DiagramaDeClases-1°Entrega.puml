@@ -6,7 +6,7 @@ Hecho --> Categoria
 Hecho --> Ubicacion
 Hecho -->"*" Etiqueta
 Hecho --o Coleccion
-Hecho --> ContenidoMultimedia
+Hecho -->"*" ContenidoMultimedia
 
 'Solicitudes de Eliminacion
 SolicitudEliminacion --* Hecho
@@ -17,7 +17,7 @@ Coleccion --> Criterio
 Coleccion ..> Filtro
 
 'Fuente
-Coleccion ..> Fuente
+Coleccion --> Fuente
 Fuente ..> Hecho
 
 'Criterio
@@ -108,7 +108,7 @@ class SolicitudEliminacion {
 }
 
 class Coleccion {
-    -importador: ImportadorHechos
+    -fuente: Fuente
     -titulo: String
     -descripcion: String
     -criterio: Criterio
