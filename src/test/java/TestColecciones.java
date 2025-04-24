@@ -1,4 +1,7 @@
 import models.entities.fuentes.Fuente;
+import models.entities.utils.Errores.ER_ValueObjects.DescripcionInvalidaException;
+import models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
+import models.entities.utils.Errores.ER_ValueObjects.TituloInvalidoException;
 import models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
 import models.entities.valueObjectsHecho.*;
 import models.entities.criterio.*;
@@ -17,76 +20,41 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestColecciones {
-    // ------------------------------------------------ Instanciacion de Hechos ------------------------------------------------
-    Ubicacion ubicacion1;
-    Categoria categoria1;
-    Origen origen1 = Origen.MANUAL;
-    Hecho hecho1 = new Hecho("Caída de aeronave impacta en Olavarría",
-            "Grave caída de aeronave ocurrió en las inmediaciones de Olavarría, Buenos Aires. El incidente provocó pánico entre los residentes locales. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
-            categoria1,
-            ubicacion1,
-            LocalDate.of(2001, 11, 21),
-            origen1
-    );
+    public TestColecciones() throws DescripcionInvalidaException, TituloInvalidoException, FechaInvalidaException {
+    }
+        Hecho hecho1 = null;
+        Hecho hecho2 = null;
+        Hecho hecho3 = null;
+        Hecho hecho4 = null;
+        Hecho hecho5 = null;
 
-    Ubicacion ubicacion2;
-    Categoria categoria2;
-    Origen origen2 = Origen.MANUAL;
-    Hecho hecho2 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
-            "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
-            categoria2,
-            ubicacion2,
-            LocalDate.of(2001, 8, 16),
-            origen2
-    );
+        RangoFechas rangoFechasFiltro = null;
 
-    Ubicacion ubicacion3;
-    Categoria categoria3;
-    Origen origen3 = Origen.MANUAL;
-    Hecho hecho3 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
-            "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
-            categoria3,
-            ubicacion3,
-            LocalDate.of(2008, 8, 8),
-            origen3
-    );
+        Origen origen1 = Origen.MANUAL;
+        Origen origen2 = Origen.MANUAL;
+        Origen origen3 = Origen.MANUAL;
+        Origen origen4 = Origen.MANUAL;
+        Origen origen5 = Origen.MANUAL;
 
-    Ubicacion ubicacion4;
-    Categoria categoria4;
-    Origen origen4 = Origen.MANUAL;
-    Hecho hecho4 = new Hecho("Accidente en paso a nivel deja múltiples daños en Pehuajó, Buenos Aires",
-            "Grave accidente en paso a nivel ocurrió en las inmediaciones de Pehuajó, Buenos Aires. El incidente generó preocupación entre las autoridades provinciales. El Ministerio de Desarrollo Social está brindando apoyo a los damnificados.",
-            categoria4,
-            ubicacion4,
-            LocalDate.of(2020, 1, 27),
-            origen4
-    );
+        Ubicacion ubicacion1 = null;
+        Ubicacion ubicacion2 = null;
+        Ubicacion ubicacion3 = null;
+        Ubicacion ubicacion4 = null;
+        Ubicacion ubicacion5 = null;
 
-    Ubicacion ubicacion5;
-    Categoria categoria5;
-    Origen origen5 = Origen.MANUAL;
-    Hecho hecho5 = new Hecho("Devastador Derrumbe en obra en construcción afecta a Presidencia Roque Sáenz Peña",
-            "Un grave derrumbe en obra en construcción se registró en Presidencia Roque Sáenz Peña, Chaco. El incidente generó preocupación entre las autoridades provinciales. El intendente local se ha trasladado al lugar para supervisar las operaciones.",
-            categoria5,
-            ubicacion5,
-            LocalDate.of(2016, 6, 4),
-            origen5
-    );
+        Categoria categoria1 = null;
+        Categoria categoria2 = null;
+        Categoria categoria3 = null;
+        Categoria categoria4 = null;
+        Categoria categoria5 = null;
 
+        Coleccion coleccion;
 
-    // ------------------------------------------------ Instanciacion de Coleccion ------------------------------------------------
-    List<Hecho> hechos = Arrays.asList(hecho1, hecho2, hecho3, hecho4, hecho5);
-    Coleccion coleccion;
-    Criterio criterioPruebas;
-
-    // ------------------------------------------------ Instanciacion de Fuente ------------------------------------------------
-    Fuente fuenteMockeada = mock(Fuente.class);
-
-    // ------------------------------------------------ Instanciacion de Rango de Fechas ------------------------------------------------
-    RangoFechas rangoFechasFiltro;
+        Criterio criterioPruebas;
 
     @BeforeEach
     public void setUp(){
+
         try {
             ubicacion1 = new Ubicacion("-36.868375", "-60.343297");
             ubicacion2 = new Ubicacion("-37.345571", "-70.241485");
@@ -97,11 +65,11 @@ public class TestColecciones {
             fail("No debería fallar para coordenadas válidas");
         }
         try {
-            categoria1= new Categoria("Caída de aeronave");
-            categoria2= new Categoria("Accidente con maquinaria industrial");
-            categoria3= new Categoria("Caída de aeronave");
-            categoria4= new Categoria("Accidente en paso a nivel");
-            categoria5= new Categoria("Derrumbe en obra en construcción");
+            categoria1 = new Categoria("Caída de aeronave");
+            categoria2 = new Categoria("Accidente con maquinaria industrial");
+            categoria3 = new Categoria("Caída de aeronave");
+            categoria4 = new Categoria("Accidente en paso a nivel");
+            categoria5 = new Categoria("Derrumbe en obra en construcción");
         } catch (Exception e) {
             fail("No debería fallar por categoría inválida: " + e.getMessage() + "");
         }
@@ -109,9 +77,61 @@ public class TestColecciones {
         try {
             rangoFechasFiltro = new RangoFechas(LocalDate.parse("2000-01-01"), LocalDate.parse("2010-01-01"));
         }
-        catch (Exception e){
+        catch (FechaInvalidaException e){
             fail("No pudo instanciarse el rango de fechas: " + e.getMessage());
         }
+
+        // ------------------------------------------------ Instanciacion de Hechos ------------------------------------------------
+        try {
+            hecho1 = new Hecho("Caída de aeronave impacta en Olavarría",
+                    "Grave caída de aeronave ocurrió en las inmediaciones de Olavarría, Buenos Aires. El incidente provocó pánico entre los residentes locales. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
+                    categoria1,
+                    ubicacion1,
+                    LocalDate.of(2001, 11, 21),
+                    origen1
+            );
+
+            hecho2 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
+                    "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
+                    categoria2,
+                    ubicacion2,
+                    LocalDate.of(2001, 8, 16),
+                    origen2
+            );
+
+            hecho3 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
+                    "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
+                    categoria3,
+                    ubicacion3,
+                    LocalDate.of(2008, 8, 8),
+                    origen3
+            );
+
+            hecho4 = new Hecho("Accidente en paso a nivel deja múltiples daños en Pehuajó, Buenos Aires",
+                    "Grave accidente en paso a nivel ocurrió en las inmediaciones de Pehuajó, Buenos Aires. El incidente generó preocupación entre las autoridades provinciales. El Ministerio de Desarrollo Social está brindando apoyo a los damnificados.",
+                    categoria4,
+                    ubicacion4,
+                    LocalDate.of(2020, 1, 27),
+                    origen4
+            );
+
+            hecho5 = new Hecho("Devastador Derrumbe en obra en construcción afecta a Presidencia Roque Sáenz Peña",
+                    "Un grave derrumbe en obra en construcción se registró en Presidencia Roque Sáenz Peña, Chaco. El incidente generó preocupación entre las autoridades provinciales. El intendente local se ha trasladado al lugar para supervisar las operaciones.",
+                    categoria5,
+                    ubicacion5,
+                    LocalDate.of(2016, 6, 4),
+                    origen5
+            );
+        }
+        catch (Exception e){
+            fail("No pudieron instanciarse los hechos");
+        }
+
+        // ------------------------------------------------ Instanciacion de Coleccion ------------------------------------------------
+        List<Hecho> hechos = Arrays.asList(hecho1, hecho2, hecho3, hecho4, hecho5);
+
+        // ------------------------------------------------ Instanciacion de Fuente ------------------------------------------------
+        Fuente fuenteMockeada = mock(Fuente.class);
 
 
         coleccion = new Coleccion("Colección prueba", "Esto es una prueba");

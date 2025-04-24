@@ -3,6 +3,9 @@ import models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
 import models.entities.solicitudEliminacion.SolicitudEliminacion;
 import models.entities.usuarios.Administrador;
 import models.entities.usuarios.Contribuyente;
+import models.entities.utils.Errores.ER_ValueObjects.DescripcionInvalidaException;
+import models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
+import models.entities.utils.Errores.ER_ValueObjects.TituloInvalidoException;
 import models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
 import models.entities.valueObjectsHecho.Origen;
 import models.entities.valueObjectsHecho.Categoria;
@@ -46,6 +49,9 @@ public class TestSolicitudEliminacion {
     Contribuyente contribuyente;
     Administrador administrador;
 
+    public TestSolicitudEliminacion() throws DescripcionInvalidaException, TituloInvalidoException, FechaInvalidaException {
+    }
+
     @BeforeEach
     public void setUp() {
         try {
@@ -60,7 +66,12 @@ public class TestSolicitudEliminacion {
         coleccion = new Coleccion("Coleccion1", "Una coleccion");
         when(fuenteMockeada.importarHechos()).thenReturn(Arrays.asList(hecho));
 
-        contribuyente = new Contribuyente("Anonimo","Anonimo", LocalDate.now());
+        try{
+            contribuyente = new Contribuyente("Anonimo","Anonimo", LocalDate.now());
+        }
+        catch (FechaInvalidaException e){
+            fail("No debería fallar por: " + e.getMessage());
+        }
         administrador = new Administrador("Anonimo","Anonimo");
     }
 

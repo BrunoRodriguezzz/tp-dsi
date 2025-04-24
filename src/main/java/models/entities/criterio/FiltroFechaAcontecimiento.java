@@ -1,5 +1,6 @@
 package models.entities.criterio;
 
+import models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
 import models.entities.valueObjectsHecho.RangoFechas;
 import models.entities.hechos.Hecho;
 
@@ -15,7 +16,7 @@ public class FiltroFechaAcontecimiento implements Filtro {
         try{
             resultado = this.fechaAcontecimiento.coincide(hecho.getFechaAcontecimiento());
         }
-        catch(Exception e){
+        catch(FechaInvalidaException e){
             System.out.println("Error en FiltroFechaAcontecimiento: " + e.getMessage());
         }
         return resultado;

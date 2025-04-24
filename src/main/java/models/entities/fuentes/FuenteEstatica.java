@@ -4,8 +4,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 import models.entities.hechos.Hecho;
-import models.entities.utils.Errores.ER_ValueObjects.CategoriaInvalidaException;
-import models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
+import models.entities.utils.Errores.ER_ValueObjects.*;
 import models.entities.valueObjectsHecho.Origen;
 import models.entities.valueObjectsHecho.Categoria;
 import models.entities.valueObjectsHecho.Ubicacion;
@@ -88,6 +87,20 @@ public class FuenteEstatica implements Fuente {
                 catch (CategoriaInvalidaException e) {
                     System.err.println("Categoria inválida para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
                 }
+
+                catch (TituloInvalidoException e) {
+                    System.err.println("Titulo inválido para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
+                }
+
+                catch (DescripcionInvalidaException e) {
+                    System.err.println("Descripcion inválido para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
+                }
+
+                catch (FechaInvalidaException e) {
+                    System.err.println("Fecha inválida para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
+                }
+
+
             }
         }
         return hechos;

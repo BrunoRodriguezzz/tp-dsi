@@ -1,6 +1,9 @@
 package models.entities.hechos;
 
 import lombok.Getter;
+import models.entities.utils.Errores.ER_ValueObjects.DescripcionInvalidaException;
+import models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
+import models.entities.utils.Errores.ER_ValueObjects.TituloInvalidoException;
 import models.entities.valueObjectsHecho.ContenidoMultimedia;
 import models.entities.valueObjectsHecho.Origen;
 import models.entities.valueObjectsHecho.Categoria;
@@ -26,17 +29,21 @@ public class Hecho {
     private Boolean estaEliminado;
     private List<ContenidoMultimedia> contenidoMultimedia;
 
-    public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) {
+    public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) throws FechaInvalidaException, TituloInvalidoException, DescripcionInvalidaException {
+        if(titulo == null || titulo.isBlank()) throw new TituloInvalidoException("El título no puede estar vacío");
         this.titulo = titulo;
+        if(descripcion == null || descripcion.isBlank()) throw new DescripcionInvalidaException("La descripcion no puede ser nula o vacía");
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.ubicacion = ubicacion;
+        if(fechaAcontecimiento == null || fechaAcontecimiento.isAfter(LocalDate.now())) {
+            throw new FechaInvalidaException("La fecha: " + fechaAcontecimiento + "es una fecha futura");
+        }
         this.fechaAcontecimiento = fechaAcontecimiento;
         this.origen = origen;
         this.fechaCarga = LocalDate.now();
         this.estaEliminado = false;
         this.etiquetas = new ArrayList<>();
-        //TODO Usar patron builder
     }
 
     public void eliminar() {
