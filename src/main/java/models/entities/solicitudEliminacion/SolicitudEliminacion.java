@@ -35,15 +35,18 @@ public class SolicitudEliminacion {
     public void serAceptada(Administrador administrador) {
         this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.ACEPTADA;
         this.fechaResolucion = LocalDateTime.now();
-        this.cambiosEstadoSolicitud.add(new CambioDeEstadoSolicitud(this, EstadoSolicitudEliminacion.ACEPTADA));
         this.administrador = administrador;
+
+        this.cambiosEstadoSolicitud.add(new CambioDeEstadoSolicitud(this, EstadoSolicitudEliminacion.ACEPTADA));
+
         this.hecho.eliminar();
     }
 
     public void serRechazada(Administrador administrador){
-        estadoSolicitudEliminacion = EstadoSolicitudEliminacion.RECHAZADA;
+        this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.RECHAZADA;
         this.fechaResolucion = LocalDateTime.now();
-        this.cambiosEstadoSolicitud.add(new CambioDeEstadoSolicitud(this, EstadoSolicitudEliminacion.RECHAZADA));
         this.administrador = administrador;
+
+        this.cambiosEstadoSolicitud.add(new CambioDeEstadoSolicitud(this, EstadoSolicitudEliminacion.RECHAZADA));
     }
 }
