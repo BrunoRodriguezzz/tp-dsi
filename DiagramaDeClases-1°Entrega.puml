@@ -43,7 +43,7 @@ ContenidoMultimedia --> Formato
 
 class Contribuyente {
     -nombre: String
-    -apellido:
+    -apellido: String
     -fechaNacimiento: LocalDate
     +laEdadEs(): Integer
     +crearSolicitudEliminacion(Hecho hecho, String fundamento): SolicitudEliminacion
@@ -51,7 +51,7 @@ class Contribuyente {
 
 class Administrador {
     -nombre: String
-    -apellido:
+    -apellido: String
     +aceptarSolicitud(SolicitudEliminacion solicitudEliminacion): Boolean
     +rechazarSolicitudSolicitud(SolicitudEliminacion solicitudEliminacion): Boolean
 }
@@ -102,10 +102,12 @@ interface Fuente {
 
 class FuenteEstatica {
     -rutaArchivo: String
+    +importarHechos(): List<Hecho> hechos
 }
 
 class FuenteDinamica {
     -contribuyente: Contribuyente
+    +importarHechos(): List<Hecho> hechos
 }
 
 class Etiqueta {
