@@ -82,6 +82,9 @@ public class TestColecciones {
     // ------------------------------------------------ Instanciacion de Fuente ------------------------------------------------
     Fuente fuenteMockeada = mock(Fuente.class);
 
+    // ------------------------------------------------ Instanciacion de Rango de Fechas ------------------------------------------------
+    RangoFechas rangoFechasFiltro;
+
     @BeforeEach
     public void setUp(){
         try {
@@ -92,6 +95,13 @@ public class TestColecciones {
             ubicacion5 = new Ubicacion("-26.780008", "-60.458782");
         } catch (UbicacionInvalidaException e) {
             fail("No debería fallar para coordenadas válidas");
+        }
+
+        try {
+            rangoFechasFiltro = new RangoFechas(LocalDate.parse("2000-01-01"), LocalDate.parse("2010-01-01"));
+        }
+        catch (Exception e){
+            fail("No pudo instanciarse el rango de fechas: " + e.getMessage());
         }
 
 
@@ -112,7 +122,6 @@ public class TestColecciones {
     @Test
     @DisplayName("Al agregar un criterio de pertenencia y recalcular la coleccion deberían quedar solo los primeros tres")
     public void pruebaCriterios1(){
-        RangoFechas rangoFechasFiltro = new RangoFechas(LocalDate.parse("2000-01-01"), LocalDate.parse("2010-01-01"));
         FiltroFechaAcontecimiento filtroFechas = new FiltroFechaAcontecimiento(rangoFechasFiltro);
 
         criterioPruebas.agregarFiltro(filtroFechas);
