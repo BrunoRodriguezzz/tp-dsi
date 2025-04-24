@@ -15,9 +15,16 @@ public class Criterio {
     }
 
     public Boolean cumpleCriterio(Hecho hecho) {
-        Boolean resultado = this.filtros.stream().allMatch(filtro ->
-            filtro.coincide(hecho)
-        );
+        Boolean resultado = false;
+        resultado = this.filtros.stream().allMatch(filtro ->
+                {
+                    try {
+                        return filtro.coincide(hecho);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            );
         return resultado;
     }
 

@@ -51,9 +51,16 @@ public class Coleccion {
     }
 
     private List<Hecho> aplicarFiltros(List<Hecho> hechos, List<Filtro> filtros) {
-        List<Hecho> hechosQueCumplenFiltros = hechos
+        List<Hecho> hechosQueCumplenFiltros = null;
+        hechosQueCumplenFiltros = hechos
                 .stream()
-                .filter(hecho -> filtros.stream().allMatch(filtro -> filtro.coincide(hecho)))
+                .filter(hecho -> filtros.stream().allMatch(filtro -> {
+                    try {
+                        return filtro.coincide(hecho);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }))
                 .collect(Collectors.toList());
         return hechosQueCumplenFiltros;
     }
