@@ -1,5 +1,5 @@
 import models.entities.hechos.Hecho;
-import models.entities.hechos.FuenteEstatica;
+import models.entities.fuentes.FuenteEstatica;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

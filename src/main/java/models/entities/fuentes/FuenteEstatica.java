@@ -1,8 +1,9 @@
-package models.entities.hechos;
+package models.entities.fuentes;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
+import models.entities.hechos.Hecho;
 import models.entities.valueObjectsHecho.Origen;
 import models.entities.valueObjectsHecho.Categoria;
 import models.entities.valueObjectsHecho.Ubicacion;

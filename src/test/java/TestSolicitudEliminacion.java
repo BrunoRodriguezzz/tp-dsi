@@ -1,4 +1,4 @@
-import models.entities.hechos.Fuente;
+import models.entities.fuentes.Fuente;
 import models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
 import models.entities.solicitudEliminacion.SolicitudEliminacion;
 import models.entities.usuarios.Administrador;

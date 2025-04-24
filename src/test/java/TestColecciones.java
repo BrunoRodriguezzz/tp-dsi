@@ -1,4 +1,4 @@
-import models.entities.hechos.Fuente;
+import models.entities.fuentes.Fuente;
 import models.entities.valueObjectsHecho.*;
 import models.entities.criterio.*;
 import models.entities.hechos.Coleccion;

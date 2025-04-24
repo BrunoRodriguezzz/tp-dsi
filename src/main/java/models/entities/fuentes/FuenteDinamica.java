@@ -1,4 +1,4 @@
-package models.entities.hechos;
+package models.entities.fuentes;
 
 import models.entities.usuarios.Contribuyente;
 

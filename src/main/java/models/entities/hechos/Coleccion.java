@@ -3,6 +3,7 @@ package models.entities.hechos;
 import lombok.Setter;
 import models.entities.criterio.Criterio;
 import models.entities.criterio.Filtro;
+import models.entities.fuentes.Fuente;
 
 import java.util.List;
 import java.util.stream.Collectors;
