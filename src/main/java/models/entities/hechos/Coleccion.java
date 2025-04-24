@@ -58,10 +58,21 @@ public class Coleccion {
                     try {
                         return filtro.coincide(hecho);
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        System.out.println("Error en filtro: " + filtro.getClass().getSimpleName());
+                        return false;
                     }
                 }))
                 .collect(Collectors.toList());
         return hechosQueCumplenFiltros;
     }
 }
+
+
+
+
+
+
+
+
+
+
