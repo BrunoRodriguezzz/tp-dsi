@@ -5,6 +5,7 @@ import lombok.Setter;
 import models.entities.hechos.Hecho;
 import models.entities.usuarios.Administrador;
 import models.entities.usuarios.Contribuyente;
+import models.entities.utils.Errores.ER_ValueObjects.FundamentoInvalidoException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,9 +22,9 @@ public class SolicitudEliminacion {
     private Contribuyente contribuyente;
     private Administrador administrador;
 
-    public SolicitudEliminacion(Hecho hecho, String fundamento, Contribuyente contribuyente) {
+    public SolicitudEliminacion(Hecho hecho, String fundamento, Contribuyente contribuyente) throws FundamentoInvalidoException {
         this.hecho = hecho;
-        if (fundamento.length() < 500) throw new RuntimeException("El fundamento debe tener al menos 500 caracteres");
+        if (fundamento.length() < 500) throw new FundamentoInvalidoException("El fundamento debe tener al menos 500 caracteres");
         this.fundamento = fundamento;
         this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.PENDIENTE;
         this.fechaResolucion = null;

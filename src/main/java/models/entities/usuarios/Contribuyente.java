@@ -5,6 +5,7 @@ import lombok.Setter;
 import models.entities.hechos.Hecho;
 import models.entities.solicitudEliminacion.SolicitudEliminacion;
 import models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
+import models.entities.utils.Errores.ER_ValueObjects.FundamentoInvalidoException;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -31,7 +32,13 @@ public class Contribuyente {
     }
 
     public SolicitudEliminacion crearSolicitudEliminacion(Hecho hecho, String fundamento) {
-        SolicitudEliminacion solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, this);
+        SolicitudEliminacion solicitudEliminacion = null;
+        try {
+            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, this);
+        }
+        catch (FundamentoInvalidoException e){
+            System.out.println(e.getMessage());
+        }
         return solicitudEliminacion;
     }
 }

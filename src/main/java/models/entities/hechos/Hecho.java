@@ -55,7 +55,7 @@ public class Hecho {
         return !this.contenidoMultimedia.isEmpty();
     }
 
-    public Boolean agregarEtiqueta(Etiqueta etiqueta) throws RuntimeException {
+    public Boolean agregarEtiqueta(Etiqueta etiqueta) {
         if (this.etiquetas.stream().noneMatch(e -> e.getTitulo().equals(etiqueta.getTitulo()))){ //TODO Revisar porque devuelve siempre true
             this.etiquetas.add(etiqueta);
             return true;
