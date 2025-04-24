@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class TestSolicitudEliminacion {
+    // ------------------------------------------------ Instanciacion de Hechos ------------------------------------------------
     Hecho hecho = new Hecho(
         "Brote de enfermedad contagiosa causa estragos en San Lorenzo, Santa Fe",
         "Grave brote de enfermedad contagiosa ocurrió en las inmediaciones de San Lorenzo, Santa Fe. El incidente dejó varios heridos y daños materiales. Se ha declarado estado de emergencia en la región para facilitar la asistencia.",
@@ -28,8 +29,9 @@ public class TestSolicitudEliminacion {
         new Ubicacion("-32.786098", "-60.741543"),
         LocalDate.parse("2005-07-05"),
         Origen.MANUAL
-        );
+    );
 
+    // ------------------------------------------------ Clases Auxiliares ------------------------------------------------
     Coleccion coleccion;
     Fuente fuenteMockeada = mock(Fuente.class);
     SolicitudEliminacion solicitudEliminacion;
@@ -37,18 +39,20 @@ public class TestSolicitudEliminacion {
     Administrador administrador;
 
     @BeforeEach
-    public void setUpColeccion() {
-        coleccion = new Coleccion("Coleccion1", "Una conexion");
+    public void setUp() {
+        coleccion = new Coleccion("Coleccion1", "Una coleccion");
         when(fuenteMockeada.importarHechos()).thenReturn(Arrays.asList(hecho));
         contribuyente = new Contribuyente("Anonimo","Anonimo", LocalDate.now());
         administrador = new Administrador("Anonimo","Anonimo");
     }
 
+
     @Test
     @DisplayName("Solicitud Rechazada 1 día después de su creación.")
     public void rechazarSolicitud(){
         String fundamento = "a".repeat(500) + " Esto esta bien fundado";
-        contribuyente.crearSolicitudEliminacion(hecho, fundamento);
+
+        solicitudEliminacion = contribuyente.crearSolicitudEliminacion(hecho, fundamento);
 
         // Al crear una solicitud queda en estado pendiente
         Assertions.assertEquals(EstadoSolicitudEliminacion.PENDIENTE,solicitudEliminacion.getEstadoSolicitudEliminacion());
@@ -59,7 +63,9 @@ public class TestSolicitudEliminacion {
 
         // Dado que fue rechazada, el hecho puede ser agregado a cualquier colección.
         coleccion = new Coleccion("Colección sin criterio", "Esto es una prueba");
+
         coleccion.setFuente(fuenteMockeada);
+
         Assertions.assertFalse(coleccion.consultarHechos().isEmpty()); // Se agrega a una coleccion vacía, luego no debe estarlo
         // Verificar que la solicitud haya quedado en estado rechazada.
         Assertions.assertEquals(EstadoSolicitudEliminacion.RECHAZADA,solicitudEliminacion.getEstadoSolicitudEliminacion());
@@ -70,18 +76,16 @@ public class TestSolicitudEliminacion {
     public void aceptarSolicitud(){
         // Generar otra solicitud para el mismo hecho.
         String fundamento = "a".repeat(500) + " Esto esta bien fundado";
-        contribuyente.crearSolicitudEliminacion(hecho, fundamento);
+        coleccion = new Coleccion("Colección sin criterio", "Esto es una prueba");
 
-
+        solicitudEliminacion = contribuyente.crearSolicitudEliminacion(hecho, fundamento);
         // Es aceptada a las 2 horas
         solicitudEliminacion.serAceptada(administrador);
         solicitudEliminacion.setFechaResolucion(LocalDateTime.now().plusHours(2));
-
         // Esta vez el hecho no debería poder agregarse a una colección, puesto que este fue eliminado.
-        coleccion = new Coleccion("Colección sin criterio", "Esto es una prueba");
         coleccion.setFuente(fuenteMockeada);
-        Assertions.assertTrue(coleccion.consultarHechos().isEmpty()); // Se agrega a una coleccion vacía, luego no debe estarlo
 
+        Assertions.assertTrue(coleccion.consultarHechos().isEmpty()); // Se agrega a una coleccion vacía, luego no debe estarlo
         // Verificar que la solicitud haya quedado en estado aceptada.
         Assertions.assertEquals(EstadoSolicitudEliminacion.ACEPTADA, solicitudEliminacion.getEstadoSolicitudEliminacion());
     }
