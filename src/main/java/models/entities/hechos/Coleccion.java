@@ -60,6 +60,7 @@ public class Coleccion {
                     } catch (Exception e) {
                         //TODO: Throw exception acá y en todos los que devuelvan false para que lo agarre el que los llamo y eventualmente una capa superior
                         // throw new Exception("No se pudo aplicar los filtros de búsqueda")
+                        // TODO: Se deben reemplazar los print por otra excepcion a catchear por quien lo llama/capa superior
                         System.out.println("Error en filtro: " + filtro.getClass().getSimpleName());
                         return false;
                     }

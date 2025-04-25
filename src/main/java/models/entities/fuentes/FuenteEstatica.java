@@ -28,8 +28,9 @@ public class FuenteEstatica implements Fuente {
         try (CSVReader lector = this.crearLectorCSV()) {
             List<Hecho> hechos = this.instanciarHechosSegunCSV(lector);
             return hechos;
+        // TODO: Se deben reemplazar los print por otra excepcion a catchear por quien lo llama/capa superior
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error de lectura: " + e.getMessage()); //TODO: Revisar JOPTIONPANE
+            JOptionPane.showMessageDialog(null, "Error de lectura: " + e.getMessage());
             return null;
         } catch (CsvException e) {
             JOptionPane.showMessageDialog(null, "Error en CSV de formato: " + e.getMessage());
@@ -64,22 +65,27 @@ public class FuenteEstatica implements Fuente {
                     );
                     listaDeHechos.add(hecho);
                 } catch (UbicacionInvalidaException e) {
+                    // TODO: Se deben reemplazar los print por otra excepcion a catchear por quien lo llama/capa superior
                     System.err.println("Ubicación inválida para fila: " + Arrays.toString(campos));
                 }
 
                 catch (CategoriaInvalidaException e) {
+                    // TODO: Se deben reemplazar los print por otra excepcion a catchear por quien lo llama/capa superior
                     System.err.println("Categoria inválida para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
                 }
 
                 catch (TituloInvalidoException e) {
+                    // TODO: Se deben reemplazar los print por otra excepcion a catchear por quien lo llama/capa superior
                     System.err.println("Titulo inválido para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
                 }
 
                 catch (DescripcionInvalidaException e) {
+                    // TODO: Se deben reemplazar los print por otra excepcion a catchear por quien lo llama/capa superior
                     System.err.println("Descripcion inválido para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
                 }
 
                 catch (FechaInvalidaException e) {
+                    // TODO: Se deben reemplazar los print por otra excepcion a catchear por quien lo llama/capa superior
                     System.err.println("Fecha inválida para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
                 }
 
@@ -94,6 +100,7 @@ public class FuenteEstatica implements Fuente {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             return LocalDate.parse(fechaStr, formatter);
         } catch (Exception e) {
+            // TODO: Se deben reemplazar los print por otra excepcion a catchear por quien lo llama/capa superior
             JOptionPane.showMessageDialog(null, "Error en formato de fecha: " + fechaStr);
             return LocalDate.now();
         }

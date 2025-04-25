@@ -17,6 +17,7 @@ public class FiltroFechaAcontecimiento implements Filtro {
             resultado = this.fechaAcontecimiento.coincide(hecho.getFechaAcontecimiento());
         }
         catch(FechaInvalidaException e){
+            // TODO: Se deben reemplazar los runtime por otra excepcion a catchear por quien lo llama/capa superior
             System.out.println("Error en FiltroFechaAcontecimiento: " + e.getMessage());
         }
         return resultado;

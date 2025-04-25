@@ -37,6 +37,7 @@ public class Contribuyente {
             solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, this);
         }
         catch (FundamentoInvalidoException e){
+            // TODO: Se deben reemplazar los print por otra excepcion a catchear por quien lo llama/capa superior
             System.out.println(e.getMessage());
         }
         return solicitudEliminacion;

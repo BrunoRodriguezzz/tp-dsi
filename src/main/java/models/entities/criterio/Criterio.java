@@ -21,6 +21,7 @@ public class Criterio {
                     try {
                         return filtro.coincide(hecho);
                     } catch (Exception e) {
+                        // TODO: Se deben reemplazar los runtime por otra excepcion a catchear por quien lo llama/capa superior
                         throw new RuntimeException(e);
                     }
                 }
