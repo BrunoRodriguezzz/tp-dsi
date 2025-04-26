@@ -30,16 +30,4 @@ public class Contribuyente {
         LocalDate hoy = LocalDate.now();
         return Period.between(fechaNacimiento, hoy).getYears();
     }
-
-    public SolicitudEliminacion crearSolicitudEliminacion(Hecho hecho, String fundamento) {
-        SolicitudEliminacion solicitudEliminacion = null;
-        try {
-            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, this);
-        }
-        catch (FundamentoInvalidoException e){
-            // TODO: Se deben reemplazar los print por otra excepcion a catchear por quien lo llama/capa superior
-            System.out.println(e.getMessage());
-        }
-        return solicitudEliminacion;
-    }
 }

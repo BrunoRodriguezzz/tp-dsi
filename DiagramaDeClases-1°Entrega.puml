@@ -46,7 +46,6 @@ class Contribuyente {
     -apellido: String
     -fechaNacimiento: LocalDate
     +laEdadEs(): Integer
-    +crearSolicitudEliminacion(Hecho hecho, String fundamento): SolicitudEliminacion
 }
 
 class Administrador {

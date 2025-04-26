@@ -81,7 +81,12 @@ public class TestSolicitudEliminacion {
     public void rechazarSolicitud(){
         String fundamento = "a".repeat(500) + " Esto esta bien fundado";
 
-        solicitudEliminacion = contribuyente.crearSolicitudEliminacion(hecho, fundamento);
+        try {
+            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 
         // Al crear una solicitud queda en estado pendiente
         Assertions.assertEquals(EstadoSolicitudEliminacion.PENDIENTE,solicitudEliminacion.getEstadoSolicitudEliminacion());
@@ -107,7 +112,12 @@ public class TestSolicitudEliminacion {
         String fundamento = "a".repeat(500) + " Esto esta bien fundado";
         coleccion = new Coleccion("Colección sin criterio", "Esto es una prueba");
 
-        solicitudEliminacion = contribuyente.crearSolicitudEliminacion(hecho, fundamento);
+        try {
+            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
         // Es aceptada a las 2 horas
         solicitudEliminacion.serAceptada(administrador);
         solicitudEliminacion.setFechaResolucion(LocalDateTime.now().plusHours(2));
