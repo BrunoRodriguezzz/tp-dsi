@@ -52,8 +52,6 @@ class Contribuyente {
 class Administrador {
     -nombre: String
     -apellido: String
-    +aceptarSolicitud(SolicitudEliminacion solicitudEliminacion): Boolean
-    +rechazarSolicitudSolicitud(SolicitudEliminacion solicitudEliminacion): Boolean
 }
 
 enum EstadoSolicitudEliminacion {

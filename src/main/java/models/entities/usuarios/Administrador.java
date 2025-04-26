@@ -10,14 +10,4 @@ public class Administrador {
         this.nombre = nombre;
         this.apellido = apellido;
     }
-
-    public Boolean aceptarSolicitud(SolicitudEliminacion solicitudEliminacion) {
-        solicitudEliminacion.serAceptada(this);
-        return true;
-    }
-
-    public Boolean rechazarSolicitudSolicitud(SolicitudEliminacion solicitudEliminacion) {
-        solicitudEliminacion.serRechazada(this);
-        return true;
-    }
 }
