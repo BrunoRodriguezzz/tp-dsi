@@ -21,7 +21,7 @@ public class Coleccion {
 
 ### Importar archivos CSV
 
-La imporación de archivos CSV está bajo la responsabilidad de una clase Fuente Estática. Esta se encarga de leer un archivo CSV e instanciar los Hechos del mismo. Esta clase se encuentra en la capa de services.
+La imporación de archivos CSV está bajo la responsabilidad de una clase `Fuente Estática`. Esta se encarga de leer un archivo CSV y devolver una lista de hechos.  
 
 ### Colecciones
 
@@ -45,27 +45,27 @@ Para los `Filtros` usamos el principio de abierto cerrado, ya que con la interfa
 
 ### Contribuyentes y visualizadores
 
-Para la solución implementada, no se modelaron los visualizadores ni los administradores. Se entiende que un visualizador es una persona que ingresa al sistema como ***Guest***. Como no se guarda información del mismo y no tiene ningún tipo de relación con nuestro dominio, no se vio necesario su diagramado.
+Para la solución implementada, no se modelaron los visualizadores . Se entiende que un visualizador es una persona que ingresa al sistema como ***Guest***. Como no se guarda información del mismo y no tiene ningún tipo de relación con nuestro dominio, no se vio necesario su diagramado.
 
 El visualizador será un usuario más que interactuará con el sistema, pero que esté presente en los casos de uso no significa que sea una clase en el mismo.
 
 Los visualizadores como los contribuyentes podrán subir hechos utilizando la interfaz del sistema pero sin relacionarse con los mismos.
 
-En caso de que un Contribuyente quiera "dejar su firma" (darse a conocer) en un `Hecho`, el mismo tendrá un atributo Contribuyente en el que se guardará quién realizó esa contribución, utilizando al contribuyente como un **Value Object**.
+En caso de que un Contribuyente quiera "dejar su firma" (darse a conocer) en un `Hecho`, el mismo tendrá un atributo Contribuyente en el que se guardará quién realizó esa contribución. Por eso los `Contribuyentes` son **value objects**.
 
 ### Administradores
 
-Los Administradores no fueron incluidos en el diagrama como una clase. Esto se debe a que las acciones que realizan: crear colecciones, aceptar o rechazar solicitudes o importar hechos desde un archivo CSV son casos de uso.
+Los administradores son los encargados de aceptar o rechazar `Solicitudes de elminación` asociadas a un hecho, por lo que para lograr **trazabilidad** y mantener un registro de los cambios de estados de una Solicitud se creo la clase `CambioDeEstadoSolicitud`.
 
-Los Administradores podrán cumplir con estas funcionalidades utilizando la interfaz del sistema. Todas estas funcionalidades y responsabilidades fueron delegadas a las clases correspondientes:
+Esas acciones son responabilidad de la propia solicitud por lo que el `Administrador` es un **value object**.
 
 ### Caso crear colección
 
 La creación de una colección quedó delegada a la instanciación de la misma. Cuando un administrador decida crear una colección podrá completar los datos de la misma y será la capa de controllers quien enviará esta petición a la capa de servicios y esta creará la `Colección` instanciándola en el sistema.
 
-### Aceptar o Rechazar solicitud de eliminación
+### Solicitud de eleminación
 
-La `SolicitudEliminación` cuenta con los métodos respectivos para ser aceptada o rechazada. Por lo que al aceptar la misma o rechazarla esta marcará al `Hecho` como eliminado o no.
+La `SolicitudEliminación` se encuentra asociada a un `Contribuyente` (el que crea esta solicitud), a un `Administrador` (el que aceptó o rechazó esa solicitud) y a un `CambioDeEstadoSolicitud` que registra los cambios realizados.
 
 ### Etiquetas
 
