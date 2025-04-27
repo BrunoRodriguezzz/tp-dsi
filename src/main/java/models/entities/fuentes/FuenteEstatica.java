@@ -102,7 +102,7 @@ public class FuenteEstatica implements Fuente {
         } catch (Exception e) {
             // TODO: Se deben reemplazar los print por otra excepcion a catchear por quien lo llama/capa superior
             JOptionPane.showMessageDialog(null, "Error en formato de fecha: " + fechaStr);
-            return LocalDate.now();
+            return null;
         }
     }
 
