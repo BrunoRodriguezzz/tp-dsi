@@ -49,7 +49,8 @@ public class Hecho {
         this.etiquetas = new ArrayList<>();
     }
 
-    public void eliminar() {
+    public void eliminar() throws Exception {
+        if(this.estaEliminado) {throw new Exception("El hecho ya fue eliminado");}
         this.estaEliminado = true;
     }
 

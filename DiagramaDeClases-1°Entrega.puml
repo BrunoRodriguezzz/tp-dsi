@@ -11,9 +11,11 @@ Hecho -->"*" ContenidoMultimedia
 'Solicitudes de Eliminacion
 SolicitudEliminacion --* Hecho
 SolicitudEliminacion --> EstadoSolicitudEliminacion
-SolicitudEliminacion -->"*" CambioDeEstadoSolicitud
+SolicitudEliminacion -->"*" ResolucionSolicitudEliminacion
 SolicitudEliminacion --> Contribuyente
-SolicitudEliminacion --> Administrador
+
+'Resoluciones de Solicitudes de Eliminacion
+ResolucionSolicitudEliminacion --> Administrador
 
 'Colecciones
 Coleccion --> Criterio
@@ -59,10 +61,9 @@ enum EstadoSolicitudEliminacion {
     PENDIENTE
 }
 
-class CambioDeEstadoSolicitud {
-    -solicitudEliminacion: SolicitudEliminacion
-    -estadoSolicitudEliminacion: EstadoSolicitudEliminacion
-    -fechaCambioEstadoSolicitud: LocalDateTime
+class ResolucionSolicitudEliminacion {
+    -fechaResolucion: LocalDateTime
+    -administrador: Administrador
 }
 
 class ContenidoMultimedia {
@@ -103,7 +104,7 @@ class FuenteEstatica {
 }
 
 class FuenteDinamica {
-    -contribuyente: Contribuyente
+    -rutaBD: String
     +importarHechos(): List<Hecho> hechos
 }
 
@@ -130,10 +131,9 @@ class SolicitudEliminacion {
     -hecho: Hecho
     -fundamento: String
     -estadoSolicitudEliminacion: EstadoSolicitudEliminacion
-    -cambiosEstadoSolicitud: List<CambioDeEstadoSolicitud>
-    -fechaResolucion: LocalDate
+    -fechaCreacion: LocalDateTime
+    -resolucionSolicitud: ResolucionSolicitudEliminacion
     -contribuyente: Contribuyente
-    -administrador: Administrador
     +serAceptada(): Void
     +serRechazada(): Void
 }

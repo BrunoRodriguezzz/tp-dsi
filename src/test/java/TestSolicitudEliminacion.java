@@ -1,5 +1,6 @@
 import models.entities.fuentes.Fuente;
 import models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
+import models.entities.solicitudEliminacion.ResolucionSolicitudEliminacion;
 import models.entities.solicitudEliminacion.SolicitudEliminacion;
 import models.entities.usuarios.Administrador;
 import models.entities.usuarios.Contribuyente;
@@ -82,7 +83,7 @@ public class TestSolicitudEliminacion {
         String fundamento = "a".repeat(500) + " Esto esta bien fundado";
 
         try {
-            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente);
+            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente, LocalDateTime.now());
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -92,8 +93,14 @@ public class TestSolicitudEliminacion {
         Assertions.assertEquals(EstadoSolicitudEliminacion.PENDIENTE,solicitudEliminacion.getEstadoSolicitudEliminacion());
 
         // Rechazar esta solicitud un día después de su creación.
-        solicitudEliminacion.serRechazada(administrador);
-        solicitudEliminacion.setFechaResolucion(LocalDateTime.now().plusDays(1));
+        try {
+            solicitudEliminacion.serRechazada(administrador);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        ResolucionSolicitudEliminacion resolucionSolicitudEliminacion = new ResolucionSolicitudEliminacion(administrador, LocalDateTime.now().plusDays(1));
+        solicitudEliminacion.setResolucionSolicitudEliminacion(resolucionSolicitudEliminacion);
 
         // Dado que fue rechazada, el hecho puede ser agregado a cualquier colección.
         coleccion = new Coleccion("Colección sin criterio", "Esto es una prueba");
@@ -113,14 +120,20 @@ public class TestSolicitudEliminacion {
         coleccion = new Coleccion("Colección sin criterio", "Esto es una prueba");
 
         try {
-            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente);
+            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente, LocalDateTime.now());
         }
         catch (Exception e){
             System.out.println(e.getMessage());
         }
         // Es aceptada a las 2 horas
-        solicitudEliminacion.serAceptada(administrador);
-        solicitudEliminacion.setFechaResolucion(LocalDateTime.now().plusHours(2));
+        try {
+            solicitudEliminacion.serAceptada(administrador);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        ResolucionSolicitudEliminacion resolucionSolicitudEliminacion = new ResolucionSolicitudEliminacion(administrador, LocalDateTime.now().plusHours(2));
+        solicitudEliminacion.setResolucionSolicitudEliminacion(resolucionSolicitudEliminacion);
         // Esta vez el hecho no debería poder agregarse a una colección, puesto que este fue eliminado.
         coleccion.setFuente(fuenteMockeada);
 
