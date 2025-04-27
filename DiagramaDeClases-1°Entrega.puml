@@ -11,7 +11,7 @@ Hecho -->"*" ContenidoMultimedia
 'Solicitudes de Eliminacion
 SolicitudEliminacion --* Hecho
 SolicitudEliminacion --> EstadoSolicitudEliminacion
-SolicitudEliminacion -->"*" ResolucionSolicitudEliminacion
+SolicitudEliminacion --> ResolucionSolicitudEliminacion
 SolicitudEliminacion --> Contribuyente
 
 'Resoluciones de Solicitudes de Eliminacion
