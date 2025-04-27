@@ -31,14 +31,13 @@ public class Hecho {
 
     public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) throws FechaInvalidaException, TituloInvalidoException, DescripcionInvalidaException {
         if(titulo == null || titulo.isBlank()) throw new TituloInvalidoException("El título no puede estar vacío");
-        this.titulo = titulo;
         if(descripcion == null || descripcion.isBlank()) throw new DescripcionInvalidaException("La descripcion no puede ser nula o vacía");
+        if(fechaAcontecimiento == null) {throw new FechaInvalidaException("No se proveyó una fecha de acontecimiento");}
+
+        this.titulo = titulo;
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.ubicacion = ubicacion;
-        if(fechaAcontecimiento == null) {
-            throw new FechaInvalidaException("No se proveyó una fecha de acontecimiento");
-        }
         if(fechaAcontecimiento.isAfter(LocalDate.now())) {
             throw new FechaInvalidaException("La fecha: " + fechaAcontecimiento + "es una fecha futura");
         }
