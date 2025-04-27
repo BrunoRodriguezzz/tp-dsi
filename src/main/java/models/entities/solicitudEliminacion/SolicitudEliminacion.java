@@ -6,6 +6,8 @@ import models.entities.hechos.Hecho;
 import models.entities.usuarios.Administrador;
 import models.entities.usuarios.Contribuyente;
 import models.entities.utils.Errores.ER_ValueObjects.FundamentoInvalidoException;
+import models.entities.utils.Errores.ER_ValueObjects.HechoYaEliminadoException;
+import models.entities.utils.Errores.ER_ValueObjects.SolicitudEliminacionYaResueltaException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,29 +35,24 @@ public class SolicitudEliminacion {
     }
 
     public void serAceptada(Administrador administrador) throws Exception {
-        this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.ACEPTADA;
-
         try {
             this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador, LocalDateTime.now());
-        } catch (Exception e) {
+            this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.ACEPTADA;
+            this.hecho.eliminar();
+        } catch (SolicitudEliminacionYaResueltaException e) {
             // TODO: Corregir system out por otra excepcion que será recibida por una capa superior
             System.out.println(e.getMessage());
-        }
-
-        try {
-            this.hecho.eliminar();
-        }   catch (Exception e) {
+        } catch (HechoYaEliminadoException e) {
             // TODO: Corregir system out por otra excepcion que será recibida por una capa superior
             System.out.println("El hecho ya fue eliminado");
         }
     }
 
     public void serRechazada(Administrador administrador) throws Exception {
-        this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.RECHAZADA;
-
         try {
             this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador, LocalDateTime.now());
-        } catch (Exception e) {
+            this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.RECHAZADA;
+        } catch (SolicitudEliminacionYaResueltaException e) {
             // TODO: Corregir system out por otra excepcion que será recibida por una capa superior
             System.out.println(e.getMessage());
         }
