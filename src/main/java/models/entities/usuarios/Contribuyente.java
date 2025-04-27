@@ -21,7 +21,7 @@ public class Contribuyente {
         this.nombre = nombre;
         this.apellido = apellido;
         if(fechaNacimiento == null || fechaNacimiento.isAfter(LocalDate.now())) {
-            throw new FechaInvalidaException("La fecha: " + fechaNacimiento + "es una fecha futura");
+            throw new FechaInvalidaException("La fecha es inválida: "+fechaNacimiento);
         }
         this.fechaNacimiento = fechaNacimiento;
     }

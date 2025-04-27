@@ -44,7 +44,7 @@ public class Hecho {
         }
         this.fechaAcontecimiento = fechaAcontecimiento;
         this.origen = origen;
-        this.fechaCarga = LocalDate.now();
+        this.fechaCarga = LocalDate.now(); //TODO: MAL, LA FECHA DEBE SER PARAMETRO, NO LOCALDATE NOW
         this.estaEliminado = false;
         this.etiquetas = new ArrayList<>();
     }
