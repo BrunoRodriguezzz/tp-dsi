@@ -1,190 +1,183 @@
     @startuml
-'Hecho
-Hecho --> Contribuyente
-Hecho --> Origen
-Hecho --> Categoria
-Hecho --> Ubicacion
-Hecho -->"*" Etiqueta
-Hecho --o Coleccion
-Hecho -->"*" ContenidoMultimedia
+    'Hecho
+    Hecho --> Contribuyente
+    Hecho --> Origen
+    Hecho --> Categoria
+    Hecho --> Ubicacion
+    Hecho -->"*" Etiqueta
+    Hecho --o Coleccion
+    Hecho -->"*" ContenidoMultimedia
 
-'Solicitudes de Eliminacion
-SolicitudEliminacion --* Hecho
-SolicitudEliminacion --> EstadoSolicitudEliminacion
-SolicitudEliminacion --> ResolucionSolicitudEliminacion
-SolicitudEliminacion --> Contribuyente
+    'Solicitudes de Eliminacion
+    SolicitudEliminacion --* Hecho
+    SolicitudEliminacion --> EstadoSolicitudEliminacion
+    SolicitudEliminacion --> ResolucionSolicitudEliminacion
+    SolicitudEliminacion --> Contribuyente
 
-'Resoluciones de Solicitudes de Eliminacion
-ResolucionSolicitudEliminacion --> Administrador
+    'Resoluciones de Solicitudes de Eliminacion
+    ResolucionSolicitudEliminacion --> Administrador
 
-'Colecciones
-Coleccion --> Criterio
-Coleccion ..> Filtro
+    'Colecciones
+    Coleccion --> Criterio
+    Coleccion ..> Filtro
 
-'Fuente
-Coleccion --> Fuente
-Fuente ..> Hecho
-FuenteEstatica ..|> Fuente
+    'Fuente
+    Coleccion --> Fuente
+    Fuente ..> Hecho
+    FuenteEstatica ..|> Fuente
+    FuenteDinamica ..|> Fuente
 
-'Lector
-FuenteEstatica --> Lector
-LectorCSV ..|> Lector
+    'Criterio
+    Criterio --> Filtro
 
-'Criterio
-Criterio --> Filtro
+    'ElementoCriterio
+    Filtro <|.. FiltroTitulo
+    Filtro <|.. FiltroCategoria
+    Filtro <|.. FiltroFechaAcontecimiento
 
-'ElementoCriterio
-Filtro <|.. FiltroTitulo
-Filtro <|.. FiltroCategoria
-Filtro <|.. FiltroFechaAcontecimiento
+    'Estrategias
+    FiltroCategoria --> Categoria
+    FiltroFechaAcontecimiento --> RangoFechas
 
-'Estrategias
-FiltroCategoria --> Categoria
-FiltroFechaAcontecimiento --> RangoFechas
-
-'Contenido Multimedia
-ContenidoMultimedia --> Formato
+    'Contenido Multimedia
+    ContenidoMultimedia --> Formato
 
 
-class Contribuyente {
-    -nombre: String
-    -apellido: String
-    -fechaNacimiento: LocalDate
-    +laEdadEs(): Integer
-}
+    class Contribuyente {
+        -nombre: String
+        -apellido: String
+        -fechaNacimiento: LocalDate
+        +laEdadEs(): Integer
+    }
 
-class Administrador {
-    -nombre: String
-    -apellido: String
-}
+    class Administrador {
+        -nombre: String
+        -apellido: String
+    }
 
-enum EstadoSolicitudEliminacion {
-    ACEPTADA,
-    RECHAZADA,
-    PENDIENTE
-}
+    enum EstadoSolicitudEliminacion {
+        ACEPTADA,
+        RECHAZADA,
+        PENDIENTE
+    }
 
-class ResolucionSolicitudEliminacion {
-    -fechaResolucion: LocalDateTime
-    -administrador: Administrador
-}
+    class ResolucionSolicitudEliminacion {
+        -fechaResolucion: LocalDateTime
+        -administrador: Administrador
+    }
 
-class ContenidoMultimedia {
-    -nombre: String
-    -ruta: String
-    -formato: Formato
-}
+    class ContenidoMultimedia {
+        -nombre: String
+        -ruta: String
+        -formato: Formato
+    }
 
-enum Formato {
-    VIDEO
-    AUDIO
-    IMAGEN
-}
+    enum Formato {
+        VIDEO
+        AUDIO
+        IMAGEN
+    }
 
-class Hecho {
-    -titulo: String
-    -descripcion: String
-    -categoria: Categoria
-    -ubicacion: Ubicacion
-    -etiquetas: <List>Etiqueta
-    -fechaAcontecimiento: LocalDate
-    -fechaCarga: LocalDate
-    -origen: Origen
-    -eliminado: Boolean
-    -contenidoMultimedia: List<ContenidoMultimedia>
-    +eliminar(): Void
-    +tieneContenidoMultimedia(): Boolean
-    +estaEliminado(): Boolean
-}
+    class Hecho {
+        -titulo: String
+        -descripcion: String
+        -categoria: Categoria
+        -ubicacion: Ubicacion
+        -etiquetas: <List>Etiqueta
+        -fechaAcontecimiento: LocalDate
+        -fechaCarga: LocalDate
+        -origen: Origen
+        -eliminado: Boolean
+        -contenidoMultimedia: List<ContenidoMultimedia>
+        +eliminar(): Void
+        +tieneContenidoMultimedia(): Boolean
+        +estaEliminado(): Boolean
+    }
 
-interface Fuente {
-    +importarHechos(): List<Hecho> hechos
-}
+    interface Fuente {
+        +importarHechos(): List<Hecho> hechos
+    }
 
-class FuenteEstatica {
-    -rutaArchivo: String
-    -lector: Lector
-    +importarHechos(): List<Hecho> hechos
-}
+    class FuenteEstatica {
+        -rutaArchivo: String
+        +importarHechos(): List<Hecho> hechos
+    }
 
-class Etiqueta {
-    -titulo: String
-}
+    class FuenteDinamica {
+        -rutaBD: String
+        +importarHechos(): List<Hecho> hechos
+    }
 
-enum Origen {
-    MANUAL
-    DATASET
-    CONTRIBUYENTE
-}
+    class Etiqueta {
+        -titulo: String
+    }
 
-class Categoria {
-    -titulo: String
-}
+    enum Origen {
+        MANUAL
+        DATASET
+        CONTRIBUYENTE
+    }
 
-class Ubicacion {
-    -latitud: String
-    -longitud: String
-}
+    class Categoria {
+        -titulo: String
+    }
 
-class SolicitudEliminacion {
-    -hecho: Hecho
-    -fundamento: String
-    -estadoSolicitudEliminacion: EstadoSolicitudEliminacion
-    -fechaCreacion: LocalDateTime
-    -resolucionSolicitud: ResolucionSolicitudEliminacion
-    -contribuyente: Contribuyente
-    +serAceptada(): Void
-    +serRechazada(): Void
-}
+    class Ubicacion {
+        -latitud: String
+        -longitud: String
+    }
 
-class Coleccion {
-    -fuente: Fuente
-    -titulo: String
-    -descripcion: String
-    -criterio: Criterio
-    'Solo para representar overload
-    +consultarHechos(): <List> Hecho
-    +consultarHechos(filtros: <List> Filtro): <List> Hecho
-}
+    class SolicitudEliminacion {
+        -hecho: Hecho
+        -fundamento: String
+        -estadoSolicitudEliminacion: EstadoSolicitudEliminacion
+        -fechaCreacion: LocalDateTime
+        -resolucionSolicitud: ResolucionSolicitudEliminacion
+        -contribuyente: Contribuyente
+        +serAceptada(): Void
+        +serRechazada(): Void
+    }
 
-class Criterio{
-    -filtros: <List> Filtro
+    class Coleccion {
+        -fuente: Fuente
+        -titulo: String
+        -descripcion: String
+        -criterio: Criterio
+        'Solo para representar overload
+        +consultarHechos(): <List> Hecho
+        +consultarHechos(filtros: <List> Filtro): <List> Hecho
+    }
 
-    +cumpleCriterio(hecho: Hecho): Boolean
-    +agregarFiltro((Filtro filtro): Void
-}
+    class Criterio{
+        -filtros: <List> Filtro
 
-class RangoFechas {
-    -fechaInicio: LocalDate
-    -fechaFin: LocalDate
-    +coincide(date: LocalDate): Boolean
-}
+        +cumpleCriterio(hecho: Hecho): Boolean
+        +agregarFiltro((Filtro filtro): Void
+    }
 
-interface Filtro{
-    +coincide(algo): Boolean
-}
+    class RangoFechas {
+        -fechaInicio: LocalDate
+        -fechaFin: LocalDate
+        +coincide(date: LocalDate): Boolean
+    }
 
-class FiltroTitulo{
-    -titulo: String
-    +coincide(algo): Boolean
-}
+    interface Filtro{
+        +coincide(algo): Boolean
+    }
 
-class FiltroFechaAcontecimiento{
-    -fechaAcontecimientoEntre: RangoFechas
-    +coincide(algo): Boolean
-}
+    class FiltroTitulo{
+        -titulo: String
+        +coincide(algo): Boolean
+    }
 
-class FiltroCategoria{
-    -categoria: Categoria
-    +coincide(algo): Boolean
-}
+    class FiltroFechaAcontecimiento{
+        -fechaAcontecimientoEntre: RangoFechas
+        +coincide(algo): Boolean
+    }
 
-interface Lector {
-    +leerHechos(): List<String> hechosString
-}
+    class FiltroCategoria{
+        -categoria: Categoria
+        +coincide(algo): Boolean
+    }
 
-class LectorCSV {
-
-}
-
-@enduml
+    @enduml
