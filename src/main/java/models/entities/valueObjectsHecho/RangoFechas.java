@@ -1,9 +1,11 @@
 package models.entities.valueObjectsHecho;
 
+import lombok.Getter;
 import models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
 
 import java.time.LocalDate;
 
+@Getter
 public class RangoFechas {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
@@ -19,11 +21,4 @@ public class RangoFechas {
         this.fechaFin = fechaFin;
     }
 
-    public Boolean coincide(LocalDate fecha) throws FechaInvalidaException {
-        if(fecha == null){
-            throw new FechaInvalidaException("Fecha inválida, la fecha es nula");
-        }
-
-        return !fecha.isBefore(this.fechaInicio) && !fecha.isAfter(this.fechaFin);
-    }
 }

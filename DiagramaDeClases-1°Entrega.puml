@@ -25,7 +25,10 @@ Coleccion ..> Filtro
 Coleccion --> Fuente
 Fuente ..> Hecho
 FuenteEstatica ..|> Fuente
-FuenteDinamica ..|> Fuente
+
+'Lector
+FuenteEstatica --> Lector
+LectorCSV ..|> Lector
 
 'Criterio
 Criterio --> Filtro
@@ -100,11 +103,7 @@ interface Fuente {
 
 class FuenteEstatica {
     -rutaArchivo: String
-    +importarHechos(): List<Hecho> hechos
-}
-
-class FuenteDinamica {
-    -rutaBD: String
+    -lector: Lector
     +importarHechos(): List<Hecho> hechos
 }
 
@@ -178,6 +177,14 @@ class FiltroFechaAcontecimiento{
 class FiltroCategoria{
     -categoria: Categoria
     +coincide(algo): Boolean
+}
+
+interface Lector {
+    +leerHechos(): List<String> hechosString
+}
+
+class LectorCSV {
+
 }
 
 @enduml

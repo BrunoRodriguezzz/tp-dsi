@@ -61,28 +61,15 @@ public class TestColecciones {
             ubicacion3 = new Ubicacion("-33.768051", "-61.921032");
             ubicacion4 = new Ubicacion("-35.855811", "-61.940589");
             ubicacion5 = new Ubicacion("-26.780008", "-60.458782");
-        } catch (UbicacionInvalidaException e) {
-            fail("No debería fallar para coordenadas válidas");
-        }
-        try {
+
             categoria1 = new Categoria("Caída de aeronave");
             categoria2 = new Categoria("Accidente con maquinaria industrial");
             categoria3 = new Categoria("Caída de aeronave");
             categoria4 = new Categoria("Accidente en paso a nivel");
             categoria5 = new Categoria("Derrumbe en obra en construcción");
-        } catch (Exception e) {
-            fail("No debería fallar por categoría inválida: " + e.getMessage() + "");
-        }
 
-        try {
             rangoFechasFiltro = new RangoFechas(LocalDate.parse("2000-01-01"), LocalDate.parse("2010-01-01"));
-        }
-        catch (FechaInvalidaException e){
-            fail("No pudo instanciarse el rango de fechas: " + e.getMessage());
-        }
 
-        // ------------------------------------------------ Instanciacion de Hechos ------------------------------------------------
-        try {
             hecho1 = new Hecho("Caída de aeronave impacta en Olavarría",
                     "Grave caída de aeronave ocurrió en las inmediaciones de Olavarría, Buenos Aires. El incidente provocó pánico entre los residentes locales. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
                     categoria1,
@@ -122,9 +109,12 @@ public class TestColecciones {
                     LocalDate.of(2016, 6, 4),
                     origen5
             );
-        }
-        catch (Exception e){
-            fail("No pudieron instanciarse los hechos");
+        } catch (UbicacionInvalidaException e) {
+            fail("No debería fallar para coordenadas válidas");
+        } catch (FechaInvalidaException e){
+            fail("No pudo instanciarse el rango de fechas: " + e.getMessage());
+        } catch (Exception e) {
+            fail("No se pudo inicializar el test");
         }
 
         // ------------------------------------------------ Instanciacion de Coleccion ------------------------------------------------

@@ -14,8 +14,4 @@ public class Categoria {
             throw new CategoriaInvalidaException("La Categoria no puede tener un titulo vacío");
         this.titulo = titulo;
     }
-
-    public Boolean coincide(Categoria categoria){
-        return this.titulo.equals(categoria.titulo);
-    }
 }

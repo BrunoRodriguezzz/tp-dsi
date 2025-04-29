@@ -11,6 +11,6 @@ public class FiltroCategoria implements Filtro {
     }
 
     public Boolean coincide(Hecho hecho) {
-        return this.categoria.coincide(hecho.getCategoria());
+        return this.categoria.getTitulo().equals(hecho.getCategoria().getTitulo());
     }
 }

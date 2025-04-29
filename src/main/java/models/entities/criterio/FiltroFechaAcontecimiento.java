@@ -4,6 +4,8 @@ import models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
 import models.entities.valueObjectsHecho.RangoFechas;
 import models.entities.hechos.Hecho;
 
+import java.time.LocalDate;
+
 public class FiltroFechaAcontecimiento implements Filtro {
     private RangoFechas fechaAcontecimiento;
 
@@ -14,10 +16,14 @@ public class FiltroFechaAcontecimiento implements Filtro {
     public Boolean coincide(Hecho hecho) {
         Boolean resultado = false; //Si falla el try catch no debería agregar el hecho por poseer un error
         try{
-            resultado = this.fechaAcontecimiento.coincide(hecho.getFechaAcontecimiento());
+            LocalDate fecha = hecho.getFechaAcontecimiento();
+            if(fecha == null){
+                throw new FechaInvalidaException("Fecha inválida, la fecha es nula");
+            }
+            return !fecha.isBefore(this.fechaAcontecimiento.getFechaInicio()) && !fecha.isAfter(this.fechaAcontecimiento.getFechaFin());
         }
         catch(FechaInvalidaException e){
-            // TODO: Se deben reemplazar los runtime por otra excepcion a catchear por quien lo llama/capa superior
+            // TODO: Catchea el controller
             System.out.println("Error en FiltroFechaAcontecimiento: " + e.getMessage());
         }
         return resultado;
