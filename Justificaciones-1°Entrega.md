@@ -6,7 +6,7 @@
 
 ### Fuentes
 
-Las Fuentes fueron modeladas como una Interface. Esto se debe a que consideramos que su existencia estará reflejada en la capa de services. Por ende, una colección unicamente conoce la interfaz Fuente, que se instanciará en la capa de services de forma que no se rompa la arquitectura. La "comunicacion" entre las dos clases quedará definida por la inyección de dependencias establecida en la clase colección.
+Las Fuentes fueron modeladas como una Interface. Por ende, una colección unicamente conoce la interfaz Fuente, que se instanciará en la capa de services de forma que no se rompa la arquitectura. La "comunicacion" entre las dos clases quedará definida por la inyección de dependencias establecida en la clase colección. Las fuentes estáticas y dinámicas, por ahora las únicas conocidas al 100%, serán quienes usaran esta Interface.
 
 La colección conoce que existe una abstracción que le otorga una lista de hechos, pero no conoce el detalle de cómo funciona esta abstracción. Esto genera que la colección tenga bajo acoplamiento a una Fuente.
 

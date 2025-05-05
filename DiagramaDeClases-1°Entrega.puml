@@ -158,7 +158,6 @@
     class RangoFechas {
         -fechaInicio: LocalDate
         -fechaFin: LocalDate
-        +coincide(date: LocalDate): Boolean
     }
 
     interface Filtro{
