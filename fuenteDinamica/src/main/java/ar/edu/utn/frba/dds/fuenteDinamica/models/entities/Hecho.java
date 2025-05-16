@@ -1,7 +1,13 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.entities;
 
-import java.time.LocalDate;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.List;
+
+@Setter
+@Getter
 public class Hecho {
 
     private Long          id;
@@ -12,30 +18,17 @@ public class Hecho {
     private String        urlMultimedia;
     private String        ubicacion;
     private LocalDate     fechaAcontecimiento;
-    private LocalDate     fechaCarga;
+    private LocalDate     fechaGuardado;
+    private EstadoHecho   estadoHecho;
+    private String        sugerenciaDeCambio;
+    private List<String>  etiquetas;
 
     public Boolean esContribuyente(){
         if(contribuyente != null){
-            //TODO: Falta comprobar que no haya pasado una semana, porque despues no podra editar
+            //TODO: Revisar los permisos para poder editar el hecho
             return true;
         }else{
             return false;
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDate getFechaCarga() {
-        return fechaCarga;
-    }
-
-    public void setFechaCarga(LocalDate fechaCarga) {
-        this.fechaCarga = fechaCarga;
     }
 }

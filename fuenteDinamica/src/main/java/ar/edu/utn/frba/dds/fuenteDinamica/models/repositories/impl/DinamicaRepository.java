@@ -1,4 +1,5 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.impl;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IDinamicaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,14 +18,17 @@ public class DinamicaRepository implements IDinamicaRepository {
     }
 
     @Override
-    public Hecho buscarPorID(Long ID) {
-        return null;
+    public Hecho buscarPorID(Long id) {
+        return this.hechos.stream().filter(hecho -> hecho.getId().equals(id)).findFirst().orElse(null);
     }
 
     @Override
     public void guardar(Hecho hecho) {
+
         hecho.setId((long) this.hechos.size());
-        hecho.setFechaCarga(LocalDate.now());
+        hecho.setFechaGuardado(LocalDate.now());
+        hecho.setEstadoHecho(EstadoHecho.PENDIENTE);
+
         this.hechos.add(hecho);
     }
 

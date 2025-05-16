@@ -6,9 +6,12 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+@Setter
+@Getter
 public class HechoInputDTO {
 
-    private Contribuyente contribuyente;
+    private String        nombreUsuario;
+    private Integer       edadUsuario;
     private String        titulo;
     private String        descripcion;
     private String        categoria;
