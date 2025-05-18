@@ -1,11 +1,128 @@
 @startuml
-'https://plantuml.com/sequence-diagram
+'Hecho
+ Hecho --> Contribuyente
+ Hecho --> EstadoHecho
 
-autonumber
+'HechoOutput
+ HechoOutputDTO --> Contribuyente
 
-Alice -> Bob: Authentication Request
-Bob --> Alice: Authentication Response
+'IDinamicaRepository
+ IDinamicaRepository ..> Hecho
 
-Alice -> Bob: Another authentication Request
-Alice <-- Bob: another authentication Response
+'DinamicaRepository
+ DinamicaRepository ..|> IDinamicaRepository
+ DinamicaRepository -->"*" Hecho
+
+'IDinamicaService
+ IDinamicaService ..> HechoOutputDTO
+ IDinamicaService ..> HechoInputDTO
+
+'DinamicaService
+ DinamicaService ..|> IDinamicaService
+ DinamicaService --> IDinamicaRepository
+ DinamicaService ..> HechoOutputDTO
+ DinamicaService ..> HechoInputDTO
+
+'DinamicaController
+ DinamicaController ..|> IDinamicaService
+ DinamicaController ..> HechoOutputDTO
+
+class HechoInputDTO {
+
+    - String nombreUsuario
+    - Integer edadUsuario
+    - String titulo
+    - String descripcion
+    - String categoria
+    - String urlMultimedia
+    - String ubicacion
+    - LocalDate fechaAcontecimiento
+}
+
+class HechoOutputDTO {
+    - Contribuyente contribuyente
+    - String titulo
+    - String descripcion
+    - String categoria
+    - String urlMultimedia
+    - String ubicacion
+    - LocalDate fechaAcontecimiento
+    - List<String> etiquetas
+}
+
+class Hecho {
+
+    - Long id
+    - Contribuyente contribuyente
+    - String  titulo
+    - String descripcion
+    - String categoria
+    - String urlMultimedia
+    - String ubicacion
+    - LocalDate fechaAcontecimiento
+    - LocalDate fechaGuardado
+    - EstadoHecho estadoHecho
+    - String sugerenciaDeCambio
+    - List<String> etiquetas
+
+    + esContribuyente():Boolean
+}
+
+class Contribuyente {
+    - String nombre
+    - Integer edad
+}
+
+enum EstadoHecho {
+    PENDIENTE,
+    ACEPTADA,
+    ACEPTADA_CON_SUGERENCIA,
+    RECHAZADA
+}
+
+interface IDinamicaRepository {
+
+    + buscarPorID (Long ID):Hecho
+    + guardar(Hecho hecho):void
+    + eliminar(Hecho hecho):void
+    + mostrarTodos():List<Hecho>
+
+}
+
+class DinamicaRepository{
+
+    - List<Hecho> hechos
+
+    + buscarPorID (Long ID):Hecho
+    + guardar(Hecho hecho):void
+    + eliminar(Hecho hecho):void
+    + mostrarTodos():List<Hecho>
+}
+
+interface IDinamicaService {
+
+    + buscarHechos():List<HechoOutputDTO>
+    + buscarPorID(Long id):HechoOutputDTO
+    + crear(HechoInputDTO hechoInputDTO):HechoOutputDTO
+    + eliminar(Long id):void
+
+}
+
+class DinamicaService{
+
+    - IDinamicaRepository dinamicaRepository
+
+    + buscarHechos():List<HechoOutputDTO>
+    + buscarPorID(Long id):HechoOutputDTO
+    + crear(HechoInputDTO hechoInputDTO):HechoOutputDTO
+    + eliminar(Long id):void
+}
+
+class DinamicaController{
+
+    - IDinamicaService dinamicaService
+
+    + mostrarTodos():List<HechoOutputDTO>
+}
+
 @enduml
