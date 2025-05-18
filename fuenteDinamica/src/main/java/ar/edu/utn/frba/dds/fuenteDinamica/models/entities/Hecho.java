@@ -22,6 +22,7 @@ public class Hecho {
     private EstadoHecho   estadoHecho;
     private String        sugerenciaDeCambio;
     private List<String>  etiquetas;
+    private Boolean       enviado;
 
     public Boolean esContribuyente(){
         if(contribuyente != null){

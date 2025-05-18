@@ -10,4 +10,5 @@ public interface IDinamicaRepository {
     public void        guardar(Hecho hecho);
     public void        eliminar(Hecho hecho);
     public List<Hecho> mostrarTodos();
+    public List<Hecho> mostrarEnviados(Boolean enviado);
 }

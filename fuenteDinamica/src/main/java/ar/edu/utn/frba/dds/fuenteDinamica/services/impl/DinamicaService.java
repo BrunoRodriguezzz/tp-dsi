@@ -16,7 +16,15 @@ public class DinamicaService implements IDinamicaService {
     private IDinamicaRepository dinamicaRepository;
 
     @Override
-    public List<HechoOutputDTO> buscarHechos() {
+    public List<HechoOutputDTO> buscarHechos(Boolean enviado) {
+        if(enviado != null){
+            return dinamicaRepository
+                    .mostrarEnviados(enviado)
+                    .stream()
+                    .map(this::hechoOutputDTO)
+                    .toList();
+        }
+
         return this.dinamicaRepository
                 .mostrarTodos()
                 .stream()

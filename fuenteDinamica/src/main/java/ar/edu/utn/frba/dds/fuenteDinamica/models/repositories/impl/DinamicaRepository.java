@@ -19,17 +19,30 @@ public class DinamicaRepository implements IDinamicaRepository {
 
     @Override
     public Hecho buscarPorID(Long id) {
-        return this.hechos.stream().filter(hecho -> hecho.getId().equals(id)).findFirst().orElse(null);
+        return this.hechos
+                .stream()
+                .filter(hecho -> hecho.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
     public void guardar(Hecho hecho) {
+        if(hecho.getId() == null) {
 
-        hecho.setId((long) this.hechos.size());
-        hecho.setFechaGuardado(LocalDate.now());
-        hecho.setEstadoHecho(EstadoHecho.PENDIENTE);
+            hecho.setId((long) this.hechos.size());
+            hecho.setFechaGuardado(LocalDate.now());
+            hecho.setEstadoHecho(EstadoHecho.PENDIENTE);
+            hecho.setEnviado(false);
 
-        this.hechos.add(hecho);
+            this.hechos.add(hecho);
+
+        } else{
+
+            int indice = hechos.indexOf(hecho);
+
+            this.hechos.set(indice,hecho);
+        }
     }
 
     @Override
@@ -40,5 +53,20 @@ public class DinamicaRepository implements IDinamicaRepository {
     @Override
     public List<Hecho> mostrarTodos() {
         return this.hechos;
+    }
+
+    public List<Hecho> mostrarEnviados(Boolean enviado) {
+        List<Hecho> hechosSolicitados = this.hechos
+                .stream()
+                .filter(hecho -> hecho.getEnviado() == enviado)
+                .toList();
+
+        if(!enviado) {
+            for (Hecho hecho : hechosSolicitados) {
+                hecho.setEnviado(true);
+                this.guardar(hecho);
+            }
+        }
+        return hechosSolicitados;
     }
 }

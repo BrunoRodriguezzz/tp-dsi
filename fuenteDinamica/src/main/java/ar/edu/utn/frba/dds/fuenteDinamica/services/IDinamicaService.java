@@ -7,9 +7,8 @@ import java.util.List;
 
 public interface IDinamicaService {
 
-    public List<HechoOutputDTO> buscarHechos();
+    public List<HechoOutputDTO> buscarHechos(Boolean noEnviado);
     public HechoOutputDTO       buscarPorID(Long id);
     public HechoOutputDTO       crear(HechoInputDTO hechoInputDTO);
     public void                 eliminar(Long id);
-
 }
