@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
@@ -8,6 +9,8 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IDinamicaRepositor
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IDinamicaService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 @Service
@@ -30,11 +33,6 @@ public class DinamicaService implements IDinamicaService {
                 .stream()
                 .map(this::hechoOutputDTO)
                 .toList();
-    }
-
-    @Override
-    public HechoOutputDTO buscarPorID(Long id) {
-        return null;
     }
 
     @Override
@@ -62,6 +60,20 @@ public class DinamicaService implements IDinamicaService {
     }
 
     @Override
+    public HechoOutputDTO actualizar(HechoModificadoInputDTO hechoModificado){
+
+        Hecho hecho = buscarPorID(hechoModificado.getId());
+
+        if(this.verificarTiempoParaActualizar(hecho)){
+            //TODO: Hay que guardar la informacion del hecho modificado en el hecho anterior.
+            return null;
+        }else{
+            //TODO: El tiempo para actualizar ya se vencio
+            return null;
+            }
+    }
+
+    @Override
     public void eliminar(Long id) {
         // TODO: Revisar enunciado, ¿puede eliminarse por solicitud o decision del Administrador?
     }
@@ -70,6 +82,7 @@ public class DinamicaService implements IDinamicaService {
 
         HechoOutputDTO hechoOutputDTO = new HechoOutputDTO();
 
+        hechoOutputDTO.setId(hecho.getId());
         hechoOutputDTO.setContribuyente(hecho.getContribuyente());
         hechoOutputDTO.setTitulo(hecho.getTitulo());
         hechoOutputDTO.setDescripcion(hecho.getDescripcion());
@@ -78,7 +91,25 @@ public class DinamicaService implements IDinamicaService {
         hechoOutputDTO.setUbicacion(hecho.getUbicacion());
         hechoOutputDTO.setFechaAcontecimiento(hecho.getFechaAcontecimiento());
         hechoOutputDTO.setEtiquetas(hecho.getEtiquetas());
+        hechoOutputDTO.setEstadoHecho(hecho.getEstadoHecho());
+        hechoOutputDTO.setSugerenciaDeCambio(hecho.getSugerenciaDeCambio());
 
         return hechoOutputDTO;
+    }
+
+    private Hecho buscarPorID(Long id) {
+        return this.dinamicaRepository.buscarPorID(id);
+    }
+
+    private Boolean verificarTiempoParaActualizar(Hecho hecho){
+        LocalDate fechaHoy = LocalDate.now();
+        Period diferencia = Period.between(hecho.getFechaGuardado(),fechaHoy);
+
+        if(diferencia.getDays() > 7){
+            //TODO: No se puede actualizar el hecho, ya paso una semana
+            return false;
+        }else{
+            return true;
+        }
     }
 }

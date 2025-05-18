@@ -18,10 +18,10 @@ public class Hecho {
     private String        urlMultimedia;
     private String        ubicacion;
     private LocalDate     fechaAcontecimiento;
+    private List<String>  etiquetas;
     private LocalDate     fechaGuardado;
     private EstadoHecho   estadoHecho;
     private String        sugerenciaDeCambio;
-    private List<String>  etiquetas;
     private Boolean       enviado;
 
     public Boolean esContribuyente(){

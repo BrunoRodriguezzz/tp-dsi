@@ -33,6 +33,8 @@ public class DinamicaRepository implements IDinamicaRepository {
             hecho.setId((long) this.hechos.size());
             hecho.setFechaGuardado(LocalDate.now());
             hecho.setEstadoHecho(EstadoHecho.PENDIENTE);
+            hecho.setEtiquetas(null);
+            hecho.setSugerenciaDeCambio(null);
             hecho.setEnviado(false);
 
             this.hechos.add(hecho);
@@ -40,7 +42,6 @@ public class DinamicaRepository implements IDinamicaRepository {
         } else{
 
             int indice = hechos.indexOf(hecho);
-
             this.hechos.set(indice,hecho);
         }
     }
@@ -55,6 +56,7 @@ public class DinamicaRepository implements IDinamicaRepository {
         return this.hechos;
     }
 
+    @Override
     public List<Hecho> mostrarEnviados(Boolean enviado) {
         List<Hecho> hechosSolicitados = this.hechos
                 .stream()
