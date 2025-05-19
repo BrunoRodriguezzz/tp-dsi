@@ -13,7 +13,7 @@ public class TestCSV {
     @DisplayName("ImportarCSV")
     public void importarCSV() {
         FuenteEstatica fuenteEstatica = new FuenteEstatica(Paths.get("public", "desastres_tecnologicos_argentina.csv").toString());
-
+        // TODO: Revisar falla en el install por tildes?
         List<Hecho> hechos = fuenteEstatica.importarHechos();
 
         Assertions.assertEquals("Chivilcoy en alerta por Emanación de gas tóxico", hechos.get(0).getTitulo());
