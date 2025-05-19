@@ -50,7 +50,7 @@ public class DinamicaController {
     // Uso de los Administradores
 
     @PutMapping
-    public HechoOutputDTO revisarHecho(@RequestBody Hecho hechoRevisado){
+    public HechoOutputDTO gestionarHecho(@RequestBody Hecho hechoRevisado){
         return null;
     }
 
@@ -67,10 +67,6 @@ public class DinamicaController {
         usuario.setNombre(hechoParaActualizar.getNombreUsuario());
         usuario.setEdad(hechoParaActualizar.getEdadUsuario());
 
-        Long id = hechoParaActualizar.getId();
-
-        return dinamicaService.buscarHechos(null)
-                .stream()
-                .anyMatch(hecho -> hecho.getContribuyente() == usuario && hecho.getId().equals(id));
+        return this.dinamicaService.verificarUsuarioRegistrado(usuario);
     }
 }

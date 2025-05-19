@@ -28,22 +28,23 @@ public class DinamicaRepository implements IDinamicaRepository {
 
     @Override
     public void guardar(Hecho hecho) {
-        if(hecho.getId() == null) {
 
-            hecho.setId((long) this.hechos.size());
-            hecho.setFechaGuardado(LocalDate.now());
-            hecho.setEstadoHecho(EstadoHecho.PENDIENTE);
-            hecho.setEtiquetas(null);
-            hecho.setSugerenciaDeCambio(null);
-            hecho.setEnviado(false);
+        hecho.setId((long) this.hechos.size());
+        hecho.setFechaGuardado(LocalDate.now());
+        hecho.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
+        hecho.setEtiquetas(null);
+        hecho.setSugerenciaDeCambio(null);
+        hecho.setEnviado(false);
 
-            this.hechos.add(hecho);
+        this.hechos.add(hecho);
+    }
 
-        } else{
+    @Override
+    public void guardarCambios(Hecho hechoOriginal, Hecho hechoCambiado){
 
-            int indice = hechos.indexOf(hecho);
-            this.hechos.set(indice,hecho);
-        }
+        int indice = this.hechos.indexOf(hechoOriginal);
+        this.hechos.set(indice,hechoCambiado);
+
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.repositories;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 
 import java.util.List;
@@ -11,4 +12,5 @@ public interface IDinamicaRepository {
     public void        eliminar(Hecho hecho);
     public List<Hecho> mostrarTodos();
     public List<Hecho> mostrarEnviados(Boolean enviado);
+    public void        guardarCambios(Hecho hechoOriginal, Hecho hechoCambiado);
 }
