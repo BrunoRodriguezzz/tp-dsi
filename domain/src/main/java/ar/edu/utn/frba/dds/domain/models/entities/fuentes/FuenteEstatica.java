@@ -1,10 +1,14 @@
 package ar.edu.utn.frba.dds.domain.models.entities.fuentes;
 
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.CategoriaInvalidaException;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.DescripcionInvalidaException;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.TituloInvalidoException;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
-import models.entities.hechos.Hecho;
-import models.entities.utils.Errores.ER_ValueObjects.*;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
@@ -88,8 +92,6 @@ public class FuenteEstatica implements Fuente {
                     // TODO: Catchea el controller?
                     System.err.println("Fecha inválida para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
                 }
-
-
             }
         }
         return listaDeHechos;

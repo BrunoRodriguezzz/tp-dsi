@@ -1,19 +1,17 @@
 package ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion;
 
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Administrador;
+import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.FundamentoInvalidoException;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.HechoYaEliminadoException;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.SolicitudEliminacionYaResueltaException;
 import lombok.Getter;
 import lombok.Setter;
-import models.entities.hechos.Hecho;
-import models.entities.usuarios.Administrador;
-import models.entities.usuarios.Contribuyente;
-import models.entities.utils.Errores.ER_ValueObjects.FundamentoInvalidoException;
-import models.entities.utils.Errores.ER_ValueObjects.HechoYaEliminadoException;
-import models.entities.utils.Errores.ER_ValueObjects.SolicitudEliminacionYaResueltaException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
+@SuppressWarnings({"checkstyle:Indentation", "checkstyle:MissingJavadocType"})
 public class SolicitudEliminacion {
     private Hecho hecho;
     private String fundamento;

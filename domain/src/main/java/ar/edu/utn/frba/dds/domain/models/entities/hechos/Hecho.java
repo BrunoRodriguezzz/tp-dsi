@@ -1,9 +1,9 @@
 package ar.edu.utn.frba.dds.domain.models.entities.hechos;
 
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.DescripcionInvalidaException;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.TituloInvalidoException;
 import lombok.Getter;
-import models.entities.utils.Errores.ER_ValueObjects.DescripcionInvalidaException;
-import models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
-import models.entities.utils.Errores.ER_ValueObjects.TituloInvalidoException;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.ContenidoMultimedia;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;

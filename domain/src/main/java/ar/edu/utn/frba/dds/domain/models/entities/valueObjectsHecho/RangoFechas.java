@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho;
 
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
 import lombok.Getter;
-import models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
 
 import java.time.LocalDate;
 

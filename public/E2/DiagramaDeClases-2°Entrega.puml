@@ -26,6 +26,7 @@
     Fuente ..> Hecho
     FuenteEstatica ..|> Fuente
     FuenteDinamica ..|> Fuente
+    FuenteProxy ..|> Fuente
 
     'Criterio
     Criterio --> Filtro
@@ -99,13 +100,18 @@
     }
 
     class FuenteEstatica {
-        -rutaArchivo: String
+        -rutaAPI: String
         +importarHechos(): List<Hecho> hechos
     }
 
     class FuenteDinamica {
-        -rutaBD: String
+        -rutaAPI: String
         +importarHechos(): List<Hecho> hechos
+    }
+
+    class FuenteProxy {
+       -rutaAPI: String
+       +importarHechos(): List<Hecho> hechos
     }
 
     class Etiqueta {
@@ -139,12 +145,16 @@
     }
 
     class Coleccion {
-        -fuente: Fuente
+        -fuente: <List> Fuente
+        -hechos: <List> Hecho
         -titulo: String
         -descripcion: String
         -criterio: Criterio
         'Solo para representar overload
+        +cargarHechos(hechos: <List> Hecho): <List> Hecho
         +consultarHechos(): <List> Hecho
+        +agregarFiltroACriterio(filtro: Filtro): Boolean
+        +recalcularHechos(): <List> Hecho
         +consultarHechos(filtros: <List> Filtro): <List> Hecho
     }
 

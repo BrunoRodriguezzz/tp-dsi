@@ -1,5 +1,5 @@
 package ar.edu.utn.frba.dds.domain.models.entities.fuentes;
-import models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 
 import java.util.List;
 

@@ -1,5 +1,8 @@
-import models.entities.hechos.Hecho;
-import models.entities.fuentes.FuenteEstatica;
+package ar.edu.utn.frba.dds.domain;
+
+import ar.edu.utn.frba.dds.domain.models.entities.fuentes.FuenteEstatica;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +15,12 @@ public class TestCSV {
     @Test
     @DisplayName("ImportarCSV")
     public void importarCSV() {
-        FuenteEstatica fuenteEstatica = new FuenteEstatica(Paths.get("public", "desastres_tecnologicos_argentina.csv").toString());
+        Path path = null;
+        try {
+            path = Paths.get(ClassLoader.getSystemResource("desastres_tecnologicos_argentina.csv").toURI());
+        }
+        catch (Exception e) {}
+        FuenteEstatica fuenteEstatica = new FuenteEstatica(path.toString());
         // TODO: Revisar falla en el install por tildes?
         List<Hecho> hechos = fuenteEstatica.importarHechos();
 

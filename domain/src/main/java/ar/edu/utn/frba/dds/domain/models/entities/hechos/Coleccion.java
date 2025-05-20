@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.domain.models.entities.hechos;
 
+import lombok.Getter;
 import lombok.Setter;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.Criterio;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.Filtro;
@@ -15,32 +16,46 @@ public class Coleccion {
     private Fuente fuente;
     @Setter
     private Criterio criterio;
+    @Getter
+    private List<Hecho> hechos;
 
     public Coleccion(String titulo, String descripcion) {
         this.titulo = titulo;
         this.descripcion = descripcion;
     }
+
+    public List<Hecho> cargarHechos(List<Hecho> hechos) {
+        this.hechos = this.filtrarHechosSegunCriterio(hechos);
+        return this.hechos;
+    }
+
     // Consultas de Hechos
     public List<Hecho> consultarHechos() {
-        List<Hecho> hechos = fuente.importarHechos();
-        hechos = this.filtrarHechosSegunCriterio(hechos);
-        return hechos;
+        return this.hechos;
     }
 
     public List<Hecho> consultarHechos(List<Filtro> filtros) {
-        List<Hecho> hechos = this.consultarHechos();
-        List<Hecho> hechosQueCumplenFiltrosUsuario = this.aplicarFiltros(hechos, filtros);
+        List<Hecho> hechosQueCumplenFiltrosUsuario = this.aplicarFiltros(filtros);
+        return hechosQueCumplenFiltrosUsuario;
+    }
 
+    public void agregarFiltroACriterio(Filtro filtro){
+        this.criterio.agregarFiltro(filtro);
+    }
+
+    public List<Hecho> recalcularHechos(){
+        List<Hecho> hechosQueCumplenFiltrosUsuario = this.filtrarHechosSegunCriterio(this.hechos);
+        this.hechos = hechosQueCumplenFiltrosUsuario;
         return hechosQueCumplenFiltrosUsuario;
     }
 
     // Auxiliares a consultas de Hechos
     private List<Hecho> filtrarHechosSegunCriterio(List<Hecho> hechos) {
-        List<Hecho> hechosFiltrado = hechos.stream().filter( hecho ->
+        List<Hecho> hechosFiltrados = hechos.stream().filter(hecho ->
             this.cumpleCriterioColeccion(hecho) && !hecho.getEstaEliminado()
         ).toList();
 
-        return hechosFiltrado;
+        return hechosFiltrados;
     }
 
     private Boolean cumpleCriterioColeccion(Hecho hecho){
@@ -50,9 +65,9 @@ public class Coleccion {
         return this.criterio.cumpleCriterio(hecho);
     }
 
-    private List<Hecho> aplicarFiltros(List<Hecho> hechos, List<Filtro> filtros) {
+    private List<Hecho> aplicarFiltros(List<Filtro> filtros) {
         List<Hecho> hechosQueCumplenFiltros = null;
-        hechosQueCumplenFiltros = hechos
+        hechosQueCumplenFiltros = this.hechos
                 .stream()
                 .filter(hecho -> filtros.stream().allMatch(filtro -> {
                     try {
@@ -68,14 +83,5 @@ public class Coleccion {
                 .collect(Collectors.toList());
         return hechosQueCumplenFiltros;
     }
+
 }
-
-
-
-
-
-
-
-
-
-

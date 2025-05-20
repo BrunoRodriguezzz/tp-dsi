@@ -1,12 +1,17 @@
-import models.entities.fuentes.Fuente;
-import models.entities.utils.Errores.ER_ValueObjects.DescripcionInvalidaException;
-import models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
-import models.entities.utils.Errores.ER_ValueObjects.TituloInvalidoException;
-import models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
-import models.entities.valueObjectsHecho.*;
-import models.entities.criterio.*;
-import models.entities.hechos.Coleccion;
-import models.entities.hechos.Hecho;
+package ar.edu.utn.frba.dds.domain;
+import ar.edu.utn.frba.dds.domain.models.entities.criterio.Criterio;
+import ar.edu.utn.frba.dds.domain.models.entities.criterio.Filtro;
+import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroCategoria;
+import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroFechaAcontecimiento;
+import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroTitulo;
+import ar.edu.utn.frba.dds.domain.models.entities.fuentes.Fuente;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Etiqueta;
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.RangoFechas;
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
@@ -20,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestColecciones {
-    public TestColecciones() throws DescripcionInvalidaException, TituloInvalidoException, FechaInvalidaException {
+    public TestColecciones() {
     }
         Hecho hecho1 = null;
         Hecho hecho2 = null;
@@ -49,6 +54,8 @@ public class TestColecciones {
         Categoria categoria5 = null;
 
         Coleccion coleccion;
+
+        Fuente fuenteMockeada = mock(Fuente.class);
 
         Criterio criterioPruebas;
 
@@ -109,10 +116,6 @@ public class TestColecciones {
                     LocalDate.of(2016, 6, 4),
                     origen5
             );
-        } catch (UbicacionInvalidaException e) {
-            fail("No debería fallar para coordenadas válidas");
-        } catch (FechaInvalidaException e){
-            fail("No pudo instanciarse el rango de fechas: " + e.getMessage());
         } catch (Exception e) {
             fail("No se pudo inicializar el test");
         }
@@ -121,7 +124,7 @@ public class TestColecciones {
         List<Hecho> hechos = Arrays.asList(hecho1, hecho2, hecho3, hecho4, hecho5);
 
         // ------------------------------------------------ Instanciacion de Fuente ------------------------------------------------
-        Fuente fuenteMockeada = mock(Fuente.class);
+
 
 
         coleccion = new Coleccion("Colección prueba", "Esto es una prueba");
@@ -134,6 +137,8 @@ public class TestColecciones {
     @Test
     @DisplayName("Validar que se puedan obtener los hechos a partir de la colección.\n")
     public void obtenerHechos(){
+        List<Hecho> hechos = fuenteMockeada.importarHechos();
+        coleccion.cargarHechos(hechos);
         Assertions.assertEquals(hecho1, coleccion.consultarHechos().get(0));
     }
 
@@ -143,8 +148,11 @@ public class TestColecciones {
     public void pruebaCriterios1(){
         FiltroFechaAcontecimiento filtroFechas = new FiltroFechaAcontecimiento(rangoFechasFiltro);
 
-        criterioPruebas.agregarFiltro(filtroFechas);
+        List<Hecho> hechos = fuenteMockeada.importarHechos();
+        coleccion.cargarHechos(hechos);
         coleccion.setCriterio(criterioPruebas);
+        coleccion.agregarFiltroACriterio(filtroFechas);
+        coleccion.recalcularHechos();
 
         Assertions.assertEquals(3,coleccion.consultarHechos().size());
         Assertions.assertTrue(coleccion.consultarHechos().contains(hecho1));
@@ -154,7 +162,8 @@ public class TestColecciones {
 //      Al agregar un nuevo criterio de pertenencia y recalcular la coleccion el segundo ya no debería estar presente
         FiltroCategoria filtroCategoria = new FiltroCategoria(categoria1);
 
-        criterioPruebas.agregarFiltro(filtroCategoria);
+        coleccion.agregarFiltroACriterio(filtroCategoria);
+        coleccion.recalcularHechos();
 
         Assertions.assertEquals(2,coleccion.consultarHechos().size());
         Assertions.assertTrue(coleccion.consultarHechos().contains(hecho1));
@@ -165,6 +174,10 @@ public class TestColecciones {
     @Test
     @DisplayName("Sobre la colección aplicar un filtro de tipo categoría = “Caída de Aeronave” y título = ”un título”. Ningún hecho de la colección cumple con este filtro.")
     public void pruebaFiltros(){
+
+        List<Hecho> hechos = fuenteMockeada.importarHechos();
+        coleccion.cargarHechos(hechos);
+
         FiltroTitulo filtroTitulo = new FiltroTitulo("un titulo");
         FiltroCategoria filtroCategoria = new FiltroCategoria(categoria1);
         ArrayList<Filtro> filtros = new ArrayList<>();
@@ -176,7 +189,11 @@ public class TestColecciones {
     }
 
     @Test
-    @DisplayName("Etiquetar al hecho titulado “Caída de aeronave impacta en Olavarría” como “Olavarría” .\n" + "Etiquetar al mismo hecho como “Grave”.\n" + "Verificar que el hecho retenga las 2 etiquetas correspondientes.\n")
+    @DisplayName("""
+        Etiquetar al hecho titulado “Caída de aeronave impacta en Olavarría” como “Olavarría” .
+        Etiquetar al mismo hecho como “Grave”.
+        Verificar que el hecho retenga las 2 etiquetas correspondientes.
+        """)
     public void pruebaEtiquetas(){
         Etiqueta etiquetaOlavarria = new Etiqueta("Olavarría");
         Etiqueta etiquetaGrave = new Etiqueta("Grave");

@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.domain.models.entities.criterio;
 
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
-import models.entities.hechos.Hecho;
 
 public class FiltroCategoria implements Filtro {
     private Categoria categoria;

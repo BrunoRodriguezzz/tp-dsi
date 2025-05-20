@@ -1,8 +1,8 @@
 package ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion;
 
+import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Administrador;
 import lombok.Getter;
 import lombok.Setter;
-import models.entities.usuarios.Administrador;
 
 import java.time.LocalDateTime;
 
