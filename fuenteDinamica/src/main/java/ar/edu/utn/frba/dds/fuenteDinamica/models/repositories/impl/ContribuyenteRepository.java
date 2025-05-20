@@ -1,18 +1,18 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.impl;
 
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IContribuyentesRepository;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IContribuyenteRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class ContribuyentesRepository implements IContribuyentesRepository {
+public class ContribuyenteRepository implements IContribuyenteRepository {
 
     private List<Contribuyente> contribuyentes;
 
-    public ContribuyentesRepository(){
+    public ContribuyenteRepository(){
         this.contribuyentes = new ArrayList<>();
     }
 

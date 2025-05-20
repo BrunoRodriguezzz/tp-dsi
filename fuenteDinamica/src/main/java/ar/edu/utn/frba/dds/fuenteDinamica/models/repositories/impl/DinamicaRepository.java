@@ -62,15 +62,19 @@ public class DinamicaRepository implements IDinamicaRepository {
 
     @Override
     public List<Hecho> mostrarEnviados(Boolean enviado) {
-        List<Hecho> hechosSolicitados = this.hechos
+        List<Hecho> hechosSolicitados = this.mostrarTodos()
                 .stream()
                 .filter(hecho -> hecho.getEnviado() == enviado)
                 .toList();
 
         if(!enviado) {
             for (Hecho hecho : hechosSolicitados) {
-                hecho.setEnviado(true);
-                this.guardar(hecho);
+
+                Hecho hechoCambiado = this.buscarPorID(hecho.getId());
+
+                hechoCambiado.setEnviado(true);
+
+                this.guardarCambios(hecho, hechoCambiado);
             }
         }
         return hechosSolicitados;

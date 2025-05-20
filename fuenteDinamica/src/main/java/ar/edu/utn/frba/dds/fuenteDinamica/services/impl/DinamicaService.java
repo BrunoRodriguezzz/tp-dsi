@@ -7,7 +7,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IContribuyentesRepository;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IContribuyenteRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IDinamicaRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IDinamicaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class DinamicaService implements IDinamicaService {
     private IDinamicaRepository dinamicaRepository;
 
     @Autowired
-    private IContribuyentesRepository contribuyentesRepository;
+    private IContribuyenteRepository contribuyentesRepository;
 
     @Override
     public List<HechoOutputDTO> buscarHechos(Boolean enviado) {
@@ -114,9 +114,9 @@ public class DinamicaService implements IDinamicaService {
     @Override
     public HechoOutputDTO gestionarHecho(HechoRevisadoInputDTO hechoRevisado){
 
-        Hecho hechoActual = this.dinamicaRepository.buscarPorID(hechoRevisado.getIdHecho());
+        Hecho hechoActual = this.buscarPorID(hechoRevisado.getIdHecho());
 
-        Hecho hechoCambiado = this.dinamicaRepository.buscarPorID(hechoRevisado.getIdHecho());
+        Hecho hechoCambiado = this.buscarPorID(hechoRevisado.getIdHecho());
 
         hechoCambiado.setEtiquetas(hechoRevisado.getEtiquetas());
         hechoCambiado.setEstadoHecho(hechoRevisado.getEstadoHecho());

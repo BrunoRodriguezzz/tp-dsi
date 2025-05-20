@@ -24,12 +24,4 @@ public class Hecho {
     private String        sugerenciaDeCambio;
     private Boolean       enviado;
 
-    public Boolean esContribuyente(){
-        if(contribuyente != null){
-            //TODO: Revisar los permisos para poder editar el hecho
-            return true;
-        }else{
-            return false;
-        }
-    }
 }
