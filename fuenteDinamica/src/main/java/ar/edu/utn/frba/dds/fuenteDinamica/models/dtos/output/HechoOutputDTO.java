@@ -11,15 +11,15 @@ import java.util.List;
 @Setter
 @Getter
 public class HechoOutputDTO {
-    private Long          id;
-    private Contribuyente contribuyente;
-    private String        titulo;
-    private String        descripcion;
-    private String        categoria;
-    private String        urlMultimedia;
-    private String        ubicacion;
-    private LocalDate     fechaAcontecimiento;
-    private List<String>  etiquetas;
-    private EstadoHecho   estadoHecho;
-    private String        sugerenciaDeCambio;
+    private Long           id;
+    private Contribuyente  contribuyente;
+    private String         titulo;
+    private String         descripcion;
+    private String         categoria;
+    private String         urlMultimedia;
+    private String         ubicacion;
+    private LocalDate      fechaAcontecimiento;
+    private List<String>   etiquetas;
+    private EstadoHecho    estadoHecho;
+    private String         sugerenciaDeCambio;
 }

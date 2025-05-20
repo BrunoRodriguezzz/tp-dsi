@@ -54,7 +54,10 @@ public class DinamicaRepository implements IDinamicaRepository {
 
     @Override
     public List<Hecho> mostrarTodos() {
-        return this.hechos;
+        return this.hechos
+                .stream()
+                .filter(hecho -> estadoAceptado(hecho))
+                .toList();
     }
 
     @Override
@@ -71,5 +74,11 @@ public class DinamicaRepository implements IDinamicaRepository {
             }
         }
         return hechosSolicitados;
+    }
+
+    private Boolean estadoAceptado(Hecho hecho){
+
+        return (hecho.getEstadoHecho() == EstadoHecho.ACEPTADA) || (hecho.getEstadoHecho() == EstadoHecho.ACEPTADA_CON_SUGERENCIA);
+
     }
 }

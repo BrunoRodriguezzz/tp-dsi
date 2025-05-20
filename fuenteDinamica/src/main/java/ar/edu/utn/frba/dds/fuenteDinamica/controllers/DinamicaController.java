@@ -2,9 +2,9 @@ package ar.edu.utn.frba.dds.fuenteDinamica.controllers;
 
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IDinamicaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +37,7 @@ public class DinamicaController {
         }
     }
 
-    @PutMapping
+    @PatchMapping
     public HechoOutputDTO actualizarHecho(@RequestBody HechoModificadoInputDTO hecho){
         if(verificarUsuarioRegistrado(hecho)){
             return dinamicaService.actualizar(hecho);
@@ -49,9 +49,11 @@ public class DinamicaController {
 
     // Uso de los Administradores
 
-    @PutMapping
-    public HechoOutputDTO gestionarHecho(@RequestBody Hecho hechoRevisado){
-        return null;
+    @PatchMapping
+    public HechoOutputDTO gestionarHecho(@RequestBody HechoRevisadoInputDTO hechoRevisado){
+
+        return this.dinamicaService.gestionarHecho(hechoRevisado);
+
     }
 
     // Verificadores necesarios

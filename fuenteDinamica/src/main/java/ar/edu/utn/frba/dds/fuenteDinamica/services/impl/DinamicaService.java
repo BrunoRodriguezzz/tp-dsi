@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
@@ -108,6 +109,22 @@ public class DinamicaService implements IDinamicaService {
 
         return this.contribuyentesRepository.comprobarUsuarioRegistrado(contribuyente);
 
+    }
+
+    @Override
+    public HechoOutputDTO gestionarHecho(HechoRevisadoInputDTO hechoRevisado){
+
+        Hecho hechoActual = this.dinamicaRepository.buscarPorID(hechoRevisado.getIdHecho());
+
+        Hecho hechoCambiado = this.dinamicaRepository.buscarPorID(hechoRevisado.getIdHecho());
+
+        hechoCambiado.setEtiquetas(hechoRevisado.getEtiquetas());
+        hechoCambiado.setEstadoHecho(hechoRevisado.getEstadoHecho());
+        hechoCambiado.setSugerenciaDeCambio(hechoRevisado.getSugerenciaDeCambio());
+
+        this.dinamicaRepository.guardarCambios(hechoActual,hechoCambiado);
+
+        return this.hechoOutputDTO(hechoCambiado);
     }
 
     private HechoOutputDTO hechoOutputDTO(Hecho hecho){

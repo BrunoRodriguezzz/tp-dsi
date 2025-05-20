@@ -1,0 +1,22 @@
+package ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input;
+
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Getter
+@Setter
+
+public class HechoRevisadoInputDTO {
+
+    private Long          idAdministrador;
+    private Long          idHecho;
+    private List<String>  etiquetas;
+    private EstadoHecho   estadoHecho;
+    private String        sugerenciaDeCambio;
+
+}
