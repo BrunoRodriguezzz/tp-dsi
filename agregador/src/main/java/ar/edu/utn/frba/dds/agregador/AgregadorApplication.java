@@ -9,5 +9,4 @@ public class AgregadorApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AgregadorApplication.class, args);
 	}
-
 }
