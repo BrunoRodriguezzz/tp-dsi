@@ -33,6 +33,16 @@ public class Coleccion {
         return this.hechos;
     }
 
+    public boolean cargarHecho(Hecho hecho) {
+        if (!hecho.getEstaEliminado() && cumpleCriterioColeccion(hecho)) {
+            if (this.hechos == null) {
+                this.hechos = new ArrayList<>();
+            }
+            return this.hechos.add(hecho);
+        }
+        return false;
+    }
+
     // Consultas de Hechos
     public List<Hecho> consultarHechos() {
         if(this.hechos == null){
@@ -58,12 +68,11 @@ public class Coleccion {
 
     // Auxiliares a consultas de Hechos
     private List<Hecho> filtrarHechosSegunCriterio(List<Hecho> hechos) {
-        List<Hecho> hechosFiltrados = hechos.stream().filter(hecho ->
-            this.cumpleCriterioColeccion(hecho) && !hecho.getEstaEliminado()
-        ).toList();
-
-        return hechosFiltrados;
+        return hechos.stream()
+            .filter(hecho -> this.cumpleCriterioColeccion(hecho) && !hecho.getEstaEliminado())
+            .collect(Collectors.toList()); // ✅ Esto sí es mutable
     }
+
 
     private Boolean cumpleCriterioColeccion(Hecho hecho){
     if(this.criterio == null){ //Si no tengo criterio, lo cumple

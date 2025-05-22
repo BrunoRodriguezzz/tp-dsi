@@ -1,6 +1,5 @@
-package ar.edu.utn.frba.dds.agregador.repositories;
+package ar.edu.utn.frba.dds.agregador.models.repositories;
 
-import ar.edu.utn.frba.dds.agregador.repositories.DAO.impl.DaoColeccion;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import java.util.List;
 
@@ -8,4 +7,5 @@ import java.util.List;
 public interface IColeccionRepository {
   public List<Coleccion> buscarColecciones();
   public Coleccion guardarColeccion(Coleccion coleccion);
+  public Boolean guardarColecciones(List<Coleccion> colecciones);
 }

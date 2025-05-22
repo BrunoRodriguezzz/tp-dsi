@@ -14,9 +14,12 @@ import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Setter;
 
 @Getter
 public class Hecho {
+    @Setter @Getter
+    private String id;
     private String titulo;
     private String descripcion;
     private Categoria categoria;
@@ -26,7 +29,10 @@ public class Hecho {
     private LocalDate fechaCarga;
     private Origen origen;
     private Contribuyente contribuyente;
+    @Setter @Getter
     private Boolean estaEliminado;
+    @Setter @Getter
+    private String fuente;
     private List<ContenidoMultimedia> contenidoMultimedia;
 
     public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) throws FechaInvalidaException, TituloInvalidoException, DescripcionInvalidaException {
@@ -44,8 +50,6 @@ public class Hecho {
         this.fechaAcontecimiento = fechaAcontecimiento;
         this.origen = origen;
         this.fechaCarga = null;
-        this.estaEliminado = false;
-        this.etiquetas = new ArrayList<>();
     }
 
     public void eliminar() throws Exception {

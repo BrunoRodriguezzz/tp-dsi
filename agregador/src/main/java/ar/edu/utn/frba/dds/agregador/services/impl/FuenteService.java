@@ -58,6 +58,7 @@ public class FuenteService implements IFuenteService {
           LocalDate.of(2001, 11, 21),
           origen1
       );
+      hecho1.setEstaEliminado(false);
 
       hecho2 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
           "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
@@ -66,6 +67,7 @@ public class FuenteService implements IFuenteService {
           LocalDate.of(2001, 8, 16),
           origen2
       );
+      hecho2.setEstaEliminado(false);
 
       hecho3 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
           "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
@@ -74,6 +76,7 @@ public class FuenteService implements IFuenteService {
           LocalDate.of(2008, 8, 8),
           origen3
       );
+      hecho3.setEstaEliminado(false);
 
       hecho4 = new Hecho("Accidente en paso a nivel deja múltiples daños en Pehuajó, Buenos Aires",
           "Grave accidente en paso a nivel ocurrió en las inmediaciones de Pehuajó, Buenos Aires. El incidente generó preocupación entre las autoridades provinciales. El Ministerio de Desarrollo Social está brindando apoyo a los damnificados.",
@@ -82,6 +85,7 @@ public class FuenteService implements IFuenteService {
           LocalDate.of(2020, 1, 27),
           origen4
       );
+      hecho4.setEstaEliminado(false);
 
       hecho5 = new Hecho("Devastador Derrumbe en obra en construcción afecta a Presidencia Roque Sáenz Peña",
           "Un grave derrumbe en obra en construcción se registró en Presidencia Roque Sáenz Peña, Chaco. El incidente generó preocupación entre las autoridades provinciales. El intendente local se ha trasladado al lugar para supervisar las operaciones.",
@@ -90,6 +94,8 @@ public class FuenteService implements IFuenteService {
           LocalDate.of(2016, 6, 4),
           origen5
       );
+      hecho5.setEstaEliminado(false);
+
       this.hechos.add(hecho1);
       this.hechos.add(hecho2);
       this.hechos.add(hecho3);

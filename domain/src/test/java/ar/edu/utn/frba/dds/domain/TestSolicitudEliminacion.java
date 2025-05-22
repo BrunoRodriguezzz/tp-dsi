@@ -58,6 +58,7 @@ public class TestSolicitudEliminacion {
     @BeforeEach
     public void setUp() {
         try {
+            hecho.setEstaEliminado(false);
             ubicacion = new Ubicacion("-32.786098", "-60.741543");
             categoria = new Categoria("Desastre tecnológico");
         } catch (UbicacionInvalidaException e) {
