@@ -16,13 +16,23 @@ public class DAOColeccion implements IDAOColeccion {
     return this.colecciones;
   }
 
-  public Coleccion save(Coleccion coleccion) {
-    this.colecciones.add(coleccion);
+  public Coleccion find(String id) {
+    Coleccion coleccion = this.colecciones.stream().filter(c ->
+        c.getId().equals(id)).findFirst().orElse(null);
+    if(coleccion == null){
+      System.out.println("Coleccion no encontrada");
+    }
     return coleccion;
   }
 
   public Boolean save(List<Coleccion> colecciones) {
     this.colecciones = colecciones;
     return true;
+  }
+
+  // Solo la usa el Seeder
+  public Coleccion save(Coleccion coleccion) {
+    this.colecciones.add(coleccion);
+    return coleccion;
   }
 }

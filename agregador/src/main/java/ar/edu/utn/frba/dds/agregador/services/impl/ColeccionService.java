@@ -19,6 +19,11 @@ public class ColeccionService implements IColeccionService {
     return this.coleccionRepository.buscarColecciones();
   }
 
+  public Coleccion buscarColeccion(String id) {
+    Coleccion coleccion = this.coleccionRepository.buscarColeccion(id);
+    return coleccion;
+  }
+
   public List<String> incorporarHecho(Hecho hecho) {
     List<Coleccion> colecciones = this.coleccionRepository.buscarColecciones();
     List<String> nombreColecciones = new ArrayList<>();

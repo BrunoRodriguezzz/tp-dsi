@@ -7,4 +7,5 @@ public interface IDAOColeccion {
   public List<Coleccion> getAll();
   public Coleccion save(Coleccion coleccion);
   public Boolean save(List<Coleccion> colecciones);
+  public Coleccion find(String id);
 }

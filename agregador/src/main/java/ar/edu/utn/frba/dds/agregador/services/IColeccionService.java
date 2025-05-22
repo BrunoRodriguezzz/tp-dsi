@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface IColeccionService {
   public List<Coleccion> buscarColecciones();
+  public Coleccion buscarColeccion(String id);
   public List<String> incorporarHecho(Hecho hecho);
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface IColeccionRepository {
   public List<Coleccion> buscarColecciones();
+  public Coleccion buscarColeccion(String id);
   public Coleccion guardarColeccion(Coleccion coleccion);
   public Boolean guardarColecciones(List<Coleccion> colecciones);
 }

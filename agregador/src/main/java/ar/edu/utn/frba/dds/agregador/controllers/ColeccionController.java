@@ -22,4 +22,10 @@ public class ColeccionController {
     List<Coleccion> colecciones = this.coleccionService.buscarColecciones();
     return colecciones;
   }
+
+  @GetMapping("/{id}")
+  public Coleccion buscarColeccion(@PathVariable("id") String id) {
+    Coleccion coleccion = this.coleccionService.buscarColeccion(id);
+    return coleccion;
+  }
 }

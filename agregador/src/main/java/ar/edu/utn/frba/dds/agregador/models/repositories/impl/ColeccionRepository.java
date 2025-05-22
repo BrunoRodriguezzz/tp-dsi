@@ -31,4 +31,9 @@ public class ColeccionRepository implements IColeccionRepository {
     return this.dao.save(colecciones);
   }
 
+  @Override
+  public Coleccion buscarColeccion(String id) {
+    return this.dao.find(id);
+  }
+
 }
