@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInput
 import ar.edu.utn.frba.dds.agregador.models.repositories.ISolicitudEliminacionRepository;
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
 import ar.edu.utn.frba.dds.agregador.services.ISolicitudEliminacionService;
+import ar.edu.utn.frba.dds.agregador.services.IDetectorSpamService;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.SolicitudEliminacion;
 import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
@@ -17,15 +18,23 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
 
   @Autowired
   ISolicitudEliminacionRepository solicitudEliminacionRepository;
+  IDetectorSpamService detectorSpam;
 
-  public SolicitudEliminacionService(IAgregadorService agregadorService) {
+  public SolicitudEliminacionService(IAgregadorService agregadorService, IDetectorSpamService detectorSpam) {
     this.agregadorService = agregadorService;
+    this.detectorSpam = detectorSpam;
   }
 
   public SolicitudEliminacion guardar(SolicitudEliminacionInputDTO solicitudDTO) {
     SolicitudEliminacion solicitud = this.DTOtoSolicitud(solicitudDTO);
-    SolicitudEliminacion solicitudCreada = this.solicitudEliminacionRepository.guardar(solicitud);
-    return solicitudCreada;
+    if(this.detectorSpam.esSpam(solicitud)) {
+      solicitud.setEstadoSolicitudEliminacion(EstadoSolicitudEliminacion.SPAM);
+      return solicitud;
+    }
+    else{
+      SolicitudEliminacion solicitudCreada = this.solicitudEliminacionRepository.guardar(solicitud);
+      return solicitudCreada;
+    }
   }
 
   private SolicitudEliminacion DTOtoSolicitud (SolicitudEliminacionInputDTO solicitudDTO){
