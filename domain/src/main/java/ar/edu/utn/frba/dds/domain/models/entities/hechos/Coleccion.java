@@ -70,7 +70,7 @@ public class Coleccion {
     private List<Hecho> filtrarHechosSegunCriterio(List<Hecho> hechos) {
         return hechos.stream()
             .filter(hecho -> this.cumpleCriterioColeccion(hecho) && !hecho.getEstaEliminado())
-            .collect(Collectors.toList()); // ✅ Esto sí es mutable
+            .collect(Collectors.toList());
     }
 
 

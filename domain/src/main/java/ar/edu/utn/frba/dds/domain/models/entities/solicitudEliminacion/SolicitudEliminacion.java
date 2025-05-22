@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
 import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.FundamentoInvalidoException;
 import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.HechoYaEliminadoException;
 import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.SolicitudEliminacionYaResueltaException;
+import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,20 +14,23 @@ import java.time.LocalDateTime;
 
 @SuppressWarnings({"checkstyle:Indentation", "checkstyle:MissingJavadocType"})
 public class SolicitudEliminacion {
-    private Hecho hecho;
-    private String fundamento;
     @Getter
+    private Hecho hecho;
+    @Getter
+    private String fundamento;
+    @Getter @Setter
     private EstadoSolicitudEliminacion estadoSolicitudEliminacion;
-    private LocalDateTime fechaCreacion;
+    @Getter
+    private LocalDate fechaCreacion;
     @Setter
     private ResolucionSolicitudEliminacion resolucionSolicitudEliminacion;
+    @Getter
     private Contribuyente contribuyente;
 
-    public SolicitudEliminacion(Hecho hecho, String fundamento, Contribuyente contribuyente, LocalDateTime fechaCreacion) throws FundamentoInvalidoException {
+    public SolicitudEliminacion(Hecho hecho, String fundamento, Contribuyente contribuyente, LocalDate fechaCreacion) throws FundamentoInvalidoException {
         this.hecho = hecho;
         if (fundamento.length() < 500) throw new FundamentoInvalidoException("El fundamento debe tener al menos 500 caracteres");
         this.fundamento = fundamento;
-        this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.PENDIENTE;
         this.fechaCreacion = fechaCreacion;
         this.resolucionSolicitudEliminacion = null;
         this.contribuyente = contribuyente;

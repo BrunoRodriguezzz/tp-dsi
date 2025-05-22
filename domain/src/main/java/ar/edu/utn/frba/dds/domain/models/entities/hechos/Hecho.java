@@ -63,6 +63,7 @@ public class Hecho {
     }
 
     public Boolean agregarEtiqueta(Etiqueta etiqueta) {
+        if(this.etiquetas == null) {this.etiquetas = new ArrayList<>();}
         if (this.etiquetas.stream().noneMatch(e -> e.getTitulo().equals(etiqueta.getTitulo()))){ //TODO Revisar porque devuelve siempre true
             this.etiquetas.add(etiqueta);
             return true;

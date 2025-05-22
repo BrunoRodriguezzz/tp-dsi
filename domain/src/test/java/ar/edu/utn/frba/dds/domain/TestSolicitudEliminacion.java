@@ -86,7 +86,8 @@ public class TestSolicitudEliminacion {
         String fundamento = "a".repeat(500) + " Esto esta bien fundado";
 
         try {
-            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente, LocalDateTime.now());
+            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente, LocalDate.now());
+            solicitudEliminacion.setEstadoSolicitudEliminacion(EstadoSolicitudEliminacion.PENDIENTE);
         }
         catch (Exception e){
             System.out.println(e.getMessage());
@@ -123,7 +124,8 @@ public class TestSolicitudEliminacion {
         coleccion = new Coleccion("Colección sin criterio", "Esto es una prueba");
 
         try {
-            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente, LocalDateTime.now());
+            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente, LocalDate.now());
+            solicitudEliminacion.setEstadoSolicitudEliminacion(EstadoSolicitudEliminacion.PENDIENTE);
         }
         catch (Exception e){
             System.out.println(e.getMessage());

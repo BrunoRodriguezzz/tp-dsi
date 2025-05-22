@@ -1,14 +1,14 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl;
 
-import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDaoColeccion;
+import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOColeccion;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DaoColeccion implements IDaoColeccion {
+public class DAOColeccion implements IDAOColeccion {
   private List<Coleccion> colecciones;
 
-  public DaoColeccion() {
+  public DAOColeccion() {
     this.colecciones = new ArrayList<>();
   }
 

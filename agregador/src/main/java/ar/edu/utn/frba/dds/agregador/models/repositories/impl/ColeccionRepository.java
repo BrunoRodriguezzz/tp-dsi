@@ -1,17 +1,18 @@
-package ar.edu.utn.frba.dds.agregador.models.repositories;
+package ar.edu.utn.frba.dds.agregador.models.repositories.impl;
 
-import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDaoColeccion;
-import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl.DaoColeccion;
+import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOColeccion;
+import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl.DAOColeccion;
+import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ColeccionRepository implements IColeccionRepository {
-  private IDaoColeccion dao;
+  private IDAOColeccion dao;
 
   public ColeccionRepository() {
-    this.dao = new DaoColeccion();
+    this.dao = new DAOColeccion();
   }
 
   @Override

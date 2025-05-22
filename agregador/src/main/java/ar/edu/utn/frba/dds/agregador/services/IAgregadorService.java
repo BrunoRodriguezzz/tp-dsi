@@ -7,4 +7,5 @@ import java.util.List;
 public interface IAgregadorService {
   public List<Hecho> buscarHechos();
   public List<String> incorporarHecho(HechoInputDTO hecho);
+  public Hecho DTOtoHecho(HechoInputDTO hechoDTO);
 }

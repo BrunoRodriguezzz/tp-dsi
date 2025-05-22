@@ -56,7 +56,7 @@ public class AgregadorService implements IAgregadorService {
     return nombresColecciones;
   }
 
-  private Hecho DTOtoHecho(HechoInputDTO hechoDTO) {
+  public Hecho DTOtoHecho(HechoInputDTO hechoDTO) {
     Hecho hecho;
     try {
       hecho = new Hecho(
@@ -70,6 +70,7 @@ public class AgregadorService implements IAgregadorService {
           hechoDTO.getFechaAcontecimiento(),
           Origen.valueOf(hechoDTO.getOrigen().toUpperCase())
       );
+      hecho.setFuente(hechoDTO.getFuente());
       hecho.setEstaEliminado(false);
       return hecho;
     } catch (Exception e){

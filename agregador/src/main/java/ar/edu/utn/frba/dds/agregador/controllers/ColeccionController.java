@@ -1,10 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.controllers;
 
-import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
-import ar.edu.utn.frba.dds.agregador.services.ISeederService;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
