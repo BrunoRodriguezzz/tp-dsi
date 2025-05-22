@@ -10,5 +10,5 @@ import java.util.List;
 public class Contribuyente {
     private String      nombre;
     private Integer     edad;
-    private Long        id;
+    private Long        idContribuyente;
 }

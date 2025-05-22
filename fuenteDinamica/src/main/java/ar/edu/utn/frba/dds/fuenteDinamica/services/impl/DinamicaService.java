@@ -131,7 +131,7 @@ public class DinamicaService implements IDinamicaService {
 
         HechoOutputDTO hechoOutputDTO = new HechoOutputDTO();
 
-        hechoOutputDTO.setId(hecho.getId());
+        hechoOutputDTO.setIdHecho(hecho.getIdHecho());
         hechoOutputDTO.setContribuyente(hecho.getContribuyente());
         hechoOutputDTO.setTitulo(hecho.getTitulo());
         hechoOutputDTO.setDescripcion(hecho.getDescripcion());

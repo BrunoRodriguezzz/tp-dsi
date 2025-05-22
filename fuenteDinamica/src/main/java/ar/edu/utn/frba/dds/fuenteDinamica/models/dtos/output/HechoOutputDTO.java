@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @Getter
 public class HechoOutputDTO {
-    private Long           id;
+    private Long           idHecho;
     private Contribuyente  contribuyente;
     private String         titulo;
     private String         descripcion;

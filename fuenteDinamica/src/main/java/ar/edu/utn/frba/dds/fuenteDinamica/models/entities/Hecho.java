@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 public class Hecho {
 
-    private Long          id;
+    private Long          idHecho;
     private Contribuyente contribuyente;
     private String        titulo;
     private String        descripcion;

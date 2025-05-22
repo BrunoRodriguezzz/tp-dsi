@@ -66,10 +66,10 @@ class HechoModificadoInputDTO {
 class HechoRevisadoInputDTO {
 
     - Long idAdministrador
-    - Long idHecho;
-    - List<String> etiquetas;
-    - EstadoHecho estadoHecho;
-    - String sugerenciaDeCambio;
+    - Long idHecho
+    - List<String> etiquetas
+    - EstadoHecho estadoHecho
+    - String sugerenciaDeCambio
 }
 
 class HechoOutputDTO {

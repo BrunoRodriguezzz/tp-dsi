@@ -19,15 +19,19 @@ public class ContribuyenteRepository implements IContribuyenteRepository {
     @Override
     public void guardar(Contribuyente contribuyente) {
 
-        if(!(comprobarUsuarioRegistrado(contribuyente))){
+        if(!(this.comprobarUsuarioRegistrado(contribuyente))){
 
-            contribuyente.setId((long) this.contribuyentes.size());
+            contribuyente.setIdContribuyente((long) this.contribuyentes.size());
             this.contribuyentes.add(contribuyente);
 
         } else{
 
-            //Ya esta registrado.
+            Contribuyente cuentaDelUsuario = this.contribuyentes
+                    .stream()
+                    .filter(usuario -> usuario.getNombre().equals(contribuyente.getNombre()))
+                    .findFirst().orElse(null);
 
+            contribuyente.setIdContribuyente(cuentaDelUsuario.getIdContribuyente());
         }
     }
 
@@ -36,7 +40,7 @@ public class ContribuyenteRepository implements IContribuyenteRepository {
 
         return this.contribuyentes
                 .stream()
-                .anyMatch(usuario -> usuario.getNombre() == contribuyente.getNombre());
+                .anyMatch(usuario -> usuario.getNombre().equals(contribuyente.getNombre()));
 
     }
 }

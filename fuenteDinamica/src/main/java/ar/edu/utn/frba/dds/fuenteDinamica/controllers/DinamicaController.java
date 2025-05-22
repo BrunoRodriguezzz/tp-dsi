@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/hechos")
+@RequestMapping("/api/fuenteDinamica")
+@CrossOrigin(origins = "http://localhost:8080")
 public class DinamicaController {
 
     @Autowired
@@ -20,14 +21,14 @@ public class DinamicaController {
 
     // Uso del Agregador o cualquier Usuario
 
-    @GetMapping
+    @GetMapping("/buscarTodos")
     public List<HechoOutputDTO> buscarTodos(@RequestParam(required = false) Boolean enviado){
         return dinamicaService.buscarHechos(enviado);
     }
 
     // Uso de los Usuarios
 
-    @PostMapping
+    @PostMapping("/solicitudHecho")
     public HechoOutputDTO solicitudCrearHecho(@RequestBody HechoInputDTO hecho){
         if(verificarEdadNecesaria(hecho)) {
             return dinamicaService.crear(hecho);
@@ -37,7 +38,7 @@ public class DinamicaController {
         }
     }
 
-    @PatchMapping
+    @PatchMapping("/modificarHecho")
     public HechoOutputDTO actualizarHecho(@RequestBody HechoModificadoInputDTO hecho){
         if(verificarUsuarioRegistrado(hecho)){
             return dinamicaService.actualizar(hecho);
@@ -49,7 +50,7 @@ public class DinamicaController {
 
     // Uso de los Administradores
 
-    @PatchMapping
+    @PatchMapping("/gestionarHecho")
     public HechoOutputDTO gestionarHecho(@RequestBody HechoRevisadoInputDTO hechoRevisado){
 
         return this.dinamicaService.gestionarHecho(hechoRevisado);
