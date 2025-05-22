@@ -20,6 +20,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 public class FuenteEstatica implements Fuente {
     private String rutaArchivo;

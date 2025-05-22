@@ -1,16 +1,24 @@
-package ar.edu.utn.frba.dds.agregador.controllers;
+package ar.edu.utn.frba.dds.agregador.services.impl;
 
+import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.RangoFechas;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
-public class ReturnHechosPrueba {
-  public List<Hecho> buscarHechos(){
+@Service
+public class FuenteService implements IFuenteService {
+  List<Hecho> hechos;
+
+  // TODO: En principio lo hago sincrónico porque no tengo las APIs, cuando las tenga hago el fix con Mono
+  // Constructor
+  public FuenteService() {
+    this.hechos = new ArrayList<>();
     Hecho hecho1 = null;
     Hecho hecho2 = null;
     Hecho hecho3 = null;
@@ -31,7 +39,6 @@ public class ReturnHechosPrueba {
     Categoria categoria3 = null;
     Categoria categoria4 = null;
     Categoria categoria5 = null;
-    List<Hecho> hechos = new ArrayList<Hecho>();
     try {
       ubicacion1 = new Ubicacion("-36.868375", "-60.343297");
       ubicacion2 = new Ubicacion("-37.345571", "-70.241485");
@@ -44,7 +51,6 @@ public class ReturnHechosPrueba {
       categoria3 = new Categoria("Caída de aeronave");
       categoria4 = new Categoria("Accidente en paso a nivel");
       categoria5 = new Categoria("Derrumbe en obra en construcción");
-
       hecho1 = new Hecho("Caída de aeronave impacta en Olavarría",
           "Grave caída de aeronave ocurrió en las inmediaciones de Olavarría, Buenos Aires. El incidente provocó pánico entre los residentes locales. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
           categoria1,
@@ -84,16 +90,17 @@ public class ReturnHechosPrueba {
           LocalDate.of(2016, 6, 4),
           origen5
       );
-
-      hechos.add(hecho1);
-      hechos.add(hecho2);
-      hechos.add(hecho3);
-      hechos.add(hecho4);
-      hechos.add(hecho5);
-
+      this.hechos.add(hecho1);
+      this.hechos.add(hecho2);
+      this.hechos.add(hecho3);
+      this.hechos.add(hecho4);
+      this.hechos.add(hecho5);
     } catch (Exception e) {
-      System.out.println("Error");
+      System.out.println("No se pudieron inicializar los hechos");
     }
-    return hechos;
+  }
+  public List<Hecho> buscarHechos(){
+    return this.hechos;
   }
 }
+

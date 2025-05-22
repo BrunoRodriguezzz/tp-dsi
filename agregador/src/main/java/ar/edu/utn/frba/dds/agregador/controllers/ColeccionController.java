@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.controllers;
 
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
+import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.services.ISeederService;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
@@ -13,24 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/agregador")
+@RequestMapping("/colecciones")
 @CrossOrigin(origins = "http://localhost:8080")
-public class AgregadorController {
+public class ColeccionController {
   @Autowired
-  private IAgregadorService agregadorService;
+  private IColeccionService coleccionService;
 
-  @Autowired
-  private ISeederService seederService;
-
-  @GetMapping("/inicializacion")
-  public boolean inicializarDatos() {
-    this.seederService.init();
-    return true;
-  }
-
-  @GetMapping("/hechos")
-  public List<Hecho> buscarHechos() {
-    List<Hecho> hechos = this.agregadorService.buscarHechos();
-    return hechos;
+  @GetMapping
+  public List<Coleccion> buscarColecciones() {
+    List<Coleccion> colecciones = this.coleccionService.buscarColecciones();
+    return colecciones;
   }
 }

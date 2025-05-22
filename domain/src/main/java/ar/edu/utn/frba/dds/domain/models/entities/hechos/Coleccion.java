@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.domain.models.entities.hechos;
 
+import java.util.ArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.Criterio;
@@ -10,7 +11,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Coleccion {
+    @Getter @Setter private String id;
+    @Getter
     private String titulo;
+    @Getter
     private String descripcion;
     @Setter
     private Fuente fuente;
@@ -31,6 +35,9 @@ public class Coleccion {
 
     // Consultas de Hechos
     public List<Hecho> consultarHechos() {
+        if(this.hechos == null){
+            return new ArrayList<>();
+        }
         return this.hechos;
     }
 

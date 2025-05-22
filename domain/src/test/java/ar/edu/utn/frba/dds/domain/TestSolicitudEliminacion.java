@@ -107,7 +107,7 @@ public class TestSolicitudEliminacion {
         // Dado que fue rechazada, el hecho puede ser agregado a cualquier colección.
         coleccion = new Coleccion("Colección sin criterio", "Esto es una prueba");
 
-        coleccion.setFuente(fuenteMockeada);
+        coleccion.cargarHechos(fuenteMockeada.importarHechos());
 
         Assertions.assertFalse(coleccion.consultarHechos().isEmpty()); // Se agrega a una coleccion vacía, luego no debe estarlo
         // Verificar que la solicitud haya quedado en estado rechazada.
