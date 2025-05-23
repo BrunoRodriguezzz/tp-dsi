@@ -8,7 +8,9 @@ import java.time.LocalDate;
 import java.time.Period;
 
 public class Contribuyente {
+    @Getter
     private String nombre;
+    @Getter
     private String apellido;
     @Getter
     @Setter

@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
+import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.agregador.services.ISeederService;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.Criterio;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroFechaAcontecimiento;
@@ -21,6 +22,9 @@ import org.springframework.stereotype.Service;
 public class SeederService implements ISeederService {
   @Autowired
   private IColeccionRepository coleccionRepository;
+
+  @Autowired
+  private IHechoRepository hechoRepository;
 
 
   public void init(){
@@ -66,6 +70,7 @@ public class SeederService implements ISeederService {
           origen1
       );
       hecho1.setEstaEliminado(false);
+      hecho1.setId(1123L);
 
       hecho2 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
           "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
@@ -75,6 +80,7 @@ public class SeederService implements ISeederService {
           origen2
       );
       hecho2.setEstaEliminado(false);
+      hecho2.setId(1124L);
 
       hecho3 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
           "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
@@ -84,6 +90,7 @@ public class SeederService implements ISeederService {
           origen3
       );
       hecho3.setEstaEliminado(false);
+      hecho3.setId(1125L);
 
       hecho4 = new Hecho("Accidente en paso a nivel deja múltiples daños en Pehuajó, Buenos Aires",
           "Grave accidente en paso a nivel ocurrió en las inmediaciones de Pehuajó, Buenos Aires. El incidente generó preocupación entre las autoridades provinciales. El Ministerio de Desarrollo Social está brindando apoyo a los damnificados.",
@@ -93,6 +100,7 @@ public class SeederService implements ISeederService {
           origen4
       );
       hecho4.setEstaEliminado(false);
+      hecho4.setId(1126L);
 
       hecho5 = new Hecho("Devastador Derrumbe en obra en construcción afecta a Presidencia Roque Sáenz Peña",
           "Un grave derrumbe en obra en construcción se registró en Presidencia Roque Sáenz Peña, Chaco. El incidente generó preocupación entre las autoridades provinciales. El intendente local se ha trasladado al lugar para supervisar las operaciones.",
@@ -102,6 +110,7 @@ public class SeederService implements ISeederService {
           origen5
       );
       hecho5.setEstaEliminado(false);
+      hecho5.setId(1127L);
 
       hechos.add(hecho1);
       hechos.add(hecho2);
@@ -160,5 +169,6 @@ public class SeederService implements ISeederService {
 
     this.coleccionRepository.guardarColeccion(coleccion);
     this.coleccionRepository.guardarColeccion(coleccion1);
+    this.hechoRepository.inicializarHechos(hechos);
   }
 }

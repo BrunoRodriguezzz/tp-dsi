@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 public interface ISolicitudEliminacionRepository {
   public SolicitudEliminacion guardar(SolicitudEliminacion solicitud);
+  public SolicitudEliminacion buscarSolicitud(Long id);
 }

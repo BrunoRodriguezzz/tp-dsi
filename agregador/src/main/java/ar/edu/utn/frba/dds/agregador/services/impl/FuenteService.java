@@ -59,6 +59,7 @@ public class FuenteService implements IFuenteService {
           origen1
       );
       hecho1.setEstaEliminado(false);
+      hecho1.setId(1123L);
 
       hecho2 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
           "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
@@ -68,6 +69,7 @@ public class FuenteService implements IFuenteService {
           origen2
       );
       hecho2.setEstaEliminado(false);
+      hecho2.setId(1124L);
 
       hecho3 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
           "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
@@ -77,6 +79,7 @@ public class FuenteService implements IFuenteService {
           origen3
       );
       hecho3.setEstaEliminado(false);
+      hecho3.setId(1125L);
 
       hecho4 = new Hecho("Accidente en paso a nivel deja múltiples daños en Pehuajó, Buenos Aires",
           "Grave accidente en paso a nivel ocurrió en las inmediaciones de Pehuajó, Buenos Aires. El incidente generó preocupación entre las autoridades provinciales. El Ministerio de Desarrollo Social está brindando apoyo a los damnificados.",
@@ -86,6 +89,7 @@ public class FuenteService implements IFuenteService {
           origen4
       );
       hecho4.setEstaEliminado(false);
+      hecho4.setId(1126L);
 
       hecho5 = new Hecho("Devastador Derrumbe en obra en construcción afecta a Presidencia Roque Sáenz Peña",
           "Un grave derrumbe en obra en construcción se registró en Presidencia Roque Sáenz Peña, Chaco. El incidente generó preocupación entre las autoridades provinciales. El intendente local se ha trasladado al lugar para supervisar las operaciones.",
@@ -95,6 +99,7 @@ public class FuenteService implements IFuenteService {
           origen5
       );
       hecho5.setEstaEliminado(false);
+      hecho5.setId(1127L);
 
       this.hechos.add(hecho1);
       this.hechos.add(hecho2);

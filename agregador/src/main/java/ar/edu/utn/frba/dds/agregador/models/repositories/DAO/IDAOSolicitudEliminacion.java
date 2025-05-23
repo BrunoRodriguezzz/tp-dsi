@@ -4,4 +4,5 @@ import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.Solicitud
 
 public interface IDAOSolicitudEliminacion {
   public SolicitudEliminacion save(SolicitudEliminacion solicitud);
+  public SolicitudEliminacion findById(Long id);
 }

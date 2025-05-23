@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 
 @SuppressWarnings({"checkstyle:Indentation", "checkstyle:MissingJavadocType"})
 public class SolicitudEliminacion {
+    @Setter @Getter
+    private Long id;
     @Getter
     private Hecho hecho;
     @Getter
@@ -21,24 +23,25 @@ public class SolicitudEliminacion {
     @Getter @Setter
     private EstadoSolicitudEliminacion estadoSolicitudEliminacion;
     @Getter
-    private LocalDate fechaCreacion;
-    @Setter
+    private LocalDateTime fechaCreacion;
+    @Setter @Getter
     private ResolucionSolicitudEliminacion resolucionSolicitudEliminacion;
     @Getter
     private Contribuyente contribuyente;
 
-    public SolicitudEliminacion(Hecho hecho, String fundamento, Contribuyente contribuyente, LocalDate fechaCreacion) throws FundamentoInvalidoException {
+    public SolicitudEliminacion(Hecho hecho, String fundamento, Contribuyente contribuyente, LocalDateTime fechaCreacion) throws FundamentoInvalidoException {
         this.hecho = hecho;
         if (fundamento.length() < 500) throw new FundamentoInvalidoException("El fundamento debe tener al menos 500 caracteres");
         this.fundamento = fundamento;
         this.fechaCreacion = fechaCreacion;
         this.resolucionSolicitudEliminacion = null;
         this.contribuyente = contribuyente;
+        this.id = null;
     }
 
     public void serAceptada(Administrador administrador) throws Exception {
         try {
-            this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador, LocalDateTime.now());
+            this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador);
             this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.ACEPTADA;
             this.hecho.eliminar();
         } catch (SolicitudEliminacionYaResueltaException e) {
@@ -52,7 +55,7 @@ public class SolicitudEliminacion {
 
     public void serRechazada(Administrador administrador) throws Exception {
         try {
-            this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador, LocalDateTime.now());
+            this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador);
             this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.RECHAZADA;
         } catch (SolicitudEliminacionYaResueltaException e) {
             // TODO: Corregir system out por otra excepcion que será recibida por una capa superior
@@ -60,7 +63,7 @@ public class SolicitudEliminacion {
         }
     }
 
-    private ResolucionSolicitudEliminacion crearResolucionSolicitudEliminacion(Administrador administrador, LocalDateTime fechaResolucion) throws Exception {
+    private ResolucionSolicitudEliminacion crearResolucionSolicitudEliminacion(Administrador administrador) throws Exception {
         if(this.resolucionSolicitudEliminacion != null) {
             throw new Exception("La solicitud de eliminacion ya fue resuelta con Estado: " + this.estadoSolicitudEliminacion);
         }
