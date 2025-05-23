@@ -6,5 +6,5 @@ import java.util.List;
 public interface IDAOHecho {
   public Hecho save(Hecho hecho);
   public Boolean saveAll(List<Hecho> hechos);
-  public Hecho findById(String id);
+  public Hecho findById(Long id);
 }

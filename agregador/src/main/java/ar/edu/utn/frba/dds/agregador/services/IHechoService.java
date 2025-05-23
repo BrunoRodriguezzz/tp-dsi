@@ -16,4 +16,5 @@ public interface IHechoService {
   public List<HechoOutputDTO> mapHechoToDTO(List<Hecho> hechos);
   public UbicacionOutputDTO UbicacionToDTO(Ubicacion ubicacion);
   public ContribuyenteOutputDTO ContribuyenteToDTO(Contribuyente contribuyente);
+  public Hecho buscarHecho(Long id);
 }

@@ -7,9 +7,11 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.output.ResolucionSolicitudElimi
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.SolicitudEliminacionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.ISolicitudEliminacionRepository;
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
+import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.services.ISolicitudEliminacionService;
 import ar.edu.utn.frba.dds.agregador.services.IDetectorSpamService;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.ResolucionSolicitudEliminacion;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.SolicitudEliminacion;
@@ -24,6 +26,7 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
   IAgregadorService agregadorService;
   IHechoService hechoService;
   IDetectorSpamService detectorSpam;
+  IColeccionService coleccionService;
 
   @Autowired
   ISolicitudEliminacionRepository solicitudEliminacionRepository;
@@ -31,16 +34,19 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
   public SolicitudEliminacionService(
       IAgregadorService agregadorService,
       IDetectorSpamService detectorSpam,
-      IHechoService hechoService
+      IHechoService hechoService,
+      IColeccionService coleccionService
   ) {
     this.agregadorService = agregadorService;
     this.detectorSpam = detectorSpam;
     this.hechoService = hechoService;
+    this.coleccionService = coleccionService;
   }
 
   @Override
   public SolicitudEliminacionOutputDTO guardar(SolicitudEliminacionInputDTO solicitudInputDTO) {
-    SolicitudEliminacion solicitud = this.DTOtoSolicitud(solicitudInputDTO);
+    Hecho hecho = this.hechoService.buscarHecho(solicitudInputDTO.getIdHecho());
+    SolicitudEliminacion solicitud = this.DTOtoSolicitud(solicitudInputDTO, hecho);
     if(this.detectorSpam.esSpam(solicitud)) {
       solicitud.setEstadoSolicitudEliminacion(EstadoSolicitudEliminacion.SPAM);
       SolicitudEliminacionOutputDTO solicitudSpamDTO = this.SolicitudToDTO(solicitud);
@@ -77,9 +83,10 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
     }
     this.solicitudEliminacionRepository.guardar(solicitud);
     this.hechoService.guardarHecho(solicitud.getHecho());
+    this.coleccionService.eliminarHecho(solicitud.getHecho());
     SolicitudEliminacionOutputDTO solicitudRechazadaDTO = this.SolicitudToDTO(solicitud);
     return solicitudRechazadaDTO;
-  }
+  } // TODO: El hecho sigue apareciendo en las colecciones
 
   @Override
   public SolicitudEliminacionOutputDTO buscarSolicitud(Long id) {
@@ -88,7 +95,7 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
     return solicitudDTO;
   }
 
-  private SolicitudEliminacion DTOtoSolicitud (SolicitudEliminacionInputDTO solicitudDTO){
+  private SolicitudEliminacion DTOtoSolicitud (SolicitudEliminacionInputDTO solicitudDTO, Hecho hecho){
     Contribuyente contribuyente = null;
     SolicitudEliminacion solicitud = null;
     try{
@@ -98,7 +105,7 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
           solicitudDTO.getContribuyente().getFechaNacimiento()
       );
       solicitud = new SolicitudEliminacion(
-          this.hechoService.DTOToHecho(solicitudDTO.getHecho()),
+          hecho,
           solicitudDTO.getFundamento(),
           contribuyente,
           solicitudDTO.getFechaCreacion()

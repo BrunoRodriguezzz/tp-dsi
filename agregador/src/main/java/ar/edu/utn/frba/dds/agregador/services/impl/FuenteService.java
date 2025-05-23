@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -59,6 +60,7 @@ public class FuenteService implements IFuenteService {
           origen1
       );
       hecho1.setEstaEliminado(false);
+      hecho1.setFuente("Accidentes");
       hecho1.setId(1123L);
 
       hecho2 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
@@ -69,6 +71,7 @@ public class FuenteService implements IFuenteService {
           origen2
       );
       hecho2.setEstaEliminado(false);
+      hecho2.setFuente("Incidentes");
       hecho2.setId(1124L);
 
       hecho3 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
@@ -79,6 +82,7 @@ public class FuenteService implements IFuenteService {
           origen3
       );
       hecho3.setEstaEliminado(false);
+      hecho3.setFuente("Incidentes");
       hecho3.setId(1125L);
 
       hecho4 = new Hecho("Accidente en paso a nivel deja múltiples daños en Pehuajó, Buenos Aires",
@@ -89,6 +93,7 @@ public class FuenteService implements IFuenteService {
           origen4
       );
       hecho4.setEstaEliminado(false);
+      hecho4.setFuente("Accidentes");
       hecho4.setId(1126L);
 
       hecho5 = new Hecho("Devastador Derrumbe en obra en construcción afecta a Presidencia Roque Sáenz Peña",
@@ -99,6 +104,7 @@ public class FuenteService implements IFuenteService {
           origen5
       );
       hecho5.setEstaEliminado(false);
+      hecho5.setFuente("Derrumbes");
       hecho5.setId(1127L);
 
       this.hechos.add(hecho1);
@@ -111,6 +117,10 @@ public class FuenteService implements IFuenteService {
     }
   }
   public List<Hecho> buscarHechos(){
+    return this.hechos;
+  }
+  public List<Hecho> nuevosHechos() {
+    // TODO Implementar bien
     return this.hechos;
   }
 }

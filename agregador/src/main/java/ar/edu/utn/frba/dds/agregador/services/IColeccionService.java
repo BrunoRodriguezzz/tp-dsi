@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface IColeccionService {
   public List<ColeccionOutputDTO> buscarColecciones();
-  public ColeccionOutputDTO buscarColeccion(String id);
+  public ColeccionOutputDTO buscarColeccion(Long id);
   public List<String> incorporarHecho(Hecho hecho);
+  public Boolean eliminarHecho(Hecho hecho);
+  public void incorporarHechos(List<Hecho> hecho);
 }

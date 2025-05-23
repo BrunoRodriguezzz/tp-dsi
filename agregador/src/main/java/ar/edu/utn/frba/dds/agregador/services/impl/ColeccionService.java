@@ -4,10 +4,9 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class ColeccionService implements IColeccionService {
     return coleccionesDTO;
   }
 
-  public ColeccionOutputDTO buscarColeccion(String id) {
+  public ColeccionOutputDTO buscarColeccion(Long id) {
     Coleccion coleccion = this.coleccionRepository.buscarColeccion(id);
     ColeccionOutputDTO coleccionDTO = this.coleccionToDTO(coleccion);
     return coleccionDTO;
@@ -40,7 +39,6 @@ public class ColeccionService implements IColeccionService {
     List<Coleccion> colecciones = this.coleccionRepository.buscarColecciones();
     List<String> nombreColecciones = new ArrayList<>();
     colecciones.forEach(coleccion -> {
-      List<Hecho> listaHecho = Collections.singletonList(hecho);
       boolean resultado = coleccion.cargarHecho(hecho);
       if (resultado) {
         nombreColecciones.add(coleccion.getTitulo());
@@ -48,9 +46,29 @@ public class ColeccionService implements IColeccionService {
     });
     Boolean resultado = this.coleccionRepository.guardarColecciones(colecciones);
     if(!resultado){
-      System.out.println("No se pudo guardar las colecciones");
+      System.out.println("No se pudo guardar en las colecciones");
     }
     return nombreColecciones;
+  }
+
+  public void incorporarHechos(List<Hecho> hechos) {
+    // TODO Es poco eficiciente pero funciona
+    List<Coleccion> colecciones = this.coleccionRepository.buscarColecciones();
+    hechos.forEach(hecho -> {
+      colecciones.forEach(c -> {
+        if(c.getFuentes().contains(hecho.getFuente())){
+          c.cargarHecho(hecho);
+        }
+      });
+    });
+    Boolean resultado = this.coleccionRepository.guardarColecciones(colecciones);
+    if(!resultado){
+      System.out.println("No se pudo guardar en las colecciones");
+    }
+  }
+
+  public Boolean eliminarHecho(Hecho hecho) {
+    return this.coleccionRepository.eliminarHecho(hecho);
   }
 
   ColeccionOutputDTO coleccionToDTO(Coleccion coleccion) {

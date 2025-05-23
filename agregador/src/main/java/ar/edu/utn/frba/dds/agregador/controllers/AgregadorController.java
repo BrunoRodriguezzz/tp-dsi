@@ -41,4 +41,10 @@ public class AgregadorController {
     List<String> incorporadoEn = this.agregadorService.incorporarHecho(hecho);
     return incorporadoEn;
   }
+
+  // TODO: Borrar esto
+  @GetMapping("/refresco")
+  public void refrescarColecciones() {
+    this.agregadorService.refrescarColecciones();
+  }
 }

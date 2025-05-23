@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class SolicitudEliminacionInputDTO {
-  private HechoInputDTO hecho;
+  private Long idHecho;
   private String fundamento;
   private LocalDateTime fechaCreacion;
   private ContribuyenteInputDTO contribuyente;

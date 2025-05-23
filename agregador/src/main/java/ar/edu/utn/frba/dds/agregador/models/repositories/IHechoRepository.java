@@ -6,5 +6,5 @@ import java.util.List;
 public interface IHechoRepository {
   public Hecho guardarHecho(Hecho hecho);
   public Boolean inicializarHechos(List<Hecho> hechos);
-  public Hecho buscarColeccion(String id);
+  public Hecho buscarHecho(Long id);
 }

@@ -22,6 +22,12 @@ public class HechoService implements IHechoService {
   IHechoRepository hechoRepository;
 
   @Override
+  public Hecho buscarHecho(Long id) {
+    Hecho hecho = this.hechoRepository.buscarHecho(id);
+    return hecho;
+  }
+
+  @Override
   public Hecho guardarHecho(Hecho hecho) {
     Hecho hechoGuardado = this.hechoRepository.guardarHecho(hecho);
     return hechoGuardado;
@@ -76,6 +82,9 @@ public class HechoService implements IHechoService {
   }
 
   public List<HechoOutputDTO> mapHechoToDTO(List<Hecho> hechos) {
+    if(hechos == null){
+      return null;
+    }
     List<HechoOutputDTO> hechosDTO =
         hechos.stream()
             .map(this::HechoToDTO)

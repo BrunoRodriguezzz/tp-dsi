@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.agregador.controllers;
 
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,7 +24,7 @@ public class ColeccionController {
   }
 
   @GetMapping("/{id}")
-  public ColeccionOutputDTO buscarColeccion(@PathVariable("id") String id) {
+  public ColeccionOutputDTO buscarColeccion(@PathVariable("id") Long id) {
     ColeccionOutputDTO coleccion = this.coleccionService.buscarColeccion(id);
     return coleccion;
   }

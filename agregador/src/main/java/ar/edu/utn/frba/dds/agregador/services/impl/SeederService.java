@@ -4,8 +4,9 @@ import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.agregador.services.ISeederService;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.Criterio;
+import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroCategoria;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroFechaAcontecimiento;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
@@ -123,13 +124,19 @@ public class SeederService implements ISeederService {
 
     Coleccion coleccion;
     coleccion = new Coleccion("Colección prueba", "Esto es una prueba");
+    List<String> fuentes = new ArrayList<>();
+    fuentes.add("Accidentes");
+    fuentes.add("Incidentes");
+    fuentes.add("Derrumbes");
+
+    coleccion.setFuentes(fuentes);
 
     coleccion.setId(123456L);
 
     Criterio criterioPruebas;
     criterioPruebas = new Criterio();
 
-    coleccion.cargarHechos(hechos);
+//    coleccion.cargarHechos(hechos);
     coleccion.setCriterio(criterioPruebas);
 
     RangoFechas rangoFechasFiltro = null;
@@ -142,30 +149,30 @@ public class SeederService implements ISeederService {
     FiltroFechaAcontecimiento filtroFechas = new FiltroFechaAcontecimiento(rangoFechasFiltro);
 
     coleccion.agregarFiltroACriterio(filtroFechas);
-    coleccion.recalcularHechos();
+//    coleccion.recalcularHechos();
 
     Coleccion coleccion1;
     coleccion1 = new Coleccion("Colección prueba 1", "Esto es una prueba");
+
+    coleccion1.setFuentes(fuentes);
 
     coleccion1.setId(123457L);
 
     Criterio criterioPruebas1;
     criterioPruebas1 = new Criterio();
 
-    coleccion1.cargarHechos(hechos);
+//    coleccion1.cargarHechos(hechos);
     coleccion1.setCriterio(criterioPruebas1);
 
-    RangoFechas rangoFechasFiltro1 = null;
+    FiltroCategoria filtroCategoria = null;
     try {
-      rangoFechasFiltro1 = new RangoFechas(LocalDate.parse("2000-01-01"), LocalDate.parse("2010-01-01"));
-    } catch (
-        FechaInvalidaException e) {
-      throw new RuntimeException(e);
+      filtroCategoria = new FiltroCategoria(new Categoria("Caída de aeronave"));
+    } catch (Exception e) {
+      System.out.println("No se pudieron inicializar los categorias");
     }
-    FiltroFechaAcontecimiento filtroFechas1 = new FiltroFechaAcontecimiento(rangoFechasFiltro1);
 
-    coleccion1.agregarFiltroACriterio(filtroFechas1);
-    coleccion1.recalcularHechos();
+    coleccion1.agregarFiltroACriterio(filtroCategoria);
+//    coleccion1.recalcularHechos();
 
     this.coleccionRepository.guardarColeccion(coleccion);
     this.coleccionRepository.guardarColeccion(coleccion1);

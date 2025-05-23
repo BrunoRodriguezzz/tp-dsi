@@ -44,7 +44,7 @@ public class DAOHecho implements IDAOHecho {
     return true;
   }
 
-  public Hecho findById(String id) {
+  public Hecho findById(Long id) {
     Hecho hecho = this.hechos.stream().filter(h -> h.getId().equals(id)).findFirst().orElse(null);
     return hecho;
   }

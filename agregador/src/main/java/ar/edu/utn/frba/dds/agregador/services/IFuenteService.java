@@ -7,4 +7,5 @@ import reactor.core.publisher.Mono;
 
 public interface IFuenteService {
   public List<Hecho> buscarHechos();
+  public List<Hecho> nuevosHechos();
 }

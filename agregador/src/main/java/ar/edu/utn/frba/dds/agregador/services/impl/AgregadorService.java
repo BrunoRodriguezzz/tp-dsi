@@ -14,24 +14,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AgregadorService implements IAgregadorService {
-  private IFuenteService fuenteEstatica;
-  private IFuenteService fuenteDinamica;
-  private IFuenteService fuenteProxy;
+  private IFuenteService fuenteService;
 
   private IColeccionService coleccionService;
   private IHechoService hechoService;
 
   // Constructor
   public AgregadorService(
-      IFuenteService fuenteEstatica,
-      IFuenteService fuenteDinamica,
-      IFuenteService fuenteProxy,
+      IFuenteService fuenteService,
       IColeccionService coleccionService,
       IHechoService hechoService
   ) {
-    this.fuenteEstatica = fuenteEstatica;
-    this.fuenteDinamica = fuenteDinamica;
-    this.fuenteProxy = fuenteProxy;
+    this.fuenteService = fuenteService;
     this.coleccionService = coleccionService;
     this.hechoService = hechoService;
   }
@@ -39,19 +33,11 @@ public class AgregadorService implements IAgregadorService {
   @Override
   public List<HechoOutputDTO> buscarHechos(){
     // TODO: Hacer màs versatil el sistema para que acepte, como no servicios
-    List<Hecho> hechosEstatica = this.fuenteEstatica.buscarHechos();
-    List<Hecho> hechosDinamica = this.fuenteDinamica.buscarHechos();
-    List<Hecho> hechosProxy = this.fuenteProxy.buscarHechos();
+    List<Hecho> hechos = this.fuenteService.buscarHechos();
 
-    List<HechoOutputDTO> hechosDTO = new ArrayList<>();
+    List<HechoOutputDTO> hechosDTO = this.hechoService.mapHechoToDTO(hechos);
 
-    List<HechoOutputDTO> hechosDinamicaDTO = this.hechoService.mapHechoToDTO(hechosDinamica);
-    List<HechoOutputDTO> hechosEstaticaDTO = this.hechoService.mapHechoToDTO(hechosEstatica);
-    List<HechoOutputDTO> hechosProxyDTO = this.hechoService.mapHechoToDTO(hechosProxy);
-
-    hechosDTO.addAll(hechosEstaticaDTO);
-    hechosDTO.addAll(hechosDinamicaDTO);
-    hechosDTO.addAll(hechosProxyDTO);
+    hechosDTO.addAll(hechosDTO);
 
     return hechosDTO;
   }
@@ -64,5 +50,11 @@ public class AgregadorService implements IAgregadorService {
       this.hechoService.guardarHecho(hecho);
     }
     return nombresColecciones;
+  }
+
+  @Override
+  public void refrescarColecciones(){
+    List<Hecho> nuevosHechos = this.fuenteService.nuevosHechos();
+    this.coleccionService.incorporarHechos(nuevosHechos);
   }
 }

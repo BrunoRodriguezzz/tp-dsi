@@ -1,21 +1,20 @@
-package ar.edu.utn.frba.dds.domain.models.entities.hechos;
+package ar.edu.utn.frba.dds.agregador.models.domain;
 
-import java.util.ArrayList;
-import lombok.Getter;
-import lombok.Setter;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.Criterio;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.Filtro;
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.Fuente;
-
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public class Coleccion {
     private Long id;
     private String titulo;
     private String descripcion;
-    private List<Fuente> fuentes;
+    private List<String> fuentes;
     private Criterio criterio;
     private List<Hecho> hechos;
 

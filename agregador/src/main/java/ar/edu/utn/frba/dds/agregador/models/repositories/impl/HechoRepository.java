@@ -19,12 +19,12 @@ public class HechoRepository implements IHechoRepository {
     return this.dao.saveAll(hechos);
   }
 
+  public Hecho buscarHecho(Long id) {
+    return this.dao.findById(id);
+  }
+
   public Hecho guardarHecho(Hecho hecho) {
     Hecho hechoGuardado = this.dao.save(hecho);
     return hechoGuardado;
-  }
-
-  public Hecho buscarColeccion(String id) {
-    return this.dao.findById(id);
   }
 }

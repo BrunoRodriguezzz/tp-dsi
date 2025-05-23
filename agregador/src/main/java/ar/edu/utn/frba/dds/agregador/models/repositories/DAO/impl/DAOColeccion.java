@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl;
 
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOColeccion;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class DAOColeccion implements IDAOColeccion {
     return this.colecciones;
   }
 
-  public Coleccion find(String id) {
+  public Coleccion find(Long id) {
     Coleccion coleccion = this.colecciones.stream().filter(c ->
         c.getId().equals(id)).findFirst().orElse(null);
     if(coleccion == null){
@@ -52,5 +52,12 @@ public class DAOColeccion implements IDAOColeccion {
       this.colecciones.add(coleccion);
       return coleccion;
     }
+  }
+
+  public Boolean eliminarHecho(Long id) {
+    this.colecciones.forEach(coleccion -> {
+      coleccion.getHechos().removeIf(h -> h.getId().equals(id));
+    });
+    return true;
   }
 }

@@ -3,7 +3,8 @@ package ar.edu.utn.frba.dds.agregador.models.repositories.impl;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOColeccion;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl.DAOColeccion;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,11 @@ public class ColeccionRepository implements IColeccionRepository {
   }
 
   @Override
+  public Coleccion buscarColeccion(Long id) {
+    return this.dao.find(id);
+  }
+
+  @Override
   public Coleccion guardarColeccion(Coleccion coleccion){
     if(coleccion.getId() == null){
       coleccion.setId(generadorIds.getAndIncrement());
@@ -37,7 +43,8 @@ public class ColeccionRepository implements IColeccionRepository {
   }
 
   @Override
-  public Coleccion buscarColeccion(String id) {
-    return this.dao.find(id);
+  public Boolean eliminarHecho(Hecho hecho){
+    return this.dao.eliminarHecho(hecho.getId());
   }
+
 }
