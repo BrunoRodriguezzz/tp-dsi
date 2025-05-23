@@ -136,8 +136,10 @@ public class TestColecciones {
 
         coleccion = new Coleccion("Colección prueba", "Esto es una prueba");
         criterioPruebas = new Criterio();
+        List<Fuente> fuentes = new ArrayList<>();
+        fuentes.add(fuenteMockeada);
 
-        coleccion.setFuente(fuenteMockeada);
+        coleccion.setFuentes(fuentes);
         when(fuenteMockeada.importarHechos()).thenReturn(hechos);
     }
 

@@ -16,9 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Setter;
 
-@Getter
+@Getter @Setter
 public class Hecho {
-    @Setter @Getter
     private Long id;
     private String titulo;
     private String descripcion;
@@ -29,9 +28,7 @@ public class Hecho {
     private LocalDate fechaCarga;
     private Origen origen;
     private Contribuyente contribuyente;
-    @Setter @Getter
     private Boolean estaEliminado;
-    @Setter @Getter
     private String fuente;
     private List<ContenidoMultimedia> contenidoMultimedia;
 

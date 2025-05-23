@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOHecho;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class DAOHecho implements IDAOHecho {
   private List<Hecho> hechos;
@@ -11,8 +12,31 @@ public class DAOHecho implements IDAOHecho {
   public DAOHecho() {this.hechos = new ArrayList<Hecho>();}
 
   public Hecho save(Hecho hecho) {
-    this.hechos.add(hecho);
-    return hecho;
+    Optional<Hecho> existente = this.hechos.stream()
+        .filter(h -> h.getId().equals(hecho.getId()))
+        .findFirst();
+
+    if (existente.isPresent()) {
+      Hecho hechoExistente = existente.get();
+
+      hechoExistente.setTitulo(hecho.getTitulo());
+      hechoExistente.setDescripcion(hecho.getDescripcion());
+      hechoExistente.setContribuyente(hecho.getContribuyente());
+      hechoExistente.setUbicacion(hecho.getUbicacion());
+      hechoExistente.setEtiquetas(hecho.getEtiquetas());
+      hechoExistente.setFechaAcontecimiento(hecho.getFechaAcontecimiento());
+      hechoExistente.setFechaCarga(hecho.getFechaCarga());
+      hechoExistente.setOrigen(hecho.getOrigen());
+      hechoExistente.setContribuyente(hecho.getContribuyente());
+      hechoExistente.setEstaEliminado(hecho.getEstaEliminado());
+      hechoExistente.setFuente(hecho.getFuente());
+      hechoExistente.setContenidoMultimedia(hecho.getContenidoMultimedia());
+
+      return hechoExistente;
+    } else {
+      this.hechos.add(hecho);
+      return hecho;
+    }
   }
 
   public Boolean saveAll(List<Hecho> hechos) {

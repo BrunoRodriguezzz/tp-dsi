@@ -13,20 +13,14 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @SuppressWarnings({"checkstyle:Indentation", "checkstyle:MissingJavadocType"})
+@Setter @Getter
 public class SolicitudEliminacion {
-    @Setter @Getter
     private Long id;
-    @Getter
     private Hecho hecho;
-    @Getter
     private String fundamento;
-    @Getter @Setter
     private EstadoSolicitudEliminacion estadoSolicitudEliminacion;
-    @Getter
     private LocalDateTime fechaCreacion;
-    @Setter @Getter
     private ResolucionSolicitudEliminacion resolucionSolicitudEliminacion;
-    @Getter
     private Contribuyente contribuyente;
 
     public SolicitudEliminacion(Hecho hecho, String fundamento, Contribuyente contribuyente, LocalDateTime fechaCreacion) throws FundamentoInvalidoException {

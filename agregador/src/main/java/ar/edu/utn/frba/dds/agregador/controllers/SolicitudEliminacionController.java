@@ -30,6 +30,12 @@ public class SolicitudEliminacionController {
     return solicitudEliminacion;
   }
 
+  @GetMapping("/{id}")
+  public SolicitudEliminacionOutputDTO buscarSolicitud(@PathVariable("id") Long id) {
+    SolicitudEliminacionOutputDTO solicitudEliminacionOutputDTO = this.solicitudEliminacionService.buscarSolicitud(id);
+    return solicitudEliminacionOutputDTO;
+  }
+
   @PatchMapping("rechazo/{id}")
   // TODO: Buscar los admins
   public SolicitudEliminacionOutputDTO rechazar(@RequestBody AdministradorInputDTO administrador, @PathVariable("id") Long id) {
@@ -37,9 +43,10 @@ public class SolicitudEliminacionController {
     return resuelta;
   }
 
-  @GetMapping("/{id}")
-  public SolicitudEliminacionOutputDTO buscarSolicitud(@PathVariable("id") Long id) {
-    SolicitudEliminacionOutputDTO solicitudEliminacionOutputDTO = this.solicitudEliminacionService.buscarSolicitud(id);
-    return solicitudEliminacionOutputDTO;
+  @PatchMapping("aceptacion/{id}")
+  // TODO: Buscar los admins
+  public SolicitudEliminacionOutputDTO aceptar(@RequestBody AdministradorInputDTO administrador, @PathVariable("id") Long id) {
+    SolicitudEliminacionOutputDTO resuelta = this.solicitudEliminacionService.aceptar(administrador, id);
+    return resuelta;
   }
 }

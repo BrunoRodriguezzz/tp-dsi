@@ -86,7 +86,7 @@ public class TestSolicitudEliminacion {
         String fundamento = "a".repeat(500) + " Esto esta bien fundado";
 
         try {
-            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente, LocalDate.now());
+            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente, LocalDateTime.now());
             solicitudEliminacion.setEstadoSolicitudEliminacion(EstadoSolicitudEliminacion.PENDIENTE);
         }
         catch (Exception e){
@@ -124,7 +124,7 @@ public class TestSolicitudEliminacion {
         coleccion = new Coleccion("Colección sin criterio", "Esto es una prueba");
 
         try {
-            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente, LocalDate.now());
+            solicitudEliminacion = new SolicitudEliminacion(hecho, fundamento, contribuyente, LocalDateTime.now());
             solicitudEliminacion.setEstadoSolicitudEliminacion(EstadoSolicitudEliminacion.PENDIENTE);
         }
         catch (Exception e){
@@ -140,7 +140,6 @@ public class TestSolicitudEliminacion {
         ResolucionSolicitudEliminacion resolucionSolicitudEliminacion = new ResolucionSolicitudEliminacion(administrador, LocalDateTime.now().plusHours(2));
         solicitudEliminacion.setResolucionSolicitudEliminacion(resolucionSolicitudEliminacion);
         // Esta vez el hecho no debería poder agregarse a una colección, puesto que este fue eliminado.
-        coleccion.setFuente(fuenteMockeada);
 
         Assertions.assertTrue(coleccion.consultarHechos().isEmpty()); // Se agrega a una coleccion vacía, luego no debe estarlo
         // Verificar que la solicitud haya quedado en estado aceptada.

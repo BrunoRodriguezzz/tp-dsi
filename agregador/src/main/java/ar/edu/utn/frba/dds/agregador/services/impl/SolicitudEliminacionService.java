@@ -68,6 +68,20 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
   }
 
   @Override
+  public SolicitudEliminacionOutputDTO aceptar(AdministradorInputDTO administrador, Long id) {
+    SolicitudEliminacion solicitud = this.solicitudEliminacionRepository.buscarSolicitud(id);
+    try {
+      solicitud.serAceptada(this.DTOtoAdministrador(administrador));
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
+    this.solicitudEliminacionRepository.guardar(solicitud);
+    this.hechoService.guardarHecho(solicitud.getHecho());
+    SolicitudEliminacionOutputDTO solicitudRechazadaDTO = this.SolicitudToDTO(solicitud);
+    return solicitudRechazadaDTO;
+  }
+
+  @Override
   public SolicitudEliminacionOutputDTO buscarSolicitud(Long id) {
     SolicitudEliminacion solicitud = this.solicitudEliminacionRepository.buscarSolicitud(id);
     SolicitudEliminacionOutputDTO solicitudDTO = this.SolicitudToDTO(solicitud);

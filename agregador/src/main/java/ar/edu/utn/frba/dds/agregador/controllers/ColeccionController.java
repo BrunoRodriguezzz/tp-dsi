@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.controllers;
 
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import java.util.List;
@@ -18,14 +19,14 @@ public class ColeccionController {
   private IColeccionService coleccionService;
 
   @GetMapping
-  public List<Coleccion> buscarColecciones() {
-    List<Coleccion> colecciones = this.coleccionService.buscarColecciones();
+  public List<ColeccionOutputDTO> buscarColecciones() {
+    List<ColeccionOutputDTO> colecciones = this.coleccionService.buscarColecciones();
     return colecciones;
   }
 
   @GetMapping("/{id}")
-  public Coleccion buscarColeccion(@PathVariable("id") String id) {
-    Coleccion coleccion = this.coleccionService.buscarColeccion(id);
+  public ColeccionOutputDTO buscarColeccion(@PathVariable("id") String id) {
+    ColeccionOutputDTO coleccion = this.coleccionService.buscarColeccion(id);
     return coleccion;
   }
 }

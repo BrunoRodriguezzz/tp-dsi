@@ -27,6 +27,7 @@ public class HechoService implements IHechoService {
     return hechoGuardado;
   }
 
+// DTOs
   @Override
   public Hecho DTOToHecho(HechoInputDTO hechoDTO) {
     Hecho hecho;
@@ -54,7 +55,7 @@ public class HechoService implements IHechoService {
   @Override
   public HechoOutputDTO HechoToDTO(Hecho hecho) {
     HechoOutputDTO hechoDTO = new HechoOutputDTO();
-    hecho.setId(hecho.getId());
+    hechoDTO.setId(hecho.getId());
     hechoDTO.setTitulo(hecho.getTitulo());
     hechoDTO.setDescripcion(hecho.getDescripcion());
     hechoDTO.setCategoria(hecho.getCategoria().getTitulo());

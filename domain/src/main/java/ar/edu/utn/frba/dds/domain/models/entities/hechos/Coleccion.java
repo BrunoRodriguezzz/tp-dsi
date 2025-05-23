@@ -10,17 +10,13 @@ import ar.edu.utn.frba.dds.domain.models.entities.fuentes.Fuente;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter @Setter
 public class Coleccion {
-    @Getter @Setter private String id;
-    @Getter
+    private Long id;
     private String titulo;
-    @Getter
     private String descripcion;
-    @Setter
-    private Fuente fuente;
-    @Setter
+    private List<Fuente> fuentes;
     private Criterio criterio;
-    @Getter
     private List<Hecho> hechos;
 
     public Coleccion(String titulo, String descripcion) {

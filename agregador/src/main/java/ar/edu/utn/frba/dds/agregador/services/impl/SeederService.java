@@ -124,7 +124,7 @@ public class SeederService implements ISeederService {
     Coleccion coleccion;
     coleccion = new Coleccion("Colección prueba", "Esto es una prueba");
 
-    coleccion.setId("123456");
+    coleccion.setId(123456L);
 
     Criterio criterioPruebas;
     criterioPruebas = new Criterio();
@@ -147,7 +147,7 @@ public class SeederService implements ISeederService {
     Coleccion coleccion1;
     coleccion1 = new Coleccion("Colección prueba 1", "Esto es una prueba");
 
-    coleccion.setId("123457");
+    coleccion1.setId(123457L);
 
     Criterio criterioPruebas1;
     criterioPruebas1 = new Criterio();
