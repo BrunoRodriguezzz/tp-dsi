@@ -11,6 +11,7 @@ public class HechoInputDTO {
   private String categoria;
   private UbicacionInputDTO ubicacion;
   private LocalDate fechaAcontecimiento;
+  private Long idContribuyente;
   private String origen;
   private String fuente;
 }

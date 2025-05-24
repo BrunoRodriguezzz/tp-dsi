@@ -38,7 +38,7 @@ public class UtilsDTO {
     return coleccionesDTO;
   }
 
-  public static Hecho DTOToHecho(HechoInputDTO hechoDTO) {
+  public static Hecho DTOToHecho(HechoInputDTO hechoDTO, Contribuyente contribuyente) {
     Hecho hecho;
     try {
       hecho = new Hecho(
@@ -55,6 +55,9 @@ public class UtilsDTO {
       hecho.setId(hechoDTO.getId());
       hecho.setFuente(hechoDTO.getFuente());
       hecho.setEstaEliminado(false);
+      if(contribuyente != null) {
+        hecho.setContribuyente(contribuyente);
+      }
       return hecho;
     } catch (Exception e){
       System.out.println(e.getMessage());

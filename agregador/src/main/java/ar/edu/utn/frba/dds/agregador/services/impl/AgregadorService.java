@@ -4,12 +4,15 @@ import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaExistenteExcep
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
+import ar.edu.utn.frba.dds.agregador.models.repositories.IContribuyenteRepository;
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +20,9 @@ public class AgregadorService implements IAgregadorService {
   private IFuenteService fuenteService;
   private IColeccionService coleccionService;
   private IHechoService hechoService;
+
+  @Autowired
+  private IContribuyenteRepository contribuyenteRepository;
 
   // Constructor
   public AgregadorService(
@@ -39,7 +45,8 @@ public class AgregadorService implements IAgregadorService {
 
   @Override
   public List<String> incorporarHecho(HechoInputDTO hechoDTO) {
-    Hecho hecho = UtilsDTO.DTOToHecho(hechoDTO);
+    Contribuyente contribuyente = this.contribuyenteRepository.buscarContribuyente(hechoDTO.getIdContribuyente());
+    Hecho hecho = UtilsDTO.DTOToHecho(hechoDTO, contribuyente);
     Hecho aux = this.hechoService.buscarHecho(hecho.getId());
     if(aux != null && hecho.equals(aux)) {
       throw new HechoYaExistenteException("El hecho ingresado ya existe", aux);

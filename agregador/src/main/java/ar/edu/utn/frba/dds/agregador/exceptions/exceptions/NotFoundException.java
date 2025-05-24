@@ -7,7 +7,6 @@ import lombok.Data;
 
 @Data
 public class NotFoundException extends RuntimeException {
-  private HechoOutputDTO hechoExistente;
 
   public NotFoundException(String mensaje) {
     super(mensaje);

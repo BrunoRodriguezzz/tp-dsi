@@ -1,30 +1,31 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl;
 
+import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOAdministrador;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOContribuyente;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Administrador;
 import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DAOContribuyente implements IDAOContribuyente {
-  private List<Contribuyente> contribuyentes;
+public class DAOAdministrador implements IDAOAdministrador {
+  private List<Administrador> administradores;
 
-  public DAOContribuyente() {
-    contribuyentes = new ArrayList<>();
+  public DAOAdministrador() {
+    administradores = new ArrayList<>();
     // TODO: Después borrar esto es solo prueba
-    Contribuyente contribuyente = null;
+    Administrador administrador = null;
     try {
-      contribuyente = new Contribuyente("Valentin", "Bravo", LocalDate.of(2004, 8, 5));
+      administrador = new Administrador("Ricardo", "Fordt");
     } catch (Exception e){System.out.println(e);}
-    contribuyente.setId(20040508L);
-    contribuyentes.add(contribuyente);
+    administrador.setId(1111L);
+    administradores.add(administrador);
   }
 
   // TODO: Implementar el save
 
-  public Contribuyente findById(Long id) {
-    Contribuyente contribuyente = this.contribuyentes.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
-    return contribuyente;
+  public Administrador findById(Long id) {
+    Administrador administrador = this.administradores.stream().filter(a -> a.getId().equals(id)).findFirst().orElse(null);
+    return administrador;
   }
 }

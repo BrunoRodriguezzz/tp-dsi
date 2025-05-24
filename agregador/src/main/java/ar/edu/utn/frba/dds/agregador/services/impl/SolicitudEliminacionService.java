@@ -1,10 +1,12 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaEliminadoException;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.AdministradorInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.SolicitudEliminacionOutputDTO;
+import ar.edu.utn.frba.dds.agregador.models.repositories.IAdministradorRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IContribuyenteRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.ISolicitudEliminacionRepository;
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
@@ -15,6 +17,7 @@ import ar.edu.utn.frba.dds.agregador.services.IDetectorSpamService;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.SolicitudEliminacion;
+import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Administrador;
 import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,8 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
   ISolicitudEliminacionRepository solicitudEliminacionRepository;
   @Autowired
   IContribuyenteRepository contribuyenteRepository;
+  @Autowired
+  IAdministradorRepository administradorRepository;
 
   public SolicitudEliminacionService(
       IAgregadorService agregadorService,
@@ -49,6 +54,9 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
     Hecho hecho = this.hechoService.buscarHecho(solicitudInputDTO.getIdHecho());
     if(hecho == null) {
       throw new NotFoundException("No se encontró el Hecho de id: " + solicitudInputDTO.getIdHecho());
+    }
+    if(hecho.getEstaEliminado()) {
+      throw new HechoYaEliminadoException("El Hecho de id: " + hecho.getId() + " ya ha sido eliminado", hecho);
     }
 
     Contribuyente contribuyente = this.contribuyenteRepository.buscarContribuyente(solicitudInputDTO.getIdContribuyente());
@@ -71,10 +79,19 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
 
   @Override
   // TODO: Emprolijar codigo
-  public SolicitudEliminacionOutputDTO rechazarSolicitud(AdministradorInputDTO administrador, Long id) {
-    SolicitudEliminacion solicitud = this.solicitudEliminacionRepository.buscarSolicitud(id);
+  public SolicitudEliminacionOutputDTO rechazarSolicitud(Long idAdministrador, Long idSolicitud) {
+    SolicitudEliminacion solicitud = this.solicitudEliminacionRepository.buscarSolicitud(idSolicitud);
+    if(solicitud == null) {
+      throw new NotFoundException("No se encontró la solicitud de id: " + idSolicitud);
+    }
+
+    Administrador administrador = this.administradorRepository.buscarAdministrador(idAdministrador);
+    if(administrador == null) {
+      throw new NotFoundException("No se encontró el administrador de id: " + idAdministrador);
+    }
+
     try {
-      solicitud.serRechazada(UtilsDTO.DTOtoAdministrador(administrador));
+      solicitud.serRechazada(administrador);
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }
@@ -85,10 +102,19 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
 
   @Override
   // TODO: Emprolijar codigo
-  public SolicitudEliminacionOutputDTO aceptarSolicitud(AdministradorInputDTO administrador, Long id) {
-    SolicitudEliminacion solicitud = this.solicitudEliminacionRepository.buscarSolicitud(id);
+  public SolicitudEliminacionOutputDTO aceptarSolicitud(Long idAdministrador, Long idSolicitud) {
+    SolicitudEliminacion solicitud = this.solicitudEliminacionRepository.buscarSolicitud(idSolicitud);
+    if(solicitud == null) {
+      throw new NotFoundException("No se encontró la solicitud de id: " + idSolicitud);
+    }
+
+    Administrador administrador = this.administradorRepository.buscarAdministrador(idAdministrador);
+    if(administrador == null) {
+      throw new NotFoundException("No se encontró el administrador de id: " + idAdministrador);
+    }
+
     try {
-      solicitud.serAceptada(UtilsDTO.DTOtoAdministrador(administrador));
+      solicitud.serAceptada(administrador);
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }

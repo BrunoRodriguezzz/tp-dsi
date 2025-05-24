@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.controllers;
 
+import ar.edu.utn.frba.dds.agregador.controllers.validadores.ValidadorInput;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
@@ -44,6 +45,7 @@ public class AgregadorController {
   // Incorpora nuevos hechos que le envíen las fuentes(push based)
   @PostMapping("/hechos")
   public ResponseEntity incorporarHecho(@RequestBody HechoInputDTO hecho) {
+    ValidadorInput.validarHechoInputDTO(hecho);
     List<String> incorporadoEn = this.agregadorService.incorporarHecho(hecho);
     return ResponseEntity.status(HttpStatus.OK).body(incorporadoEn);
   }

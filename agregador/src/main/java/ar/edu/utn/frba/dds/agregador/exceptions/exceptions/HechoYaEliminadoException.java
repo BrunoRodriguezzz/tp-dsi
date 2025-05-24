@@ -6,11 +6,11 @@ import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import lombok.Data;
 
 @Data
-public class HechoYaExistenteException extends RuntimeException {
-  private HechoOutputDTO hechoExistente;
+public class HechoYaEliminadoException extends RuntimeException {
+  private HechoOutputDTO hechoEliminado;
 
-  public HechoYaExistenteException(String mensaje, Hecho hecho) {
+  public HechoYaEliminadoException(String mensaje, Hecho hecho) {
     super(mensaje);
-    this.hechoExistente = UtilsDTO.HechoToDTO(hecho);
+    this.hechoEliminado = UtilsDTO.HechoToDTO(hecho);
   }
 }

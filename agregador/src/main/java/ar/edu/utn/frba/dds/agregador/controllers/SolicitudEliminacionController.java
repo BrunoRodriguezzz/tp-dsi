@@ -1,6 +1,8 @@
 package ar.edu.utn.frba.dds.agregador.controllers;
 
+import ar.edu.utn.frba.dds.agregador.controllers.validadores.ValidadorInput;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.AdministradorInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.GestionInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.SolicitudEliminacionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.ISolicitudEliminacionService;
@@ -25,6 +27,7 @@ public class SolicitudEliminacionController {
 
   @PostMapping
   public ResponseEntity guardarSolicitud(@RequestBody SolicitudEliminacionInputDTO solicitud) {
+    ValidadorInput.validarSolicitudInputDTO(solicitud);
     SolicitudEliminacionOutputDTO solicitudEliminacion =
         this.solicitudEliminacionService.guardarSolicitud(
             solicitud
@@ -43,15 +46,17 @@ public class SolicitudEliminacionController {
 
   @PatchMapping("rechazo/{id}")
   // TODO: Buscar los admins
-  public ResponseEntity rechazarSolicitud(@RequestBody AdministradorInputDTO administrador, @PathVariable("id") Long id) {
-    SolicitudEliminacionOutputDTO rechazada = this.solicitudEliminacionService.rechazarSolicitud(administrador, id);
+  public ResponseEntity rechazarSolicitud(@RequestBody GestionInputDTO input, @PathVariable("id") Long id) {
+    ValidadorInput.validarGestionInputDTO(input);
+    SolicitudEliminacionOutputDTO rechazada = this.solicitudEliminacionService.rechazarSolicitud(input.getIdAdministrador(), id);
     return ResponseEntity.status(HttpStatus.OK).body(rechazada);
   }
 
   @PatchMapping("aceptacion/{id}")
   // TODO: Buscar los admins
-  public ResponseEntity aceptarSolicitud(@RequestBody AdministradorInputDTO administrador, @PathVariable("id") Long id) {
-    SolicitudEliminacionOutputDTO aceptada = this.solicitudEliminacionService.aceptarSolicitud(administrador, id);
+  public ResponseEntity aceptarSolicitud(@RequestBody GestionInputDTO input, @PathVariable("id") Long id) {
+    ValidadorInput.validarGestionInputDTO(input);
+    SolicitudEliminacionOutputDTO aceptada = this.solicitudEliminacionService.aceptarSolicitud(input.getIdAdministrador(), id);
     return ResponseEntity.status(HttpStatus.OK).body(aceptada);
   }
 }
