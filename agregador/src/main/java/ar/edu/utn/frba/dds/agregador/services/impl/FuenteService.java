@@ -1,6 +1,8 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
+import ar.edu.utn.frba.dds.agregador.services.IFuenteAdapter;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
+import ar.edu.utn.frba.dds.domain.models.entities.fuentes.Fuente;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
@@ -14,8 +16,14 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class FuenteService implements IFuenteService {
-  List<Hecho> hechos;
+  List<IFuenteAdapter> fuentes;
 
+  // Inicializa el Seeder las conexiones
+  public FuenteService(List<IFuenteAdapter> fuentes) {
+    this.fuentes = fuentes;
+  }
+
+  List<Hecho> hechos;
   // TODO: En principio lo hago sincrónico porque no tengo las APIs, cuando las tenga hago el fix con Mono
   // Constructor
   public FuenteService() {
@@ -119,7 +127,7 @@ public class FuenteService implements IFuenteService {
   public List<Hecho> buscarHechos(){
     return this.hechos;
   }
-  public List<Hecho> nuevosHechos() {
+  public List<Hecho> buscarNuevosHechos() {
     // TODO Implementar bien
     return this.hechos;
   }

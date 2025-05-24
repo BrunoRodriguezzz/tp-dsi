@@ -61,7 +61,7 @@ public class AgregadorService implements IAgregadorService {
   @Override
   public void refrescarColecciones(){
     // TODO: Falta la lógica de nuevos hechos en la request
-    List<Hecho> nuevosHechos = this.fuenteService.nuevosHechos();
+    List<Hecho> nuevosHechos = this.fuenteService.buscarNuevosHechos();
     this.coleccionService.incorporarHechos(nuevosHechos);
   }
 }
