@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.time.Period;
 
 public class Contribuyente {
+    @Getter @Setter
+    private Long id;
     @Getter
     private String nombre;
     @Getter

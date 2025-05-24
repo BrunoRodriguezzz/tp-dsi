@@ -2,7 +2,9 @@ package ar.edu.utn.frba.dds.agregador.exceptions;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.dtos.ExceptionDTO;
 import ar.edu.utn.frba.dds.agregador.exceptions.dtos.HechoYaExistenteExceptionDTO;
+import ar.edu.utn.frba.dds.agregador.exceptions.dtos.NotFoundExceptionDTO;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaExistenteException;
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
 import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,16 @@ public class ErrorHandlerController {
         .timestamp(LocalDateTime.now())
         .build();
     return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @ExceptionHandler(value = NotFoundException.class)
+  public ResponseEntity<NotFoundExceptionDTO> handleNotFoundException(NotFoundException exception){
+    NotFoundExceptionDTO error = NotFoundExceptionDTO.builder()
+        .message(exception.getMessage())
+        .error(HttpStatus.NOT_FOUND.getReasonPhrase())
+        .timestamp(LocalDateTime.now())
+        .build();
+    return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(value = HechoYaExistenteException.class)

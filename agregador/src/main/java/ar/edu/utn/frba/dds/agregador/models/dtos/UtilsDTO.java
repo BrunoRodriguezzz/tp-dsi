@@ -110,14 +110,14 @@ public class UtilsDTO {
     return contribuyenteDTO;
   }
 
-  public static SolicitudEliminacion DTOtoSolicitud (SolicitudEliminacionInputDTO solicitudDTO, Hecho hecho){
+  public static SolicitudEliminacion DTOtoSolicitud (SolicitudEliminacionInputDTO solicitudDTO, Hecho hecho, Contribuyente c){
     Contribuyente contribuyente = null;
     SolicitudEliminacion solicitud = null;
     try{
       contribuyente = new Contribuyente(
-          solicitudDTO.getContribuyente().getNombre(),
-          solicitudDTO.getContribuyente().getApellido(),
-          solicitudDTO.getContribuyente().getFechaNacimiento()
+          c.getNombre(),
+          c.getApellido(),
+          c.getFechaNacimiento()
       );
       solicitud = new SolicitudEliminacion(
           hecho,

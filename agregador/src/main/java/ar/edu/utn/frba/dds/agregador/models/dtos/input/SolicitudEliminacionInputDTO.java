@@ -9,5 +9,5 @@ public class SolicitudEliminacionInputDTO {
   private Long idHecho;
   private String fundamento;
   private LocalDateTime fechaCreacion;
-  private ContribuyenteInputDTO contribuyente;
+  private Long idContribuyente;
 }

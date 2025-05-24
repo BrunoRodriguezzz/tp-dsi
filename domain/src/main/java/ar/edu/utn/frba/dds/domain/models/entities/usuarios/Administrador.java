@@ -1,8 +1,11 @@
 package ar.edu.utn.frba.dds.domain.models.entities.usuarios;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Administrador {
+    @Getter @Setter
+    private Long id;
     @Getter
     private String nombre;
     @Getter
