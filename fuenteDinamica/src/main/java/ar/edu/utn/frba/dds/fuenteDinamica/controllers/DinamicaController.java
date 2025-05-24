@@ -21,24 +21,23 @@ public class DinamicaController {
 
     // Uso del Agregador o cualquier Usuario
 
-    @GetMapping("/buscarTodos")
+    @GetMapping("/busqueda")
     public List<HechoOutputDTO> buscarTodos(@RequestParam(required = false) Boolean enviado){
         return dinamicaService.buscarHechos(enviado);
     }
 
     // Uso de los Usuarios
 
-    @PostMapping("/solicitudHecho")
+    @PostMapping("/solicitud")
     public HechoOutputDTO solicitudCrearHecho(@RequestBody HechoInputDTO hecho){
         if(verificarEdadNecesaria(hecho)) {
             return dinamicaService.crear(hecho);
         }else{
-            //TODO: Hay que agregar un mensaje o excepcion (no tiene la edad necesaria)
             return null;
         }
     }
 
-    @PatchMapping("/modificarHecho")
+    @PatchMapping("/modificacion")
     public HechoOutputDTO actualizarHecho(@RequestBody HechoModificadoInputDTO hecho){
         if(verificarUsuarioRegistrado(hecho)){
             return dinamicaService.actualizar(hecho);
@@ -50,12 +49,14 @@ public class DinamicaController {
 
     // Uso de los Administradores
 
-    @PatchMapping("/gestionarHecho")
+    @PatchMapping("/gestion")
     public HechoOutputDTO gestionarHecho(@RequestBody HechoRevisadoInputDTO hechoRevisado){
 
         return this.dinamicaService.gestionarHecho(hechoRevisado);
 
     }
+
+    // Excepciones en caso de no cumplirse una condicion
 
     // Verificadores necesarios
 

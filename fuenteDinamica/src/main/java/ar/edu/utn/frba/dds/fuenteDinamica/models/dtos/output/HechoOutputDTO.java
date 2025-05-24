@@ -22,4 +22,5 @@ public class HechoOutputDTO {
     private List<String>   etiquetas;
     private EstadoHecho    estadoHecho;
     private String         sugerenciaDeCambio;
+    private Boolean        estaEliminado;
 }
