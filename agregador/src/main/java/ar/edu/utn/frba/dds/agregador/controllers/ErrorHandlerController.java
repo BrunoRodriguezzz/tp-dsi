@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class ErrorHandler {
+public class ErrorHandlerController {
   @ExceptionHandler(value = RuntimeException.class)
   //ResponseEntity es una clase envoltorio que representa toda una respuesta HTTP
   public ResponseEntity<ErrorOutputDTO> handleRuntimeException(RuntimeException exception){

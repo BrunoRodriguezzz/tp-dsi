@@ -29,24 +29,28 @@ public class AgregadorController {
   @GetMapping("/inicializacion")
   public ResponseEntity inicializarDatos() {
     this.seederService.init();
-    return new ResponseEntity(HttpStatus.ACCEPTED);
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 
   @GetMapping("/hechos")
-  public List<HechoOutputDTO> buscarHechos() {
+  public ResponseEntity buscarHechos() {
     List<HechoOutputDTO> hechos = this.agregadorService.buscarHechos();
-    return hechos;
+    if(hechos.isEmpty()){
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+    return ResponseEntity.status(HttpStatus.FOUND).body(hechos);
   }
 
   @PostMapping("/hechos")
-  public List<String> incorporarHecho(@RequestBody HechoInputDTO hecho) {
+  public ResponseEntity incorporarHecho(@RequestBody HechoInputDTO hecho) {
     List<String> incorporadoEn = this.agregadorService.incorporarHecho(hecho);
-    return incorporadoEn;
+    return ResponseEntity.status(HttpStatus.OK).body(incorporadoEn);
   }
 
   // TODO: Borrar esto
   @GetMapping("/refresco")
-  public void refrescarColecciones() {
+  public ResponseEntity refrescarColecciones() {
     this.agregadorService.refrescarColecciones();
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 }
