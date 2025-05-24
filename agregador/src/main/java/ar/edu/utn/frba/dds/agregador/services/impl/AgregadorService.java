@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaExistenteException;
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
@@ -39,6 +40,10 @@ public class AgregadorService implements IAgregadorService {
   @Override
   public List<String> incorporarHecho(HechoInputDTO hechoDTO) {
     Hecho hecho = UtilsDTO.DTOToHecho(hechoDTO);
+    Hecho aux = this.hechoService.buscarHecho(hecho.getId());
+    if(aux != null && hecho.equals(aux)) {
+      throw new HechoYaExistenteException("El hecho ingresado ya existe", aux);
+    }
     List<String> nombresColecciones = this.coleccionService.incorporarHecho(hecho);
     if(!nombresColecciones.isEmpty()){
       this.hechoService.guardarHecho(hecho);

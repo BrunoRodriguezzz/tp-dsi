@@ -53,7 +53,7 @@ public class ColeccionService implements IColeccionService {
     return this.coleccionRepository.eliminarHechoDeColecciones(hecho);
   }
 
-  // Privados
+  // ---------------------------------------------------- Privados ----------------------------------------------------
   private List<String> agregarHechoAColecciones(List<Coleccion> colecciones, Hecho hecho) {
     List<String> nombreColecciones = new ArrayList<>();
     colecciones.forEach(coleccion -> {

@@ -93,7 +93,7 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
     return solicitudDTO;
   }
 
-  // Privados
+  // ---------------------------------------------------- Privados ----------------------------------------------------
   private SolicitudEliminacionOutputDTO gestionarSolicitudSpam(SolicitudEliminacion solicitud) {
     solicitud.setEstadoSolicitudEliminacion(EstadoSolicitudEliminacion.SPAM);
     SolicitudEliminacionOutputDTO solicitudSpamDTO = UtilsDTO.SolicitudToDTO(solicitud);

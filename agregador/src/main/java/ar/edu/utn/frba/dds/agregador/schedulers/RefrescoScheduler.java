@@ -12,7 +12,7 @@ public class RefrescoScheduler {
     this.agregadorService = agregadorService;
   }
 
-  @Scheduled(cron = "0 * * * * *")
+  @Scheduled(cron = "0 0 * * * *")
   public void refrescarColecciones() {
     this.agregadorService.refrescarColecciones();
   }

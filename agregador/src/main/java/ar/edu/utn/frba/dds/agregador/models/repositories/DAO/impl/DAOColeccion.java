@@ -21,9 +21,6 @@ public class DAOColeccion implements IDAOColeccion {
   public Coleccion find(Long id) {
     Coleccion coleccion = this.colecciones.stream().filter(c ->
         c.getId().equals(id)).findFirst().orElse(null);
-    if(coleccion == null){
-      System.out.println("Coleccion no encontrada");
-    }
     return coleccion;
   }
 

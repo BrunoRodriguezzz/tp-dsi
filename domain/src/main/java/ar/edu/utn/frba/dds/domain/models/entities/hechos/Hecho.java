@@ -72,14 +72,15 @@ public class Hecho {
         if (this == hecho) return true;
         if (hecho == null || getClass() != hecho.getClass()) return false;
 
-        return this.titulo.equals(hecho.getTitulo()) &&
+        boolean resultado = this.titulo.equals(hecho.getTitulo()) &&
             this.descripcion.equals(hecho.getDescripcion()) &&
-            this.categoria == hecho.getCategoria() &&
+            this.categoria.getTitulo().equals(hecho.getCategoria().getTitulo()) &&
             this.ubicacion.getLatitud().equals(hecho.getUbicacion().getLatitud()) &&
             this.ubicacion.getLongitud().equals(hecho.getUbicacion().getLongitud()) &&
             this.fechaAcontecimiento.equals(hecho.fechaAcontecimiento) &&
             this.id.equals(hecho.getId()) &&
             this.origen.equals(hecho.getOrigen()) &&
             this.fuente.equals(hecho.getFuente());
+        return resultado;
     }
 }
