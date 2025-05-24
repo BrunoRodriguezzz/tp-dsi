@@ -7,6 +7,8 @@ import ar.edu.utn.frba.dds.agregador.services.ISeederService;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,9 +27,9 @@ public class AgregadorController {
   private ISeederService seederService;
 
   @GetMapping("/inicializacion")
-  public boolean inicializarDatos() {
+  public ResponseEntity inicializarDatos() {
     this.seederService.init();
-    return true;
+    return new ResponseEntity(HttpStatus.ACCEPTED);
   }
 
   @GetMapping("/hechos")
