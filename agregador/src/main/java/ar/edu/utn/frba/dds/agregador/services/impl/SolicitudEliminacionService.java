@@ -83,7 +83,9 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
     }
     this.solicitudEliminacionRepository.guardar(solicitud);
     this.hechoService.guardarHecho(solicitud.getHecho());
-    this.coleccionService.eliminarHecho(solicitud.getHecho());
+    if(solicitud.getEstadoSolicitudEliminacion() == EstadoSolicitudEliminacion.ACEPTADA){
+      this.coleccionService.eliminarHecho(solicitud.getHecho());
+    }
     SolicitudEliminacionOutputDTO solicitudRechazadaDTO = this.SolicitudToDTO(solicitud);
     return solicitudRechazadaDTO;
   } // TODO: El hecho sigue apareciendo en las colecciones

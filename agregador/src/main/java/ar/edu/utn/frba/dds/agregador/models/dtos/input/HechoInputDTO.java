@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class HechoInputDTO {
+  private Long id;
   private String titulo;
   private String descripcion;
   private String categoria;

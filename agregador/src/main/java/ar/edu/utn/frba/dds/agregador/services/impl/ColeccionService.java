@@ -39,9 +39,11 @@ public class ColeccionService implements IColeccionService {
     List<Coleccion> colecciones = this.coleccionRepository.buscarColecciones();
     List<String> nombreColecciones = new ArrayList<>();
     colecciones.forEach(coleccion -> {
-      boolean resultado = coleccion.cargarHecho(hecho);
-      if (resultado) {
-        nombreColecciones.add(coleccion.getTitulo());
+      if(coleccion.getHechos().stream().noneMatch(h -> h.equals(hecho))) {
+        boolean resultado = coleccion.cargarHecho(hecho);
+        if (resultado) {
+          nombreColecciones.add(coleccion.getTitulo());
+        }
       }
     });
     Boolean resultado = this.coleccionRepository.guardarColecciones(colecciones);
@@ -56,8 +58,12 @@ public class ColeccionService implements IColeccionService {
     List<Coleccion> colecciones = this.coleccionRepository.buscarColecciones();
     hechos.forEach(hecho -> {
       colecciones.forEach(c -> {
-        if(c.getFuentes().contains(hecho.getFuente())){
-          c.cargarHecho(hecho);
+        if(c.getFuentes().contains(hecho.getFuente())) {
+          if(c.getHechos()==null) {
+            c.cargarHecho(hecho);
+          } else if (c.getHechos().stream().noneMatch(h -> h.equals(hecho))){
+            c.cargarHecho(hecho);
+          }
         }
       });
     });

@@ -49,6 +49,7 @@ public class HechoService implements IHechoService {
           hechoDTO.getFechaAcontecimiento(),
           Origen.valueOf(hechoDTO.getOrigen().toUpperCase())
       );
+      hecho.setId(hechoDTO.getId());
       hecho.setFuente(hechoDTO.getFuente());
       hecho.setEstaEliminado(false);
       return hecho;

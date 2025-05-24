@@ -35,9 +35,11 @@ public class SolicitudEliminacion {
 
     public void serAceptada(Administrador administrador) throws Exception {
         try {
-            this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador);
-            this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.ACEPTADA;
-            this.hecho.eliminar();
+            if(this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.ACEPTADA || this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.RECHAZADA){
+                this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador);
+                this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.ACEPTADA;
+                this.hecho.eliminar();
+            }
         } catch (SolicitudEliminacionYaResueltaException e) {
             // TODO: Corregir system out por otra excepcion que será recibida por una capa superior
             System.out.println(e.getMessage());
@@ -49,8 +51,10 @@ public class SolicitudEliminacion {
 
     public void serRechazada(Administrador administrador) throws Exception {
         try {
-            this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador);
-            this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.RECHAZADA;
+            if(this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.ACEPTADA || this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.RECHAZADA){
+                this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador);
+                this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.RECHAZADA;
+            }
         } catch (SolicitudEliminacionYaResueltaException e) {
             // TODO: Corregir system out por otra excepcion que será recibida por una capa superior
             System.out.println(e.getMessage());

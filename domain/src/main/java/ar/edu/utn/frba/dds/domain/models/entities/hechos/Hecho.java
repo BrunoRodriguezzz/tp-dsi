@@ -67,4 +67,19 @@ public class Hecho {
         }
         return false;
     }
+
+    public boolean equals(Hecho hecho) {
+        if (this == hecho) return true;
+        if (hecho == null || getClass() != hecho.getClass()) return false;
+
+        return this.titulo.equals(hecho.getTitulo()) &&
+            this.descripcion.equals(hecho.getDescripcion()) &&
+            this.categoria == hecho.getCategoria() &&
+            this.ubicacion.getLatitud().equals(hecho.getUbicacion().getLatitud()) &&
+            this.ubicacion.getLongitud().equals(hecho.getUbicacion().getLongitud()) &&
+            this.fechaAcontecimiento.equals(hecho.fechaAcontecimiento) &&
+            this.id.equals(hecho.getId()) &&
+            this.origen.equals(hecho.getOrigen()) &&
+            this.fuente.equals(hecho.getFuente());
+    }
 }
