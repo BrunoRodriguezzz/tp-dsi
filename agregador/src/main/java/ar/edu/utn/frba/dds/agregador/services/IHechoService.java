@@ -11,10 +11,5 @@ import java.util.List;
 
 public interface IHechoService {
   public Hecho guardarHecho(Hecho hecho);
-  public Hecho DTOToHecho(HechoInputDTO hechoDTO);
-  public HechoOutputDTO HechoToDTO(Hecho hecho);
-  public List<HechoOutputDTO> mapHechoToDTO(List<Hecho> hechos);
-  public UbicacionOutputDTO UbicacionToDTO(Ubicacion ubicacion);
-  public ContribuyenteOutputDTO ContribuyenteToDTO(Contribuyente contribuyente);
   public Hecho buscarHecho(Long id);
 }

@@ -5,8 +5,8 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInput
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.SolicitudEliminacionOutputDTO;
 
 public interface ISolicitudEliminacionService {
-  public SolicitudEliminacionOutputDTO guardar(SolicitudEliminacionInputDTO solicitud);
-  public SolicitudEliminacionOutputDTO rechazar(AdministradorInputDTO administrador, Long id);
-  public SolicitudEliminacionOutputDTO aceptar(AdministradorInputDTO administrador, Long id);
+  public SolicitudEliminacionOutputDTO guardarSolicitud(SolicitudEliminacionInputDTO solicitud);
+  public SolicitudEliminacionOutputDTO rechazarSolicitud(AdministradorInputDTO administrador, Long id);
+  public SolicitudEliminacionOutputDTO aceptarSolicitud(AdministradorInputDTO administrador, Long id);
   public SolicitudEliminacionOutputDTO buscarSolicitud(Long id);
 }

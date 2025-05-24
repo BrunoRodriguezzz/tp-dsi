@@ -41,13 +41,14 @@ public class AgregadorController {
     return ResponseEntity.status(HttpStatus.FOUND).body(hechos);
   }
 
+  // Incorpora nuevos hechos que le envíen las fuentes(push based)
   @PostMapping("/hechos")
   public ResponseEntity incorporarHecho(@RequestBody HechoInputDTO hecho) {
     List<String> incorporadoEn = this.agregadorService.incorporarHecho(hecho);
     return ResponseEntity.status(HttpStatus.OK).body(incorporadoEn);
   }
 
-  // TODO: Borrar esto
+  // TODO: Borrar esto, creado para tests nada más
   @GetMapping("/refresco")
   public ResponseEntity refrescarColecciones() {
     this.agregadorService.refrescarColecciones();

@@ -10,5 +10,5 @@ public interface IColeccionRepository {
   public Coleccion buscarColeccion(Long id);
   public Coleccion guardarColeccion(Coleccion coleccion);
   public Boolean guardarColecciones(List<Coleccion> colecciones);
-  public Boolean eliminarHecho(Hecho hecho);
+  public Boolean eliminarHechoDeColecciones(Hecho hecho);
 }

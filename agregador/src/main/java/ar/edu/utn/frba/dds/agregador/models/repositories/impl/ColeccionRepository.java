@@ -43,8 +43,8 @@ public class ColeccionRepository implements IColeccionRepository {
   }
 
   @Override
-  public Boolean eliminarHecho(Hecho hecho){
-    return this.dao.eliminarHecho(hecho.getId());
+  public Boolean eliminarHechoDeColecciones(Hecho hecho){
+    return this.dao.eliminarHechoDeColecciones(hecho.getId());
   }
 
 }

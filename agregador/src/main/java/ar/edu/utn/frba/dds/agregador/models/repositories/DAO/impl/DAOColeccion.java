@@ -54,7 +54,7 @@ public class DAOColeccion implements IDAOColeccion {
     }
   }
 
-  public Boolean eliminarHecho(Long id) {
+  public Boolean eliminarHechoDeColecciones(Long id) {
     this.colecciones.forEach(coleccion -> {
       coleccion.getHechos().removeIf(h -> h.getId().equals(id));
     });

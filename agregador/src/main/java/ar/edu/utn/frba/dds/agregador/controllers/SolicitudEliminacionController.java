@@ -24,9 +24,9 @@ public class SolicitudEliminacionController {
   private ISolicitudEliminacionService solicitudEliminacionService;
 
   @PostMapping
-  public ResponseEntity guardar(@RequestBody SolicitudEliminacionInputDTO solicitud) {
+  public ResponseEntity guardarSolicitud(@RequestBody SolicitudEliminacionInputDTO solicitud) {
     SolicitudEliminacionOutputDTO solicitudEliminacion =
-        this.solicitudEliminacionService.guardar(
+        this.solicitudEliminacionService.guardarSolicitud(
             solicitud
         );
     return ResponseEntity.status(HttpStatus.CREATED).body(solicitudEliminacion);
@@ -43,15 +43,15 @@ public class SolicitudEliminacionController {
 
   @PatchMapping("rechazo/{id}")
   // TODO: Buscar los admins
-  public ResponseEntity rechazar(@RequestBody AdministradorInputDTO administrador, @PathVariable("id") Long id) {
-    SolicitudEliminacionOutputDTO rechazada = this.solicitudEliminacionService.rechazar(administrador, id);
+  public ResponseEntity rechazarSolicitud(@RequestBody AdministradorInputDTO administrador, @PathVariable("id") Long id) {
+    SolicitudEliminacionOutputDTO rechazada = this.solicitudEliminacionService.rechazarSolicitud(administrador, id);
     return ResponseEntity.status(HttpStatus.OK).body(rechazada);
   }
 
   @PatchMapping("aceptacion/{id}")
   // TODO: Buscar los admins
-  public ResponseEntity aceptar(@RequestBody AdministradorInputDTO administrador, @PathVariable("id") Long id) {
-    SolicitudEliminacionOutputDTO aceptada = this.solicitudEliminacionService.aceptar(administrador, id);
+  public ResponseEntity aceptarSolicitud(@RequestBody AdministradorInputDTO administrador, @PathVariable("id") Long id) {
+    SolicitudEliminacionOutputDTO aceptada = this.solicitudEliminacionService.aceptarSolicitud(administrador, id);
     return ResponseEntity.status(HttpStatus.OK).body(aceptada);
   }
 }

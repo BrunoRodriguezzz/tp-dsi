@@ -18,7 +18,7 @@ public class SolicitudEliminacionRepository implements ISolicitudEliminacionRepo
     this.dao = new DAOSolicitudEliminacion();
   }
 
-  public SolicitudEliminacion guardar(SolicitudEliminacion solicitud) {
+  public SolicitudEliminacion guardarSolicitud(SolicitudEliminacion solicitud) {
     if(solicitud.getId() == null) {
       solicitud.setId(generadorIds.getAndIncrement());
     }

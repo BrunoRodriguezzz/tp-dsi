@@ -8,5 +8,5 @@ public interface IDAOColeccion {
   public Coleccion save(Coleccion coleccion);
   public Boolean save(List<Coleccion> colecciones);
   public Coleccion find(Long id);
-  public Boolean eliminarHecho(Long id);
+  public Boolean eliminarHechoDeColecciones(Long id);
 }
