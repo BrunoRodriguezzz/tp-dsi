@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteProxy.Services.impl;
 
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IHechoService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
@@ -10,6 +11,7 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IHechoRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,13 +50,13 @@ public class HechoService implements IHechoService {
 
     @Override
     public void guardarHecho(HechoDTO hechoDTO) {
-        HechoProxy hecho = new HechoProxy(hechoDTO.getIdHecho(), hechoDTO.getTitulo());
+        HechoProxy hecho = toHecho(hechoDTO);
         hechoRepository.guardarHecho(hecho);
     }
 
     private HechoDTO hechoToDTO(HechoProxy hecho) {
         HechoDTO dto = new HechoDTO();
-        dto.setIdHecho(hecho.getId());
+        dto.setId_hecho(hecho.getId());
         dto.setTitulo(hecho.getTitulo());
         dto.setDescripcion(hecho.getDescripcion());
         dto.setCategoria(hecho.getCategoria());
@@ -63,13 +65,27 @@ public class HechoService implements IHechoService {
         dto.setLongitud(hecho.getLongitud());
 
         if (hecho.getFechaHecho() != null)
-            dto.setFechaHecho(hecho.getFechaHecho().toString());
+            dto.setFecha_hecho(hecho.getFechaHecho().toString());
         if (hecho.getFechaCreacion() != null)
-            dto.setCreatedAt(hecho.getFechaCreacion().toString());
+            dto.setCreated_at(hecho.getFechaCreacion().toString());
         if (hecho.getFechaModificacion() != null)
-            dto.setUpdatedAt(hecho.getFechaModificacion().toString());
+            dto.setUpdated_at(hecho.getFechaModificacion().toString());
 
-        dto.setIdFuente(hecho.getIdFuente());
+        dto.setId_fuente(hecho.getIdFuente());
         return dto;
+    }
+
+    private HechoProxy toHecho(HechoDTO hechoDTO) {
+        HechoProxy hecho = new HechoProxy(hechoDTO.getId_hecho(), hechoDTO.getTitulo());
+        hecho.setDescripcion(hechoDTO.getDescripcion());
+        hecho.setCategoria(hechoDTO.getCategoria());
+        hecho.setLatitud(hechoDTO.getLatitud());
+        hecho.setLongitud(hechoDTO.getLongitud());
+        hecho.setFechaHecho(hecho.getFechaHecho());
+        hecho.setFechaModificacion(hecho.getFechaModificacion());
+        hecho.setFechaCreacion(hecho.getFechaCreacion());
+        hecho.setEliminado(false);
+
+        return hecho;
     }
 }

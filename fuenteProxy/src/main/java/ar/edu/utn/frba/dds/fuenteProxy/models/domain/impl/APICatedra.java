@@ -7,72 +7,33 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.SolicitudEliminacionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.autentificadores.RequestLogin;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.autentificadores.ResponseLogin;
 import jakarta.annotation.PostConstruct;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-//@Component
+@Component
 public class APICatedra implements TipoFuente {
     private WebClient webClient;
-    //private final WebClient.Builder webClientBuilder;
     private String token;
 
-    public APICatedra(WebClient.Builder builder) { //TODO: Podría llegar a ser asincrónico
+    public APICatedra(WebClient.Builder builder) {
         this.webClient = WebClient.builder().baseUrl("https://api-ddsi.disilab.ar/public").build();
+    }
 
-        this.token = login();
-
+    @PostConstruct
+    public void init() {
+        this.token = login(); // Pedís el token después de que el bean fue creado
         this.webClient = WebClient.builder()
                 .baseUrl("https://api-ddsi.disilab.ar/public")
                 .defaultHeader("Authorization", "Bearer " + token)
                 .build();
     }
-//    public APICatedra(WebClient.Builder builder) {
-//        this.webClientBuilder = builder;
-//    }
-//
-//    @PostConstruct
-//    public void init() {
-//        this.token = login(); // Pedís el token después de que el bean fue creado
-//        this.webClient = webClientBuilder
-//                .baseUrl("https://api-ddsi.disilab.ar/public")
-//                .defaultHeader("Authorization", "Bearer " + token)
-//                .build();
-//    }
-
-//    private String login() {
-//        RequestLogin requestLogin = new RequestLogin("dds@gmail.com", "ddsi2025*");
-//
-//        WebClient tempClient = webClientBuilder
-//                .baseUrl("https://api-ddsi.disilab.ar/public")
-//                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-//                .build();
-//
-//        ResponseLogin response = tempClient
-//                .post()
-//                .uri("/api/login")
-//                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-//                .bodyValue(requestLogin)
-//                .retrieve()
-//                .onStatus(
-//                        status -> status.is4xxClientError() || status.is5xxServerError(),
-//                        clientResponse -> Mono.error(new RuntimeException("Falló el login"))
-//                )
-//                .bodyToMono(ResponseLogin.class)
-//                .block(); // Sin block() no podés obtener el token sincrónicamente
-//
-//        return response.getData().getAccess_token();
-//    }
 
     private String login() {
-        RequestLogin requestLogin = new RequestLogin("dds@gmail.com", "ddsi2025*");
+        RequestLogin requestLogin = new RequestLogin("ddsi@gmail.com", "ddsi2025*");
         ResponseLogin response = this.webClient.post()
                 .uri("/api/login") // Dirección
                 .bodyValue(requestLogin) // Agrego al body mi request

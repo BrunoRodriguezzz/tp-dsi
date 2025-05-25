@@ -14,6 +14,7 @@ import java.util.Date;
 @Setter
 public class HechoProxy {
     private Long id;
+    private Long idExterno;
     private String titulo;
     private String descripcion;
     private String categoria;
@@ -25,9 +26,11 @@ public class HechoProxy {
     private Long idFuente;
     private Boolean eliminado;
     private Origen origen;
+    private String nombreFuente;
 
     public HechoProxy(Long id, String titulo) {
-        this.id = id;
+        this.id = null;
+        this.idExterno = id;
         this.titulo = titulo;
     }
 

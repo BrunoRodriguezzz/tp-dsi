@@ -25,6 +25,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
   <dependencies>
@@ -46,12 +48,6 @@
       <artifactId>mockito-core</artifactId>
       <version>5.17.0</version>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>ar.edu.utn.frba.dds</groupId>
-      <artifactId>domain</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>

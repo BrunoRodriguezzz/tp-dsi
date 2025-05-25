@@ -5,7 +5,7 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl.APICatedra;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class HechoSeeder implements CommandLineRunner {
     private final APICatedra apiCatedra;
     private final HechoService hechoService;

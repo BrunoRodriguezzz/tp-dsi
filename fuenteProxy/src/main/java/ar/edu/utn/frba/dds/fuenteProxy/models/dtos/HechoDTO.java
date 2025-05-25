@@ -10,10 +10,10 @@ public class HechoDTO {
     private String categoria;
     private Double latitud;
     private Double longitud;
-    private String fechaHecho;
-    private String createdAt;
-    private String updatedAt;
-    private Long idFuente;
-    private Long idHecho;
+    private String fecha_hecho;
+    private String created_at;
+    private String updated_at;
+    private Long id_fuente;
+    private Long id_hecho;
     private Origen origen;
 }

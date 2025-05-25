@@ -50,6 +50,8 @@ public class HechoRepositoryMemory implements IHechoRepository {
 
     @Override
     public void guardarHecho(HechoProxy hecho) {
+        hecho.setId(idGenerator.getAndIncrement());
+        //hecho.setNombreFuente
         hechos.put(hecho.getId(), hecho);
     }
 }
