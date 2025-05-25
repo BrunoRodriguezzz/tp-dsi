@@ -4,18 +4,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Setter
 @Getter
 public class HechoModificadoInputDTO {
 
-    private Long          id;
+    private Long          idHecho;
     private String        nombreUsuario;
-    private Integer       edadUsuario;
+    private LocalDate     fechaNacimientoUsuario;
     private String        titulo;
     private String        descripcion;
     private String        categoria;
-    private String        urlMultimedia;
-    private String        ubicacion;
+    private List<String>  contenidoMultimedia;
+    private Double        latitud;
+    private Double        longitud;
     private LocalDate     fechaAcontecimiento;
 }

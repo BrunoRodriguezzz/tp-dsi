@@ -6,11 +6,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class ContribuyenteRepository implements IContribuyenteRepository {
 
     private List<Contribuyente> contribuyentes;
+    private final AtomicLong idGenerator = new AtomicLong(1);
 
     public ContribuyenteRepository(){
         this.contribuyentes = new ArrayList<>();
@@ -20,8 +22,8 @@ public class ContribuyenteRepository implements IContribuyenteRepository {
     public void guardar(Contribuyente contribuyente) {
 
         if(!(this.comprobarUsuarioRegistrado(contribuyente))){
-
-            contribuyente.setIdContribuyente((long) this.contribuyentes.size());
+            Long id = idGenerator.getAndIncrement();
+            contribuyente.setIdContribuyente(id);
             this.contribuyentes.add(contribuyente);
 
         } else{

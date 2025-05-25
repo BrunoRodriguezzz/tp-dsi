@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output;
 
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Ubicacion;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class HechoOutputDTO {
+public class SolicitudOutputDTO {
     private Long           idHecho;
     private Contribuyente  contribuyente;
     private String         titulo;
@@ -20,4 +21,5 @@ public class HechoOutputDTO {
     private Ubicacion      ubicacion;
     private LocalDate      fechaAcontecimiento;
     private List<String>   etiquetas;
+    private String         sugerenciaDeCambio;
 }

@@ -3,12 +3,13 @@ package ar.edu.utn.frba.dds.fuenteDinamica.models.entities;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Setter
 @Getter
 public class Contribuyente {
     private String      nombre;
-    private Integer     edad;
+    private LocalDate   fechaDeNacimiento;
     private Long        idContribuyente;
 }

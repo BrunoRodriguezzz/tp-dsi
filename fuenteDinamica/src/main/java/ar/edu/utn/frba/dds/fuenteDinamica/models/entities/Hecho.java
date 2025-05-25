@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -15,11 +16,12 @@ public class Hecho {
     private String        titulo;
     private String        descripcion;
     private String        categoria;
-    private String        urlMultimedia;
-    private String        ubicacion;
+    private List<String>  contenidoMultimedia;
+    private Ubicacion     ubicacion;
     private LocalDate     fechaAcontecimiento;
     private List<String>  etiquetas;
-    private LocalDate     fechaGuardado;
+    private LocalDateTime fechaGuardado;
+    private LocalDateTime fechaModificacion;
     private EstadoHecho   estadoHecho;
     private String        sugerenciaDeCambio;
     private Boolean       enviado;

@@ -5,13 +5,16 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IDinamicaRepositor
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class DinamicaRepository implements IDinamicaRepository {
 
     private List<Hecho> hechos;
+    private final AtomicLong idGenerator = new AtomicLong(1);
 
     public DinamicaRepository(){
         this.hechos = new ArrayList<>();
@@ -29,8 +32,9 @@ public class DinamicaRepository implements IDinamicaRepository {
     @Override
     public void guardar(Hecho hecho) {
 
-        hecho.setIdHecho((long) this.hechos.size());
-        hecho.setFechaGuardado(LocalDate.now());
+        Long id = idGenerator.getAndIncrement();
+        hecho.setIdHecho(id);
+        hecho.setFechaGuardado(LocalDateTime.now());
         hecho.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
         hecho.setEtiquetas(null);
         hecho.setSugerenciaDeCambio(null);

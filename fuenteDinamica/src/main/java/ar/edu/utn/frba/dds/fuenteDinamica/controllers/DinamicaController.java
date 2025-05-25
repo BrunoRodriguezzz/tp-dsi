@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IDinamicaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class DinamicaController {
     @Autowired
     private IDinamicaService dinamicaService;
 
-    // Uso del Agregador o cualquier Usuario
+    // Uso del Agregador
 
     @GetMapping("/busqueda")
     public List<HechoOutputDTO> buscarTodos(@RequestParam(required = false) Boolean enviado){
@@ -29,7 +30,7 @@ public class DinamicaController {
     // Uso de los Usuarios
 
     @PostMapping("/solicitud")
-    public HechoOutputDTO solicitudCrearHecho(@RequestBody HechoInputDTO hecho){
+    public SolicitudOutputDTO solicitudCrearHecho(@RequestBody HechoInputDTO hecho){
         if(verificarEdadNecesaria(hecho)) {
             return dinamicaService.crear(hecho);
         }else{
@@ -38,7 +39,7 @@ public class DinamicaController {
     }
 
     @PatchMapping("/modificacion")
-    public HechoOutputDTO actualizarHecho(@RequestBody HechoModificadoInputDTO hecho){
+    public SolicitudOutputDTO actualizarHecho(@RequestBody HechoModificadoInputDTO hecho){
         if(verificarUsuarioRegistrado(hecho)){
             return dinamicaService.actualizar(hecho);
         }else{
@@ -62,14 +63,14 @@ public class DinamicaController {
 
     private Boolean verificarEdadNecesaria(HechoInputDTO hechoSolicitado){
 
-        return hechoSolicitado.getEdadUsuario() >= 18;
+        return this.dinamicaService.verificarEdadNecesaria(hechoSolicitado);
     }
 
     private Boolean verificarUsuarioRegistrado(HechoModificadoInputDTO hechoParaActualizar){
 
         Contribuyente usuario = new Contribuyente();
         usuario.setNombre(hechoParaActualizar.getNombreUsuario());
-        usuario.setEdad(hechoParaActualizar.getEdadUsuario());
+        usuario.setFechaDeNacimiento(hechoParaActualizar.getFechaNacimientoUsuario());
 
         return this.dinamicaService.verificarUsuarioRegistrado(usuario);
     }

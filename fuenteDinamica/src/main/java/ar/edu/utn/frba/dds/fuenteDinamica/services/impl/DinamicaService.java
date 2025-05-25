@@ -4,9 +4,11 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Ubicacion;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IContribuyenteRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IDinamicaRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IDinamicaService;
@@ -14,7 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -44,21 +47,28 @@ public class DinamicaService implements IDinamicaService {
     }
 
     @Override
-    public HechoOutputDTO crear(HechoInputDTO hechoInputDTO) {
+    public SolicitudOutputDTO crear(HechoInputDTO hechoInputDTO) {
 
         Hecho hecho = new Hecho();
 
         hecho.setTitulo(hechoInputDTO.getTitulo());
         hecho.setDescripcion(hechoInputDTO.getDescripcion());
         hecho.setCategoria(hechoInputDTO.getCategoria());
-        hecho.setUrlMultimedia(hechoInputDTO.getUrlMultimedia());
-        hecho.setUbicacion((hechoInputDTO.getUbicacion()));
+        hecho.setContenidoMultimedia(hechoInputDTO.getContenidoMultimedia());
+
+        Ubicacion ubicacion = new Ubicacion();
+
+        ubicacion.setLatitud(hechoInputDTO.getLatitud());
+        ubicacion.setLongitud(hechoInputDTO.getLongitud());
+
+        hecho.setUbicacion(ubicacion);
         hecho.setFechaAcontecimiento(hechoInputDTO.getFechaAcontecimiento());
 
         Contribuyente usuario = new Contribuyente();
 
         usuario.setNombre(hechoInputDTO.getNombreUsuario());
-        usuario.setEdad(hechoInputDTO.getEdadUsuario());
+
+        usuario.setFechaDeNacimiento(hechoInputDTO.getFechaNacimientoUsuario());
 
         hecho.setContribuyente(usuario);
 
@@ -69,30 +79,37 @@ public class DinamicaService implements IDinamicaService {
             this.contribuyentesRepository.guardar(usuario);
         }
 
-        return this.hechoOutputDTO(hecho);
+        return this.solicitudOutputDTO(hecho);
     }
 
     @Override
-    public HechoOutputDTO actualizar(HechoModificadoInputDTO hechoModificado){
+    public SolicitudOutputDTO actualizar(HechoModificadoInputDTO hechoModificado){
 
-        Hecho hechoOriginal = this.dinamicaRepository.buscarPorID(hechoModificado.getId());
+        Hecho hechoOriginal = this.dinamicaRepository.buscarPorID(hechoModificado.getIdHecho());
 
         if(this.verificarTiempoParaActualizar(hechoOriginal)){
 
-            Hecho hechoCambiado = this.dinamicaRepository.buscarPorID(hechoModificado.getId());
+            Hecho hechoCambiado = this.dinamicaRepository.buscarPorID(hechoModificado.getIdHecho());
 
             hechoCambiado.setTitulo(hechoModificado.getTitulo());
             hechoCambiado.setDescripcion(hechoModificado.getDescripcion());
             hechoCambiado.setCategoria(hechoModificado.getCategoria());
-            hechoCambiado.setUrlMultimedia(hechoModificado.getUrlMultimedia());
-            hechoCambiado.setUbicacion(hechoModificado.getUbicacion());
+            hechoCambiado.setContenidoMultimedia(hechoModificado.getContenidoMultimedia());
+            hechoCambiado.setFechaModificacion(LocalDateTime.now());
+
+            Ubicacion ubicacion = new Ubicacion();
+
+            ubicacion.setLatitud(hechoModificado.getLatitud());
+            ubicacion.setLongitud(hechoModificado.getLongitud());
+
+            hechoCambiado.setUbicacion(ubicacion);
             hechoCambiado.setFechaAcontecimiento(hechoModificado.getFechaAcontecimiento());
             hechoCambiado.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
             hechoCambiado.setEnviado(false);
 
             this.dinamicaRepository.guardarCambios(hechoOriginal,hechoCambiado);
 
-            return this.hechoOutputDTO(hechoCambiado);
+            return this.solicitudOutputDTO(hechoCambiado);
         }else{
             //TODO: El tiempo para actualizar ya se vencio
             return null;
@@ -127,6 +144,33 @@ public class DinamicaService implements IDinamicaService {
         return this.hechoOutputDTO(hechoCambiado);
     }
 
+    @Override
+    public Boolean verificarEdadNecesaria(HechoInputDTO solicitud){
+
+        LocalDate fechaHoy = LocalDate.now();
+        Long diferencia = ChronoUnit.YEARS.between(solicitud.getFechaNacimientoUsuario(),fechaHoy);
+
+        return diferencia>18;
+    }
+
+    private SolicitudOutputDTO solicitudOutputDTO(Hecho hecho){
+
+        SolicitudOutputDTO solicitudOutputDTO = new SolicitudOutputDTO();
+
+        solicitudOutputDTO.setIdHecho(hecho.getIdHecho());
+        solicitudOutputDTO.setContribuyente(hecho.getContribuyente());
+        solicitudOutputDTO.setTitulo(hecho.getTitulo());
+        solicitudOutputDTO.setDescripcion(hecho.getDescripcion());
+        solicitudOutputDTO.setCategoria(hecho.getCategoria());
+        solicitudOutputDTO.setContenidoMultimedia(hecho.getContenidoMultimedia());
+        solicitudOutputDTO.setUbicacion(hecho.getUbicacion());
+        solicitudOutputDTO.setFechaAcontecimiento(hecho.getFechaAcontecimiento());
+        solicitudOutputDTO.setEtiquetas(hecho.getEtiquetas());
+        solicitudOutputDTO.setSugerenciaDeCambio(hecho.getSugerenciaDeCambio());
+
+        return solicitudOutputDTO;
+    }
+
     private HechoOutputDTO hechoOutputDTO(Hecho hecho){
 
         HechoOutputDTO hechoOutputDTO = new HechoOutputDTO();
@@ -136,26 +180,26 @@ public class DinamicaService implements IDinamicaService {
         hechoOutputDTO.setTitulo(hecho.getTitulo());
         hechoOutputDTO.setDescripcion(hecho.getDescripcion());
         hechoOutputDTO.setCategoria(hecho.getCategoria());
-        hechoOutputDTO.setUrlMultimedia(hecho.getUrlMultimedia());
+        hechoOutputDTO.setContenidoMultimedia(hecho.getContenidoMultimedia());
         hechoOutputDTO.setUbicacion(hecho.getUbicacion());
         hechoOutputDTO.setFechaAcontecimiento(hecho.getFechaAcontecimiento());
         hechoOutputDTO.setEtiquetas(hecho.getEtiquetas());
-        hechoOutputDTO.setEstadoHecho(hecho.getEstadoHecho());
-        hechoOutputDTO.setSugerenciaDeCambio(hecho.getSugerenciaDeCambio());
 
         return hechoOutputDTO;
     }
 
     private Hecho buscarPorID(Long id) {
+
         return this.dinamicaRepository.buscarPorID(id);
+
     }
 
     private Boolean verificarTiempoParaActualizar(Hecho hecho){
 
-        LocalDate fechaHoy = LocalDate.now();
-        Period diferencia = Period.between(hecho.getFechaGuardado(),fechaHoy);
+        LocalDateTime fechaHoy = LocalDateTime.now();
+        Long diferencia = ChronoUnit.DAYS.between(hecho.getFechaGuardado(),fechaHoy);
 
-        if(diferencia.getDays() > 7){
+        if(diferencia > 7){
             //TODO: No se puede actualizar el hecho ya paso una semana
             return false;
         }else{
