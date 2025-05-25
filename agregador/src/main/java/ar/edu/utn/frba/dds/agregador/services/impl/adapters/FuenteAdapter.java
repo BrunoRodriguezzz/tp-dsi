@@ -55,7 +55,7 @@ public class FuenteAdapter implements IFuenteAdapter {
   public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
     return fuenteAPI.get()
         .uri(uriBuilder -> uriBuilder
-            .path("/current.json")
+            .path("/hechos")
             .queryParam("dateTimeGT", ultimaFechaRefresco.toString())
             .build())
         .retrieve()
@@ -69,9 +69,9 @@ public class FuenteAdapter implements IFuenteAdapter {
   public void eliminarHecho(Hecho hecho) {
     fuenteAPI.put()
         .uri(uriBuilder -> uriBuilder
-            .path("/eliminacion/{id}")
+            .path("/eliminacion")
             .build(hecho.getId()))
-        .bodyValue(hecho)
+        .bodyValue(UtilsDTO.HechoToDTO(hecho))
         .retrieve()
         .toBodilessEntity() // No se espera con contenido
         .block(); // Ejecución sincrónica

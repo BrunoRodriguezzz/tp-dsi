@@ -3,7 +3,6 @@ package ar.edu.utn.frba.dds.agregador.services.impl;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaEliminadoException;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.AdministradorInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.SolicitudEliminacionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IAdministradorRepository;
