@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorTipoDeDatos;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
@@ -48,38 +49,37 @@ public class DinamicaService implements IDinamicaService {
 
     @Override
     public SolicitudOutputDTO crear(HechoInputDTO hechoInputDTO) {
+            Contribuyente usuario = Contribuyente
+                    .builder()
+                    .nombre(hechoInputDTO.getNombreUsuario())
+                    .fechaDeNacimiento(hechoInputDTO.getFechaNacimientoUsuario())
+                    .build();
 
-        Hecho hecho = new Hecho();
+            Ubicacion ubicacion = Ubicacion
+                    .builder()
+                    .latitud(hechoInputDTO.getLatitud())
+                    .longitud(hechoInputDTO.getLongitud())
+                    .build();
 
-        hecho.setTitulo(hechoInputDTO.getTitulo());
-        hecho.setDescripcion(hechoInputDTO.getDescripcion());
-        hecho.setCategoria(hechoInputDTO.getCategoria());
-        hecho.setContenidoMultimedia(hechoInputDTO.getContenidoMultimedia());
+            Hecho hecho = Hecho
+                    .builder()
+                    .titulo(hechoInputDTO.getTitulo())
+                    .descripcion(hechoInputDTO.getDescripcion())
+                    .categoria(hechoInputDTO.getCategoria())
+                    .contenidoMultimedia(hechoInputDTO.getContenidoMultimedia())
+                    .ubicacion(ubicacion)
+                    .fechaAcontecimiento(hechoInputDTO.getFechaAcontecimiento())
+                    .contribuyente(usuario)
+                    .build();
 
-        Ubicacion ubicacion = new Ubicacion();
+            this.dinamicaRepository.guardar(hecho);
 
-        ubicacion.setLatitud(hechoInputDTO.getLatitud());
-        ubicacion.setLongitud(hechoInputDTO.getLongitud());
+            // Guardo el contribuyente, solo si indico su nombre
+            if(usuario.getNombre() != ""){
+                this.contribuyentesRepository.guardar(usuario);
+            }
 
-        hecho.setUbicacion(ubicacion);
-        hecho.setFechaAcontecimiento(hechoInputDTO.getFechaAcontecimiento());
-
-        Contribuyente usuario = new Contribuyente();
-
-        usuario.setNombre(hechoInputDTO.getNombreUsuario());
-
-        usuario.setFechaDeNacimiento(hechoInputDTO.getFechaNacimientoUsuario());
-
-        hecho.setContribuyente(usuario);
-
-        this.dinamicaRepository.guardar(hecho);
-
-        // Guardo el contribuyente, solo si indico su nombre
-        if(usuario.getNombre() != ""){
-            this.contribuyentesRepository.guardar(usuario);
-        }
-
-        return this.solicitudOutputDTO(hecho);
+            return this.solicitudOutputDTO(hecho);
     }
 
     @Override
@@ -87,33 +87,29 @@ public class DinamicaService implements IDinamicaService {
 
         Hecho hechoOriginal = this.dinamicaRepository.buscarPorID(hechoModificado.getIdHecho());
 
-        if(this.verificarTiempoParaActualizar(hechoOriginal)){
+        Hecho hechoCambiado = this.dinamicaRepository.buscarPorID(hechoModificado.getIdHecho());
 
-            Hecho hechoCambiado = this.dinamicaRepository.buscarPorID(hechoModificado.getIdHecho());
+        hechoCambiado.setTitulo(hechoModificado.getTitulo());
+        hechoCambiado.setDescripcion(hechoModificado.getDescripcion());
+        hechoCambiado.setCategoria(hechoModificado.getCategoria());
+        hechoCambiado.setContenidoMultimedia(hechoModificado.getContenidoMultimedia());
+        hechoCambiado.setFechaModificacion(LocalDateTime.now());
 
-            hechoCambiado.setTitulo(hechoModificado.getTitulo());
-            hechoCambiado.setDescripcion(hechoModificado.getDescripcion());
-            hechoCambiado.setCategoria(hechoModificado.getCategoria());
-            hechoCambiado.setContenidoMultimedia(hechoModificado.getContenidoMultimedia());
-            hechoCambiado.setFechaModificacion(LocalDateTime.now());
+        Ubicacion ubicacion = Ubicacion
+                .builder()
+                .latitud(hechoModificado.getLatitud())
+                .longitud(hechoModificado.getLongitud())
+                .build();
 
-            Ubicacion ubicacion = new Ubicacion();
+        hechoCambiado.setUbicacion(ubicacion);
+        hechoCambiado.setFechaAcontecimiento(hechoModificado.getFechaAcontecimiento());
+        hechoCambiado.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
+        hechoCambiado.setEnviado(false);
 
-            ubicacion.setLatitud(hechoModificado.getLatitud());
-            ubicacion.setLongitud(hechoModificado.getLongitud());
+        this.dinamicaRepository.guardarCambios(hechoOriginal,hechoCambiado);
 
-            hechoCambiado.setUbicacion(ubicacion);
-            hechoCambiado.setFechaAcontecimiento(hechoModificado.getFechaAcontecimiento());
-            hechoCambiado.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
-            hechoCambiado.setEnviado(false);
+        return this.solicitudOutputDTO(hechoCambiado);
 
-            this.dinamicaRepository.guardarCambios(hechoOriginal,hechoCambiado);
-
-            return this.solicitudOutputDTO(hechoCambiado);
-        }else{
-            //TODO: El tiempo para actualizar ya se vencio
-            return null;
-        }
     }
 
     @Override
@@ -122,9 +118,15 @@ public class DinamicaService implements IDinamicaService {
     }
 
     @Override
-    public Boolean verificarUsuarioRegistrado(Contribuyente contribuyente){
+    public Boolean verificarUsuarioRegistrado(HechoModificadoInputDTO hechoParaActualizar){
 
-        return this.contribuyentesRepository.comprobarUsuarioRegistrado(contribuyente);
+        Contribuyente usuario = Contribuyente
+                .builder()
+                .nombre(hechoParaActualizar.getNombreUsuario())
+                .fechaDeNacimiento(hechoParaActualizar.getFechaNacimientoUsuario())
+                .build();
+
+        return this.contribuyentesRepository.comprobarUsuarioRegistrado(usuario);
 
     }
 
@@ -153,39 +155,90 @@ public class DinamicaService implements IDinamicaService {
         return diferencia>18;
     }
 
+    @Override
+    public Boolean verificarTiposDeDatos(HechoInputDTO hechoIngresado){
+        return hechoIngresado.getNombreUsuario() != null
+                && hechoIngresado.getFechaNacimientoUsuario() != null
+                && hechoIngresado.getTitulo() != null
+                && hechoIngresado.getDescripcion() != null
+                && hechoIngresado.getCategoria() != null
+                && hechoIngresado.getContenidoMultimedia() != null
+                && hechoIngresado.getLatitud() != null
+                && hechoIngresado.getLongitud() != null
+                && hechoIngresado.getFechaAcontecimiento() != null;
+    }
+
+    @Override
+    public String tipoDeDatoErroneo(HechoInputDTO solicitudHecho){
+
+        String datoErroneo = "";
+
+        if(solicitudHecho.getNombreUsuario() == null)
+            datoErroneo = "Nombre de Usuario";
+        if(solicitudHecho.getFechaNacimientoUsuario() == null)
+            datoErroneo = "Fecha de Nacimiento";
+        if(solicitudHecho.getTitulo() == null || solicitudHecho.getTitulo().isEmpty())
+            datoErroneo = "Titulo";
+        if(solicitudHecho.getDescripcion() == null || solicitudHecho.getDescripcion().isEmpty())
+            datoErroneo = "Descripcion";
+        if(solicitudHecho.getCategoria() == null || solicitudHecho.getCategoria().isEmpty())
+            datoErroneo = "Categoria";
+        if(solicitudHecho.getContenidoMultimedia() == null)
+            datoErroneo = "Contenido Multimedia";
+        if(solicitudHecho.getLatitud() == null)
+            datoErroneo = "Latitud";
+        if(solicitudHecho.getLongitud() == null)
+            datoErroneo = "Longitud";
+        if(solicitudHecho.getFechaAcontecimiento() == null)
+            datoErroneo = "Fecha de Acontecimiento";
+
+        return datoErroneo;
+    }
+
+    @Override
+    public Boolean verificarTiempoParaActualizar(HechoModificadoInputDTO solicitudCambio){
+
+        Hecho hechoGuardado = this.buscarPorID(solicitudCambio.getIdHecho());
+
+        LocalDateTime fechaHoy = LocalDateTime.now();
+        long diferencia = ChronoUnit.DAYS.between(hechoGuardado.getFechaGuardado(),fechaHoy);
+
+        return diferencia <= 7;
+    }
+
     private SolicitudOutputDTO solicitudOutputDTO(Hecho hecho){
 
-        SolicitudOutputDTO solicitudOutputDTO = new SolicitudOutputDTO();
+        return SolicitudOutputDTO
+                .builder()
+                .idHecho(hecho.getIdHecho())
+                .contribuyente(hecho.getContribuyente())
+                .titulo(hecho.getTitulo())
+                .descripcion(hecho.getDescripcion())
+                .categoria(hecho.getCategoria())
+                .contenidoMultimedia(hecho.getContenidoMultimedia())
+                .ubicacion(hecho.getUbicacion())
+                .fechaAcontecimiento(hecho.getFechaAcontecimiento())
+                .etiquetas(hecho.getEtiquetas())
+                .sugerenciaDeCambio(hecho.getSugerenciaDeCambio())
+                .build();
 
-        solicitudOutputDTO.setIdHecho(hecho.getIdHecho());
-        solicitudOutputDTO.setContribuyente(hecho.getContribuyente());
-        solicitudOutputDTO.setTitulo(hecho.getTitulo());
-        solicitudOutputDTO.setDescripcion(hecho.getDescripcion());
-        solicitudOutputDTO.setCategoria(hecho.getCategoria());
-        solicitudOutputDTO.setContenidoMultimedia(hecho.getContenidoMultimedia());
-        solicitudOutputDTO.setUbicacion(hecho.getUbicacion());
-        solicitudOutputDTO.setFechaAcontecimiento(hecho.getFechaAcontecimiento());
-        solicitudOutputDTO.setEtiquetas(hecho.getEtiquetas());
-        solicitudOutputDTO.setSugerenciaDeCambio(hecho.getSugerenciaDeCambio());
-
-        return solicitudOutputDTO;
     }
 
     private HechoOutputDTO hechoOutputDTO(Hecho hecho){
 
-        HechoOutputDTO hechoOutputDTO = new HechoOutputDTO();
+        return HechoOutputDTO
+                .builder()
+                .idHecho(hecho.getIdHecho())
+                .contribuyente(hecho.getContribuyente())
+                .titulo(hecho.getTitulo())
+                .descripcion(hecho.getDescripcion())
+                .categoria(hecho.getCategoria())
+                .contenidoMultimedia(hecho.getContenidoMultimedia())
+                .ubicacion(hecho.getUbicacion())
+                .fechaAcontecimiento(hecho.getFechaAcontecimiento())
+                .etiquetas(hecho.getEtiquetas())
+                .build();
 
-        hechoOutputDTO.setIdHecho(hecho.getIdHecho());
-        hechoOutputDTO.setContribuyente(hecho.getContribuyente());
-        hechoOutputDTO.setTitulo(hecho.getTitulo());
-        hechoOutputDTO.setDescripcion(hecho.getDescripcion());
-        hechoOutputDTO.setCategoria(hecho.getCategoria());
-        hechoOutputDTO.setContenidoMultimedia(hecho.getContenidoMultimedia());
-        hechoOutputDTO.setUbicacion(hecho.getUbicacion());
-        hechoOutputDTO.setFechaAcontecimiento(hecho.getFechaAcontecimiento());
-        hechoOutputDTO.setEtiquetas(hecho.getEtiquetas());
-
-        return hechoOutputDTO;
     }
 
     private Hecho buscarPorID(Long id) {
@@ -194,16 +247,4 @@ public class DinamicaService implements IDinamicaService {
 
     }
 
-    private Boolean verificarTiempoParaActualizar(Hecho hecho){
-
-        LocalDateTime fechaHoy = LocalDateTime.now();
-        Long diferencia = ChronoUnit.DAYS.between(hecho.getFechaGuardado(),fechaHoy);
-
-        if(diferencia > 7){
-            //TODO: No se puede actualizar el hecho ya paso una semana
-            return false;
-        }else{
-            return true;
-        }
-    }
 }

@@ -1,11 +1,14 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.controllers;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoNoAutorizado;
+import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoProhibido;
+import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorDeTiempo;
+import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorTipoDeDatos;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IDinamicaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,19 +35,26 @@ public class DinamicaController {
     @PostMapping("/solicitud")
     public SolicitudOutputDTO solicitudCrearHecho(@RequestBody HechoInputDTO hecho){
         if(verificarEdadNecesaria(hecho)) {
-            return dinamicaService.crear(hecho);
+            if(verificarTiposDeDatos(hecho)) {
+                return dinamicaService.crear(hecho);
+            }else{
+                throw new ErrorTipoDeDatos("Error de ingreso de datos en: " + tipoDeDatoErroneo(hecho)+ ". No puede haber campos vacios.");
+            }
         }else{
-            return null;
+            throw new ErrorAccesoProhibido("No cumple con la mayoria de edad.");
         }
     }
 
     @PatchMapping("/modificacion")
     public SolicitudOutputDTO actualizarHecho(@RequestBody HechoModificadoInputDTO hecho){
         if(verificarUsuarioRegistrado(hecho)){
-            return dinamicaService.actualizar(hecho);
+            if(verificarTiempoParaActualizar(hecho)){
+                return dinamicaService.actualizar(hecho);
+            }else{
+                throw new ErrorDeTiempo("El plazo para modificar el hecho se termino.");
+            }
         }else{
-            //TODO: Hay que agregar un mensaje o excepcion (no hecho con ese ID a su nombre o no esta registrado)
-            return null;
+            throw new ErrorAccesoNoAutorizado("Usuario no registrado.");
         }
     }
 
@@ -57,8 +67,6 @@ public class DinamicaController {
 
     }
 
-    // Excepciones en caso de no cumplirse una condicion
-
     // Verificadores necesarios
 
     private Boolean verificarEdadNecesaria(HechoInputDTO hechoSolicitado){
@@ -68,10 +76,24 @@ public class DinamicaController {
 
     private Boolean verificarUsuarioRegistrado(HechoModificadoInputDTO hechoParaActualizar){
 
-        Contribuyente usuario = new Contribuyente();
-        usuario.setNombre(hechoParaActualizar.getNombreUsuario());
-        usuario.setFechaDeNacimiento(hechoParaActualizar.getFechaNacimientoUsuario());
+        return this.dinamicaService.verificarUsuarioRegistrado(hechoParaActualizar);
+    }
 
-        return this.dinamicaService.verificarUsuarioRegistrado(usuario);
+    private Boolean verificarTiposDeDatos(HechoInputDTO hecho){
+
+        return this.dinamicaService.verificarTiposDeDatos(hecho);
+
+    }
+
+    private String tipoDeDatoErroneo(HechoInputDTO hecho){
+
+        return this.dinamicaService.tipoDeDatoErroneo(hecho);
+
+    }
+
+    private Boolean verificarTiempoParaActualizar(HechoModificadoInputDTO hecho) {
+
+        return this.dinamicaService.verificarTiempoParaActualizar(hecho);
+
     }
 }

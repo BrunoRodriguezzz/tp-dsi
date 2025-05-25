@@ -2,6 +2,7 @@
 'Hecho
  Hecho --> Contribuyente
  Hecho --> EstadoHecho
+ Hecho --> Ubicacion
 
 'HechoRevisadoInputDTO
  HechoRevisadoInputDTO --> EstadoHecho
@@ -26,6 +27,7 @@
 'IDinamicaService
  IDinamicaService ..> HechoOutputDTO
  IDinamicaService ..> HechoInputDTO
+ IDinamicaService ..> SolicitudHechoOutputDTO
  IDinamicaService ..> HechoModificadoInputDTO
  IDinamicaService ..> HechoRevisadoInputDTO
  IDinamicaService ..> Contribuyente
@@ -41,25 +43,27 @@
 class HechoInputDTO {
 
     - String nombreUsuario
-    - Integer edadUsuario
+    - LocalDate fechaNacimientoUsuario
     - String titulo
     - String descripcion
     - String categoria
-    - String urlMultimedia
-    - String ubicacion
+    - List<String> contenidoMultimedia
+    - Double latitud
+    - Double longitud
     - LocalDate fechaAcontecimiento
 }
 
 class HechoModificadoInputDTO {
 
-    - Long id
+    - Long idHecho
     - String nombreUsuario
-    - Integer edadUsuario
+    - LocalDate fechaNacimientoUsuario
     - String titulo
     - String descripcion
     - String categoria
-    - String urlMultimedia
-    - String ubicacion
+    - List<String> contenidoMultimedia
+    - Double latitud
+    - Double longitud
     - LocalDate fechaAcontecimiento
 }
 
@@ -73,37 +77,58 @@ class HechoRevisadoInputDTO {
 }
 
 class HechoOutputDTO {
+    - Long idHecho
     - Contribuyente contribuyente
     - String titulo
     - String descripcion
     - String categoria
-    - String urlMultimedia
-    - String ubicacion
+    - List<String> contenidoMultimedia
+    - Ubicacion ubicacion
     - LocalDate fechaAcontecimiento
     - List<String> etiquetas
+}
+
+class SolicitudHechoOutputDTO {
+    - Long idHecho
+    - Contribuyente contribuyente
+    - String titulo
+    - String descripcion
+    - String categoria
+    - List<String> contenidoMultimedia
+    - Ubicacion ubicacion
+    - LocalDate fechaAcontecimiento
+    - List<String> etiquetas
+    - String sugerenciaDeCambio
 }
 
 class Hecho {
 
-    - Long id
+    - Long idHecho
     - Contribuyente contribuyente
     - String  titulo
     - String descripcion
     - String categoria
-    - String urlMultimedia
-    - String ubicacion
+    - List<String> contenidoMultimedia
+    - Ubicacion ubicacion
     - LocalDate fechaAcontecimiento
     - List<String> etiquetas
-    - LocalDate fechaGuardado
+    - LocalDateTime fechaGuardado
+    - LocalDateTime fechaModificacion
     - EstadoHecho estadoHecho
     - String sugerenciaDeCambio
-    - List<String> etiquetas
+    - Boolean enviado
+    - Boolean estaEliminado
+}
+
+class Ubicacion{
+    - Double latitud
+    - Double longitud
 }
 
 class Contribuyente {
-    - Long id
     - String nombre
-    - Integer edad
+    - LocalDate fechaDeNacimiento
+    - Long idContribuyente
 }
 
 enum EstadoHecho {
@@ -130,7 +155,7 @@ class ContribuyenteRepository{
 
 interface IDinamicaRepository {
 
-    + buscarPorID (Long ID):Hecho
+    + buscarPorID(Long ID):Hecho
     + guardar(Hecho hecho):void
     + guardarCambios(Hecho hechoOriginal, Hecho hechoCambiado):void
     + eliminar(Hecho hecho):void
@@ -155,10 +180,11 @@ class DinamicaRepository{
 interface IDinamicaService {
 
     + buscarHechos():List<HechoOutputDTO>
-    + crear(HechoInputDTO hechoInputDTO):HechoOutputDTO
+    + crear(HechoInputDTO hechoInputDTO):SolicitudHechoOutDTO
     + eliminar(Long id):void
-    + actualizar(HechoModificadoInputDTO hechoModificado):HechoOutputDTO
+    + actualizar(HechoModificadoInputDTO hechoModificado):SolicitudHechoOutDTO
     + verificarUsuarioRegistrado(Contribuyente contribuyente):Boolean
+    + verificarEdadNecesaria(HechoInputDTO hechoInputDTO)
     + gestionarHecho(HechoRevisadoInputDTO hechoRevisado):HechoOutputDTO
 
 }
@@ -169,14 +195,16 @@ class DinamicaService{
     - IContribuyenteRepository contribuyentesRepository
 
     + buscarHechos():List<HechoOutputDTO>
-    + crear(HechoInputDTO hechoInputDTO):HechoOutputDTO
-    + actualizar(HechoModificadoInputDTO hecho)HechoOutputDTO
+    + crear(HechoInputDTO hechoInputDTO):SolicitudHechoOutDTO
+    + actualizar(HechoModificadoInputDTO hecho):SolicitudHechoOutDTO
     + eliminar(Long id):void
     + verificarUsuarioRegistrado(Contribuyente contribuyente):Boolean
     + gestionarHecho(HechoRevisadoInputDTO hechoRevisado):HechoOutputDTO
+    + verificarEdadNecesaria(Contribuyente contribuyente):Boolean
+    - solicitudOutputDTO(Hecho hecho):SolicitudHechoOutDTO
     - hechoOutputDTO(Hecho hecho):HechoOutputDTO
     - buscarPorID(Long id):Hecho
-    - verificarTiempoParaActualizar(Hecho hecho)
+    - verificarTiempoParaActualizar(Hecho hecho):Boolean
 }
 
 class DinamicaController{
@@ -184,8 +212,8 @@ class DinamicaController{
     - IDinamicaService dinamicaService
 
     + buscarTodos(Boolean enviado):List<HechoOutputDTO>
-    + solicitudCrearHecho(HechoInputDTO hecho):HechoOutputDTO
-    + actualizarHecho(HechoModificadoInputDTO hecho):HechoOutputDTO
+    + solicitudCrearHecho(HechoInputDTO hecho):SolicitudHechoOutputDTO
+    + actualizarHecho(HechoModificadoInputDTO hecho):SolicitudHechoOutputDTO
     + gestionarHecho(HechoRevisadoInputDTO hechoRevisado):HechoOutputDTO
     - verificarEdadNecesaria(HechoInputDTO hecho):Boolean
     - verificarUsuarioRegistrado(HechoModificadoInputDTO hecho):Boolean

@@ -15,7 +15,9 @@ public class ContribuyenteRepository implements IContribuyenteRepository {
     private final AtomicLong idGenerator = new AtomicLong(1);
 
     public ContribuyenteRepository(){
+
         this.contribuyentes = new ArrayList<>();
+
     }
 
     @Override
