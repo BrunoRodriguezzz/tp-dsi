@@ -1,6 +1,8 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.dtos.external.ContribuyenteServicioResponseDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.external.HechoServicioResponseDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.AdministradorInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInputDTO;
@@ -113,6 +115,14 @@ public class UtilsDTO {
     return contribuyenteDTO;
   }
 
+  public static Contribuyente contribuyenteServicioResponseDTOtoContribuyente(ContribuyenteServicioResponseDTO contribuyenteDTO) {
+    try{
+      return new Contribuyente(contribuyenteDTO.getNombre(),contribuyenteDTO.getApellido(),contribuyenteDTO.getFechaNacimiento());
+    }catch (Exception e){
+      throw new RuntimeException(e.getMessage());
+    }
+  }
+
   public static SolicitudEliminacion DTOtoSolicitud (SolicitudEliminacionInputDTO solicitudDTO, Hecho hecho, Contribuyente c){
     Contribuyente contribuyente = null;
     SolicitudEliminacion solicitud = null;
@@ -171,4 +181,32 @@ public class UtilsDTO {
     return resolucionDTO;
   }
 
+
+  // Fuentes
+  public static Hecho hechoServicioResponseDTOtoHecho(HechoServicioResponseDTO hechoDTO) {
+    Hecho hecho;
+    try {
+      hecho = new Hecho(
+          hechoDTO.getTitulo(),
+          hechoDTO.getDescripcion(),
+          new Categoria(hechoDTO.getCategoria()),
+          new Ubicacion(
+              hechoDTO.getUbicacion().getLatitud(),
+              hechoDTO.getUbicacion().getLongitud()
+          ),
+          hechoDTO.getFechaAcontecimiento(),
+          Origen.valueOf(hechoDTO.getOrigen().toUpperCase())
+      );
+      hecho.setId(hechoDTO.getId());
+      hecho.setFuente(hechoDTO.getFuente());
+      hecho.setEstaEliminado(false);
+      if(hechoDTO.getContribuyente() != null) {
+        hecho.setContribuyente(UtilsDTO.contribuyenteServicioResponseDTOtoContribuyente(hechoDTO.getContribuyente()));
+      }
+      return hecho;
+    } catch (Exception e){
+      System.out.println(e.getMessage());
+    }
+    return null;
+  }
 }

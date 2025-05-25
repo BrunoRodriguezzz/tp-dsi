@@ -41,7 +41,7 @@ public class SolicitudEliminacionController {
     if(solicitudEliminacion == null) {
       return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
-    return ResponseEntity.status(HttpStatus.FOUND).body(solicitudEliminacion);
+    return ResponseEntity.status(HttpStatus.OK).body(solicitudEliminacion);
   }
 
   @PatchMapping("rechazo/{id}")

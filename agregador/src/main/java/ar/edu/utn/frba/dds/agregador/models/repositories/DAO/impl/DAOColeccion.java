@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl;
 
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOColeccion;
 import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

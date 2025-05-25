@@ -2,31 +2,28 @@ package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.services.IFuenteAdapter;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.Fuente;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 @Service
 public class FuenteService implements IFuenteService {
-  List<IFuenteAdapter> fuentes;
-
-  // Inicializa el Seeder las conexiones
-  public FuenteService(List<IFuenteAdapter> fuentes) {
-    this.fuentes = fuentes;
-  }
+  @Setter
+  private List<IFuenteAdapter> fuentes;
 
   List<Hecho> hechos;
-  // TODO: En principio lo hago sincrónico porque no tengo las APIs, cuando las tenga hago el fix con Mono
+
   // Constructor
   public FuenteService() {
+    this.fuentes = new ArrayList<>();
     this.hechos = new ArrayList<>();
     Hecho hecho1 = null;
     Hecho hecho2 = null;
@@ -127,9 +124,25 @@ public class FuenteService implements IFuenteService {
   public List<Hecho> buscarHechos(){
     return this.hechos;
   }
-  public List<Hecho> buscarNuevosHechos() {
-    // TODO Implementar bien
-    return this.hechos;
+  public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
+    List<Hecho> nuevosHechos = fuentes
+        .stream().filter(f -> f.getTipoFuente()!=TipoFuente.PROXY) // No me da los hechos de la proxy
+        .map(f -> f.buscarNuevosHechos(ultimaFechaRefresco))
+        .flatMap(List::stream).collect(Collectors.toList());
+    return nuevosHechos;
+  }
+  // Eliminar de la fuente
+  public void eliminarHecho(Hecho hecho){
+    this.fuentes.forEach(f -> f.eliminarHecho(hecho));
+
+  }
+  public void agregarFuenteAdapter(IFuenteAdapter fuenteAdapter){
+    this.fuentes.add(fuenteAdapter);
+  }
+  public List<Hecho> buscarHechosFuente(TipoFuente tipoFuente){
+    IFuenteAdapter fuente = this.fuentes.stream().filter(f -> f.getTipoFuente().equals(tipoFuente)).findFirst().get();
+    List<Hecho> hechos = fuente.buscarHechos();
+    return hechos;
   }
 }
 

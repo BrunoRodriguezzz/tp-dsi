@@ -25,7 +25,7 @@ public class ColeccionController {
     if(colecciones.isEmpty()) {
       return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
-    return ResponseEntity.status(HttpStatus.FOUND).body(colecciones);
+    return ResponseEntity.status(HttpStatus.OK).body(colecciones);
   }
 
   @GetMapping("/{id}")
@@ -34,6 +34,6 @@ public class ColeccionController {
     if(coleccion == null) {
       return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
-    return ResponseEntity.status(HttpStatus.FOUND).body(coleccion);
+    return ResponseEntity.status(HttpStatus.OK).body(coleccion);
   }
 }

@@ -2,7 +2,9 @@ package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
+import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.ISeederService;
+import ar.edu.utn.frba.dds.agregador.services.impl.adapters.FuenteAdapter;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.Criterio;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroCategoria;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroFechaAcontecimiento;
@@ -27,6 +29,11 @@ public class SeederService implements ISeederService {
   @Autowired
   private IHechoRepository hechoRepository;
 
+  private IFuenteService fuenteService;
+
+  public SeederService(IFuenteService fuenteService) {
+    this.fuenteService = fuenteService;
+  }
 
   public void init(){
     List<Coleccion> colecciones = new ArrayList<Coleccion>();
@@ -183,5 +190,8 @@ public class SeederService implements ISeederService {
     this.coleccionRepository.guardarColeccion(coleccion);
     this.coleccionRepository.guardarColeccion(coleccion1);
     this.hechoRepository.inicializarHechos(hechos);
+    this.fuenteService.agregarFuenteAdapter(new FuenteAdapter("http://localhost:8060", TipoFuente.ESTATICA));
+    this.fuenteService.agregarFuenteAdapter(new FuenteAdapter("http://localhost:8061", TipoFuente.DINAMICA));
+    this.fuenteService.agregarFuenteAdapter(new FuenteAdapter("http://localhost:8062", TipoFuente.PROXY));
   }
 }

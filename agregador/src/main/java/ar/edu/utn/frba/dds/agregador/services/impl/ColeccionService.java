@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
+import ar.edu.utn.frba.dds.domain.models.entities.fuentes.Fuente;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +17,26 @@ public class ColeccionService implements IColeccionService {
   @Autowired
   private IColeccionRepository coleccionRepository;
 
+  private FuenteService fuenteService;
+
+  public ColeccionService(FuenteService fuenteService) {
+    this.fuenteService = fuenteService;
+  }
+
   public List<ColeccionOutputDTO> buscarColecciones() {
-    List <Coleccion> colecciones = this.coleccionRepository.buscarColecciones();
+    List <Coleccion> colecciones = this.coleccionRepository.buscarCopiaColecciones();
+    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
+    colecciones.forEach(coleccion -> {
+      coleccion.cargarHechos(hechosProxy);
+    });
     List <ColeccionOutputDTO> coleccionesDTO = UtilsDTO.mapColeccionesToDTO(colecciones);
     return coleccionesDTO;
   }
 
   public ColeccionOutputDTO buscarColeccion(Long id) {
-    Coleccion coleccion = this.coleccionRepository.buscarColeccion(id);
+    Coleccion coleccion = this.coleccionRepository.buscarCopiaColeccion(id);
+    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
+    coleccion.cargarHechos(hechosProxy);
     ColeccionOutputDTO coleccionDTO = UtilsDTO.coleccionToDTO(coleccion);
     return coleccionDTO;
   }

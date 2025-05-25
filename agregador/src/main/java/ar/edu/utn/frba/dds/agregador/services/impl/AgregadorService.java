@@ -11,6 +11,7 @@ import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class AgregadorService implements IAgregadorService {
   private IFuenteService fuenteService;
   private IColeccionService coleccionService;
   private IHechoService hechoService;
+  private LocalDateTime ultimaFechaRefresco;
 
   @Autowired
   private IContribuyenteRepository contribuyenteRepository;
@@ -33,6 +35,7 @@ public class AgregadorService implements IAgregadorService {
     this.fuenteService = fuenteService;
     this.coleccionService = coleccionService;
     this.hechoService = hechoService;
+    this.ultimaFechaRefresco = LocalDateTime.now(); // TODO: Debería persistirse
   }
 
   @Override
@@ -60,8 +63,10 @@ public class AgregadorService implements IAgregadorService {
 
   @Override
   public void refrescarColecciones(){
+    List<Hecho> nuevosHechos = this.fuenteService.buscarHechos();
     // TODO: Falta la lógica de nuevos hechos en la request
-    List<Hecho> nuevosHechos = this.fuenteService.buscarNuevosHechos();
+//    List<Hecho> nuevosHechos = this.fuenteService.buscarNuevosHechos(ultimaFechaRefresco);
     this.coleccionService.incorporarHechos(nuevosHechos);
+    this.ultimaFechaRefresco = LocalDateTime.now();
   }
 }

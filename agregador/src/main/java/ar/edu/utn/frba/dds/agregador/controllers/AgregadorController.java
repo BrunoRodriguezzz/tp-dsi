@@ -5,7 +5,6 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
 import ar.edu.utn.frba.dds.agregador.services.ISeederService;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,7 +38,7 @@ public class AgregadorController {
     if(hechos.isEmpty()){
       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    return ResponseEntity.status(HttpStatus.FOUND).body(hechos);
+    return ResponseEntity.status(HttpStatus.OK).body(hechos);
   }
 
   // Incorpora nuevos hechos que le envíen las fuentes(push based)
