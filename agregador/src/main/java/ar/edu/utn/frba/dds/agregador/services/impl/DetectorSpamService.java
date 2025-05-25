@@ -39,7 +39,7 @@ public class DetectorSpamService implements IDetectorSpamService {
 
 
 
-    return score > 0.1; // Umbral ajustable según tus datos
+    return score > 0.1; // Umbral ajustable
   }
 
   private Map<String, Double> calcularTFIDF(String texto, List<String> documentos) {
