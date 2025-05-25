@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorTipoDeDatos;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoEliminarInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
@@ -31,17 +32,17 @@ public class DinamicaService implements IDinamicaService {
     private IContribuyenteRepository contribuyentesRepository;
 
     @Override
-    public List<HechoOutputDTO> buscarHechos(Boolean enviado) {
+    public List<HechoOutputDTO> buscarHechos(Boolean enviado, LocalDateTime filtroDeTiempo) {
         if(enviado != null){
             return dinamicaRepository
-                    .mostrarEnviados(enviado)
+                    .mostrarEnviados(enviado,filtroDeTiempo)
                     .stream()
                     .map(this::hechoOutputDTO)
                     .toList();
         }
 
         return this.dinamicaRepository
-                .mostrarTodos()
+                .mostrarTodos(filtroDeTiempo)
                 .stream()
                 .map(this::hechoOutputDTO)
                 .toList();
@@ -103,6 +104,7 @@ public class DinamicaService implements IDinamicaService {
 
         hechoCambiado.setUbicacion(ubicacion);
         hechoCambiado.setFechaAcontecimiento(hechoModificado.getFechaAcontecimiento());
+        hechoCambiado.setFechaModificacion(LocalDateTime.now());
         hechoCambiado.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
         hechoCambiado.setEnviado(false);
 
@@ -113,8 +115,23 @@ public class DinamicaService implements IDinamicaService {
     }
 
     @Override
-    public void eliminar(Long id) {
-        // TODO: Revisar enunciado, ¿puede eliminarse por solicitud o decision del Administrador?
+    public void eliminar(HechoEliminarInputDTO hechoAEliminar, Long id) {
+
+        Hecho hechoOriginal = this.buscarPorID(id);
+
+        if(hechoOriginal.getTitulo().equals(hechoAEliminar.getTitulo())
+            && hechoOriginal.getDescripcion().equals(hechoAEliminar.getDescripcion())
+            && hechoOriginal.getCategoria().equals(hechoAEliminar.getCategoria())
+            && hechoOriginal.getUbicacion().equals(hechoAEliminar.getUbicacion())
+            && hechoOriginal.getFechaAcontecimiento().equals(hechoAEliminar.getFechaAcontecimiento())
+            && hechoOriginal.getContribuyente().getNombre().equals(hechoAEliminar.getContribuyente().getNombre())){
+
+            Hecho hechoAGuardar = this.buscarPorID(id);
+            hechoAGuardar.setEstaEliminado(true);
+
+            this.dinamicaRepository.guardarCambios(hechoOriginal,hechoAGuardar);
+
+        }
     }
 
     @Override

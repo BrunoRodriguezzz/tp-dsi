@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoNoAutorizado;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoProhibido;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorDeTiempo;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorTipoDeDatos;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoEliminarInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
@@ -13,6 +14,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.services.IDinamicaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -26,8 +28,10 @@ public class DinamicaController {
     // Uso del Agregador
 
     @GetMapping("/busqueda")
-    public List<HechoOutputDTO> buscarTodos(@RequestParam(required = false) Boolean enviado){
-        return dinamicaService.buscarHechos(enviado);
+    public List<HechoOutputDTO> buscarTodos(
+            @RequestParam(required = false) Boolean enviado,
+            @RequestParam(required = false) LocalDateTime dateTimeGT){
+        return dinamicaService.buscarHechos(enviado,dateTimeGT);
     }
 
     // Uso de los Usuarios
@@ -65,6 +69,11 @@ public class DinamicaController {
 
         return this.dinamicaService.gestionarHecho(hechoRevisado);
 
+    }
+
+    @PatchMapping("/eliminacion/{id}")
+    public void eliminarHecho(@RequestBody HechoEliminarInputDTO hecho, @PathVariable Long id){
+        this.dinamicaService.eliminar(hecho,id);
     }
 
     // Verificadores necesarios

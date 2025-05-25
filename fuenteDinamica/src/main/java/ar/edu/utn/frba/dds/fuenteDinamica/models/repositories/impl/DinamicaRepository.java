@@ -38,6 +38,7 @@ public class DinamicaRepository implements IDinamicaRepository {
         hecho.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
         hecho.setEtiquetas(null);
         hecho.setSugerenciaDeCambio(null);
+        hecho.setEstaEliminado(false);
         hecho.setEnviado(false);
 
         this.hechos.add(hecho);
@@ -52,23 +53,45 @@ public class DinamicaRepository implements IDinamicaRepository {
     }
 
     @Override
-    public void eliminar(Hecho hecho) {
-        // TODO: Revisar enunciado, ¿puede eliminarse por solicitud o decision del Administrador?
-    }
+    public List<Hecho> mostrarTodos(LocalDateTime filtroDeTiempo) {
 
-    @Override
-    public List<Hecho> mostrarTodos() {
-        return this.hechos
+        List<Hecho> hechosQueNoEstanEnviados = this.hechos
                 .stream()
-                .filter(hecho -> estadoAceptado(hecho))
+                .filter(hecho -> !hecho.getEnviado())
                 .toList();
+
+        for (Hecho hecho : hechosQueNoEstanEnviados) {
+
+            Hecho hechoCambiado = this.buscarPorID(hecho.getIdHecho());
+
+            hechoCambiado.setEnviado(true);
+
+            this.guardarCambios(hecho, hechoCambiado);
+        }
+
+        if(filtroDeTiempo != null){
+            return this.hechos
+                    .stream()
+                    .filter(hecho -> estadoAceptado(hecho)
+                            && !(hecho.getEstaEliminado())
+                            && hecho.getFechaGuardado().isBefore(filtroDeTiempo))
+                    .toList();
+        }else{
+            return this.hechos
+                    .stream()
+                    .filter(hecho -> estadoAceptado(hecho) && !(hecho.getEstaEliminado()))
+                    .toList();
+        }
     }
 
     @Override
-    public List<Hecho> mostrarEnviados(Boolean enviado) {
-        List<Hecho> hechosSolicitados = this.mostrarTodos()
+    public List<Hecho> mostrarEnviados(Boolean enviado,LocalDateTime filtroDeTiempo) {
+        List<Hecho> hechosSolicitados = this.hechos
                 .stream()
-                .filter(hecho -> hecho.getEnviado() == enviado)
+                .filter(hecho -> hecho.getEnviado() == enviado
+                                        && estadoAceptado(hecho)
+                                        && !(hecho.getEstaEliminado())
+                                        && hecho.getFechaGuardado().isBefore(filtroDeTiempo))
                 .toList();
 
         if(!enviado) {
