@@ -19,7 +19,6 @@ public class HechoController {
     @Autowired
     private IHechoService hechoService;
 
-    //@RequestParam(required = false) Long id, @RequestParam(required = false) Date fecha
     @GetMapping
     public List<HechoDTO> getAll() {
         return hechoService.getAll();
