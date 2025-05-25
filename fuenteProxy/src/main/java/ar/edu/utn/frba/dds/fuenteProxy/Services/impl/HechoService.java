@@ -1,19 +1,15 @@
 package ar.edu.utn.frba.dds.fuenteProxy.Services.impl;
 
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IHechoService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
-import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IHechoRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,19 +23,19 @@ public class HechoService implements IHechoService {
     }
 
     @Override
-    public List<HechoDTO> getAll() { //TODO: paginado de GET
+    public List<OutputFuente> getAll() { //TODO: paginado de GET
         List<HechoProxy> hechos = hechoRepository.getAll();
-        return hechos.stream().map(this::hechoToDTO).toList();
+        return hechos.stream().map(this::hechoToDtoOutput).toList();
     }
 
     @Override
-    public List<HechoDTO> getWithFilters(FiltroProxy filtro) {
+    public List<OutputHecho> getWithFilters(FiltroProxy filtro) {
         List<HechoProxy> hechos = hechoRepository.getWithFilters(filtro);
-        return hechos.stream().map(this::hechoToDTO).toList();
+        return hechos.stream().map(this::hechoToDtoOutput).toList();
     }
 
     @Override
-    public List<HechoDTO> getAllFuente(Long fuenteId) { //TODO
+    public List<OutputHecho> getAllFuente(Long fuenteId) { //TODO
         return List.of();
     }
 
@@ -49,20 +45,18 @@ public class HechoService implements IHechoService {
     }
 
     @Override
-    public void guardarHecho(HechoDTO hechoDTO) {
-        HechoProxy hecho = toHecho(hechoDTO);
+    public void guardarHecho(InputHecho hechoDTO) {
+        HechoProxy hecho = toHechoProxy(hechoDTO);
         hechoRepository.guardarHecho(hecho);
     }
 
-    private HechoDTO hechoToDTO(HechoProxy hecho) {
-        HechoDTO dto = new HechoDTO();
+    private OutputHecho hechoToDtoOutput(HechoProxy hecho) {
+        OutputHecho dto = new OutputHecho();
         dto.setId_hecho(hecho.getId());
         dto.setTitulo(hecho.getTitulo());
         dto.setDescripcion(hecho.getDescripcion());
         dto.setCategoria(hecho.getCategoria());
-
-        dto.setLatitud(hecho.getLatitud());
-        dto.setLongitud(hecho.getLongitud());
+        dto.setUbicacion(hecho.getUbicacion());
 
         if (hecho.getFechaHecho() != null)
             dto.setFecha_hecho(hecho.getFechaHecho().toString());
@@ -75,15 +69,14 @@ public class HechoService implements IHechoService {
         return dto;
     }
 
-    private HechoProxy toHecho(HechoDTO hechoDTO) {
-        HechoProxy hecho = new HechoProxy(hechoDTO.getId_hecho(), hechoDTO.getTitulo());
-        hecho.setDescripcion(hechoDTO.getDescripcion());
-        hecho.setCategoria(hechoDTO.getCategoria());
-        hecho.setLatitud(hechoDTO.getLatitud());
-        hecho.setLongitud(hechoDTO.getLongitud());
-        hecho.setFechaHecho(hecho.getFechaHecho());
-        hecho.setFechaModificacion(hecho.getFechaModificacion());
-        hecho.setFechaCreacion(hecho.getFechaCreacion());
+    private HechoProxy toHechoProxy(InputHecho input) {
+        HechoProxy hecho = new HechoProxy(input.getId_hecho(), input.getTitulo());
+        hecho.setDescripcion(input.getDescripcion());
+        hecho.setCategoria(input.getCategoria());
+        hecho.establecerUbicacion(input.getLatitud(), input.getLongitud());
+        hecho.setFechaHecho(input.getFecha_hecho());
+        hecho.setFechaModificacion(input.getUpdated_at());
+        hecho.setFechaCreacion(input.getCreated_at());
         hecho.setEliminado(false);
 
         return hecho;

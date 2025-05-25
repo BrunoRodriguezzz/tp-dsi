@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl;
 
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.TipoFuente;
-import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.PaginaHechoDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.SolicitudEliminacionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.autentificadores.RequestLogin;
@@ -48,17 +48,17 @@ public class APICatedra implements TipoFuente {
         return response.getData().getAccess_token();
     }
 
-    public Flux<HechoDTO> getAll() {
+    public Flux<InputHecho> getAll() {
         return getHechosPagina("https://api-ddsi.disilab.ar/public/api/desastres");
     }
 
-    private Flux<HechoDTO> getHechosPagina(String url) {
+    private Flux<InputHecho> getHechosPagina(String url) {
         return webClient.get()
                 .uri(url)
                 .retrieve()
                 .bodyToMono(PaginaHechoDTO.class)
                 .flatMapMany(pagina -> {
-                    Flux<HechoDTO> hechosActuales = Flux.fromIterable(pagina.getData());
+                    Flux<InputHecho> hechosActuales = Flux.fromIterable(pagina.getData());
 
                     if (pagina.getNext_page_url() != null) {
                         // Concatenamos los hechos actuales con los de la siguiente página (recursivo)
@@ -70,12 +70,12 @@ public class APICatedra implements TipoFuente {
     }
 
     @Override
-    public Mono<HechoDTO> getById(Long id) {
+    public Mono<InputHecho> getById(Long id) {
         return webClient
                 .get()
                 .uri("/api/desastres/{id}", id)
                 .retrieve()
-                .bodyToMono(HechoDTO.class);
+                .bodyToMono(InputHecho.class);
     }
 
     @Override

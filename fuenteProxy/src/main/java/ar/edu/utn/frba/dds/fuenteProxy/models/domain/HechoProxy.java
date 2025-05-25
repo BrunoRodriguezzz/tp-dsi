@@ -13,17 +13,18 @@ import java.util.Date;
 @Getter
 @Setter
 public class HechoProxy {
-    private Long id;
-    private Long idExterno;
+    private Long id; // Nuestro ID
+    private Long idExterno; // Es el ID que nos da el propietario del Hecho
+    private Long idFuente; // Es el ID de la fuente que es propietaria del hecho
     private String titulo;
     private String descripcion;
     private String categoria;
-    private Double latitud;
-    private Double longitud;
+//    private Double latitud;
+//    private Double longitud;
+    private Ubicacion ubicacion;
     private LocalDate fechaHecho;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaModificacion;
-    private Long idFuente;
     private Boolean eliminado;
     private Origen origen;
     private String nombreFuente;
@@ -32,6 +33,12 @@ public class HechoProxy {
         this.id = null;
         this.idExterno = id;
         this.titulo = titulo;
+    }
+
+    public void establecerUbicacion(Double lat, Double lon) {
+        try {
+            this.ubicacion = new Ubicacion(lat.toString(), lon.toString());
+        } catch (Exception e) {} //TODO
     }
 
     public void eliminar() {

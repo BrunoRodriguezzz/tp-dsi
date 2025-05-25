@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.fuenteProxy.models.repositories.impl;
 
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
-import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.HechoDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IHechoRepository;
 import org.springframework.stereotype.Repository;
 

@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.fuenteProxy.controllers;
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IHechoService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class HechoController {
     private IHechoService hechoService;
 
     @GetMapping
-    public List<HechoDTO> getAll() {
+    public List<OutputFuente> getAll() {
         return hechoService.getAll();
     }
 
