@@ -10,4 +10,5 @@ public interface IHechoRepository {
     public List<HechoProxy> getAll();
     public List<HechoProxy> getWithFilters(FiltroProxy filtro);
     public void delete(Long idHecho);
+    public void guardarHecho(HechoProxy hecho);
 }

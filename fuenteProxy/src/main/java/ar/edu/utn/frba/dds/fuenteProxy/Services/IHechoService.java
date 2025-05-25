@@ -12,4 +12,5 @@ public interface IHechoService {
     public List<HechoDTO> getWithFilters(FiltroProxy filtro);
     public List<HechoDTO> getAllFuente(Long fuenteId);
     public void delete(Long idHecho);
+    public void guardarHecho(HechoDTO hechoDTO);
 }

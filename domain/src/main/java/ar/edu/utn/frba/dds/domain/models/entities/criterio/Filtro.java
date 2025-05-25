@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.domain.models.entities.criterio;
 
-import models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 
 //<TipoElementoCriterio>: Funciona con cualquier tipo de dato y se implementa en las que usan la interface
 public interface Filtro<TipoElementoCriterio> {

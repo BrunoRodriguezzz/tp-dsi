@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteProxy.Services.impl;
 
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IHechoService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
@@ -17,6 +18,11 @@ import java.util.List;
 public class HechoService implements IHechoService {
     private IFuenteRepository fuentes; //TODO Podría implementar un DAO para cada uno.
     private IHechoRepository hechoRepository;
+
+    public HechoService(IHechoRepository hechoRepository, IFuenteRepository fuentesRepository) {
+        this.hechoRepository = hechoRepository;
+        this.fuentes = fuentesRepository;
+    }
 
     @Override
     public List<HechoDTO> getAll() { //TODO: paginado de GET
@@ -38,6 +44,12 @@ public class HechoService implements IHechoService {
     @Override
     public void delete(Long idHecho) { //TODO
         hechoRepository.delete(idHecho);
+    }
+
+    @Override
+    public void guardarHecho(HechoDTO hechoDTO) {
+        HechoProxy hecho = new HechoProxy(hechoDTO.getIdHecho(), hechoDTO.getTitulo());
+        hechoRepository.guardarHecho(hecho);
     }
 
     private HechoDTO hechoToDTO(HechoProxy hecho) {

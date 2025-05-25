@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.domain.models.entities.criterio;
 
-import models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 
 public class FiltroTitulo implements Filtro {
     private String titulo;

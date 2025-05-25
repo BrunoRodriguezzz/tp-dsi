@@ -1,10 +1,10 @@
 package ar.edu.utn.frba.dds.domain.models.entities.fuentes;
 
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.*;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
-import models.entities.hechos.Hecho;
-import models.entities.utils.Errores.ER_ValueObjects.*;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;

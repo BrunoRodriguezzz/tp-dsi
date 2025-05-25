@@ -1,8 +1,8 @@
 package ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho;
 
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.CategoriaInvalidaException;
 import lombok.Getter;
 import lombok.Setter;
-import models.entities.utils.Errores.ER_ValueObjects.CategoriaInvalidaException;
 
 @Getter
 public class Categoria {

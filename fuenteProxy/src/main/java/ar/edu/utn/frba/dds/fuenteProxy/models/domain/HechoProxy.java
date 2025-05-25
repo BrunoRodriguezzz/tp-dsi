@@ -26,6 +26,11 @@ public class HechoProxy {
     private Boolean eliminado;
     private Origen origen;
 
+    public HechoProxy(Long id, String titulo) {
+        this.id = id;
+        this.titulo = titulo;
+    }
+
     public void eliminar() {
         this.eliminado = true;
     }

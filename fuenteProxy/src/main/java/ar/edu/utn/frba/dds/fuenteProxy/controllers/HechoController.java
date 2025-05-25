@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/hechos")
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "http://localhost:8080")
 public class HechoController {
     @Autowired
     private IHechoService hechoService;
@@ -40,7 +40,7 @@ public class HechoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(Long idHecho) {
+    public ResponseEntity<Void> delete(@PathVariable Long idHecho) {
         hechoService.delete(idHecho);
         return ResponseEntity.noContent().build(); // 204 sin cuerpo
     }

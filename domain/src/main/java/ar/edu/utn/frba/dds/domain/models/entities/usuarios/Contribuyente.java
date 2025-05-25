@@ -1,11 +1,9 @@
 package ar.edu.utn.frba.dds.domain.models.entities.usuarios;
 
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
 import lombok.Getter;
 import lombok.Setter;
-import models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.SolicitudEliminacion;
-import models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
-import models.entities.utils.Errores.ER_ValueObjects.FundamentoInvalidoException;
 
 import java.time.LocalDate;
 import java.time.Period;

@@ -1,8 +1,8 @@
 package ar.edu.utn.frba.dds.domain.models.entities.criterio;
 
-import models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.RangoFechas;
-import models.entities.hechos.Hecho;
 
 import java.time.LocalDate;
 

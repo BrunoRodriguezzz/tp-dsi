@@ -1,14 +1,14 @@
 package ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho;
 
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
 import lombok.Getter;
-import models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
 
 @Getter
 public class Ubicacion {
     private String latitud;
     private String longitud;
 
-    public Ubicacion(String latitud, String longitud) throws UbicacionInvalidaException{
+    public Ubicacion(String latitud, String longitud) throws UbicacionInvalidaException {
         if(this.latitudInvalida(latitud)){
             throw new UbicacionInvalidaException("Latitud invalida: " + latitud);
         }

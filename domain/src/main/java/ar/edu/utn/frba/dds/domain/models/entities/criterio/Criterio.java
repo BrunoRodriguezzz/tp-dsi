@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.domain.models.entities.criterio;
 
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import lombok.Setter;
-import models.entities.hechos.Hecho;
 
 import java.util.ArrayList;
 import java.util.List;
