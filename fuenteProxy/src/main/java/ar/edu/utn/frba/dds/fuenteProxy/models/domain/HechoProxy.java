@@ -1,9 +1,13 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain;
 
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -13,18 +17,20 @@ public class HechoProxy {
     private String titulo;
     private String descripcion;
     private String categoria;
-    private Ubicacion ubicacion;
-    private Date fechaHecho;
-    private Date fechaCreacion;
-    private Date fechaModificacion;
+    private Double latitud;
+    private Double longitud;
+    private LocalDate fechaHecho;
+    private LocalDateTime fechaCreacion;
+    private LocalDateTime fechaModificacion;
     private Long idFuente;
     private Boolean eliminado;
+    private Origen origen;
 
     public void eliminar() {
         this.eliminado = true;
     }
 
-    public Boolean cumpleFecha(Date fecha) {
-        return this.fechaModificacion.after(fecha) || this.fechaCreacion.after(fecha);
+    public Boolean cumpleFecha(LocalDateTime fecha) {
+        return this.fechaModificacion.isAfter(fecha) || this.fechaCreacion.isAfter(fecha);
     }
 }

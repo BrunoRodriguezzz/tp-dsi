@@ -1,8 +1,9 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.dtos;
 
-import lombok.Getter;
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
+import lombok.Data;
 
-@Getter
+@Data
 public class HechoDTO {
     private String titulo;
     private String descripcion;
@@ -14,4 +15,5 @@ public class HechoDTO {
     private String updatedAt;
     private Long idFuente;
     private Long idHecho;
+    private Origen origen;
 }

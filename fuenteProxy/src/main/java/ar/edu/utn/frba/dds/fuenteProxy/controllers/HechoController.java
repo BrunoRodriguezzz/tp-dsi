@@ -1,13 +1,15 @@
 package ar.edu.utn.frba.dds.fuenteProxy.controllers;
 
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IHechoService;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.HechoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -17,23 +19,30 @@ public class HechoController {
     @Autowired
     private IHechoService hechoService;
 
+    //@RequestParam(required = false) Long id, @RequestParam(required = false) Date fecha
+    @GetMapping
     public List<HechoDTO> getAll() {
-        //TODO
-        return List.of();
+        return hechoService.getAll();
     }
 
-    public List<HechoDTO> getNew(Date fecha) {
-        //TODO
-        return List.of();
+    @GetMapping("/filtered")
+    public ResponseEntity<List<HechoDTO>> getWithFilters( //TODO: Verificar si es necesario el parseo
+            @RequestParam(required = false) Long idHecho,
+            @RequestParam(required = false) Long idFuente,
+            @RequestParam(required = false) String fecha
+    ) {
+        // TODO: Validar parametros --> Validador tira Excepción
+        List<HechoDTO> response = hechoService.getWithFilters(new FiltroProxy(idHecho, idFuente, fecha));
+        if(response.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404
+        } else {
+            return new ResponseEntity<>(response, HttpStatus.OK);  // 200
+        }
     }
 
-    public HechoDTO getHecho(Long id) {
-        //TODO
-        return hechoService.getById(id);
-    }
-
-    public List<HechoDTO> getAllFuente(Long id) {
-        //TODO
-        return List.of();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(Long idHecho) {
+        hechoService.delete(idHecho);
+        return ResponseEntity.noContent().build(); // 204 sin cuerpo
     }
 }

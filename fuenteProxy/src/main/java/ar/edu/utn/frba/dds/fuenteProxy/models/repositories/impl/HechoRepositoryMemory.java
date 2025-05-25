@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.repositories.impl;
 
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
-import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.HechoDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IHechoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class HechoRepositoryMemory implements IHechoRepository {
-    private final Map<Long, HechoProxy> hechos = new HashMap<>();
+    private final Map<Long, HechoProxy> hechos = new HashMap<>();  // guarda entidades
     private final AtomicLong idGenerator = new AtomicLong(1);
 
     @Override
@@ -22,25 +22,28 @@ public class HechoRepositoryMemory implements IHechoRepository {
     }
 
     @Override
-    public HechoProxy getById(Long id) {
-        return this.hechos.get(id);
-    }
-
-    @Override
-    public void save(HechoProxy hecho) {
-        if(hecho.getId() == null) {
-            Long id = idGenerator.getAndIncrement();
-            hecho.setId(id);
-            this.hechos.put(id, hecho);
-        } else {// PUT
-            this.hechos.put(hecho.getId(), hecho);
+    public void delete(Long idHecho) {
+        if (idHecho != null && idHecho >= 1) { //TODO Va la validación acá
+            this.hechos.remove(idHecho);
         }
     }
 
     @Override
-    public void delete(HechoProxy hecho) {
-        if (hecho.getId() != null) {
-            this.hechos.remove(hecho.getId());
-        }
+    public List<HechoProxy> getWithFilters(FiltroProxy filtro){
+        List<HechoProxy> hechosFiltrados = this.getAll();         // Hay q inicializar --> en el seeder
+
+        if(filtro.getIdHecho() != null) hechosFiltrados.stream()
+                .filter(h -> h.getId().equals(filtro.getIdHecho()))
+                .toList();
+
+        if(filtro.getFecha() != null) hechosFiltrados.stream()
+                .filter(hechoProxy -> hechoProxy.getFechaModificacion().equals(filtro.getFecha()))
+                .toList();
+
+        if(filtro.getFuenteId() != null) hechosFiltrados.stream()
+                .filter(h -> h.getIdFuente().equals(filtro.getFuenteId()))
+                .toList();
+
+        return hechosFiltrados;
     }
 }
