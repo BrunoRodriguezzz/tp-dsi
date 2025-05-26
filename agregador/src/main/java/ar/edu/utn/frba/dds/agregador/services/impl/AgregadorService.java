@@ -11,6 +11,7 @@ import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
+import java.lang.invoke.ConstantBootstraps;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +48,20 @@ public class AgregadorService implements IAgregadorService {
 
   @Override
   public List<String> incorporarHecho(HechoInputDTO hechoDTO) {
-    Contribuyente contribuyente = this.contribuyenteRepository.buscarContribuyente(hechoDTO.getIdContribuyente());
+    Contribuyente contribuyente = null;
+    if(hechoDTO.getContribuyente() != null) {
+      try {
+        contribuyente = new Contribuyente(
+            hechoDTO.getContribuyente().getNombre(),
+            hechoDTO.getContribuyente().getApellido(),
+            hechoDTO.getContribuyente().getFechaNacimiento()
+        );
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
     Hecho hecho = UtilsDTO.DTOToHecho(hechoDTO, contribuyente);
-    Hecho aux = this.hechoService.buscarHecho(hecho.getId());
+    Hecho aux = this.hechoService.buscarHecho(hecho.getId()); // TODO: Null pointer exception?
     if(aux != null && hecho.equals(aux)) {
       throw new HechoYaExistenteException("El hecho ingresado ya existe", aux);
     }
@@ -62,9 +74,8 @@ public class AgregadorService implements IAgregadorService {
 
   @Override
   public void refrescarColecciones(){
-    List<Hecho> nuevosHechos = this.fuenteService.buscarHechos();
     // TODO: Falta la lógica de nuevos hechos en la request
-//    List<Hecho> nuevosHechos = this.fuenteService.buscarNuevosHechos(ultimaFechaRefresco);
+    List<Hecho> nuevosHechos = this.fuenteService.buscarHechos();
     this.coleccionService.incorporarHechos(nuevosHechos);
     this.ultimaFechaRefresco = LocalDateTime.now();
   }

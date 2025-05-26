@@ -10,6 +10,7 @@ import ar.edu.utn.frba.dds.agregador.models.repositories.IContribuyenteRepositor
 import ar.edu.utn.frba.dds.agregador.models.repositories.ISolicitudEliminacionRepository;
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
+import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.services.ISolicitudEliminacionService;
 import ar.edu.utn.frba.dds.agregador.services.IDetectorSpamService;
@@ -28,6 +29,7 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
   IHechoService hechoService;
   IDetectorSpamService detectorSpam;
   IColeccionService coleccionService;
+  IFuenteService fuenteService;
 
   @Autowired
   ISolicitudEliminacionRepository solicitudEliminacionRepository;
@@ -40,12 +42,14 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
       IAgregadorService agregadorService,
       IDetectorSpamService detectorSpam,
       IHechoService hechoService,
-      IColeccionService coleccionService
+      IColeccionService coleccionService,
+      IFuenteService fuenteService
   ) {
     this.agregadorService = agregadorService;
     this.detectorSpam = detectorSpam;
     this.hechoService = hechoService;
     this.coleccionService = coleccionService;
+    this.fuenteService = fuenteService;
   }
 
   @Override
@@ -121,6 +125,7 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
     this.hechoService.guardarHecho(solicitud.getHecho());
     if(solicitud.getEstadoSolicitudEliminacion() == EstadoSolicitudEliminacion.ACEPTADA){
       this.coleccionService.eliminarHechoDeColecciones(solicitud.getHecho());
+      this.fuenteService.eliminarHecho(solicitud.getHecho());
     }
     SolicitudEliminacionOutputDTO solicitudAceptadaDTO = UtilsDTO.SolicitudToDTO(solicitud);
     return solicitudAceptadaDTO;

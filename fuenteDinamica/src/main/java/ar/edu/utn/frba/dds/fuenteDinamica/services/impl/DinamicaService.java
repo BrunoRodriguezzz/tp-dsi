@@ -31,7 +31,7 @@ public class DinamicaService implements IDinamicaService {
     @Autowired
     private IContribuyenteRepository contribuyentesRepository;
 
-    private final WebClient webClient = WebClient.builder().baseUrl("localhost:8080/agregador").build();
+    private final WebClient webClient = WebClient.builder().baseUrl("localhost:8082/agregador").build();
 
     @Override
     public List<HechoOutputDTO> buscarHechos(Boolean enviado, LocalDateTime filtroDeTiempo) {

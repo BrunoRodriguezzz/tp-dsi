@@ -10,4 +10,5 @@ public interface IFuenteService {
   public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco);
   public void agregarFuenteAdapter(IFuenteAdapter fuenteAdapter);
   public List<Hecho> buscarHechosFuente(TipoFuente tipoFuente);
+  public void eliminarHecho(Hecho hecho);
 }
