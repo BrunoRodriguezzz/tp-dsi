@@ -29,25 +29,55 @@ public class HechoService implements IHechoService {
         List<Long> ids = fuente.devolverIDs();
         ids.forEach(id -> {
             List<HechoProxy> hechos = hechoRepository.getByIdFuente(id); // Devuelve los hechos con ese ID Fuente
-            if (!hechos.isEmpty()) { // Tengo que agregarlos
-                OutputFuente outputFuente = new OutputFuente();
-                String nombreFuente = this.fuente.getById(id).getNombre();
-                List<OutputHecho> hechosOutput = hechos.stream().map(this::hechoToDtoOutput).toList();
-
-                outputFuente.setHechos(hechosOutput);
-                outputFuente.setId(id);
-                outputFuente.setNombre(nombreFuente);
-                outputFuentes.add(outputFuente);
-            }
+            // hechos.filter(filtro);
+            toOutputFuente(outputFuentes, id, hechos);
         });
         return outputFuentes;
     }
 
     @Override
-    public List<OutputHecho> getWithFilters(FiltroProxy filtro) {
-        List<HechoProxy> hechos = hechoRepository.getWithFilters(filtro);
+    public List<OutputFuente> getWithFilters(FiltroProxy filtro) {
+        List<OutputFuente> outputFuentes = new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
+        System.out.println(filtro.getIdHecho());
+        System.out.println(filtro.getFecha());
+        System.out.println(filtro.getFuenteId());
+        if(filtro.getFuenteId() == null) {
+            ids = fuente.devolverIDs();
+        }
+        else {
+            ids.add(filtro.getFuenteId());
+        }
+        if(filtro.getIdHecho() == null) {
+            ids.forEach(id -> {
+                List<HechoProxy> hechos = hechoRepository.getFiltrados(id, filtro);
+                toOutputFuente(outputFuentes, id, hechos);
+            }); //2409
+        }
+        else {
+            System.out.println("idHecho no es null");
+            OutputFuente outputFuente = new OutputFuente();
+            List<OutputHecho> hechosEncontrados = new ArrayList<>();
+            HechoProxy hecho = hechoRepository.getById(filtro.getIdHecho());
+            hechosEncontrados.add(this.hechoToDtoOutput(hecho));
+            outputFuente.setHechos(hechosEncontrados);
+            outputFuentes.add(outputFuente);
+        }
 
-        return hechos.stream().map(this::hechoToDtoOutput).toList();
+        return outputFuentes;
+    }
+
+    private void toOutputFuente(List<OutputFuente> outputFuentes, Long id, List<HechoProxy> hechos) {
+        if (!hechos.isEmpty()) { // Tengo que agregarlos
+            OutputFuente outputFuente = new OutputFuente();
+            String nombreFuente = this.fuente.getById(id).getNombre();
+            List<OutputHecho> hechosOutput = hechos.stream().map(this::hechoToDtoOutput).toList();
+
+            outputFuente.setHechos(hechosOutput);
+            outputFuente.setId(id);
+            outputFuente.setNombre(nombreFuente);
+            outputFuentes.add(outputFuente);
+        }
     }
 
     @Override

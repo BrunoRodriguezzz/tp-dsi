@@ -47,9 +47,15 @@ public class HechoRepositoryMemory implements IHechoRepository {
         return hechosFiltrados;
     }
 
+    @Override
     public List<HechoProxy> getByIdFuente(Long idFuente){
         List<HechoProxy> hechos = this.getAll();
         return hechos.stream().filter(h -> h.getIdFuente().equals(idFuente)).toList();
+    }
+
+    @Override
+    public HechoProxy getById(Long id){
+        return hechos.get(id);
     }
 
     @Override
@@ -57,5 +63,11 @@ public class HechoRepositoryMemory implements IHechoRepository {
         hecho.setId(idGenerator.getAndIncrement());
         //hecho.setNombreFuente
         hechos.put(hecho.getId(), hecho);
+    }
+
+    @Override
+    public List<HechoProxy> getFiltrados(Long idFuente, FiltroProxy filtro) {
+        List<HechoProxy> hechos = this.getByIdFuente(idFuente);
+        return hechos.stream().filter(filtro::cumple).toList();
     }
 }

@@ -1,14 +1,13 @@
 package ar.edu.utn.frba.dds.fuenteProxy.controllers;
 
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IHechoService;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,8 +18,14 @@ public class HechoController {
     private IHechoService hechoService;
 
     @GetMapping
-    public List<OutputFuente> getAll() {
-        return hechoService.getAll();
+    public ResponseEntity<List<OutputFuente>> getAll() {
+        List<OutputFuente> response = hechoService.getAll();
+
+        if(response.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404
+        } else {
+            return new ResponseEntity<>(response, HttpStatus.OK);  // 200
+        }
     }
 
 //    @GetMapping("/filtered")
@@ -37,6 +42,16 @@ public class HechoController {
 //            return new ResponseEntity<>(response, HttpStatus.OK);  // 200
 //        }
 //    }
+
+    @GetMapping("/filtered")
+    public ResponseEntity<List<OutputFuente>> getWithFilters(@ModelAttribute FiltroProxy filtro) {
+        List<OutputFuente> response = hechoService.getWithFilters(filtro);
+        if (response.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long idHecho) {

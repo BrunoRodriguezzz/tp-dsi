@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface IHechoService {
     public List<OutputFuente> getAll();
-    public List<OutputHecho> getWithFilters(FiltroProxy filtro);
+    public List<OutputFuente> getWithFilters(FiltroProxy filtro);
     public List<OutputHecho> getAllFuente(Long fuenteId);
     public void delete(Long idHecho);
     public void guardarHecho(InputHecho hechoDTO);
