@@ -25,7 +25,7 @@ public class DinamicaRepository implements IDinamicaRepository {
     public Hecho buscarPorID(Long id) {
         return this.hechos
                 .stream()
-                .filter(hecho -> hecho.getIdHecho().equals(id))
+                .filter(hecho -> hecho.getId().equals(id))
                 .findFirst()
                 .orElse(null);
     }
@@ -34,7 +34,7 @@ public class DinamicaRepository implements IDinamicaRepository {
     public void guardar(Hecho hecho) {
 
         Long id = idGenerator.getAndIncrement();
-        hecho.setIdHecho(id);
+        hecho.setId(id);
         hecho.setFechaGuardado(LocalDateTime.now());
         hecho.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
         hecho.setEtiquetas(null);
@@ -65,7 +65,7 @@ public class DinamicaRepository implements IDinamicaRepository {
 
         for (Hecho hecho : hechosQueNoEstanEnviados) {
 
-            Hecho hechoCambiado = this.buscarPorID(hecho.getIdHecho());
+            Hecho hechoCambiado = this.buscarPorID(hecho.getId());
 
             hechoCambiado.setEnviado(true);
 
@@ -101,7 +101,7 @@ public class DinamicaRepository implements IDinamicaRepository {
         if(!enviado) {
             for (Hecho hecho : hechosSolicitados) {
 
-                Hecho hechoCambiado = this.buscarPorID(hecho.getIdHecho());
+                Hecho hechoCambiado = this.buscarPorID(hecho.getId());
 
                 hechoCambiado.setEnviado(true);
 

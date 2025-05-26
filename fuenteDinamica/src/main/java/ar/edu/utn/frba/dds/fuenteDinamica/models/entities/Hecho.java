@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class Hecho {
 
-    private Long          idHecho;
+    private Long          id;
     private Contribuyente contribuyente;
     private String        titulo;
     private String        descripcion;
@@ -28,4 +28,5 @@ public class Hecho {
     private String        sugerenciaDeCambio;
     private Boolean       enviado;
     private Boolean       estaEliminado;
+    private String        origen;
 }

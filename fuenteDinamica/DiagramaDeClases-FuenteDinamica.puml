@@ -43,7 +43,7 @@
 class HechoEliminarInputDTO {
 
     - Long id
-    - Long idHecho;
+    - Long id;
     - Contribuyente contribuyente;
     - String titulo;
     - String descripcion;
@@ -67,7 +67,7 @@ class HechoInputDTO {
 
 class HechoModificadoInputDTO {
 
-    - Long idHecho
+    - Long id
     - String nombreUsuario
     - LocalDate fechaNacimientoUsuario
     - String titulo
@@ -82,14 +82,14 @@ class HechoModificadoInputDTO {
 class HechoRevisadoInputDTO {
 
     - Long idAdministrador
-    - Long idHecho
+    - Long id
     - List<String> etiquetas
     - EstadoHecho estadoHecho
     - String sugerenciaDeCambio
 }
 
 class HechoOutputDTO {
-    - Long idHecho
+    - Long id
     - Contribuyente contribuyente
     - String titulo
     - String descripcion
@@ -101,7 +101,7 @@ class HechoOutputDTO {
 }
 
 class SolicitudHechoOutputDTO {
-    - Long idHecho
+    - Long id
     - Contribuyente contribuyente
     - String titulo
     - String descripcion
@@ -115,7 +115,7 @@ class SolicitudHechoOutputDTO {
 
 class Hecho {
 
-    - Long idHecho
+    - Long id
     - Contribuyente contribuyente
     - String titulo
     - String descripcion
@@ -139,7 +139,7 @@ class Ubicacion{
 
 class Contribuyente {
     - String nombre
-    - LocalDate fechaDeNacimiento
+    - LocalDate fechaNacimiento
     - Long idContribuyente
 }
 

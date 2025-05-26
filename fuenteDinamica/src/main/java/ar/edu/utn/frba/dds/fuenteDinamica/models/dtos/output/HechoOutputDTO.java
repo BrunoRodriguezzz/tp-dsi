@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Builder
 public class HechoOutputDTO {
-    private Long           idHecho;
+    private Long           id;
     private Contribuyente  contribuyente;
     private String         titulo;
     private String         descripcion;
@@ -22,4 +22,5 @@ public class HechoOutputDTO {
     private Ubicacion      ubicacion;
     private LocalDate      fechaAcontecimiento;
     private List<String>   etiquetas;
+    private String         origen;
 }

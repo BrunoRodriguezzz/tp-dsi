@@ -12,6 +12,7 @@ import java.util.List;
 public class HechoInputDTO {
 
     private String        nombreUsuario;
+    private String        apellidoUsuario;
     private LocalDate     fechaNacimientoUsuario;
     private String        titulo;
     private String        descripcion;

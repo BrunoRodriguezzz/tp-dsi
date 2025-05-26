@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.ISeederService;
 import ar.edu.utn.frba.dds.agregador.services.impl.adapters.FuenteAdapter;
+import ar.edu.utn.frba.dds.agregador.services.impl.adapters.FuenteDinamicaAdapter;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.Criterio;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroCategoria;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroFechaAcontecimiento;
@@ -149,7 +150,7 @@ public class SeederService implements ISeederService {
     Criterio criterioPruebas;
     criterioPruebas = new Criterio();
 
-//    coleccion.cargarHechos(hechos);
+    coleccion.cargarHechos(hechos);
     coleccion.setCriterio(criterioPruebas);
 
     RangoFechas rangoFechasFiltro = null;
@@ -162,7 +163,7 @@ public class SeederService implements ISeederService {
     FiltroFechaAcontecimiento filtroFechas = new FiltroFechaAcontecimiento(rangoFechasFiltro);
 
     coleccion.agregarFiltroACriterio(filtroFechas);
-//    coleccion.recalcularHechos();
+    coleccion.recalcularHechos();
 
     Coleccion coleccion1;
     coleccion1 = new Coleccion("Colección prueba 1", "Esto es una prueba");
@@ -174,7 +175,7 @@ public class SeederService implements ISeederService {
     Criterio criterioPruebas1;
     criterioPruebas1 = new Criterio();
 
-//    coleccion1.cargarHechos(hechos);
+    coleccion1.cargarHechos(hechos);
     coleccion1.setCriterio(criterioPruebas1);
 
     FiltroCategoria filtroCategoria = null;
@@ -185,13 +186,13 @@ public class SeederService implements ISeederService {
     }
 
     coleccion1.agregarFiltroACriterio(filtroCategoria);
-//    coleccion1.recalcularHechos();
+    coleccion1.recalcularHechos();
 
     this.coleccionRepository.guardarColeccion(coleccion);
     this.coleccionRepository.guardarColeccion(coleccion1);
     this.hechoRepository.inicializarHechos(hechos);
-    this.fuenteService.agregarFuenteAdapter(new FuenteAdapter("http://localhost:8060", TipoFuente.ESTATICA));
-    this.fuenteService.agregarFuenteAdapter(new FuenteAdapter("http://localhost:8061", TipoFuente.DINAMICA));
-    this.fuenteService.agregarFuenteAdapter(new FuenteAdapter("http://localhost:8062", TipoFuente.PROXY));
+    this.fuenteService.agregarFuenteAdapter(new FuenteDinamicaAdapter("http://localhost:8081", TipoFuente.DINAMICA));
+//    this.fuenteService.agregarFuenteAdapter(new FuenteAdapter("http://localhost:8060", TipoFuente.ESTATICA));
+//    this.fuenteService.agregarFuenteAdapter(new FuenteAdapter("http://localhost:8062", TipoFuente.PROXY));
   }
 }

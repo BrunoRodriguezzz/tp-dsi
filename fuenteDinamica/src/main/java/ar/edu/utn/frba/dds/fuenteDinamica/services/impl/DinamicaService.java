@@ -55,7 +55,8 @@ public class DinamicaService implements IDinamicaService {
             Contribuyente usuario = Contribuyente
                     .builder()
                     .nombre(hechoInputDTO.getNombreUsuario())
-                    .fechaDeNacimiento(hechoInputDTO.getFechaNacimientoUsuario())
+                    .apellido(hechoInputDTO.getApellidoUsuario())
+                    .fechaNacimiento(hechoInputDTO.getFechaNacimientoUsuario())
                     .build();
 
             Ubicacion ubicacion = Ubicacion
@@ -73,12 +74,13 @@ public class DinamicaService implements IDinamicaService {
                     .ubicacion(ubicacion)
                     .fechaAcontecimiento(hechoInputDTO.getFechaAcontecimiento())
                     .contribuyente(usuario)
+                    .origen("CONTRIBUYENTE")
                     .build();
 
             this.dinamicaRepository.guardar(hecho);
 
             // Guardo el contribuyente, solo si indico su nombre
-            if(usuario.getNombre() != ""){
+            if(usuario.getNombre() != "" && usuario.getApellido() != ""){
                 this.contribuyentesRepository.guardar(usuario);
             }
 
@@ -88,9 +90,9 @@ public class DinamicaService implements IDinamicaService {
     @Override
     public SolicitudOutputDTO actualizar(HechoModificadoInputDTO hechoModificado){
 
-        Hecho hechoOriginal = this.dinamicaRepository.buscarPorID(hechoModificado.getIdHecho());
+        Hecho hechoOriginal = this.dinamicaRepository.buscarPorID(hechoModificado.getId());
 
-        Hecho hechoCambiado = this.dinamicaRepository.buscarPorID(hechoModificado.getIdHecho());
+        Hecho hechoCambiado = this.dinamicaRepository.buscarPorID(hechoModificado.getId());
 
         hechoCambiado.setTitulo(hechoModificado.getTitulo());
         hechoCambiado.setDescripcion(hechoModificado.getDescripcion());
@@ -139,9 +141,9 @@ public class DinamicaService implements IDinamicaService {
     @Override
     public HechoOutputDTO gestionarHecho(HechoRevisadoInputDTO hechoRevisado){
 
-        Hecho hechoActual = this.buscarPorID(hechoRevisado.getIdHecho());
+        Hecho hechoActual = this.buscarPorID(hechoRevisado.getId());
 
-        Hecho hechoCambiado = this.buscarPorID(hechoRevisado.getIdHecho());
+        Hecho hechoCambiado = this.buscarPorID(hechoRevisado.getId());
 
         hechoCambiado.setEtiquetas(hechoRevisado.getEtiquetas());
         hechoCambiado.setEstadoHecho(hechoRevisado.getEstadoHecho());
@@ -161,7 +163,7 @@ public class DinamicaService implements IDinamicaService {
         Contribuyente usuario = Contribuyente
                 .builder()
                 .nombre(hechoParaActualizar.getNombreUsuario())
-                .fechaDeNacimiento(hechoParaActualizar.getFechaNacimientoUsuario())
+                .fechaNacimiento(hechoParaActualizar.getFechaNacimientoUsuario())
                 .build();
 
         return this.contribuyentesRepository.comprobarUsuarioRegistrado(usuario);
@@ -180,6 +182,7 @@ public class DinamicaService implements IDinamicaService {
     @Override
     public Boolean verificarTiposDeDatos(HechoInputDTO hechoIngresado){
         return hechoIngresado.getNombreUsuario() != null
+                && hechoIngresado.getApellidoUsuario() != null
                 && hechoIngresado.getFechaNacimientoUsuario() != null
                 && hechoIngresado.getTitulo() != null
                 && hechoIngresado.getDescripcion() != null
@@ -197,6 +200,8 @@ public class DinamicaService implements IDinamicaService {
 
         if(solicitudHecho.getNombreUsuario() == null)
             datoErroneo = "Nombre de Usuario";
+        if(solicitudHecho.getNombreUsuario() == null)
+            datoErroneo = "Apellido de Usuario";
         if(solicitudHecho.getFechaNacimientoUsuario() == null)
             datoErroneo = "Fecha de Nacimiento";
         if(solicitudHecho.getTitulo() == null || solicitudHecho.getTitulo().isEmpty())
@@ -220,7 +225,7 @@ public class DinamicaService implements IDinamicaService {
     @Override
     public Boolean verificarTiempoParaActualizar(HechoModificadoInputDTO solicitudCambio){
 
-        Hecho hechoGuardado = this.buscarPorID(solicitudCambio.getIdHecho());
+        Hecho hechoGuardado = this.buscarPorID(solicitudCambio.getId());
 
         LocalDateTime fechaHoy = LocalDateTime.now();
         long diferencia = ChronoUnit.DAYS.between(hechoGuardado.getFechaGuardado(),fechaHoy);
@@ -232,7 +237,7 @@ public class DinamicaService implements IDinamicaService {
 
         return SolicitudOutputDTO
                 .builder()
-                .idHecho(hecho.getIdHecho())
+                .idHecho(hecho.getId())
                 .contribuyente(hecho.getContribuyente())
                 .titulo(hecho.getTitulo())
                 .descripcion(hecho.getDescripcion())
@@ -250,7 +255,7 @@ public class DinamicaService implements IDinamicaService {
 
         return HechoOutputDTO
                 .builder()
-                .idHecho(hecho.getIdHecho())
+                .id(hecho.getId())
                 .contribuyente(hecho.getContribuyente())
                 .titulo(hecho.getTitulo())
                 .descripcion(hecho.getDescripcion())
@@ -259,6 +264,7 @@ public class DinamicaService implements IDinamicaService {
                 .ubicacion(hecho.getUbicacion())
                 .fechaAcontecimiento(hecho.getFechaAcontecimiento())
                 .etiquetas(hecho.getEtiquetas())
+                .origen(hecho.getOrigen())
                 .build();
 
     }
@@ -274,7 +280,7 @@ public class DinamicaService implements IDinamicaService {
     private void enviarHecho(Hecho hecho){
         HechoOutputDTO hechoParaEnviar = this.hechoOutputDTO(hecho);
 
-        Hecho hechoAntiguo = this.buscarPorID(hecho.getIdHecho());
+        Hecho hechoAntiguo = this.buscarPorID(hecho.getId());
 
         hechoAntiguo.setEnviado(true);
 

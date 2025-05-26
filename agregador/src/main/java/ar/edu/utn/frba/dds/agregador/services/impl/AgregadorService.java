@@ -40,7 +40,6 @@ public class AgregadorService implements IAgregadorService {
 
   @Override
   public List<HechoOutputDTO> buscarHechos(){
-    // TODO: Hacer que la fuente service busque de todas las fuentes
     List<Hecho> hechos = this.fuenteService.buscarHechos();
     List<HechoOutputDTO> hechosDTO = UtilsDTO.mapHechoToDTO(hechos);
     return hechosDTO;

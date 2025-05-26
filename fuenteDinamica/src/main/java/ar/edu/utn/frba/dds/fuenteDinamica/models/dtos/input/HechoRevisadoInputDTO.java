@@ -14,7 +14,7 @@ import java.util.List;
 public class HechoRevisadoInputDTO {
 
     private Long          idAdministrador;
-    private Long          idHecho;
+    private Long          id;
     private List<String>  etiquetas;
     private EstadoHecho   estadoHecho;
     private String        sugerenciaDeCambio;

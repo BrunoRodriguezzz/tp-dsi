@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/fuenteDinamica")
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:8081")
 public class DinamicaController {
 
     @Autowired
@@ -27,16 +27,11 @@ public class DinamicaController {
 
     // Uso del Agregador
 
-    @GetMapping("/busqueda")
+    @GetMapping("/hechos")
     public List<HechoOutputDTO> buscarTodos(
             @RequestParam(required = false) Boolean enviado,
-            @RequestParam() LocalDateTime dateTimeGT){
-
-        if(dateTimeGT != null){
+            @RequestParam(required = false) LocalDateTime dateTimeGT){
             return dinamicaService.buscarHechos(enviado,dateTimeGT);
-        }else{
-            throw new ErrorTipoDeDatos("Error de ingreso de datos, se requiere indicar un filtro de horario.");
-        }
     }
 
     // Uso de los Usuarios

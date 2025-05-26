@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class ContribuyenteServicioResponseDTO {
+  private Long id;
   private String nombre;
   private String apellido;
   private LocalDate fechaNacimiento;

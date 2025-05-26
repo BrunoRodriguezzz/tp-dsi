@@ -7,15 +7,11 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.Period;
 
+@Getter @Setter
 public class Contribuyente {
-    @Getter @Setter
     private Long id;
-    @Getter
     private String nombre;
-    @Getter
     private String apellido;
-    @Getter
-    @Setter
     private LocalDate fechaNacimiento;
 
     public Contribuyente(String nombre, String apellido, LocalDate fechaNacimiento) throws FechaInvalidaException {

@@ -20,6 +20,8 @@ import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.Solicitud
 import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Administrador;
 import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.ContenidoMultimedia;
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Etiqueta;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
 import java.util.List;
@@ -117,7 +119,11 @@ public class UtilsDTO {
 
   public static Contribuyente contribuyenteServicioResponseDTOtoContribuyente(ContribuyenteServicioResponseDTO contribuyenteDTO) {
     try{
-      return new Contribuyente(contribuyenteDTO.getNombre(),contribuyenteDTO.getApellido(),contribuyenteDTO.getFechaNacimiento());
+      Contribuyente contribuyente = new Contribuyente(contribuyenteDTO.getNombre(),contribuyenteDTO.getApellido(),contribuyenteDTO.getFechaNacimiento());
+      if(contribuyenteDTO.getId() != null){
+        contribuyenteDTO.setId(contribuyenteDTO.getId());
+      }
+      return contribuyente;
     }catch (Exception e){
       throw new RuntimeException(e.getMessage());
     }
@@ -186,8 +192,9 @@ public class UtilsDTO {
   public static Hecho hechoServicioResponseDTOtoHecho(HechoServicioResponseDTO hechoDTO) {
     Hecho hecho;
     try {
+      String tituloHecho = hechoDTO.getTitulo();
       hecho = new Hecho(
-          hechoDTO.getTitulo(),
+          tituloHecho,
           hechoDTO.getDescripcion(),
           new Categoria(hechoDTO.getCategoria()),
           new Ubicacion(
@@ -203,10 +210,15 @@ public class UtilsDTO {
       if(hechoDTO.getContribuyente() != null) {
         hecho.setContribuyente(UtilsDTO.contribuyenteServicioResponseDTOtoContribuyente(hechoDTO.getContribuyente()));
       }
+      if(hechoDTO.getEtiquetas() != null) {
+        hecho.setEtiquetas(hechoDTO.getEtiquetas().stream().map(Etiqueta::new).collect(Collectors.toList()));
+      }
+      if(hechoDTO.getContenidoMultimedia() != null) {
+        hecho.setContenidoMultimedia(hechoDTO.getContenidoMultimedia().stream().map(ContenidoMultimedia::new).collect(Collectors.toList()));
+      }
       return hecho;
     } catch (Exception e){
-      System.out.println(e.getMessage());
+      throw new RuntimeException(e);
     }
-    return null;
   }
 }

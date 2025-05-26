@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Builder
 public class Contribuyente {
     private String      nombre;
-    private LocalDate   fechaDeNacimiento;
+    private String      apellido;
+    private LocalDate   fechaNacimiento;
     private Long        idContribuyente;
 }

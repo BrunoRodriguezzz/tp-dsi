@@ -10,8 +10,9 @@ import java.util.List;
 @Getter
 public class HechoModificadoInputDTO {
 
-    private Long          idHecho;
+    private Long          id;
     private String        nombreUsuario;
+    private String        apellidoUsuario;
     private LocalDate     fechaNacimientoUsuario;
     private String        titulo;
     private String        descripcion;

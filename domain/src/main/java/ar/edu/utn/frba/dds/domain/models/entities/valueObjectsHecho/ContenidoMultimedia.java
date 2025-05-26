@@ -1,13 +1,15 @@
 package ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class ContenidoMultimedia {
     private String nombre;
     private String ruta;
     private Formato formato;
 
-    public ContenidoMultimedia(String nombre, String ruta, Formato formato) {
-        this.nombre = nombre;
+    public ContenidoMultimedia(String ruta) {
         this.ruta = ruta;
-        this.formato = formato;
     }
 }

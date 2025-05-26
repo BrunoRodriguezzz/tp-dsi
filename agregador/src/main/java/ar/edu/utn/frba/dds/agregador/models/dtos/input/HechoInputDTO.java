@@ -14,5 +14,4 @@ public class HechoInputDTO {
   private Long idContribuyente;
   private String origen;
   private String fuente;
-
 }
