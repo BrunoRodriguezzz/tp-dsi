@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter
 @Builder
 public class Ubicacion {
-    private Double latitud;
-    private Double longitud;
+    private String latitud;
+    private String longitud;
 }

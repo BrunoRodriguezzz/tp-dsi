@@ -74,7 +74,7 @@ public class DinamicaRepository implements IDinamicaRepository {
                     .stream()
                     .filter(hecho -> estadoAceptado(hecho)
                             && !(hecho.getEstaEliminado())
-                            && hecho.getFechaGuardado().isBefore(filtroDeTiempo))
+                            && hecho.getFechaGuardado().isAfter(filtroDeTiempo))
                     .toList();
         }else{
             return this.hechos
@@ -91,7 +91,7 @@ public class DinamicaRepository implements IDinamicaRepository {
                 .filter(hecho -> hecho.getEnviado() == enviado
                                         && estadoAceptado(hecho)
                                         && !(hecho.getEstaEliminado())
-                                        && hecho.getFechaGuardado().isBefore(filtroDeTiempo))
+                                        && hecho.getFechaGuardado().isAfter(filtroDeTiempo))
                 .toList();
 
         if(!enviado) {

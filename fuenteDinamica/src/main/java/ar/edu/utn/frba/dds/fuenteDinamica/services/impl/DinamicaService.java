@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
-import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorTipoDeDatos;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoEliminarInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
@@ -16,6 +15,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IDinamicaRepositor
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IDinamicaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +30,8 @@ public class DinamicaService implements IDinamicaService {
 
     @Autowired
     private IContribuyenteRepository contribuyentesRepository;
+
+    private final WebClient webClient = WebClient.builder().baseUrl("localhost:8080/agregador").build();
 
     @Override
     public List<HechoOutputDTO> buscarHechos(Boolean enviado, LocalDateTime filtroDeTiempo) {
@@ -160,6 +162,9 @@ public class DinamicaService implements IDinamicaService {
 
         this.dinamicaRepository.guardarCambios(hechoActual,hechoCambiado);
 
+        if(hechoCambiado.getEstadoHecho() == EstadoHecho.ACEPTADA || hechoCambiado.getEstadoHecho() == EstadoHecho.ACEPTADA_CON_SUGERENCIA)
+            this.enviarHecho(hechoCambiado);
+
         return this.hechoOutputDTO(hechoCambiado);
     }
 
@@ -264,4 +269,17 @@ public class DinamicaService implements IDinamicaService {
 
     }
 
+    // Cada vez que haya un hecho nuevo (la solicitud se acepto), se envia el hecho al agregador
+
+    private void enviarHecho(Hecho hecho){
+        HechoOutputDTO hechoParaEnviar = this.hechoOutputDTO(hecho);
+
+        Hecho hechoAntiguo = this.buscarPorID(hecho.getIdHecho());
+
+        hechoAntiguo.setEnviado(true);
+
+        this.dinamicaRepository.guardarCambios(hecho,hechoAntiguo);
+
+        this.webClient.post().uri("/hechos").bodyValue(hechoParaEnviar).retrieve().bodyToMono(HechoOutputDTO.class);
+    }
 }
