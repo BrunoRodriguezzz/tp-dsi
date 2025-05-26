@@ -31,7 +31,12 @@ public class DinamicaController {
     public List<HechoOutputDTO> buscarTodos(
             @RequestParam(required = false) Boolean enviado,
             @RequestParam(required = false) LocalDateTime dateTimeGT){
-        return dinamicaService.buscarHechos(enviado,dateTimeGT);
+
+        if(dateTimeGT != null){
+            return dinamicaService.buscarHechos(enviado,dateTimeGT);
+        }else{
+            throw new ErrorTipoDeDatos("Error de ingreso de datos, se requiere indicar un filtro de horario.");
+        }
     }
 
     // Uso de los Usuarios
@@ -42,7 +47,7 @@ public class DinamicaController {
             if(verificarTiposDeDatos(hecho)) {
                 return dinamicaService.crear(hecho);
             }else{
-                throw new ErrorTipoDeDatos("Error de ingreso de datos en: " + tipoDeDatoErroneo(hecho)+ ". No puede haber campos vacios.");
+                throw new ErrorTipoDeDatos("Error de ingreso de datos en: " + tipoDeDatoErroneo(hecho) + ". No puede haber campos vacios.");
             }
         }else{
             throw new ErrorAccesoProhibido("No cumple con la mayoria de edad.");

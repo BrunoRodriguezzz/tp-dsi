@@ -17,7 +17,7 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorDTO> errorAccesoProhibido(RuntimeException excepcion){
         ErrorDTO error = ErrorDTO
                 .builder()
-                .mensaje(excepcion.getMessage())
+                .error(excepcion.getMessage())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
@@ -26,7 +26,7 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorDTO> errorTipoDeDatos(RuntimeException excepcion){
         ErrorDTO error = ErrorDTO
                 .builder()
-                .mensaje(excepcion.getMessage())
+                .error(excepcion.getMessage())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -35,7 +35,7 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorDTO> errorUsuarioNoRegistrado(RuntimeException excepcion){
         ErrorDTO error = ErrorDTO
                 .builder()
-                .mensaje(excepcion.getMessage())
+                .error(excepcion.getMessage())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
@@ -44,7 +44,7 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorDTO> errorTiempoParaModificar(RuntimeException excepcion){
         ErrorDTO error = ErrorDTO
                 .builder()
-                .mensaje(excepcion.getMessage())
+                .error(excepcion.getMessage())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.REQUEST_TIMEOUT);
     }

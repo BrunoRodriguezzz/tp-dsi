@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.repositories;
 
-import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 
 import java.time.LocalDateTime;
