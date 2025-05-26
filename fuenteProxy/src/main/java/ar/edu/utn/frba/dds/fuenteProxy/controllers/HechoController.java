@@ -21,11 +21,7 @@ public class HechoController {
     public ResponseEntity<List<OutputFuente>> getAll() {
         List<OutputFuente> response = hechoService.getAll();
 
-        if(response.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404
-        } else {
-            return new ResponseEntity<>(response, HttpStatus.OK);  // 200
-        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 //    @GetMapping("/filtered")
@@ -46,16 +42,12 @@ public class HechoController {
     @GetMapping("/filtered")
     public ResponseEntity<List<OutputFuente>> getWithFilters(@ModelAttribute FiltroProxy filtro) {
         List<OutputFuente> response = hechoService.getWithFilters(filtro);
-        if (response.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long idHecho) {
-        hechoService.delete(idHecho);
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        hechoService.delete(id);
         return ResponseEntity.noContent().build(); // 204 sin cuerpo
     }
 }

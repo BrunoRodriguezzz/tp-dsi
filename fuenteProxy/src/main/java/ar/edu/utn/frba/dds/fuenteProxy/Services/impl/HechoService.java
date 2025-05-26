@@ -3,9 +3,12 @@ package ar.edu.utn.frba.dds.fuenteProxy.Services.impl;
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IHechoService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
+import ar.edu.utn.frba.dds.fuenteProxy.models.exceptions.ConflictError;
+import ar.edu.utn.frba.dds.fuenteProxy.models.exceptions.ValidationError;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IHechoRepository;
 import org.springframework.stereotype.Service;
@@ -29,7 +32,6 @@ public class HechoService implements IHechoService {
         List<Long> ids = fuente.devolverIDs();
         ids.forEach(id -> {
             List<HechoProxy> hechos = hechoRepository.getByIdFuente(id); // Devuelve los hechos con ese ID Fuente
-            // hechos.filter(filtro);
             toOutputFuente(outputFuentes, id, hechos);
         });
         return outputFuentes;
@@ -59,7 +61,7 @@ public class HechoService implements IHechoService {
             OutputFuente outputFuente = new OutputFuente();
             List<OutputHecho> hechosEncontrados = new ArrayList<>();
             HechoProxy hecho = hechoRepository.getById(filtro.getIdHecho());
-            hechosEncontrados.add(this.hechoToDtoOutput(hecho));
+            hechosEncontrados.add(UtilsDTO.hechoToDtoOutput(hecho));
             outputFuente.setHechos(hechosEncontrados);
             outputFuentes.add(outputFuente);
         }
@@ -71,7 +73,7 @@ public class HechoService implements IHechoService {
         if (!hechos.isEmpty()) { // Tengo que agregarlos
             OutputFuente outputFuente = new OutputFuente();
             String nombreFuente = this.fuente.getById(id).getNombre();
-            List<OutputHecho> hechosOutput = hechos.stream().map(this::hechoToDtoOutput).toList();
+            List<OutputHecho> hechosOutput = hechos.stream().map(UtilsDTO::hechoToDtoOutput).toList();
 
             outputFuente.setHechos(hechosOutput);
             outputFuente.setId(id);
@@ -86,44 +88,18 @@ public class HechoService implements IHechoService {
     }
 
     @Override
-    public void delete(Long idHecho) { //TODO
-        hechoRepository.delete(idHecho);
+    public void delete(Long id) {
+        if (id != null && id >= 1) {
+            hechoRepository.delete(id);
+        }else {
+            throw new ValidationError("ID invalido");
+        }
+
     }
 
     @Override
-    public void guardarHecho(InputHecho hechoDTO) {
-        HechoProxy hecho = toHechoProxy(hechoDTO);
+    public void guardarHecho(InputHecho hechoDTO) { //TODO Validador
+        HechoProxy hecho = UtilsDTO.toHechoProxy(hechoDTO);
         hechoRepository.guardarHecho(hecho);
-    }
-
-    private OutputHecho hechoToDtoOutput(HechoProxy hecho) {
-        OutputHecho dto = new OutputHecho();
-        dto.setId_hecho(hecho.getId());
-        dto.setTitulo(hecho.getTitulo());
-        dto.setDescripcion(hecho.getDescripcion());
-        dto.setCategoria(hecho.getCategoria());
-        dto.setUbicacion(hecho.getUbicacion());
-
-        if (hecho.getFechaHecho() != null)
-            dto.setFecha_hecho(hecho.getFechaHecho().toString());
-        if (hecho.getFechaCreacion() != null)
-            dto.setCreated_at(hecho.getFechaCreacion().toString());
-        if (hecho.getFechaModificacion() != null)
-            dto.setUpdated_at(hecho.getFechaModificacion().toString());
-        return dto;
-    }
-
-    private HechoProxy toHechoProxy(InputHecho input) {
-        HechoProxy hecho = new HechoProxy(input.getId_hecho(), input.getTitulo());
-        hecho.setDescripcion(input.getDescripcion());
-        hecho.setCategoria(input.getCategoria());
-        hecho.establecerUbicacion(input.getLatitud(), input.getLongitud());
-        hecho.setFechaHecho(input.getFecha_hecho());
-        hecho.setFechaModificacion(input.getUpdated_at());
-        hecho.setFechaCreacion(input.getCreated_at());
-        hecho.setIdFuente(input.getId_fuente());
-        hecho.setEliminado(false);
-
-        return hecho;
     }
 }

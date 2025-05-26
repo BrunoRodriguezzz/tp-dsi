@@ -2,6 +2,9 @@ package ar.edu.utn.frba.dds.fuenteProxy.models.repositories.impl;
 
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
+import ar.edu.utn.frba.dds.fuenteProxy.models.exceptions.EmptyError;
+import ar.edu.utn.frba.dds.fuenteProxy.models.exceptions.NotFoundError;
+import ar.edu.utn.frba.dds.fuenteProxy.models.exceptions.ValidationError;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IHechoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,9 +26,12 @@ public class HechoRepositoryMemory implements IHechoRepository {
 
     @Override
     public void delete(Long idHecho) {
-        if (idHecho != null && idHecho >= 1) { //TODO Va la validación acá
-            this.hechos.remove(idHecho);
-        }
+            HechoProxy hechoProxy = hechos.get(idHecho);
+            if (hechoProxy == null) {
+                throw new NotFoundError("No existe hecho con ID: " + idHecho);
+            }
+
+            hechoProxy.setEliminado(true);
     }
 
     @Override
@@ -55,7 +61,11 @@ public class HechoRepositoryMemory implements IHechoRepository {
 
     @Override
     public HechoProxy getById(Long id){
-        return hechos.get(id);
+        HechoProxy hecho = hechos.get(id);
+        if(hecho.getEliminado()) {
+            throw new ValidationError("El hecho esta eliminado");
+        }
+        return hecho;
     }
 
     @Override
@@ -68,6 +78,15 @@ public class HechoRepositoryMemory implements IHechoRepository {
     @Override
     public List<HechoProxy> getFiltrados(Long idFuente, FiltroProxy filtro) {
         List<HechoProxy> hechos = this.getByIdFuente(idFuente);
-        return hechos.stream().filter(filtro::cumple).toList();
+        hechos = hechos.stream() // Saco los eliminados
+                .filter(h -> h.getEliminado().equals(false))
+                .toList();
+        hechos = hechos.stream() // Aplico el filtro
+                .filter(filtro::cumple)
+                .toList();
+        if(hechos.isEmpty()) {
+            throw new EmptyError("Ningún hecho cumple con las condiciones.");
+        }
+        return hechos;
     }
 }
