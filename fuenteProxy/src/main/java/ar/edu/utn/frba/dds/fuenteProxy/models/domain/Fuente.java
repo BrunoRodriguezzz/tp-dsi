@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import reactor.core.publisher.Flux;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -21,5 +22,9 @@ public class Fuente {
             inputHecho.setId_fuente(this.id);
             return inputHecho;
         });
+    }
+
+    public Flux<InputHecho> getNuevos(LocalDateTime date) {
+        return this.tipoFuente.getNuevos(date);
     }
 }

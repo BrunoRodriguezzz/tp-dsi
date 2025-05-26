@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Component
 public class APICatedra implements TipoFuente {
@@ -21,6 +21,31 @@ public class APICatedra implements TipoFuente {
 
     public APICatedra(WebClient.Builder builder) {
         this.webClient = WebClient.builder().baseUrl("https://api-ddsi.disilab.ar/public").build();
+    }
+
+    @Override
+    public Flux<InputHecho> getAll() {
+        return getHechosPagina("https://api-ddsi.disilab.ar/public/api/desastres");
+    }
+
+    @Override
+    public Mono<InputHecho> getById(Long id) {
+        return webClient
+                .get()
+                .uri("/api/desastres/{id}", id)
+                .retrieve()
+                .bodyToMono(InputHecho.class);
+    }
+
+    @Override
+    public Flux<InputHecho> getNuevos(LocalDateTime date) {
+        // La API Cátedra nunca se actualiza, de momento.
+        return null;
+    }
+
+    @Override
+    public void informarSolicitudEliminaicion(SolicitudEliminacionDTO sol) {
+        //TODO
     }
 
     @PostConstruct
@@ -48,10 +73,6 @@ public class APICatedra implements TipoFuente {
         return response.getData().getAccess_token();
     }
 
-    public Flux<InputHecho> getAll() {
-        return getHechosPagina("https://api-ddsi.disilab.ar/public/api/desastres");
-    }
-
     private Flux<InputHecho> getHechosPagina(String url) {
         return webClient.get()
                 .uri(url)
@@ -67,19 +88,5 @@ public class APICatedra implements TipoFuente {
                         return hechosActuales;
                     }
                 });
-    }
-
-    @Override
-    public Mono<InputHecho> getById(Long id) {
-        return webClient
-                .get()
-                .uri("/api/desastres/{id}", id)
-                .retrieve()
-                .bodyToMono(InputHecho.class);
-    }
-
-    @Override
-    public void informarSolicitudEliminaicion(SolicitudEliminacionDTO sol) {
-        //TODO
     }
 }

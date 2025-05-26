@@ -24,21 +24,6 @@ public class HechoController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-//    @GetMapping("/filtered")
-//    public ResponseEntity<List<OutputFuente>> getWithFilters( //TODO: Verificar si es necesario el parseo
-//            @RequestParam(required = false) Long idHecho,
-//            @RequestParam(required = false) Long idFuente,
-//            @RequestParam(required = false) String fecha
-//    ) {
-//        // TODO: Validar parametros --> Validador tira Excepción
-//        List<OutputFuente> response = hechoService.getWithFilters(new FiltroProxy(idHecho, idFuente, fecha));
-//        if(response.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404
-//        } else {
-//            return new ResponseEntity<>(response, HttpStatus.OK);  // 200
-//        }
-//    }
-
     @GetMapping("/filtered")
     public ResponseEntity<List<OutputFuente>> getWithFilters(@ModelAttribute FiltroProxy filtro) {
         List<OutputFuente> response = hechoService.getWithFilters(filtro);

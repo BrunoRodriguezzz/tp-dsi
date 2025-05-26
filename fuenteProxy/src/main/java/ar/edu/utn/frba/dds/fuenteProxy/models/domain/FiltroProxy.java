@@ -1,7 +1,8 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain;
 
+import ar.edu.utn.frba.dds.fuenteProxy.models.exceptions.ValidationError;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -9,13 +10,34 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
-@NoArgsConstructor // <-- importante
 public class FiltroProxy {
     private Long fuenteId;
     private Long idHecho;
-    private String fecha; // primero como String
+    private String fecha;
+    private LocalDateTime date; // primero como String
 
-    public LocalDateTime getFechaParseada() {
+    public void validate() {
+        if(fuenteId != null) {
+            if(fuenteId <= 0) {
+                throw new ValidationError("fuenteId tiene que ser mayor a 0, ID ingresado: " + fuenteId);
+            }
+        }
+        if(idHecho != null) {
+            if(idHecho <= 0) {
+                throw new ValidationError("fuenteId tiene que ser mayor a 0, ID ingresado: " + idHecho);
+            }
+        }
+
+        this.date = this.getFechaParseada(fecha);
+
+        if(this.date != null) {
+            if(this.date.isAfter(LocalDateTime.now())) {
+                throw new ValidationError("Fecha invalida: " + this.fecha);
+            }
+        }
+    }
+
+    public LocalDateTime getFechaParseada(String fecha) {
         if (fecha != null && !fecha.isEmpty()) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
             return LocalDateTime.parse(fecha, formatter);
@@ -24,11 +46,10 @@ public class FiltroProxy {
     }
 
     public Boolean cumple(HechoProxy hecho) {
-        LocalDateTime fechaFiltro = getFechaParseada();
-        if (fechaFiltro == null) {
+        if (this.date == null) {
             return true;
         }
-        return hecho.getFechaModificacion().isAfter(fechaFiltro);
+        return hecho.getFechaModificacion().isAfter(this.date);
     }
 }
 

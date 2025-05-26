@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class InstanciaMetaMapa implements TipoFuente {
@@ -21,6 +22,11 @@ public class InstanciaMetaMapa implements TipoFuente {
     @Override
     public Mono<InputHecho> getById(Long id) {
         //TODO
+        return null;
+    }
+
+    @Override
+    public Flux<InputHecho> getNuevos(LocalDateTime date) {
         return null;
     }
 

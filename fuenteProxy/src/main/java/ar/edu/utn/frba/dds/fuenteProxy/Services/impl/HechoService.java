@@ -7,7 +7,6 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
-import ar.edu.utn.frba.dds.fuenteProxy.models.exceptions.ConflictError;
 import ar.edu.utn.frba.dds.fuenteProxy.models.exceptions.ValidationError;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IHechoRepository;
@@ -39,11 +38,9 @@ public class HechoService implements IHechoService {
 
     @Override
     public List<OutputFuente> getWithFilters(FiltroProxy filtro) {
+        filtro.validate();
         List<OutputFuente> outputFuentes = new ArrayList<>();
         List<Long> ids = new ArrayList<>();
-        System.out.println(filtro.getIdHecho());
-        System.out.println(filtro.getFecha());
-        System.out.println(filtro.getFuenteId());
         if(filtro.getFuenteId() == null) {
             ids = fuente.devolverIDs();
         }
