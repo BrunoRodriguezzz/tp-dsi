@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteProxy.Services;
 
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
-import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.HechoDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;

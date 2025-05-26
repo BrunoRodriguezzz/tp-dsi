@@ -19,8 +19,6 @@ public class HechoProxy {
     private String titulo;
     private String descripcion;
     private String categoria;
-//    private Double latitud;
-//    private Double longitud;
     private Ubicacion ubicacion;
     private LocalDate fechaHecho;
     private LocalDateTime fechaCreacion;

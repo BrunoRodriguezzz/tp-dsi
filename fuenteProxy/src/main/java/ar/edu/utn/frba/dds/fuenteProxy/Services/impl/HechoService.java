@@ -10,27 +10,43 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IHechoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class HechoService implements IHechoService {
-    private IFuenteRepository fuentes; //TODO Podría implementar un DAO para cada uno.
+    private IFuenteRepository fuente; //TODO Podría implementar un DAO para cada uno.
     private IHechoRepository hechoRepository;
 
     public HechoService(IHechoRepository hechoRepository, IFuenteRepository fuentesRepository) {
         this.hechoRepository = hechoRepository;
-        this.fuentes = fuentesRepository;
+        this.fuente = fuentesRepository;
     }
 
     @Override
     public List<OutputFuente> getAll() { //TODO: paginado de GET
-        List<HechoProxy> hechos = hechoRepository.getAll();
-        return hechos.stream().map(this::hechoToDtoOutput).toList();
+        List<OutputFuente> outputFuentes = new ArrayList<>();
+        List<Long> ids = fuente.devolverIDs();
+        ids.forEach(id -> {
+            List<HechoProxy> hechos = hechoRepository.getByIdFuente(id); // Devuelve los hechos con ese ID Fuente
+            if (!hechos.isEmpty()) { // Tengo que agregarlos
+                OutputFuente outputFuente = new OutputFuente();
+                String nombreFuente = this.fuente.getById(id).getNombre();
+                List<OutputHecho> hechosOutput = hechos.stream().map(this::hechoToDtoOutput).toList();
+
+                outputFuente.setHechos(hechosOutput);
+                outputFuente.setId(id);
+                outputFuente.setNombre(nombreFuente);
+                outputFuentes.add(outputFuente);
+            }
+        });
+        return outputFuentes;
     }
 
     @Override
     public List<OutputHecho> getWithFilters(FiltroProxy filtro) {
         List<HechoProxy> hechos = hechoRepository.getWithFilters(filtro);
+
         return hechos.stream().map(this::hechoToDtoOutput).toList();
     }
 
@@ -64,8 +80,6 @@ public class HechoService implements IHechoService {
             dto.setCreated_at(hecho.getFechaCreacion().toString());
         if (hecho.getFechaModificacion() != null)
             dto.setUpdated_at(hecho.getFechaModificacion().toString());
-
-        dto.setId_fuente(hecho.getIdFuente());
         return dto;
     }
 
@@ -77,6 +91,7 @@ public class HechoService implements IHechoService {
         hecho.setFechaHecho(input.getFecha_hecho());
         hecho.setFechaModificacion(input.getUpdated_at());
         hecho.setFechaCreacion(input.getCreated_at());
+        hecho.setIdFuente(input.getId_fuente());
         hecho.setEliminado(false);
 
         return hecho;

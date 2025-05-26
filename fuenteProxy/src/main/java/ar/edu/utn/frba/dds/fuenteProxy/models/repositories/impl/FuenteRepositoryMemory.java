@@ -43,4 +43,9 @@ public class FuenteRepositoryMemory implements IFuenteRepository {
             this.fuentes.remove(fuente.getId());
         }
     }
+
+    @Override
+    public List<Long> devolverIDs() {
+        return new ArrayList<>(fuentes.keySet());
+    }
 }

@@ -9,4 +9,5 @@ public interface IFuenteRepository {
     public Fuente getById(Long id);
     public void save(Fuente fuente);
     public void delete(Fuente fuente);
+    public List<Long> devolverIDs();
 }

@@ -47,6 +47,11 @@ public class HechoRepositoryMemory implements IHechoRepository {
         return hechosFiltrados;
     }
 
+    public List<HechoProxy> getByIdFuente(Long idFuente){
+        List<HechoProxy> hechos = this.getAll();
+        return hechos.stream().filter(h -> h.getIdFuente().equals(idFuente)).toList();
+    }
+
     @Override
     public void guardarHecho(HechoProxy hecho) {
         hecho.setId(idGenerator.getAndIncrement());

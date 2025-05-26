@@ -2,25 +2,30 @@ package ar.edu.utn.frba.dds.fuenteProxy.seeder;
 
 import ar.edu.utn.frba.dds.fuenteProxy.Services.impl.HechoService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl.APICatedra;
+import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(2)
 public class HechoSeeder implements CommandLineRunner {
     private final APICatedra apiCatedra;
     private final HechoService hechoService;
+    private final IFuenteRepository fuenteRepository;
 
-    public HechoSeeder(APICatedra apiCatedra, HechoService hechoService) {
+    public HechoSeeder(APICatedra apiCatedra, HechoService hechoService, IFuenteRepository fuenteRepository) {
         this.apiCatedra = apiCatedra;
         this.hechoService = hechoService;
+        this.fuenteRepository = fuenteRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        apiCatedra.getAll()
-                .doOnNext(hechoDTO -> {
-                    hechoService.guardarHecho(hechoDTO);
-                })
-                .blockLast(); // Para que espere a que termine
+        fuenteRepository.getAll().forEach(f -> {
+            f.getAllHechos()
+                    .doOnNext(hechoService::guardarHecho)
+                    .blockLast(); // Para que espere a que termine
+        });
     }
 }
