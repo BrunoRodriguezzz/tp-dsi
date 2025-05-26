@@ -1,0 +1,192 @@
+    @startuml
+    'Hecho
+    Hecho --> Contribuyente
+    Hecho --> Origen
+    Hecho --> Categoria
+    Hecho --> Ubicacion
+    Hecho -->"*" Etiqueta
+    Hecho --o Coleccion
+    Hecho -->"*" ContenidoMultimedia
+
+    'Solicitudes de Eliminacion
+    SolicitudEliminacion --* Hecho
+    SolicitudEliminacion --> EstadoSolicitudEliminacion
+    SolicitudEliminacion --> ResolucionSolicitudEliminacion
+    SolicitudEliminacion --> Contribuyente
+
+    'Resoluciones de Solicitudes de Eliminacion
+    ResolucionSolicitudEliminacion --> Administrador
+
+    'Colecciones
+    Coleccion --> Criterio
+    Coleccion ..> Filtro
+
+    'Fuente
+    Coleccion --> Fuente
+    Fuente ..> Hecho
+    FuenteEstatica ..|> Fuente
+    FuenteDinamica ..|> Fuente
+    FuenteProxy ..|> Fuente
+
+    'Criterio
+    Criterio --> Filtro
+
+    'ElementoCriterio
+    Filtro <|.. FiltroTitulo
+    Filtro <|.. FiltroCategoria
+    Filtro <|.. FiltroFechaAcontecimiento
+
+    'Estrategias
+    FiltroCategoria --> Categoria
+    FiltroFechaAcontecimiento --> RangoFechas
+
+    'Contenido Multimedia
+    ContenidoMultimedia --> Formato
+
+
+    class Contribuyente {
+        -nombre: String
+        -apellido: String
+        -fechaNacimiento: LocalDate
+        +laEdadEs(): Integer
+    }
+
+    class Administrador {
+        -nombre: String
+        -apellido: String
+    }
+
+    enum EstadoSolicitudEliminacion {
+        ACEPTADA,
+        RECHAZADA,
+        PENDIENTE
+    }
+
+    class ResolucionSolicitudEliminacion {
+        -fechaResolucion: LocalDateTime
+        -administrador: Administrador
+    }
+
+    class ContenidoMultimedia {
+        -nombre: String
+        -ruta: String
+        -formato: Formato
+    }
+
+    enum Formato {
+        VIDEO
+        AUDIO
+        IMAGEN
+    }
+
+    class Hecho {
+        -titulo: String
+        -descripcion: String
+        -categoria: Categoria
+        -ubicacion: Ubicacion
+        -etiquetas: <List>Etiqueta
+        -fechaAcontecimiento: LocalDate
+        -fechaCarga: LocalDate
+        -origen: Origen
+        -eliminado: Boolean
+        -contenidoMultimedia: List<ContenidoMultimedia>
+        +eliminar(): Void
+        +tieneContenidoMultimedia(): Boolean
+        +estaEliminado(): Boolean
+    }
+
+    interface Fuente {
+        +importarHechos(): List<Hecho> hechos
+    }
+
+    class FuenteEstatica {
+        -rutaAPI: String
+        +importarHechos(): List<Hecho> hechos
+    }
+
+    class FuenteDinamica {
+        -rutaAPI: String
+        +importarHechos(): List<Hecho> hechos
+    }
+
+    class FuenteProxy {
+       -rutaAPI: String
+       +importarHechos(): List<Hecho> hechos
+    }
+
+    class Etiqueta {
+        -titulo: String
+    }
+
+    enum Origen {
+        MANUAL
+        DATASET
+        CONTRIBUYENTE
+    }
+
+    class Categoria {
+        -titulo: String
+    }
+
+    class Ubicacion {
+        -latitud: String
+        -longitud: String
+    }
+
+    class SolicitudEliminacion {
+        -hecho: Hecho
+        -fundamento: String
+        -estadoSolicitudEliminacion: EstadoSolicitudEliminacion
+        -fechaCreacion: LocalDateTime
+        -resolucionSolicitud: ResolucionSolicitudEliminacion
+        -contribuyente: Contribuyente
+        +serAceptada(): Void
+        +serRechazada(): Void
+    }
+
+    class Coleccion {
+        -fuente: <List> Fuente
+        -hechos: <List> Hecho
+        -titulo: String
+        -descripcion: String
+        -criterio: Criterio
+        'Solo para representar overload
+        +cargarHechos(hechos: <List> Hecho): <List> Hecho
+        +consultarHechos(): <List> Hecho
+        +agregarFiltroACriterio(filtro: Filtro): Boolean
+        +recalcularHechos(): <List> Hecho
+        +consultarHechos(filtros: <List> Filtro): <List> Hecho
+    }
+
+    class Criterio{
+        -filtros: <List> Filtro
+
+        +cumpleCriterio(hecho: Hecho): Boolean
+        +agregarFiltro((Filtro filtro): Void
+    }
+
+    class RangoFechas {
+        -fechaInicio: LocalDate
+        -fechaFin: LocalDate
+    }
+
+    interface Filtro{
+        +coincide(algo): Boolean
+    }
+
+    class FiltroTitulo{
+        -titulo: String
+        +coincide(algo): Boolean
+    }
+
+    class FiltroFechaAcontecimiento{
+        -fechaAcontecimientoEntre: RangoFechas
+        +coincide(algo): Boolean
+    }
+
+    class FiltroCategoria{
+        -categoria: Categoria
+        +coincide(algo): Boolean
+    }
+
+    @enduml
