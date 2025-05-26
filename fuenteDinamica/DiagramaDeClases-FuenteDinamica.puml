@@ -40,6 +40,18 @@
 'DinamicaController
  DinamicaController --> IDinamicaService
 
+class HechoEliminarInputDTO {
+
+    - Long id
+    - Long idHecho;
+    - Contribuyente contribuyente;
+    - String titulo;
+    - String descripcion;
+    - String categoria;
+    - Ubicacion ubicacion;
+    - LocalDate fechaAcontecimiento;
+}
+
 class HechoInputDTO {
 
     - String nombreUsuario
@@ -48,8 +60,8 @@ class HechoInputDTO {
     - String descripcion
     - String categoria
     - List<String> contenidoMultimedia
-    - Double latitud
-    - Double longitud
+    - String latitud
+    - String longitud
     - LocalDate fechaAcontecimiento
 }
 
@@ -62,8 +74,8 @@ class HechoModificadoInputDTO {
     - String descripcion
     - String categoria
     - List<String> contenidoMultimedia
-    - Double latitud
-    - Double longitud
+    - String latitud
+    - String longitud
     - LocalDate fechaAcontecimiento
 }
 
@@ -105,7 +117,7 @@ class Hecho {
 
     - Long idHecho
     - Contribuyente contribuyente
-    - String  titulo
+    - String titulo
     - String descripcion
     - String categoria
     - List<String> contenidoMultimedia
@@ -121,8 +133,8 @@ class Hecho {
 }
 
 class Ubicacion{
-    - Double latitud
-    - Double longitud
+    - String latitud
+    - String longitud
 }
 
 class Contribuyente {
@@ -140,8 +152,8 @@ enum EstadoHecho {
 
 interface IContribuyenteRepository {
 
-    + guardar(Contribuyente contribuyente):void
-    + comprobarUsuarioRegistrado(Contribuyente contribuyente):Boolean
+    + guardar(contribuyente:Contribuyente):void
+    + comprobarUsuarioRegistrado(contribuyente:Contribuyente):Boolean
 
 }
 
@@ -149,18 +161,18 @@ class ContribuyenteRepository{
 
     - List<Contribuyente> contribuyentes
 
-    + guardar(Contribuyente contribuyente):void
-    + comprobarUsuarioRegistrado(Contribuyente contribuyente):Boolean
+    + guardar(contribuyente:Contribuyente):void
+    + comprobarUsuarioRegistrado(contribuyente:Contribuyente):Boolean
 }
 
 interface IDinamicaRepository {
 
-    + buscarPorID(Long ID):Hecho
-    + guardar(Hecho hecho):void
-    + guardarCambios(Hecho hechoOriginal, Hecho hechoCambiado):void
+    + buscarPorID(id:Long):Hecho
+    + guardar(hecho:Hecho):void
+    + guardarCambios(hechoOriginal:Hecho,hechoModificado:Hecho):void
     + eliminar(Hecho hecho):void
-    + mostrarTodos():List<Hecho>
-    + mostrarEnviados(Boolean enviado):List<Hecho>
+    + mostrarTodos(dateTimeGT:LocalDateTime):List<Hecho>
+    + mostrarEnviados(enviado:Boolean,dateTimeGT:LocalDateTime):List<Hecho>
 
 }
 
@@ -168,24 +180,27 @@ class DinamicaRepository{
 
     - List<Hecho> hechos
 
-    + buscarPorID (Long ID):Hecho
-    + guardar(Hecho hecho):void
-    + guardarCambios(Hecho hechoOriginal, Hecho hechoCambiado):void
+    + buscarPorID(id:Long):Hecho
+    + guardar(hecho:Hecho):void
+    + guardarCambios(hechoOriginal:Hecho,hechoModificado:Hecho):void
     + eliminar(Hecho hecho):void
-    + mostrarTodos():List<Hecho>
-    + mostrarEnviados(Boolean enviado):List<Hecho>
-    - estadoAceptado(Hecho hecho):Boolean
+    + mostrarTodos(dateTimeGT:LocalDateTime):List<Hecho>
+    + mostrarEnviados(enviado:Boolean,dateTimeGT:LocalDateTime):List<Hecho>
+    - estadoAceptado(hecho:Hecho):Boolean
 }
 
 interface IDinamicaService {
 
-    + buscarHechos():List<HechoOutputDTO>
-    + crear(HechoInputDTO hechoInputDTO):SolicitudHechoOutDTO
-    + eliminar(Long id):void
-    + actualizar(HechoModificadoInputDTO hechoModificado):SolicitudHechoOutDTO
-    + verificarUsuarioRegistrado(Contribuyente contribuyente):Boolean
-    + verificarEdadNecesaria(HechoInputDTO hechoInputDTO)
-    + gestionarHecho(HechoRevisadoInputDTO hechoRevisado):HechoOutputDTO
+    + buscarHechos(enviado:Boolean,localDateGT:LocalDateTime):List<HechoOutputDTO>
+    + crear(hecho:HechoInputDTO):SolicitudHechoOutDTO
+    + actualizar(hecho:HechoModificadoInputDTO):SolicitudHechoOutDTO
+    + eliminar(hecho:HechoEliminarInputDTO,id:Long):void
+    + gestionarHecho(hecho:HechoRevisadoInputDTO):HechoOutputDTO
+    + verificarUsuarioRegistrado(hecho:HechoModificadoInputDTO):Boolean
+    + verificarEdadNecesaria(hecho:HechoInputDTO):Boolean
+    + verificarTiposDeDatos(hecho:HechoInputDTO):Boolean
+    + tipoDeDatoErroneo(hecho:HechoInputDTO):String
+    + verificarTiempoParaActualizar(hecho:HechoModificadoInputDTO):Boolean
 
 }
 
@@ -193,30 +208,38 @@ class DinamicaService{
 
     - IDinamicaRepository dinamicaRepository
     - IContribuyenteRepository contribuyentesRepository
+    - WebClient webClient
 
-    + buscarHechos():List<HechoOutputDTO>
-    + crear(HechoInputDTO hechoInputDTO):SolicitudHechoOutDTO
-    + actualizar(HechoModificadoInputDTO hecho):SolicitudHechoOutDTO
-    + eliminar(Long id):void
-    + verificarUsuarioRegistrado(Contribuyente contribuyente):Boolean
-    + gestionarHecho(HechoRevisadoInputDTO hechoRevisado):HechoOutputDTO
-    + verificarEdadNecesaria(Contribuyente contribuyente):Boolean
-    - solicitudOutputDTO(Hecho hecho):SolicitudHechoOutDTO
-    - hechoOutputDTO(Hecho hecho):HechoOutputDTO
-    - buscarPorID(Long id):Hecho
-    - verificarTiempoParaActualizar(Hecho hecho):Boolean
+    + buscarHechos(enviado:Boolean,localDateGT:LocalDateTime):List<HechoOutputDTO>
+    + crear(hecho:HechoInputDTO):SolicitudHechoOutDTO
+    + actualizar(hecho:HechoModificadoInputDTO):SolicitudHechoOutDTO
+    + eliminar(hecho:HechoEliminarInputDTO,id:Long):void
+    + gestionarHecho(hecho:HechoRevisadoInputDTO):HechoOutputDTO
+    + verificarUsuarioRegistrado(hecho:HechoModificadoInputDTO):Boolean
+    + verificarEdadNecesaria(hecho:HechoInputDTO):Boolean
+    + verificarTiposDeDatos(hecho:HechoInputDTO):Boolean
+    + tipoDeDatoErroneo(hecho:HechoInputDTO):String
+    + verificarTiempoParaActualizar(hecho:HechoModificadoInputDTO):Boolean
+    - solicitudOutputDTO(hecho:Hecho):SolicitudHechoOutDTO
+    - hechoOutputDTO(hecho:Hecho):HechoOutputDTO
+    - buscarPorID(id:Long):Hecho
+    - enviarHecho(hecho:Hecho):void
 }
 
 class DinamicaController{
 
     - IDinamicaService dinamicaService
 
-    + buscarTodos(Boolean enviado):List<HechoOutputDTO>
-    + solicitudCrearHecho(HechoInputDTO hecho):SolicitudHechoOutputDTO
-    + actualizarHecho(HechoModificadoInputDTO hecho):SolicitudHechoOutputDTO
-    + gestionarHecho(HechoRevisadoInputDTO hechoRevisado):HechoOutputDTO
-    - verificarEdadNecesaria(HechoInputDTO hecho):Boolean
-    - verificarUsuarioRegistrado(HechoModificadoInputDTO hecho):Boolean
+    + buscarTodos(enviado:Boolean,dateDateGT:LocalDateTime):List<HechoOutputDTO>
+    + solicitudCrearHecho(hecho:HechoInputDTO):SolicitudHechoOutputDTO
+    + actualizarHecho(hecho:HechoModificadoInputDTO):SolicitudHechoOutputDTO
+    + gestionarHecho(hecho:HechoRevisadoInputDTO):HechoOutputDTO
+    + eliminarHecho(hecho:HechoInputDTO,id:Long):void
+    - verificarEdadNecesaria(hecho:HechoInputDTO):Boolean
+    - verificarUsuarioRegistrado(hecho:HechoModificadoInputDTO):Boolean
+    - verificarTipoDeDatos(hecho:HechoInputDTO):void
+    - tipoDeDatoErroneo(hecho:HechoInputDTO):String
+    - verificarTiempoParaActualizar(hecho:HechoInputDTO):Boolean
 
 }
 @enduml

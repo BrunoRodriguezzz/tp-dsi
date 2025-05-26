@@ -16,7 +16,9 @@ public class DinamicaRepository implements IDinamicaRepository {
     private final AtomicLong idGenerator = new AtomicLong(1);
 
     public DinamicaRepository(){
+
         this.hechos = new ArrayList<>();
+
     }
 
     @Override
@@ -56,7 +58,9 @@ public class DinamicaRepository implements IDinamicaRepository {
 
         List<Hecho> hechosQueNoEstanEnviados = this.hechos
                 .stream()
-                .filter(hecho -> !hecho.getEnviado())
+                .filter(hecho -> !hecho.getEnviado()
+                        && estadoAceptado(hecho)
+                        && !(hecho.getEstaEliminado()))
                 .toList();
 
         for (Hecho hecho : hechosQueNoEstanEnviados) {
@@ -78,7 +82,8 @@ public class DinamicaRepository implements IDinamicaRepository {
         }else{
             return this.hechos
                     .stream()
-                    .filter(hecho -> estadoAceptado(hecho) && !(hecho.getEstaEliminado()))
+                    .filter(hecho -> estadoAceptado(hecho)
+                            && !(hecho.getEstaEliminado()))
                     .toList();
         }
     }

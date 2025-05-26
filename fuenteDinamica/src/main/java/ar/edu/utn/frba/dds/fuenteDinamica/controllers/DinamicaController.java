@@ -30,7 +30,7 @@ public class DinamicaController {
     @GetMapping("/busqueda")
     public List<HechoOutputDTO> buscarTodos(
             @RequestParam(required = false) Boolean enviado,
-            @RequestParam(required = false) LocalDateTime dateTimeGT){
+            @RequestParam() LocalDateTime dateTimeGT){
 
         if(dateTimeGT != null){
             return dinamicaService.buscarHechos(enviado,dateTimeGT);

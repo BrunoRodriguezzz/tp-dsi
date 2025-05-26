@@ -137,19 +137,6 @@ public class DinamicaService implements IDinamicaService {
     }
 
     @Override
-    public Boolean verificarUsuarioRegistrado(HechoModificadoInputDTO hechoParaActualizar){
-
-        Contribuyente usuario = Contribuyente
-                .builder()
-                .nombre(hechoParaActualizar.getNombreUsuario())
-                .fechaDeNacimiento(hechoParaActualizar.getFechaNacimientoUsuario())
-                .build();
-
-        return this.contribuyentesRepository.comprobarUsuarioRegistrado(usuario);
-
-    }
-
-    @Override
     public HechoOutputDTO gestionarHecho(HechoRevisadoInputDTO hechoRevisado){
 
         Hecho hechoActual = this.buscarPorID(hechoRevisado.getIdHecho());
@@ -166,6 +153,19 @@ public class DinamicaService implements IDinamicaService {
             this.enviarHecho(hechoCambiado);
 
         return this.hechoOutputDTO(hechoCambiado);
+    }
+
+    @Override
+    public Boolean verificarUsuarioRegistrado(HechoModificadoInputDTO hechoParaActualizar){
+
+        Contribuyente usuario = Contribuyente
+                .builder()
+                .nombre(hechoParaActualizar.getNombreUsuario())
+                .fechaDeNacimiento(hechoParaActualizar.getFechaNacimientoUsuario())
+                .build();
+
+        return this.contribuyentesRepository.comprobarUsuarioRegistrado(usuario);
+
     }
 
     @Override
