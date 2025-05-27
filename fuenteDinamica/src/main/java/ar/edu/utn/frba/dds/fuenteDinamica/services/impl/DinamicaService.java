@@ -127,19 +127,7 @@ public class DinamicaService implements IDinamicaService {
 
         Hecho hechoOriginal = this.buscarPorID(id);
 
-        String latitudOG = hechoOriginal.getUbicacion().getLongitud();
-        String longitudOG = hechoOriginal.getUbicacion().getLongitud();
-
-        String latitud = hechoAEliminar.getUbicacion().getLatitud();
-        String longitud = hechoAEliminar.getUbicacion().getLongitud();
-
-        if(hechoOriginal.getTitulo().equals(hechoAEliminar.getTitulo())
-            && hechoOriginal.getDescripcion().equals(hechoAEliminar.getDescripcion())
-            && hechoOriginal.getCategoria().equals(hechoAEliminar.getCategoria())
-            && latitudOG == latitud
-            && longitudOG == longitud
-            && hechoOriginal.getFechaAcontecimiento().equals(hechoAEliminar.getFechaAcontecimiento())
-            && hechoOriginal.getContribuyente().getNombre().equals(hechoAEliminar.getContribuyente().getNombre())){
+        if(this.sonIguales(hechoAEliminar,hechoOriginal)){
 
             Hecho hechoAGuardar = this.buscarPorID(id);
             hechoAGuardar.setEstaEliminado(true);
@@ -301,5 +289,20 @@ public class DinamicaService implements IDinamicaService {
                 .uri(uriBuilder -> uriBuilder.path("/hechos").build())
                 .bodyValue(hechoParaEnviar)
                 .retrieve().bodyToMono(HechoOutputDTO.class).subscribe();
+    }
+
+    private Boolean sonIguales(HechoEliminarInputDTO hechoA, Hecho hechoB){
+
+        return hechoA.getContribuyente().getNombre().equals(hechoB.getContribuyente().getNombre())
+                && hechoA.getContribuyente().getApellido().equals(hechoB.getContribuyente().getApellido())
+                && hechoA.getContribuyente().getIdContribuyente().equals(hechoB.getContribuyente().getIdContribuyente())
+                && hechoA.getContribuyente().getFechaNacimiento().equals(hechoB.getContribuyente().getFechaNacimiento())
+                && hechoA.getId().equals(hechoB.getId())
+                && hechoA.getCategoria().equals(hechoB.getCategoria())
+                && hechoA.getTitulo().equals(hechoB.getTitulo())
+                && hechoA.getDescripcion().equals(hechoB.getDescripcion())
+                && hechoA.getFechaAcontecimiento().equals(hechoB.getFechaAcontecimiento())
+                && hechoA.getUbicacion().getLatitud().equals(hechoB.getUbicacion().getLatitud())
+                && hechoA.getUbicacion().getLongitud().equals(hechoB.getUbicacion().getLongitud());
     }
 }
