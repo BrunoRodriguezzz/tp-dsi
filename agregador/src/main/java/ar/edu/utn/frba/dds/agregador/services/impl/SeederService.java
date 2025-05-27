@@ -20,10 +20,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SeederService implements ISeederService {
+public class SeederService implements ISeederService, ApplicationRunner {
   @Autowired
   private IColeccionRepository coleccionRepository;
 
@@ -34,6 +36,11 @@ public class SeederService implements ISeederService {
 
   public SeederService(IFuenteService fuenteService) {
     this.fuenteService = fuenteService;
+  }
+
+  @Override
+  public void run(ApplicationArguments args) throws Exception {
+    init();
   }
 
   public void init(){

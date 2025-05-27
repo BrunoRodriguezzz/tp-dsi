@@ -36,7 +36,7 @@ public class AgregadorService implements IAgregadorService {
     this.fuenteService = fuenteService;
     this.coleccionService = coleccionService;
     this.hechoService = hechoService;
-    this.ultimaFechaRefresco = LocalDateTime.now(); // TODO: Debería persistirse
+    this.ultimaFechaRefresco = LocalDateTime.now().minusDays(1); // TODO: Debería persistirse
   }
 
   @Override
@@ -75,7 +75,7 @@ public class AgregadorService implements IAgregadorService {
   @Override
   public void refrescarColecciones(){
     // TODO: Falta la lógica de nuevos hechos en la request
-    List<Hecho> nuevosHechos = this.fuenteService.buscarHechos();
+    List<Hecho> nuevosHechos = this.fuenteService.buscarNuevosHechos(this.ultimaFechaRefresco); // Cambiar por buscar nuevos
     this.coleccionService.incorporarHechos(nuevosHechos);
     this.ultimaFechaRefresco = LocalDateTime.now();
   }

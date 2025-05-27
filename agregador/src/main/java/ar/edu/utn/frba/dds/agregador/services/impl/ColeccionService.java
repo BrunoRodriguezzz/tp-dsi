@@ -5,6 +5,8 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
+import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
+import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.domain.models.entities.fuentes.Fuente;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.util.ArrayList;
@@ -17,9 +19,11 @@ public class ColeccionService implements IColeccionService {
   @Autowired
   private IColeccionRepository coleccionRepository;
 
-  private FuenteService fuenteService;
+  private IFuenteService fuenteService;
+  private IHechoService hechoService;
 
-  public ColeccionService(FuenteService fuenteService) {
+  public ColeccionService(IFuenteService fuenteService, HechoService hechoService) {
+    this.hechoService = hechoService;
     this.fuenteService = fuenteService;
   }
 
@@ -85,10 +89,9 @@ public class ColeccionService implements IColeccionService {
     hechos.forEach(hecho -> {
       colecciones.forEach(c -> {
         if(c.getFuentes().contains(hecho.getFuente())) {
-          if(c.getHechos()==null) {
+          if(c.getHechos()==null || c.getHechos().stream().noneMatch(h -> h.equals(hecho))) {
             c.cargarHecho(hecho);
-          } else if (c.getHechos().stream().noneMatch(h -> h.equals(hecho))){
-            c.cargarHecho(hecho);
+            this.hechoService.guardarHecho(hecho);
           }
         }
       });
