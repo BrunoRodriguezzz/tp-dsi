@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl;
 
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.TipoFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.PaginaHechoDTO;
@@ -25,7 +26,11 @@ public class APICatedra implements TipoFuente {
 
     @Override
     public Flux<InputHecho> getAll() {
-        return getHechosPagina("https://api-ddsi.disilab.ar/public/api/desastres");
+        Flux<InputHecho> hechosCatedra = getHechosPagina("https://api-ddsi.disilab.ar/public/api/desastres");
+        return hechosCatedra.map(h -> {
+            h.setOrigen(Origen.MANUAL);
+            return h;
+        });
     }
 
     @Override

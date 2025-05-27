@@ -17,6 +17,8 @@ public class UtilsDTO {
         dto.setDescripcion(hecho.getDescripcion());
         dto.setCategoria(hecho.getCategoria());
         dto.setUbicacion(hecho.getUbicacion());
+        System.out.println(hecho.getCategoria());
+        dto.setOrigen(hecho.getOrigen());
 
         if (hecho.getFechaHecho() != null)
             dto.setFecha_hecho(hecho.getFechaHecho().toString());
@@ -37,6 +39,7 @@ public class UtilsDTO {
         hecho.setFechaCreacion(input.getCreated_at());
         hecho.setIdFuente(input.getId_fuente());
         hecho.setEliminado(false);
+        hecho.setOrigen(input.getOrigen());
 
         return hecho;
     }
