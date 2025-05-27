@@ -1,11 +1,7 @@
 package ar.edu.utn.frba.dds.domain.models.entities.fuentes;
 
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.CategoriaInvalidaException;
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.DescripcionInvalidaException;
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.TituloInvalidoException;
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.*;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
@@ -20,8 +16,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
 public class FuenteEstatica implements Fuente {
     private String rutaArchivo;
@@ -94,6 +88,8 @@ public class FuenteEstatica implements Fuente {
                     // TODO: Catchea el controller?
                     System.err.println("Fecha inválida para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
                 }
+
+
             }
         }
         return listaDeHechos;

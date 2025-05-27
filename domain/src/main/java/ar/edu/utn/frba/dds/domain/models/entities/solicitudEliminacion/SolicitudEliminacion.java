@@ -6,13 +6,10 @@ import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
 import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.FundamentoInvalidoException;
 import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.HechoYaEliminadoException;
 import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.SolicitudEliminacionYaResueltaException;
-import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 
-@SuppressWarnings({"checkstyle:Indentation", "checkstyle:MissingJavadocType"})
 @Setter @Getter
 public class SolicitudEliminacion {
     private Long id;
