@@ -14,7 +14,7 @@ public class ArchivoRepositoryMemory implements IArchivoRepository {
 
     @Override
     public List<Archivo> getAll() {
-        return archivos.values().stream().toList();
+        return new ArrayList<>(archivos.values());
     }
 
     @Override
@@ -30,9 +30,10 @@ public class ArchivoRepositoryMemory implements IArchivoRepository {
 
     @Override
     public Archivo getById(Long id) {
-        return Optional
-                .ofNullable(this.archivos.get(id))
-                .orElseThrow(()-> new NoSuchElementException("No se encontró el Archivo con id = " + id));
+        return this.archivos.get(id);
+//        return Optional
+//                .ofNullable(this.archivos.get(id))
+//                .orElseThrow(()-> new NoSuchElementException("No se encontró el Archivo con id = " + id));
     }
 
     public List<Long> devolverIDs() {

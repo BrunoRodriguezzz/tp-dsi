@@ -2,9 +2,12 @@ package ar.edu.utn.frba.dds.fuenteEstatica.controllers;
 
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.ArchivoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.HechoOutputDTO;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.FiltroEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.services.IHechoService;
 import ar.edu.utn.frba.dds.fuenteEstatica.services.impl.HechoService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,8 +22,16 @@ public class HechoController {
     }
 
     @GetMapping
-    public List<ArchivoOutputDTO> getAll() {
-        return hechoService.getAll();
+    public ResponseEntity<List<ArchivoOutputDTO>> getAll() {
+        List<ArchivoOutputDTO> response = hechoService.getAll();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/filtered")
+    public ResponseEntity<List<ArchivoOutputDTO>> getWithFilters(@ModelAttribute FiltroEstatica filtro) {
+        List<ArchivoOutputDTO> response = hechoService.getWithFilters(filtro);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

@@ -27,19 +27,21 @@ public class UtilsDTO {
 
     public static HechoOutputDTO hechoToOutputDTO(HechoEstatica hecho) {
         HechoOutputDTO dto = new HechoOutputDTO();
-        dto.setId_hecho(hecho.getId());
+        dto.setId(hecho.getId());
         dto.setTitulo(hecho.getTitulo());
         dto.setDescripcion(hecho.getDescripcion());
         dto.setCategoria(hecho.getCategoria());
         dto.setUbicacion(hecho.getUbicacion());
         dto.setOrigen(hecho.getOrigen());
+        dto.setContribuyente(null);
+        dto.setFuente(null);
 
         if (hecho.getFechaHecho() != null)
-            dto.setFecha_hecho(hecho.getFechaHecho().toString());
-        if (hecho.getFechaCreacion() != null)
-            dto.setCreated_at(hecho.getFechaCreacion().toString());
-        if (hecho.getFechaModificacion() != null)
-            dto.setUpdated_at(hecho.getFechaModificacion().toString());
+            dto.setFechaAcontecimiento(hecho.getFechaHecho().toString());
+//        if (hecho.getFechaCreacion() != null)
+//            dto.setCreated_at(hecho.getFechaCreacion().toString());
+//        if (hecho.getFechaModificacion() != null)
+//            dto.setUpdated_at(hecho.getFechaModificacion().toString());
         return dto;
     }
 

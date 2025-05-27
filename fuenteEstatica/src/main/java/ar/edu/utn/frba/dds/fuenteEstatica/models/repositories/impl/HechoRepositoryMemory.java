@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.impl;
 
+import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.FiltroEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.IHechoRepository;
 import org.springframework.stereotype.Repository;
@@ -42,6 +43,7 @@ public class HechoRepositoryMemory implements IHechoRepository {
             // Nuevo
             Long id = idGenerator.getAndIncrement();
             hechoEstatica.setId(id);
+            hechoEstatica.setEliminado(false);
             this.hechos.put(id, hechoEstatica);
         } else {
             // Actualización
@@ -53,6 +55,18 @@ public class HechoRepositoryMemory implements IHechoRepository {
     @Override
     public void delete(Long id) { // TODO validaciones
         this.hechos.get(id).eliminar();
+    }
+
+    @Override
+    public List<HechoEstatica> getFiltrados(Long idFuente, FiltroEstatica filtro) {
+        List<HechoEstatica> hechos = this.getByIdArchivo(idFuente);
+        hechos = hechos.stream() // Saco los eliminados
+                .filter(h -> h.getEliminado().equals(false))
+                .toList();
+        hechos = hechos.stream() // Aplico el filtro
+                .filter(filtro::cumple)
+                .toList();
+        return hechos;
     }
 
 
