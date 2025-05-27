@@ -22,11 +22,12 @@ public class HechoRepositoryMemory implements IHechoRepository {
 
     @Override
     public List<HechoEstatica> getAll() {
-        return new ArrayList<>(hechos.values());
+        List<HechoEstatica> hechos = new ArrayList<>(this.hechos.values());
+        return hechos.stream().filter(hecho -> hecho.getEliminado().equals(false)).toList();
     }
 
     @Override
-    public HechoEstatica getById(Long id) {
+    public HechoEstatica getById(Long id) { //TODO Validar que no este eliminado
         return hechos.get(id);
     }
 
@@ -78,6 +79,4 @@ public class HechoRepositoryMemory implements IHechoRepository {
         hecho.setId(idGenerator.getAndIncrement());
         hechos.put(hecho.getId(), hecho);
     }
-
-
 }
