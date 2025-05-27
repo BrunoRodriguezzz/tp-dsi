@@ -62,7 +62,7 @@ public class DetectorSpamService implements IDetectorSpamService {
       long docsConPalabra = documentos.stream()
           .filter(doc -> dividirEnPalabras(doc).contains(palabra))
           .count();
-      double idf = Math.log((double) totalDocs / (1 + docsConPalabra));
+      double idf = Math.log((double) (totalDocs + 1) / (docsConPalabra + 1));
       tfidf.put(palabra, frecuencia * idf);
     }
 
@@ -78,8 +78,7 @@ public class DetectorSpamService implements IDetectorSpamService {
 
 
   public Boolean esSpam(SolicitudEliminacion solicitud) {
-//    Boolean resultado = this.esFundamentoValido(solicitud.getFundamento());
-    Boolean resultado = true;
+    Boolean resultado = this.esFundamentoValido(solicitud.getFundamento());
     if(resultado) {
       return false;
     }
