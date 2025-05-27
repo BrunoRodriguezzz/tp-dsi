@@ -21,7 +21,7 @@ public class FuenteDinamicaAdapter implements IFuenteAdapter {
 
   public FuenteDinamicaAdapter(String baseUrl, TipoFuente tipoFuente) {
     this.fuenteAPI = WebClient.builder()
-        .baseUrl(baseUrl)
+        .baseUrl(baseUrl + "/api/fuenteDinamica")
         .build();
     this.tipoFuente = tipoFuente;
   }
@@ -33,7 +33,7 @@ public class FuenteDinamicaAdapter implements IFuenteAdapter {
   public List<Hecho> buscarHechos() {
     return fuenteAPI.get()
         .uri(uriBuilder -> uriBuilder
-            .path("/api/fuenteDinamica"+"/hechos") // TODO: Corregir menos harcodeado
+            .path("/hechos") // TODO: Corregir menos harcodeado
             .build())
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<HechoServicioResponseDTO>>() {})
@@ -58,14 +58,14 @@ public class FuenteDinamicaAdapter implements IFuenteAdapter {
   }
 
   public void eliminarHecho(Hecho hecho) {
-    fuenteAPI.put()
+    fuenteAPI.patch()
         .uri(uriBuilder -> uriBuilder
-            .path("/eliminacion")
+            .path("/eliminacion/{id}")
             .build(hecho.getId()))
         .bodyValue(UtilsDTO.HechoToDTO(hecho))
         .retrieve()
-        .toBodilessEntity() // No se espera con contenido
-        .block(); // Ejecución sincrónica
+        .toBodilessEntity()
+        .block();
   }
 
   //Privados

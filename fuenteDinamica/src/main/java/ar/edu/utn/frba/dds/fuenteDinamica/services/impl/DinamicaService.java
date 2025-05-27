@@ -127,10 +127,17 @@ public class DinamicaService implements IDinamicaService {
 
         Hecho hechoOriginal = this.buscarPorID(id);
 
+        String latitudOG = hechoOriginal.getUbicacion().getLongitud();
+        String longitudOG = hechoOriginal.getUbicacion().getLongitud();
+
+        String latitud = hechoAEliminar.getUbicacion().getLatitud();
+        String longitud = hechoAEliminar.getUbicacion().getLongitud();
+
         if(hechoOriginal.getTitulo().equals(hechoAEliminar.getTitulo())
             && hechoOriginal.getDescripcion().equals(hechoAEliminar.getDescripcion())
             && hechoOriginal.getCategoria().equals(hechoAEliminar.getCategoria())
-            && hechoOriginal.getUbicacion().equals(hechoAEliminar.getUbicacion())
+            && latitudOG == latitud
+            && longitudOG == longitud
             && hechoOriginal.getFechaAcontecimiento().equals(hechoAEliminar.getFechaAcontecimiento())
             && hechoOriginal.getContribuyente().getNombre().equals(hechoAEliminar.getContribuyente().getNombre())){
 
@@ -291,8 +298,8 @@ public class DinamicaService implements IDinamicaService {
         this.dinamicaRepository.guardarCambios(hecho,hechoAntiguo);
 
         this.webClient.post()
-                .uri("/hechos")
+                .uri(uriBuilder -> uriBuilder.path("/hechos").build())
                 .bodyValue(hechoParaEnviar)
-                .retrieve().bodyToMono(HechoOutputDTO.class);
+                .retrieve().bodyToMono(HechoOutputDTO.class).subscribe();
     }
 }

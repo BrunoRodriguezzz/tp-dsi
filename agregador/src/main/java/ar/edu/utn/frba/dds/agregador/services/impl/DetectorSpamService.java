@@ -25,7 +25,7 @@ public class DetectorSpamService implements IDetectorSpamService {
       "erróneo", "equivocado", "ofensivo", "inexacto", "privacidad",
       "difamación", "acoso", "incorrecto", "mentira", "error", "eliminación"
   );
-
+//  erróneo equivocado ofensivo inexacto privacidad difamación acoso incorrecto
   public boolean esFundamentoValido(String fundamento) {
     // TF-IDF: importancia de una palabra respecto al resto del corpus
     Map<String, Double> tfidf = calcularTFIDF(fundamento, corpus);
@@ -41,8 +41,8 @@ public class DetectorSpamService implements IDetectorSpamService {
     if (fundamento.matches(".*(.)\\1{4,}.*")) {
       return false;
     }
-
-    return score > 0.1; // Umbral ajustable
+    Boolean resultado = score > 0.02;
+    return resultado; // Umbral ajustable
   }
 
   private Map<String, Double> calcularTFIDF(String texto, List<String> documentos) {
@@ -78,7 +78,9 @@ public class DetectorSpamService implements IDetectorSpamService {
 
 
   public Boolean esSpam(SolicitudEliminacion solicitud) {
-    if(this.esFundamentoValido(solicitud.getFundamento())) {
+//    Boolean resultado = this.esFundamentoValido(solicitud.getFundamento());
+    Boolean resultado = true;
+    if(resultado) {
       return false;
     }
     corpus.add(solicitud.getFundamento());

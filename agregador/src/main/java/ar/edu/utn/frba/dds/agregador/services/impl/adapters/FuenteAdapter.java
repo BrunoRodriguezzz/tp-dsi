@@ -67,14 +67,14 @@ public class FuenteAdapter implements IFuenteAdapter {
   }
 
   public void eliminarHecho(Hecho hecho) {
-    fuenteAPI.put()
+    fuenteAPI.patch()
         .uri(uriBuilder -> uriBuilder
-            .path("/eliminacion")
+            .path("/eliminacion/{id}")
             .build(hecho.getId()))
         .bodyValue(UtilsDTO.HechoToDTO(hecho))
         .retrieve()
-        .toBodilessEntity() // No se espera con contenido
-        .block(); // Ejecución sincrónica
+        .toBodilessEntity()
+        .block();
   }
 
   //Privados
