@@ -23,4 +23,5 @@ public class HechoOutputDTO {
     private LocalDate      fechaAcontecimiento;
     private List<String>   etiquetas;
     private String         origen;
+    private String         fuente;
 }

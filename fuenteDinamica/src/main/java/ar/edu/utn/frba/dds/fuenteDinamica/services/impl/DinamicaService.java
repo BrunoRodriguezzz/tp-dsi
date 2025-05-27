@@ -31,7 +31,10 @@ public class DinamicaService implements IDinamicaService {
     @Autowired
     private IContribuyenteRepository contribuyentesRepository;
 
-    private final WebClient webClient = WebClient.builder().baseUrl("http://localhost:8082/agregador").build();
+    private final WebClient webClient = WebClient
+        .builder()
+        .baseUrl("http://localhost:8082/agregador")
+        .build();
 
     @Override
     public List<HechoOutputDTO> buscarHechos(Boolean enviado, LocalDateTime filtroDeTiempo) {
@@ -75,6 +78,7 @@ public class DinamicaService implements IDinamicaService {
                     .fechaAcontecimiento(hechoInputDTO.getFechaAcontecimiento())
                     .contribuyente(usuario)
                     .origen("CONTRIBUYENTE")
+                    .fuente("Provistos por contribuyentes")
                     .build();
 
             this.dinamicaRepository.guardar(hecho);
@@ -264,6 +268,7 @@ public class DinamicaService implements IDinamicaService {
                 .fechaAcontecimiento(hecho.getFechaAcontecimiento())
                 .etiquetas(hecho.getEtiquetas())
                 .origen(hecho.getOrigen())
+                .fuente(hecho.getFuente())
                 .build();
 
     }

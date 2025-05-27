@@ -142,6 +142,7 @@ public class SeederService implements ISeederService {
     fuentes.add("Accidentes");
     fuentes.add("Incidentes");
     fuentes.add("Derrumbes");
+    fuentes.add("Provistos por contribuyentes");
 
     coleccion.setFuentes(fuentes);
 

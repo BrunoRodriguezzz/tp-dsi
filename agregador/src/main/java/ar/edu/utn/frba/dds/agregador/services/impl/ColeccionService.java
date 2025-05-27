@@ -25,10 +25,10 @@ public class ColeccionService implements IColeccionService {
 
   public List<ColeccionOutputDTO> buscarColecciones() {
     List <Coleccion> colecciones = this.coleccionRepository.buscarCopiaColecciones();
-    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
-    colecciones.forEach(coleccion -> {
-      coleccion.cargarHechos(hechosProxy);
-    });
+//    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
+//    colecciones.forEach(coleccion -> {
+//      coleccion.cargarHechos(hechosProxy);
+//    });
     List <ColeccionOutputDTO> coleccionesDTO = UtilsDTO.mapColeccionesToDTO(colecciones);
     return coleccionesDTO;
   }

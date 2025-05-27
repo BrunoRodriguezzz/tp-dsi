@@ -29,4 +29,5 @@ public class Hecho {
     private Boolean       enviado;
     private Boolean       estaEliminado;
     private String        origen;
+    private String        fuente;
 }
