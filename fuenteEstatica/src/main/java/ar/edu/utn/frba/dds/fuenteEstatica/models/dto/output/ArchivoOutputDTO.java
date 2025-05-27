@@ -1,6 +1,5 @@
-package ar.edu.utn.frba.dds.fuenteEstatica.models.dto;
+package ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output;
 
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import lombok.Data;
 
 import java.util.List;

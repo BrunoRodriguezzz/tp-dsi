@@ -1,41 +1,35 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.entities.impl;
 
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
-import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.UtilsDTO;
+import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.TipoArchivo;
 import com.opencsv.CSVReader;
 
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.CategoriaInvalidaException;
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.DescripcionInvalidaException;
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.TituloInvalidoException;
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
 import javax.swing.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 
+@Component
 public class ArchivoCSV implements TipoArchivo {
-
     @Override
-    public List<HechoEstatica> importarHechos(String ruta) {
+    public Flux<HechoEstatica> importarHechos(String ruta) {
        return this.leerHechos(ruta);
     }
 
-    public List<HechoEstatica> leerHechos(String ruta) {
+    public Flux<HechoEstatica> leerHechos(String ruta) {
         try (CSVReader lector = this.crearLectorCSV(ruta)) {
-            List<HechoEstatica> hechos = this.instanciarHechosSegunCSV(lector);
-            return hechos;
+            return this.instanciarHechosSegunCSV(lector);
             // TODO: Catchea el controller?
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error de lectura: " + e.getMessage());
@@ -49,57 +43,32 @@ public class ArchivoCSV implements TipoArchivo {
         }
     }
 
-    private List<HechoEstatica> instanciarHechosSegunCSV(CSVReader lector) throws IOException, CsvException {
+    private Flux<HechoEstatica> instanciarHechosSegunCSV(CSVReader lector) throws IOException, CsvException {
         List<String[]> filas = lector.readAll();
-        List<Hecho> listaDeHechos = this.crearListaDeHechosSegunFilas(filas);
 
-        return listaDeHechos.stream().map(h -> UtilsDTO.toHecho);
+        return this.crearListaDeHechosSegunFilas(filas);
     }
 
-    private List<Hecho> crearListaDeHechosSegunFilas(List<String[]> filas) {
-        List<Hecho> listaDeHechos = new java.util.ArrayList<>();
-        for (String[] campos : filas) {
-            if (campos.length >= 6) {
-                try {
-                    Ubicacion ubicacion = new Ubicacion(campos[3], campos[4]);
-                    Categoria categoria = new Categoria(campos[2]);
-
-                    Hecho hecho = new Hecho(
-                            campos[0],
-                            campos[1],
-                            categoria,
-                            ubicacion,
-                            parsearFechaALocalDate(campos[5]),
-                            Origen.DATASET
-                    );
-                    listaDeHechos.add(hecho);
-                } catch (UbicacionInvalidaException e) {
-                    // TODO: Catchea el controller?
-                    System.err.println("Ubicación inválida para fila: " + Arrays.toString(campos));
-                }
-
-                catch (CategoriaInvalidaException e) {
-                    // TODO: Catchea el controller?
-                    System.err.println("Categoria inválida para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
-                }
-
-                catch (TituloInvalidoException e) {
-                    // TODO: Catchea el controller?
-                    System.err.println("Titulo inválido para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
-                }
-
-                catch (DescripcionInvalidaException e) {
-                    // TODO: Catchea el controller?
-                    System.err.println("Descripcion inválido para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
-                }
-
-                catch (FechaInvalidaException e) {
-                    // TODO: Catchea el controller?
-                    System.err.println("Fecha inválida para fila: " + Arrays.toString(campos) + ": " + e.getMessage());
-                }
-            }
-        }
-        return listaDeHechos;
+    private Flux<HechoEstatica> crearListaDeHechosSegunFilas(List<String[]> filas) {
+        return Flux.fromIterable(filas)
+                .filter(campos -> campos.length >= 6)
+                .map(campos -> {
+                    HechoEstatica hecho = new HechoEstatica();
+                    try {
+                        Ubicacion ubicacion = new Ubicacion(campos[3], campos[4]);
+                        hecho.setUbicacion(ubicacion);
+                    } catch (UbicacionInvalidaException e) {
+                        throw new RuntimeException(e);
+                    }
+                    hecho.setTitulo(campos[0]);
+                    hecho.setDescripcion(campos[1]);
+                    hecho.setCategoria(campos[2]);
+                    hecho.setFechaHecho(this.parsearFechaALocalDate(campos[5]));
+                    hecho.setFechaCreacion(LocalDateTime.now());
+                    hecho.setFechaModificacion(LocalDateTime.now());
+                    hecho.setOrigen(Origen.DATASET);
+                    return hecho;
+                });
     }
 
     private static LocalDate parsearFechaALocalDate(String fechaStr) {
@@ -114,13 +83,13 @@ public class ArchivoCSV implements TipoArchivo {
     }
 
     private CSVReader crearLectorCSV(String ruta) throws IOException {
-        CSVReader reader = new CSVReaderBuilder(new FileReader(ruta))
+        // Saltar encabezados
+        return new CSVReaderBuilder(new FileReader(ruta))
                 .withSkipLines(1) // Saltar encabezados
                 .withCSVParser(new com.opencsv.CSVParserBuilder()
                         .withSeparator(',')
                         .withQuoteChar('\"')
                         .build())
                 .build();
-        return reader;
     }
 }

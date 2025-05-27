@@ -1,8 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.controllers;
 
-import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.ArchivoOutputDTO;
-import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.HechoOutputDTO;
-import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Archivo;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.ArchivoOutputDTO;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.services.IHechoService;
 import ar.edu.utn.frba.dds.fuenteEstatica.services.impl.HechoService;

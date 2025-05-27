@@ -1,16 +1,16 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.services.impl;
 
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.Fuente;
-import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.ArchivoOutputDTO;
-import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.HechoOutputDTO;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.ArchivoOutputDTO;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.HechoOutputDTO;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.UtilsDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Archivo;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.IArchivoRepository;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.IHechoRepository;
-import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.impl.HechoRepositoryMemory;
 import ar.edu.utn.frba.dds.fuenteEstatica.services.IHechoService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,27 +18,43 @@ public class HechoService implements IHechoService {
     private final IHechoRepository hechoRepository;
     private final IArchivoRepository archivoRepository;
 
-    public HechoService(HechoRepositoryMemory hechoRepository, IArchivoRepository archivoRepository) {
+    public HechoService(IHechoRepository hechoRepository, IArchivoRepository archivoRepository) {
         this.hechoRepository = hechoRepository;
         this.archivoRepository = archivoRepository;
     }
 
+//    @Override
+//    public List<ArchivoOutputDTO> getAll() {
+//        List<HechoEstatica> hechos = hechoRepository.getAll();
+//        Archivo archivo = archivoRepository.getAll().get(0);
+//        ArchivoOutputDTO archivoOutputDTO = UtilsDTO.toOutputArchivo(archivo, hechos);
+//        return List.of(archivoOutputDTO);
+//    }
+
     @Override
-    public List<ArchivoOutputDTO> getAll() {
-        return this.archivoRepository.getAll().stream().map(this::archivoToDTO).toList();
-//        return this.hechoRepository.findAll(this.archivoRepository.getAll());
-//        List<HechoEstatica> hechos = hechoRepository.findAll();
-//        return hechos.stream().map(this::hechoToDTO).toList();
+    public List<ArchivoOutputDTO> getAll() { //TODO: paginado de GET
+        List<ArchivoOutputDTO> outputArchivos = new ArrayList<>();
+        List<Long> ids = archivoRepository.devolverIDs();
+        ids.forEach(id -> {
+            List<HechoEstatica> hechos = hechoRepository.getByIdArchivo(id); // Devuelve los hechos con ese ID Fuente
+            toOutputArchivo(outputArchivos, id, hechos);
+        });
+        return outputArchivos;
+    }
+
+    @Override
+    public void guardarHecho(HechoEstatica hecho) {
+        hechoRepository.save(hecho);
     }
 
     @Override
     public HechoOutputDTO getById(Long id) {
-        return this.hechoToDTO(this.hechoRepository.getById(id));
+        return UtilsDTO.hechoToOutputDTO(this.hechoRepository.getById(id));
     }
 
     @Override
     public HechoOutputDTO crearHecho(HechoEstatica hecho) {
-        return this.hechoToDTO(this.hechoRepository.save(hecho));
+        return UtilsDTO.hechoToOutputDTO(this.hechoRepository.save(hecho));
     }
 
     @Override
@@ -46,32 +62,16 @@ public class HechoService implements IHechoService {
         this.hechoRepository.delete(id);
     }
 
-    public ArchivoOutputDTO archivoToDTO(Archivo archivo){
-        ArchivoOutputDTO dto = new ArchivoOutputDTO();
-        dto.setNombre(archivo.getNombre());
-        dto.setHechos(this.hechoRepository.getHechos(archivo));
-        return dto;
-    }
+    private void toOutputArchivo(List<ArchivoOutputDTO> outputFuentes, Long id, List<HechoEstatica> hechos) {
+        if (!hechos.isEmpty()) { // Tengo que agregarlos
+            ArchivoOutputDTO outputFuente = new ArchivoOutputDTO();
+            String nombreFuente = this.archivoRepository.getById(id).getNombre();
+            List<HechoOutputDTO> hechosOutput = hechos.stream().map(UtilsDTO::hechoToOutputDTO).toList();
 
-    private HechoOutputDTO hechoToDTO(HechoEstatica hecho) {
-        HechoOutputDTO dto = new HechoOutputDTO();
-        dto.setIdHecho(hecho.getId());
-        dto.setTitulo(hecho.getTitulo());
-        dto.setDescripcion(hecho.getDescripcion());
-        dto.setCategoria(hecho.getCategoria());
-
-        dto.setLatitud(hecho.getLatitud());
-        dto.setLongitud(hecho.getLongitud());
-
-        if (hecho.getFechaHecho() != null)
-            dto.setFechaHecho(hecho.getFechaHecho().toString());
-        if (hecho.getFechaCreacion() != null)
-            dto.setCreatedAt(hecho.getFechaCreacion().toString());
-        if (hecho.getFechaModificacion() != null)
-            dto.setUpdatedAt(hecho.getFechaModificacion().toString());
-
-        dto.setIdFuente(hecho.getIdFuente());
-        dto.setOrigen(hecho.getOrigen());
-        return dto;
+            outputFuente.setHechos(hechosOutput);
+            outputFuente.setId(id);
+            outputFuente.setNombre(nombreFuente);
+            outputFuentes.add(outputFuente);
+        }
     }
 }

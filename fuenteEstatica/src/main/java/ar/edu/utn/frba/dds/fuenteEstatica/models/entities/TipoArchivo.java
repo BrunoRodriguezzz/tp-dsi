@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.entities;
 
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 public interface TipoArchivo {
-    List<HechoEstatica> importarHechos(String ruta);
+    Flux<HechoEstatica> importarHechos(String ruta);
 }

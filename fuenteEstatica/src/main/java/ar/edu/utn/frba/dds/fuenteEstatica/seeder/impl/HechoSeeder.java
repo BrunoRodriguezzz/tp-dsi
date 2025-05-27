@@ -1,20 +1,26 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.seeder.impl;
 
-@Component
-public class HechoSeeder implements CommandLineRunner{
-    private final HechoService hechoService;
-    private final IFuenteRepository fuenteRepository;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.IArchivoRepository;
+import ar.edu.utn.frba.dds.fuenteEstatica.services.impl.HechoService;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
-    public HechoSeeder(APICatedra apiCatedra, HechoService hechoService, IFuenteRepository fuenteRepository) {
-        this.apiCatedra = apiCatedra;
+@Component
+@Order(2)
+public class HechoSeeder implements CommandLineRunner {
+    private final HechoService hechoService;
+    private final IArchivoRepository archivoRepository;
+
+    public HechoSeeder(HechoService hechoService, IArchivoRepository archivoRepository) {
         this.hechoService = hechoService;
-        this.fuenteRepository = fuenteRepository;
+        this.archivoRepository = archivoRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        fuenteRepository.getAll().forEach(f -> {
-            f.getAllHechos()
+        archivoRepository.getAll().forEach(archivo -> {
+            archivo.importarHechos()
                     .doOnNext(hechoService::guardarHecho)
                     .blockLast(); // Para que espere a que termine
         });

@@ -6,8 +6,9 @@ import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
 import java.util.List;
 
 public interface IHechoRepository {
-    List<HechoEstatica> findAll(Archivo archivo);
+    List<HechoEstatica> getAll();
     HechoEstatica getById(Long id);
     HechoEstatica save(HechoEstatica hechoEstatica);
+    public List<HechoEstatica> getByIdArchivo(Long id);
     void delete(Long id);
 }
