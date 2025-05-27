@@ -53,7 +53,7 @@ public class ArchivoCSV implements TipoArchivo {
         List<String[]> filas = lector.readAll();
         List<Hecho> listaDeHechos = this.crearListaDeHechosSegunFilas(filas);
 
-        return listaDeHechos.stream().map();
+        return listaDeHechos.stream().map(h -> UtilsDTO.toHecho);
     }
 
     private List<Hecho> crearListaDeHechosSegunFilas(List<String[]> filas) {
