@@ -32,7 +32,10 @@ public class ContribuyenteRepository implements IContribuyenteRepository {
 
             Contribuyente cuentaDelUsuario = this.contribuyentes
                     .stream()
-                    .filter(usuario -> usuario.getNombre().equals(contribuyente.getNombre()))
+                    .filter(usuario ->
+                            usuario.getNombre().equals(contribuyente.getNombre())
+                            && usuario.getApellido().equals(contribuyente.getApellido())
+                            && usuario.getFechaNacimiento().equals(contribuyente.getFechaNacimiento()))
                     .findFirst().orElse(null);
 
             contribuyente.setIdContribuyente(cuentaDelUsuario.getIdContribuyente());
@@ -44,7 +47,10 @@ public class ContribuyenteRepository implements IContribuyenteRepository {
 
         return this.contribuyentes
                 .stream()
-                .anyMatch(usuario -> usuario.getNombre().equals(contribuyente.getNombre()));
+                .anyMatch(usuario ->
+                        usuario.getNombre().equals(contribuyente.getNombre())
+                        && usuario.getApellido().equals(contribuyente.getApellido())
+                        && usuario.getFechaNacimiento().equals(contribuyente.getFechaNacimiento()));
 
     }
 }
