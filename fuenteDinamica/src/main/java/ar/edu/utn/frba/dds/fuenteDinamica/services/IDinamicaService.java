@@ -18,7 +18,7 @@ public interface IDinamicaService {
     public SolicitudOutputDTO   actualizar(HechoModificadoInputDTO hechoModificado);
     public Boolean              verificarUsuarioRegistrado(HechoModificadoInputDTO hechoModificado);
     public Boolean              verificarEdadNecesaria(HechoInputDTO hechoInputDTO);
-    public HechoOutputDTO       gestionarHecho(HechoRevisadoInputDTO hechoRevisado);
+    public SolicitudOutputDTO   gestionarHecho(HechoRevisadoInputDTO hechoRevisado);
     public Boolean              verificarTiposDeDatos(HechoInputDTO hechoIngresado);
     public String               tipoDeDatoErroneo(HechoInputDTO hecho);
     public Boolean              verificarTiempoParaActualizar(HechoModificadoInputDTO hecho);

@@ -31,7 +31,7 @@ public class DinamicaService implements IDinamicaService {
     @Autowired
     private IContribuyenteRepository contribuyentesRepository;
 
-    private final WebClient webClient = WebClient.builder().baseUrl("localhost:8082/agregador").build();
+    private final WebClient webClient = WebClient.builder().baseUrl("http://localhost:8082/agregador").build();
 
     @Override
     public List<HechoOutputDTO> buscarHechos(Boolean enviado, LocalDateTime filtroDeTiempo) {
@@ -139,7 +139,7 @@ public class DinamicaService implements IDinamicaService {
     }
 
     @Override
-    public HechoOutputDTO gestionarHecho(HechoRevisadoInputDTO hechoRevisado){
+    public SolicitudOutputDTO gestionarHecho(HechoRevisadoInputDTO hechoRevisado){
 
         Hecho hechoActual = this.buscarPorID(hechoRevisado.getId());
 
@@ -151,10 +151,9 @@ public class DinamicaService implements IDinamicaService {
 
         this.dinamicaRepository.guardarCambios(hechoActual,hechoCambiado);
 
-        if(hechoCambiado.getEstadoHecho() == EstadoHecho.ACEPTADA || hechoCambiado.getEstadoHecho() == EstadoHecho.ACEPTADA_CON_SUGERENCIA)
-            this.enviarHecho(hechoCambiado);
+        this.enviarHecho(hechoCambiado);
 
-        return this.hechoOutputDTO(hechoCambiado);
+        return this.solicitudOutputDTO(hechoCambiado);
     }
 
     @Override
@@ -200,7 +199,7 @@ public class DinamicaService implements IDinamicaService {
 
         if(solicitudHecho.getNombreUsuario() == null)
             datoErroneo = "Nombre de Usuario";
-        if(solicitudHecho.getNombreUsuario() == null)
+        if(solicitudHecho.getApellidoUsuario() == null)
             datoErroneo = "Apellido de Usuario";
         if(solicitudHecho.getFechaNacimientoUsuario() == null)
             datoErroneo = "Fecha de Nacimiento";
@@ -286,6 +285,9 @@ public class DinamicaService implements IDinamicaService {
 
         this.dinamicaRepository.guardarCambios(hecho,hechoAntiguo);
 
-        this.webClient.post().uri("/hechos").bodyValue(hechoParaEnviar).retrieve().bodyToMono(HechoOutputDTO.class);
+        this.webClient.post()
+                .uri("/hechos")
+                .bodyValue(hechoParaEnviar)
+                .retrieve().bodyToMono(HechoOutputDTO.class);
     }
 }

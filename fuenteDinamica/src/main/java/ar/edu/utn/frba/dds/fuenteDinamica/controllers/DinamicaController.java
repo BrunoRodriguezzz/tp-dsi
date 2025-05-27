@@ -65,7 +65,7 @@ public class DinamicaController {
     // Uso de los Administradores
 
     @PatchMapping("/gestion")
-    public HechoOutputDTO gestionarHecho(@RequestBody HechoRevisadoInputDTO hechoRevisado){
+    public SolicitudOutputDTO gestionarHecho(@RequestBody HechoRevisadoInputDTO hechoRevisado){
 
         return this.dinamicaService.gestionarHecho(hechoRevisado);
 
