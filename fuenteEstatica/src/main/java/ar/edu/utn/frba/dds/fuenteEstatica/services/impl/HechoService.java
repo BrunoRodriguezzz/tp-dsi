@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.services.impl;
 
+import ar.edu.utn.frba.dds.fuenteEstatica.exceptions.ValidationError;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.input.InputHechoDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.ArchivoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.UtilsDTO;
@@ -43,6 +45,17 @@ public class HechoService implements IHechoService {
             toOutputArchivo(outputArchivos, id, hechos);
         });
         return outputArchivos;
+    }
+
+    @Override
+    public ArchivoOutputDTO getById(Long id) {
+        HechoEstatica hecho = this.hechoRepository.getById(id);
+        List<HechoEstatica> hechos = new ArrayList<>();
+        hechos.add(hecho);
+        ArchivoOutputDTO outputArchivo = UtilsDTO.toOutputArchivo(this.archivoRepository.getById(hecho.getIdArchivo()), hechos);
+
+        return outputArchivo;
+        //return UtilsDTO.hechoToOutputDTO(this.hechoRepository.getById(id));
     }
 
     @Override
@@ -94,23 +107,33 @@ public class HechoService implements IHechoService {
         }
     }
 
-    @Override
-    public void guardarHecho(HechoEstatica hecho) {
-        hechoRepository.save(hecho);
-    }
+//    @Override
+//    public HechoOutputDTO crearHecho(HechoEstatica hecho) {
+//        return UtilsDTO.hechoToOutputDTO(this.hechoRepository.save(hecho));
+//    }
+
+//    @Override
+//    public void guardarHecho(InputHechoDTO hechoDTO) { //TODO Validador
+//        HechoEstatica hecho = UtilsDTO.toHechoEstica(hechoDTO);
+//        hechoRepository.guardarHecho(hecho);
+//    }
+
+//    @Override
+//    public void guardarHecho(HechoEstatica hecho) {
+//        hechoRepository.save(hecho);
+//    }
 
     @Override
-    public HechoOutputDTO getById(Long id) {
-        return UtilsDTO.hechoToOutputDTO(this.hechoRepository.getById(id));
-    }
-
-    @Override
-    public HechoOutputDTO crearHecho(HechoEstatica hecho) {
-        return UtilsDTO.hechoToOutputDTO(this.hechoRepository.save(hecho));
+    public void save(HechoEstatica hecho) {
+        this.hechoRepository.save(hecho);
     }
 
     @Override
     public void deleteHecho(Long id) {
-        this.hechoRepository.delete(id);
+        if (id != null && id >= 1) {
+            hechoRepository.delete(id);
+        }else {
+            throw new ValidationError("ID invalido");
+        }
     }
 }

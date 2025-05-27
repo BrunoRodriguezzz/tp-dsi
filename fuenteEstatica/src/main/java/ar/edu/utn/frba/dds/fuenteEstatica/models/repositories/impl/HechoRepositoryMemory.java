@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.impl;
 
+import ar.edu.utn.frba.dds.fuenteEstatica.exceptions.NotFoundError;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.FiltroEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.IHechoRepository;
@@ -26,9 +27,7 @@ public class HechoRepositoryMemory implements IHechoRepository {
 
     @Override
     public HechoEstatica getById(Long id) {
-       return Optional
-                .ofNullable(this.hechos.get(id))
-                .orElseThrow(()-> new NoSuchElementException("No se encontró el hecho con id = " + id));
+        return hechos.get(id);
     }
 
     @Override
@@ -53,8 +52,13 @@ public class HechoRepositoryMemory implements IHechoRepository {
     }
 
     @Override
-    public void delete(Long id) { // TODO validaciones
-        this.hechos.get(id).eliminar();
+    public void delete(Long idHecho) {
+        HechoEstatica hecho = hechos.get(idHecho);
+        if (hecho == null) {
+            throw new NotFoundError("No existe hecho con ID: " + idHecho);
+        }
+
+        hecho.setEliminado(true);
     }
 
     @Override
@@ -67,6 +71,12 @@ public class HechoRepositoryMemory implements IHechoRepository {
                 .filter(filtro::cumple)
                 .toList();
         return hechos;
+    }
+
+    @Override
+    public void guardarHecho(HechoEstatica hecho) {
+        hecho.setId(idGenerator.getAndIncrement());
+        hechos.put(hecho.getId(), hecho);
     }
 
 

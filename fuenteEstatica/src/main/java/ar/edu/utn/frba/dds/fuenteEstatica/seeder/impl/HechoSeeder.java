@@ -21,7 +21,7 @@ public class HechoSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         archivoRepository.getAll().forEach(archivo -> {
             archivo.importarHechos()
-                    .doOnNext(hechoService::guardarHecho)
+                    .doOnNext(hechoService::save)
                     .blockLast(); // Para que espere a que termine
         });
     }

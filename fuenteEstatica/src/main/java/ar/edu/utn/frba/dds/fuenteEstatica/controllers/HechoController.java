@@ -35,17 +35,14 @@ public class HechoController {
     }
 
     @GetMapping("/{id}")
-    public HechoOutputDTO getById(@PathVariable("id") Long id){
-        return hechoService.getById(id);
-    }
-
-    @PostMapping
-    public HechoOutputDTO crearHecho(@RequestBody HechoEstatica hecho){
-        return hechoService.crearHecho(hecho);
+    public ResponseEntity<ArchivoOutputDTO> getById(@PathVariable("id") Long id){
+        ArchivoOutputDTO response = hechoService.getById(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteHecho(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteHecho(@PathVariable("id") Long id){
         hechoService.deleteHecho(id);
+        return ResponseEntity.noContent().build(); // 204 sin cuerpo
     }
 }

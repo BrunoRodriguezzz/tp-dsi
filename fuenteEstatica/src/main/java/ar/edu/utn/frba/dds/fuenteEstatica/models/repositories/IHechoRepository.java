@@ -14,4 +14,5 @@ public interface IHechoRepository {
     public List<HechoEstatica> getByIdArchivo(Long id);
     void delete(Long id);
     public List<HechoEstatica> getFiltrados(Long idFuente, FiltroEstatica filtro);
+    public void guardarHecho(HechoEstatica hecho);
 }
