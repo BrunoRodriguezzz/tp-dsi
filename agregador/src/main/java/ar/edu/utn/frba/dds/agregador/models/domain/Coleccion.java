@@ -64,9 +64,13 @@ public class Coleccion {
 
     // Auxiliares a consultas de Hechos
     private List<Hecho> filtrarHechosSegunCriterio(List<Hecho> hechos) {
-        return hechos.stream()
-            .filter(hecho -> this.cumpleCriterioColeccion(hecho) && !hecho.getEstaEliminado())
+        List<Hecho> hechosFiltrados = hechos.stream()
+            .filter(hecho ->
+                this.cumpleCriterioColeccion(hecho) &&
+                    !hecho.getEstaEliminado() &&
+                this.getFuentes().contains(hecho.getFuente()))
             .collect(Collectors.toList());
+        return hechosFiltrados;
     }
 
 

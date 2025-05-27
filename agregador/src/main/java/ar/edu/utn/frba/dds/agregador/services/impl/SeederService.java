@@ -148,6 +148,7 @@ public class SeederService implements ISeederService, ApplicationRunner {
     List<String> fuentes = new ArrayList<>();
     fuentes.add("Accidentes");
     fuentes.add("Incidentes");
+    fuentes.add("Desastres Naturales");
     fuentes.add("Derrumbes");
     fuentes.add("Provistos por contribuyentes");
 
@@ -199,7 +200,7 @@ public class SeederService implements ISeederService, ApplicationRunner {
     this.coleccionRepository.guardarColeccion(coleccion);
     this.coleccionRepository.guardarColeccion(coleccion1);
     this.hechoRepository.inicializarHechos(hechos);
-//    this.fuenteService.agregarFuenteAdapter(new FuenteDinamicaAdapter("http://localhost:8081", TipoFuente.DINAMICA));
+    this.fuenteService.agregarFuenteAdapter(new FuenteDinamicaAdapter("http://localhost:8081", TipoFuente.DINAMICA));
 //    this.fuenteService.agregarFuenteAdapter(new FuenteAdapter("http://localhost:8060", TipoFuente.ESTATICA));
     this.fuenteService.agregarFuenteAdapter(new FuenteAdapter("http://localhost:8083", TipoFuente.PROXY));
   }
