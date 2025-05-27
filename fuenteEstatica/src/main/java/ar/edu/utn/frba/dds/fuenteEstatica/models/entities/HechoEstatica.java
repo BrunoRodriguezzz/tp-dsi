@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class HechoEstatica {
-    private Long id;
     private String titulo;
     private String descripcion;
     private String categoria;
@@ -19,14 +18,9 @@ public class HechoEstatica {
     private LocalDate fechaHecho;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaModificacion;
-    private Long idFuente;
+    private Long idArchivo;
     private Boolean eliminado;
     private Origen origen;
-
-    public HechoEstatica(Long id, String titulo) {
-        this.id = id;
-        this.titulo = titulo;
-    }
 
     public void eliminar() {
         this.eliminado = true;

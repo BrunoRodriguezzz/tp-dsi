@@ -1,15 +1,15 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.dto;
 
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
 import lombok.Data;
 
 @Data
-public class HechoDTO {
+public class HechoOutputDTO {
     private String titulo;
     private String descripcion;
     private String categoria;
-    private Double latitud;
-    private Double longitud;
+    private Ubicacion ubicacion;
     private String fechaHecho;
     private String createdAt;
     private String updatedAt;
