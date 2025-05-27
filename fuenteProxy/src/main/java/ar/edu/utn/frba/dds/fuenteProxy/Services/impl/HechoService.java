@@ -79,7 +79,8 @@ public class HechoService implements IHechoService {
         if (!hechos.isEmpty()) { // Tengo que agregarlos
             OutputFuente outputFuente = new OutputFuente();
             String nombreFuente = this.fuente.getById(id).getNombre();
-            List<OutputHecho> hechosOutput = hechos.stream().map(UtilsDTO::hechoToDtoOutput).toList();
+            // TODO: Sacar esto es solo para las pruebas porque sino rompe la reuqest
+            List<OutputHecho> hechosOutput = hechos.stream().map(UtilsDTO::hechoToDtoOutput).limit(400).toList();
 
             outputFuente.setHechos(hechosOutput);
             outputFuente.setId(id);
