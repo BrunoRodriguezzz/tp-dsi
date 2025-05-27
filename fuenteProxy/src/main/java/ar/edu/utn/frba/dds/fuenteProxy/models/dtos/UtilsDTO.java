@@ -3,29 +3,31 @@ package ar.edu.utn.frba.dds.fuenteProxy.models.dtos;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.ContribuyenteDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class UtilsDTO {
     public static OutputHecho hechoToDtoOutput(HechoProxy hecho) {
         OutputHecho dto = new OutputHecho();
-        dto.setId_hecho(hecho.getId());
+        dto.setId(hecho.getId());
         dto.setTitulo(hecho.getTitulo());
         dto.setDescripcion(hecho.getDescripcion());
         dto.setCategoria(hecho.getCategoria());
         dto.setUbicacion(hecho.getUbicacion());
-        System.out.println(hecho.getCategoria());
         dto.setOrigen(hecho.getOrigen());
 
         if (hecho.getFechaHecho() != null)
-            dto.setFecha_hecho(hecho.getFechaHecho().toString());
-        if (hecho.getFechaCreacion() != null)
-            dto.setCreated_at(hecho.getFechaCreacion().toString());
-        if (hecho.getFechaModificacion() != null)
-            dto.setUpdated_at(hecho.getFechaModificacion().toString());
+            dto.setFechaAcontecimiento(hecho.getFechaHecho().toString());
+
+        //TODO Implementado para pruebas
+        dto.setEtiquetas(new ArrayList<>());
+        dto.setContenidoMultimedia(new ArrayList<>());
+
         return dto;
     }
 
@@ -50,6 +52,8 @@ public class UtilsDTO {
         List<OutputHecho> hechosDTO = hechos.stream()
                 .map(UtilsDTO::hechoToDtoOutput)
                 .collect(Collectors.toList());
+
+        hechosDTO.stream().peek(h -> h.setFuente(fuente.getNombre()));
 
         OutputFuente output = new OutputFuente();
         output.setId(fuente.getId());

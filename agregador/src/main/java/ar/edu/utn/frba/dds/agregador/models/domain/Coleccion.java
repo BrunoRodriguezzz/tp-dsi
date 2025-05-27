@@ -21,10 +21,11 @@ public class Coleccion {
     public Coleccion(String titulo, String descripcion) {
         this.titulo = titulo;
         this.descripcion = descripcion;
+        this.hechos = new ArrayList<>();
     }
 
     public List<Hecho> cargarHechos(List<Hecho> hechos) {
-        this.hechos = this.filtrarHechosSegunCriterio(hechos);
+        this.hechos.addAll(this.filtrarHechosSegunCriterio(hechos));
         return this.hechos;
     }
 

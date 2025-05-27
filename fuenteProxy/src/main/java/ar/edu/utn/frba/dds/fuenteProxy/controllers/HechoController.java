@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/hechos")
-@CrossOrigin(origins = "http://localhost:8080")
 public class HechoController {
     @Autowired
     private IHechoService hechoService;

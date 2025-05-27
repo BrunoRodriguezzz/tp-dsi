@@ -1,6 +1,8 @@
 package ar.edu.utn.frba.dds.agregador.services.impl.adapters;
 
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.external.FuenteResponseDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.external.HechoServicioResponseDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.ServicioResponseDTO;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteAdapter;
 import ar.edu.utn.frba.dds.agregador.services.impl.TipoFuente;
@@ -11,7 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 public class FuenteAdapter implements IFuenteAdapter {
   private final WebClient fuenteAPI;
@@ -30,61 +34,61 @@ public class FuenteAdapter implements IFuenteAdapter {
   }
 
   public List<Hecho> buscarHechos() {
-    return fuenteAPI.get()
+    List<FuenteResponseDTO> respuesta = fuenteAPI.get()
         .uri(uriBuilder -> uriBuilder
             .path("/hechos")
             .build())
         .retrieve()
-        .bodyToMono(ServicioResponseDTO.class)
-        .map(response -> {
-          List<Hecho> hechos = this.servicioResponseToHechos(response);
-          return hechos;
-        }).block(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
+        .bodyToMono(new ParameterizedTypeReference<List<FuenteResponseDTO>>() {})
+        .block();
 
-//    Mockeo trucho
-//    Mono<String> respuesta = fuenteAPI.get()
-//        .uri(uriBuilder -> uriBuilder
-//            .path("/hechos")
-//            .build())
-//        .retrieve()
-//        .bodyToMono(String.class);
-//    String json = respuesta.block();
-//    System.out.println(json);
+    List<Hecho> respuestaFinal = new ArrayList<>();
+    respuesta.stream().map(response -> {
+      List<Hecho> hechos = this.servicioResponseToHechos(respuesta);
+      respuestaFinal.addAll(hechos);
+      return hechos;
+    }).collect(Collectors.toList()); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
+    return respuestaFinal;
   }
 
   public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
-    return fuenteAPI.get()
+    List<FuenteResponseDTO> respuesta = fuenteAPI.get()
         .uri(uriBuilder -> uriBuilder
             .path("/hechos")
             .queryParam("dateTimeGT", ultimaFechaRefresco.toString())
             .build())
         .retrieve()
-        .bodyToMono(ServicioResponseDTO.class)
-        .map(response -> {
-          List<Hecho> hechos = this.servicioResponseToHechos(response);
+        .bodyToMono(new ParameterizedTypeReference<List<FuenteResponseDTO>>() {})
+        .block();
+
+    List<Hecho> respuestaFinal = new ArrayList<>();
+        respuesta.stream().map(response -> {
+          List<Hecho> hechos = this.servicioResponseToHechos(respuesta);
+          respuestaFinal.addAll(hechos);
           return hechos;
-        }).block(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
+        }).collect(Collectors.toList()); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
+    return respuestaFinal;
   }
 
   public void eliminarHecho(Hecho hecho) {
-    fuenteAPI.patch()
+    fuenteAPI.delete()
         .uri(uriBuilder -> uriBuilder
-            .path("/eliminacion/{id}")
+            .path("/hechos/{id}")
             .build(hecho.getId()))
-        .bodyValue(UtilsDTO.HechoToDTO(hecho))
         .retrieve()
         .toBodilessEntity()
         .block();
   }
 
   //Privados
-  public List<Hecho> servicioResponseToHechos(ServicioResponseDTO servicioResponse) {
+  public List<Hecho> servicioResponseToHechos(List<FuenteResponseDTO> servicioResponse) {
     List<Hecho> hechos = new ArrayList<>();
-    servicioResponse.getFuentes().forEach(fuente -> {
+    servicioResponse.forEach(fuente -> {
       List<Hecho> hechosEnFuente = fuente
           .getHechos()
           .stream().map(h -> {
             Hecho hecho = UtilsDTO.hechoServicioResponseDTOtoHecho(h);
+            hecho.setFuente(fuente.getNombre());
             return hecho;
           })
           .collect(Collectors.toList());

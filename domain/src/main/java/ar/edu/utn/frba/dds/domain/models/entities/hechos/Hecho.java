@@ -41,9 +41,9 @@ public class Hecho {
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.ubicacion = ubicacion;
-        if(fechaAcontecimiento.isAfter(LocalDate.now())) {
-            throw new FechaInvalidaException("La fecha: " + fechaAcontecimiento + "es una fecha futura");
-        }
+//        if(fechaAcontecimiento.isAfter(LocalDate.now())) {
+//            throw new FechaInvalidaException("La fecha: " + fechaAcontecimiento + "es una fecha futura");
+//        }
         this.fechaAcontecimiento = fechaAcontecimiento;
         this.origen = origen;
         this.fechaCarga = null;

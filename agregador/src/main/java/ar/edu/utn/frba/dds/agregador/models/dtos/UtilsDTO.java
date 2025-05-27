@@ -205,7 +205,9 @@ public class UtilsDTO {
           Origen.valueOf(hechoDTO.getOrigen().toUpperCase())
       );
       hecho.setId(hechoDTO.getId());
-      hecho.setFuente(hechoDTO.getFuente());
+      if(hechoDTO.getFuente() != null) {
+        hecho.setFuente(hechoDTO.getFuente());
+      }
       hecho.setEstaEliminado(false);
       if(hechoDTO.getContribuyente() != null) {
         hecho.setContribuyente(UtilsDTO.contribuyenteServicioResponseDTOtoContribuyente(hechoDTO.getContribuyente()));
