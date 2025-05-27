@@ -13,10 +13,12 @@ import java.time.LocalDate;
 @Builder
 public class HechoEliminarInputDTO {
     private Long           id;
-    private Contribuyente  contribuyente;
     private String         titulo;
     private String         descripcion;
     private String         categoria;
-    private Ubicacion      ubicacion;
-    private LocalDate      fechaAcontecimiento;
+    private UbicacionInputDTO ubicacion;
+    private LocalDate fechaAcontecimiento;
+    private ContribuyenteInputDTO contribuyente;
+    private String                fuente;
+    private String                origen;
 }

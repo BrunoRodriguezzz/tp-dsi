@@ -295,7 +295,6 @@ public class DinamicaService implements IDinamicaService {
 
         return hechoA.getContribuyente().getNombre().equals(hechoB.getContribuyente().getNombre())
                 && hechoA.getContribuyente().getApellido().equals(hechoB.getContribuyente().getApellido())
-                && hechoA.getContribuyente().getIdContribuyente().equals(hechoB.getContribuyente().getIdContribuyente())
                 && hechoA.getContribuyente().getFechaNacimiento().equals(hechoB.getContribuyente().getFechaNacimiento())
                 && hechoA.getId().equals(hechoB.getId())
                 && hechoA.getCategoria().equals(hechoB.getCategoria())
