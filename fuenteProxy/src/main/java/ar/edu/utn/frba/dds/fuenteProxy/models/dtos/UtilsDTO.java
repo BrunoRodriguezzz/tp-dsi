@@ -1,8 +1,13 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.dtos;
 
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class UtilsDTO {
     public static OutputHecho hechoToDtoOutput(HechoProxy hecho) {
@@ -34,5 +39,20 @@ public class UtilsDTO {
         hecho.setEliminado(false);
 
         return hecho;
+    }
+
+    public static OutputFuente toOutputFuente(Fuente fuente, List<HechoProxy> hechos) {
+        if (hechos == null || hechos.isEmpty()) return null;
+
+        List<OutputHecho> hechosDTO = hechos.stream()
+                .map(UtilsDTO::hechoToDtoOutput)
+                .collect(Collectors.toList());
+
+        OutputFuente output = new OutputFuente();
+        output.setId(fuente.getId());
+        output.setNombre(fuente.getNombre());
+        output.setHechos(hechosDTO);
+
+        return output;
     }
 }

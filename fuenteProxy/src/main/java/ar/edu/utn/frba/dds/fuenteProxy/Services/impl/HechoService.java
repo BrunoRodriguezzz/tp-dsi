@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.fuenteProxy.Services.impl;
 
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IHechoService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class HechoService implements IHechoService {
@@ -39,31 +42,37 @@ public class HechoService implements IHechoService {
     @Override
     public List<OutputFuente> getWithFilters(FiltroProxy filtro) {
         filtro.validate();
-        List<OutputFuente> outputFuentes = new ArrayList<>();
-        List<Long> ids = new ArrayList<>();
-        if(filtro.getFuenteId() == null) {
-            ids = fuente.devolverIDs();
-        }
-        else {
-            ids.add(filtro.getFuenteId());
-        }
-        if(filtro.getIdHecho() == null) {
-            ids.forEach(id -> {
-                List<HechoProxy> hechos = hechoRepository.getFiltrados(id, filtro);
-                toOutputFuente(outputFuentes, id, hechos);
-            }); //2409
-        }
-        else {
-            System.out.println("idHecho no es null");
-            OutputFuente outputFuente = new OutputFuente();
-            List<OutputHecho> hechosEncontrados = new ArrayList<>();
-            HechoProxy hecho = hechoRepository.getById(filtro.getIdHecho());
-            hechosEncontrados.add(UtilsDTO.hechoToDtoOutput(hecho));
-            outputFuente.setHechos(hechosEncontrados);
-            outputFuentes.add(outputFuente);
+
+        if (filtro.getIdHecho() != null) {
+            return buscarPorIdHecho(filtro.getIdHecho());
         }
 
-        return outputFuentes;
+        List<Long> fuenteIds = (filtro.getFuenteId() == null)
+                ? fuente.devolverIDs()
+                : List.of(filtro.getFuenteId());
+
+        return fuenteIds.stream()
+                .map(id -> {
+                    List<HechoProxy> hechos = hechoRepository.getFiltrados(id, filtro);
+                    Fuente fuente = this.fuente.getById(id);
+                    return UtilsDTO.toOutputFuente(fuente, hechos);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    private List<OutputFuente> buscarPorIdHecho(Long idHecho) {
+        HechoProxy hecho = hechoRepository.getById(idHecho);
+        Fuente fuente = this.fuente.getById(hecho.getIdFuente());
+
+        OutputHecho hechoDTO = UtilsDTO.hechoToDtoOutput(hecho);
+
+        OutputFuente output = new OutputFuente();
+        output.setId(fuente.getId());
+        output.setNombre(fuente.getNombre());
+        output.setHechos(List.of(hechoDTO));
+
+        return List.of(output);
     }
 
     private void toOutputFuente(List<OutputFuente> outputFuentes, Long id, List<HechoProxy> hechos) {

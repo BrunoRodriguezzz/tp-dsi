@@ -83,9 +83,6 @@ public class HechoRepositoryMemory implements IHechoRepository {
         hechos = hechos.stream() // Aplico el filtro
                 .filter(filtro::cumple)
                 .toList();
-        if(hechos.isEmpty()) {
-            throw new EmptyError("Ningún hecho cumple con las condiciones.");
-        }
         return hechos;
     }
 }
