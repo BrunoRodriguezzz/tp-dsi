@@ -18,7 +18,6 @@ public class DetectorSpamService implements IDetectorSpamService {
 
   public DetectorSpamService() {
     this.corpus = new ArrayList<>();
-    corpus.add("El hecho en cuestión contiene información errónea que puede inducir a interpretaciones equivocadas sobre los eventos ocurridos. La descripción presenta datos inexactos y omite detalles esenciales, lo cual resulta incorrecto desde el punto de vista de la veracidad. Además, algunos fragmentos podrían considerarse ofensivos para ciertos grupos. Solicito su eliminación para garantizar la integridad de la plataforma y el respeto por la privacidad de las personas involucradas.\n");
   }
 
   // Palabras que debería tener un fundamento
@@ -56,6 +55,9 @@ public class DetectorSpamService implements IDetectorSpamService {
 
     Map<String, Double> tfidf = new HashMap<>();
     int totalDocs = documentos.size();
+    if(totalDocs == 0) {
+      totalDocs = 1;
+    }
 
     // Para cada palabra, calcula su TF * IDF
     for (String palabra : tf.keySet()) {
