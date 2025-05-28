@@ -19,7 +19,6 @@ public class FuenteService implements IFuenteService {
   @Setter
   private List<IFuenteAdapter> fuentes;
 
-  List<Hecho> hechos;
 
   // Constructor
   public FuenteService() {
@@ -41,8 +40,13 @@ public class FuenteService implements IFuenteService {
   }
   // Eliminar de la fuente
   public void eliminarHecho(Hecho hecho){
-    this.fuentes.forEach(f -> f.eliminarHecho(hecho));
-
+    if(hecho.getOrigen() == Origen.CONTRIBUYENTE){
+      this.fuentes.stream().filter(fuente -> fuente.getTipoFuente() == TipoFuente.DINAMICA).forEach(fuente -> fuente.eliminarHecho(hecho));
+    }
+    if(hecho.getOrigen() == Origen.DATASET){
+      this.fuentes.stream().filter(fuente -> fuente.getTipoFuente() == TipoFuente.ESTATICA).forEach(fuente -> fuente.eliminarHecho(hecho));
+    }
+    // TODO: Proxy
   }
   public void agregarFuenteAdapter(IFuenteAdapter fuenteAdapter){
     this.fuentes.add(fuenteAdapter);

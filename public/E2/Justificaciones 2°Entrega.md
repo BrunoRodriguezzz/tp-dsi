@@ -24,7 +24,6 @@
 - En el Agregador los hechos se diferencian unos de los otros por id, fuente y origen
 
 ## 5. Colecciones Compartidas
-
 - Las colecciones no son compartidas entre instancias del sistema.
 - Los Hechos se comparten entre instancias MetaMapa. En caso de un que un Hecho sea eliminado la fuente proxy deberá notificar a la otra instancia MetaMapa de esta eliminación para que esta instancia tampoco lo muestre
 ## 6. Agregador Push-Based y Pull-Based

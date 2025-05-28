@@ -69,17 +69,15 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
 
     SolicitudEliminacion solicitud = UtilsDTO.DTOtoSolicitud(solicitudInputDTO, hecho, contribuyente);
 
-//    if(this.detectorSpam.esSpam(solicitud)) {
-//      // Es marcada como spam y no se guarda, solo se devuelve
-//      SolicitudEliminacionOutputDTO solicitudEliminacionOutputDTO =  this.gestionarSolicitudSpam(solicitud);
-//      return solicitudEliminacionOutputDTO;
-//    }
-//    else{
-//      SolicitudEliminacionOutputDTO solicitudEliminacionOutputDTO =  this.gestionarSolicitudValida(solicitud);
-//      return solicitudEliminacionOutputDTO;
-//    }
+    if(this.detectorSpam.esSpam(solicitud)) {
+      // Es marcada como spam y no se guarda, solo se devuelve
+      SolicitudEliminacionOutputDTO solicitudEliminacionOutputDTO =  this.gestionarSolicitudSpam(solicitud);
+      return solicitudEliminacionOutputDTO;
+    }
+    else{
       SolicitudEliminacionOutputDTO solicitudEliminacionOutputDTO =  this.gestionarSolicitudValida(solicitud);
       return solicitudEliminacionOutputDTO;
+    }
   }
 
   @Override

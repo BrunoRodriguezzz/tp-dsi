@@ -61,10 +61,10 @@ public class AgregadorService implements IAgregadorService {
       }
     }
     Hecho hecho = UtilsDTO.DTOToHecho(hechoDTO, contribuyente);
-    Hecho aux = this.hechoService.buscarHecho(hecho.getId()); // TODO: Null pointer exception?
-    if(aux != null && hecho.equals(aux)) {
-      throw new HechoYaExistenteException("El hecho ingresado ya existe", aux);
-    }
+//    Hecho aux = this.hechoService.buscarHecho(hecho.getId()); // TODO: Null pointer exception?
+//    if(aux != null && hecho.equals(aux)) {
+//      throw new HechoYaExistenteException("El hecho ingresado ya existe", aux);
+//    }
     List<String> nombresColecciones = this.coleccionService.incorporarHecho(hecho);
     if(!nombresColecciones.isEmpty()){
       this.hechoService.guardarHecho(hecho);
