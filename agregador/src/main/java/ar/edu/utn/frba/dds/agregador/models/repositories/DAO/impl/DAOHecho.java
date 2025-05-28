@@ -15,7 +15,6 @@ public class DAOHecho implements IDAOHecho {
     Optional<Hecho> existente = this.hechos.stream()
         .filter(h -> h.getId().equals(hecho.getId()))
         .findFirst();
-
     if (existente.isPresent()) {
       Hecho hechoExistente = existente.get();
 
