@@ -161,6 +161,7 @@ public class DinamicaService implements IDinamicaService {
         Contribuyente usuario = Contribuyente
                 .builder()
                 .nombre(hechoParaActualizar.getNombreUsuario())
+                .apellido(hechoParaActualizar.getApellidoUsuario())
                 .fechaNacimiento(hechoParaActualizar.getFechaNacimientoUsuario())
                 .build();
 
