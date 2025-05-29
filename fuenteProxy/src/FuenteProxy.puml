@@ -1,0 +1,119 @@
+@startuml
+
+package controller {
+  class HechoController {
+    - hechoService: IHechoService
+    + getAll(): ResponseEntity<List<OutputFuente>>
+    + getWithFilters(filtro: FiltroProxy)): ResponseEntity<List<OutputFuente>>
+    + getById(id: Long): ResponseEntity<OutputFuente>
+    + deleteHecho(id: Long): ResponseEntity<Void>
+  }
+}
+
+package service {
+
+  interface IHechoService {
+    + List<OutputFuente> getAll()
+    + OutputFuente getById(id: Long)
+    + List<OutputFuente> getWithFilters(filtro: FiltroProxy))
+    + void deleteHecho(id: Long)
+  }
+
+  class HechoService {
+    - hechoRepository: IHechoRepository
+    - fuenteRepository: IFuenteRepository
+    + List<OutputFuente> getAll()
+    + OutputFuente getById(id: Long)
+    + List<OutputFuente> getWithFilters(filtro: FiltroProxy)
+    + void deleteHecho(id: Long)
+    - void toOutputFuente(outputFuentes: List<OutputFuente>, id: Long, hechos: List<HechoProxy>)
+  }
+
+  IHechoService <|.. HechoService : implements
+  HechoService --> OutputFuente
+  HechoService --> HechoOutputDTO
+
+  class Seeder {
+        - service: IHechoService
+        - repository: IFuenteRepository
+  }
+  controller.HechoController --> IHechoService : import
+}
+Seeder --> IHechoService
+Seeder --> repository.IFuenteRepository
+Seeder --> repository.IHechoRepository
+
+package repository {
+  interface IHechoRepository {
+    + List<HechoProxy> getAll()
+    + List<HechoProxy> getByIdFuente(id: Long)
+    + List<HechoProxy> getFiltrados(idFuente: Long, filtro: FiltroProxy)
+    + void delete(id: Long)
+  }
+
+  interface IFuenteRepository {
+  + List<Fuente> getAll()
+  + Fuente getById(id: Long)
+  + List<Long> devolverIDs();
+  }
+
+  class HechoRepositoryMemory {
+      - hechos: List<HechoProxy>
+      + List<HechoProxy> getAll()
+      + List<HechoProxy> getByIdFuente(id: Long)
+      + List<HechoProxy> getFiltrados(idFuente: Long, filtro: FiltroProxy)
+      + void delete(id: Long)
+    }
+
+    class FuenteRepositoryMemory {
+      - hechos: List<HechoProxy>
+      + List<Fuente> getAll()
+      + Fuente getById(id: Long)
+      + List<Long> devolverIDs();
+     }
+
+  HechoRepositoryMemory ..|> IHechoRepository : implements
+  FuenteRepositoryMemory ..|> IFuenteRepository : implements
+  service.HechoService --> IFuenteRepository : import
+  service.HechoService --> IHechoRepository : import
+}
+
+package models {
+    interface TipoFuente {
+        + Flux<HechoProxy> importarHechos(ruta: String)
+      }
+
+      class HechoProxy {
+        - Long id
+        - Long idExterno
+        - Long idFuente
+        - String titulo
+        - String descripcion
+        - String categoria
+        - Ubicacion ubicacion
+        - LocalDate fechaHecho
+        - LocalDateTime fechaCreacion
+        - LocalDateTime fechaModificacion
+        - Boolean eliminado
+        - Origen origen
+        - String nombreFuente
+      }
+
+      class ApiCatedra {
+        + Flux<HechoProxy> importarHechos(ruta: String)
+      }
+      ApiCatedra ..|> TipoFuente : implements
+
+      class Fuente {
+        - id: Long
+        - nombre: String
+        - ruta: String
+        - tipoFuente: TipoFuente
+        + importarHechos(): Flux<HechoProxy>
+      }
+      FuenteRepositoryMemory --> Fuente : *
+      HechoRepositoryMemory --> HechoProxy : *
+      Fuente --> TipoFuente : uses
+}
+
+@enduml
