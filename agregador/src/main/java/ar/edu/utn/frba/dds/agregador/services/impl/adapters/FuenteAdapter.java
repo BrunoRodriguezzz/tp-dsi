@@ -26,6 +26,7 @@ public class FuenteAdapter implements IFuenteAdapter {
   public FuenteAdapter(String baseUrl, TipoFuente tipoFuente) {
     this.fuenteAPI = WebClient.builder()
         .baseUrl(baseUrl)
+        .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(20 * 1024 * 1024))
         .build();
     this.tipoFuente = tipoFuente;
   }
@@ -107,7 +108,7 @@ public class FuenteAdapter implements IFuenteAdapter {
     fuenteAPI.delete()
         .uri(uriBuilder -> uriBuilder
             .path("/hechos/{id}")
-            .build(hecho.getId()))
+            .build(hecho.getIdHFuente()))
         .retrieve()
         .toBodilessEntity()
         .block();
@@ -122,6 +123,7 @@ public class FuenteAdapter implements IFuenteAdapter {
           .stream().map(h -> {
             Hecho hecho = UtilsDTO.hechoServicioResponseDTOtoHecho(h);
             hecho.setFuente(fuente.getNombre());
+            hecho.setIdFuente(fuente.getId());
             return hecho;
           })
           .collect(Collectors.toList());

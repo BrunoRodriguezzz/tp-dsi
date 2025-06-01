@@ -87,7 +87,8 @@ public class SeederService implements ISeederService, ApplicationRunner {
       );
       hecho1.setEstaEliminado(false);
       hecho1.setFuente("Accidentes");
-      hecho1.setId(1123L);
+      hecho1.setId(90000L);
+      hecho1.setIdHFuente(1L);
 
       hecho2 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
           "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
@@ -98,7 +99,8 @@ public class SeederService implements ISeederService, ApplicationRunner {
       );
       hecho2.setEstaEliminado(false);
       hecho2.setFuente("Incidentes");
-      hecho2.setId(1124L);
+      hecho2.setId(90001L);
+      hecho2.setIdHFuente(2L);
 
       hecho3 = new Hecho("Serio incidente: Accidente con maquinaria industrial en Chos Malal, Neuquén",
           "Un grave accidente con maquinaria industrial se registró en Chos Malal, Neuquén. El incidente dejó a varios sectores sin comunicación. Voluntarios de diversas organizaciones se han sumado a las tareas de auxilio.",
@@ -109,7 +111,8 @@ public class SeederService implements ISeederService, ApplicationRunner {
       );
       hecho3.setEstaEliminado(false);
       hecho3.setFuente("Incidentes");
-      hecho3.setId(1125L);
+      hecho3.setId(90002L);
+      hecho3.setIdHFuente(3L);
 
       hecho4 = new Hecho("Accidente en paso a nivel deja múltiples daños en Pehuajó, Buenos Aires",
           "Grave accidente en paso a nivel ocurrió en las inmediaciones de Pehuajó, Buenos Aires. El incidente generó preocupación entre las autoridades provinciales. El Ministerio de Desarrollo Social está brindando apoyo a los damnificados.",
@@ -119,8 +122,9 @@ public class SeederService implements ISeederService, ApplicationRunner {
           origen4
       );
       hecho4.setEstaEliminado(false);
-      hecho4.setId(1126L);
+      hecho4.setId(90003L);
       hecho4.setFuente("Accidentes");
+      hecho4.setIdHFuente(4L);
 
       hecho5 = new Hecho("Devastador Derrumbe en obra en construcción afecta a Presidencia Roque Sáenz Peña",
           "Un grave derrumbe en obra en construcción se registró en Presidencia Roque Sáenz Peña, Chaco. El incidente generó preocupación entre las autoridades provinciales. El intendente local se ha trasladado al lugar para supervisar las operaciones.",
@@ -130,9 +134,9 @@ public class SeederService implements ISeederService, ApplicationRunner {
           origen5
       );
       hecho5.setEstaEliminado(false);
-      hecho5.setId(1127L);
+      hecho5.setId(90004L);
       hecho5.setFuente("Derrumbes");
-
+      hecho5.setIdHFuente(5L);
 
       hechos.add(hecho1);
       hechos.add(hecho2);

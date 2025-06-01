@@ -12,4 +12,5 @@ import java.util.List;
 public interface IHechoService {
   public Hecho guardarHecho(Hecho hecho);
   public Hecho buscarHecho(Long id);
+  public List<Hecho> guardarHechos(List<Hecho> hechos);
 }

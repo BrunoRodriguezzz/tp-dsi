@@ -40,8 +40,10 @@ public class AgregadorService implements IAgregadorService {
   }
 
   @Override
-  public List<HechoOutputDTO> buscarHechos(){
+  public List<HechoOutputDTO> buscarHechos() {
     List<Hecho> hechos = this.fuenteService.buscarHechos();
+    //Guardamos los de la proxy? -> Sim manito, eu tein que checar sa informacao
+    hechos = this.hechoService.guardarHechos(hechos);
     List<HechoOutputDTO> hechosDTO = UtilsDTO.mapHechoToDTO(hechos);
     return hechosDTO;
   }
@@ -61,22 +63,19 @@ public class AgregadorService implements IAgregadorService {
       }
     }
     Hecho hecho = UtilsDTO.DTOToHecho(hechoDTO, contribuyente);
-//    Hecho aux = this.hechoService.buscarHecho(hecho.getId()); // TODO: Null pointer exception?
-//    if(aux != null && hecho.equals(aux)) {
-//      throw new HechoYaExistenteException("El hecho ingresado ya existe", aux);
-//    }
     List<String> nombresColecciones = this.coleccionService.incorporarHecho(hecho);
-    if(!nombresColecciones.isEmpty()){
-      this.hechoService.guardarHecho(hecho);
-    }
+    this.hechoService.guardarHecho(hecho);
     return nombresColecciones;
   }
 
   @Override
   public void refrescarColecciones(){
-    // TODO: Falta la lógica de nuevos hechos en la request
-    List<Hecho> nuevosHechos = this.fuenteService.buscarNuevosHechos(this.ultimaFechaRefresco); // Cambiar por buscar nuevos
-    this.coleccionService.incorporarHechos(nuevosHechos);
+    List<Hecho> nuevosHechos = this.fuenteService.buscarNuevosHechos(this.ultimaFechaRefresco);
+    List<Hecho> hechos = this.hechoService.guardarHechos(nuevosHechos);
+    /* TODO: En la coleccion, el hecho si fue modificado, sigue teniendo los datos viejos (en el dao) entonces, no
+             solo debería guardar los hechos en el repoitory de hechos sino también persistir el modificado en el
+             repository de colecciones */
+    this.coleccionService.incorporarHechos(hechos);
     this.ultimaFechaRefresco = LocalDateTime.now();
   }
 }

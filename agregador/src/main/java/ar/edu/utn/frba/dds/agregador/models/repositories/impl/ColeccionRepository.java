@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -36,9 +37,11 @@ public class ColeccionRepository implements IColeccionRepository {
     List<Coleccion> colecciones = this.dao.getAll();
     List<Coleccion> copia = colecciones.stream().map(c -> {
       Coleccion copy = new Coleccion(c.getTitulo(), c.getDescripcion());
+      List<Hecho> hechosCopia = new ArrayList<>();
+      c.getHechos().forEach(h -> {hechosCopia.add(h);});
+      copy.setHechos(hechosCopia);
       copy.setFuentes(c.getFuentes());
       copy.setCriterio(c.getCriterio());
-      copy.setHechos(c.getHechos());
       copy.setId(c.getId());
       return copy;
     }).collect(Collectors.toList());

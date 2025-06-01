@@ -61,7 +61,7 @@ public class FuenteDinamicaAdapter implements IFuenteAdapter {
     fuenteAPI.patch()
         .uri(uriBuilder -> uriBuilder
             .path("/eliminacion/{id}")
-            .build(hecho.getId()))
+            .build(hecho.getIdHFuente()))
         .bodyValue(UtilsDTO.HechoToDTO(hecho))
         .retrieve()
         .toBodilessEntity()

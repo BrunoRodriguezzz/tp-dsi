@@ -80,7 +80,7 @@ public class HechoService implements IHechoService {
             OutputFuente outputFuente = new OutputFuente();
             String nombreFuente = this.fuente.getById(id).getNombre();
             // TODO: Sacar esto es solo para las pruebas porque sino rompe la reuqest
-            List<OutputHecho> hechosOutput = hechos.stream().map(UtilsDTO::hechoToDtoOutput).limit(400).toList();
+            List<OutputHecho> hechosOutput = hechos.stream().map(UtilsDTO::hechoToDtoOutput).toList();
 
             outputFuente.setHechos(hechosOutput);
             outputFuente.setId(id);

@@ -21,7 +21,8 @@ public class HechoRepositoryMemory implements IHechoRepository {
 
     @Override
     public List<HechoProxy> getAll() {
-        return new ArrayList<>(hechos.values());
+        List<HechoProxy> response = new ArrayList<>(hechos.values());
+        return response.stream().filter(h -> h.getEliminado().equals(false)).toList();
     }
 
     @Override
@@ -30,7 +31,6 @@ public class HechoRepositoryMemory implements IHechoRepository {
             if (hechoProxy == null) {
                 throw new NotFoundError("No existe hecho con ID: " + idHecho);
             }
-
             hechoProxy.setEliminado(true);
     }
 
@@ -56,7 +56,7 @@ public class HechoRepositoryMemory implements IHechoRepository {
     @Override
     public List<HechoProxy> getByIdFuente(Long idFuente){
         List<HechoProxy> hechos = this.getAll();
-        return hechos.stream().filter(h -> h.getIdFuente().equals(idFuente)).toList();
+        return hechos.stream().filter(h -> h.getIdFuente().equals(idFuente) && h.getEliminado().equals(false)).toList();
     }
 
     @Override

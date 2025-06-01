@@ -26,11 +26,7 @@ public class APICatedra implements TipoFuente {
 
     @Override
     public Flux<InputHecho> getAll() {
-        Flux<InputHecho> hechosCatedra = getHechosPagina("https://api-ddsi.disilab.ar/public/api/desastres");
-        return hechosCatedra.map(h -> {
-            h.setOrigen(Origen.MANUAL);
-            return h;
-        });
+      return getHechosPagina("https://api-ddsi.disilab.ar/public/api/desastres");
     }
 
     @Override

@@ -46,7 +46,9 @@ public class FuenteService implements IFuenteService {
     if(hecho.getOrigen() == Origen.DATASET){
       this.fuentes.stream().filter(fuente -> fuente.getTipoFuente() == TipoFuente.ESTATICA).forEach(fuente -> fuente.eliminarHecho(hecho));
     }
-    // TODO: Proxy
+    if(hecho.getOrigen() == Origen.PROXY){
+      this.fuentes.stream().filter(fuente -> fuente.getTipoFuente() == TipoFuente.PROXY).forEach(fuente -> fuente.eliminarHecho(hecho));
+    }
   }
   public void agregarFuenteAdapter(IFuenteAdapter fuenteAdapter){
     this.fuentes.add(fuenteAdapter);

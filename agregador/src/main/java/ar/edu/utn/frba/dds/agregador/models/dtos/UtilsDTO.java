@@ -56,7 +56,7 @@ public class UtilsDTO {
           hechoDTO.getFechaAcontecimiento(),
           Origen.valueOf(hechoDTO.getOrigen().toUpperCase())
       );
-      hecho.setId(hechoDTO.getId());
+      hecho.setIdHFuente(hechoDTO.getId());
       hecho.setFuente(hechoDTO.getFuente());
       hecho.setEstaEliminado(false);
       if(contribuyente != null) {
@@ -204,7 +204,7 @@ public class UtilsDTO {
           hechoDTO.getFechaAcontecimiento(),
           Origen.valueOf(hechoDTO.getOrigen().toUpperCase())
       );
-      hecho.setId(hechoDTO.getId());
+      hecho.setIdHFuente(hechoDTO.getId());
       if(hechoDTO.getFuente() != null) {
         hecho.setFuente(hechoDTO.getFuente());
       }

@@ -7,4 +7,5 @@ public interface IDAOHecho {
   public Hecho save(Hecho hecho);
   public Boolean saveAll(List<Hecho> hechos);
   public Hecho findById(Long id);
+  public Hecho findExistent(Hecho hecho);
 }

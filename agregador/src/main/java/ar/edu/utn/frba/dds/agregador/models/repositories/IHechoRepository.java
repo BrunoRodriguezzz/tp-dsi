@@ -7,4 +7,5 @@ public interface IHechoRepository {
   public Hecho guardarHecho(Hecho hecho);
   public Boolean inicializarHechos(List<Hecho> hechos);
   public Hecho buscarHecho(Long id);
+  public List<Hecho> guardarHechos(List<Hecho> hechos);
 }

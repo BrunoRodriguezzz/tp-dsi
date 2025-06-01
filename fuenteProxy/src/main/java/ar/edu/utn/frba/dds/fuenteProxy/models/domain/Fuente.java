@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain;
 
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class Fuente {
     public Flux<InputHecho> getAllHechos() {
         return tipoFuente.getAll().map(inputHecho -> {
             inputHecho.setId_fuente(this.id);
+            inputHecho.setOrigen(Origen.PROXY);
             return inputHecho;
         });
     }

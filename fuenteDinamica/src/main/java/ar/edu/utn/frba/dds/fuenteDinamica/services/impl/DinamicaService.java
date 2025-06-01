@@ -133,7 +133,6 @@ public class DinamicaService implements IDinamicaService {
             hechoAGuardar.setEstaEliminado(true);
 
             this.dinamicaRepository.guardarCambios(hechoOriginal,hechoAGuardar);
-
         }
     }
 
