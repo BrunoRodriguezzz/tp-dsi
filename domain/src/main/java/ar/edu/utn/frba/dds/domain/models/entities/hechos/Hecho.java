@@ -81,7 +81,7 @@ public class Hecho {
             this.ubicacion.getLongitud().equals(hecho.getUbicacion().getLongitud()) &&
             this.fechaAcontecimiento.equals(hecho.fechaAcontecimiento) &&
             this.id.equals(hecho.getId()) &&
-            this.idHFuente.equals(hecho.getIdHFuente) &&
+            this.idHFuente.equals(hecho.getIdHFuente()) &&
             this.origen.equals(hecho.getOrigen()) &&
             this.fuente.equals(hecho.getFuente());
         return resultado;

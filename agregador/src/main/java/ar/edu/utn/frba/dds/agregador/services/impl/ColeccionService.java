@@ -29,11 +29,11 @@ public class ColeccionService implements IColeccionService {
 
   public List<ColeccionOutputDTO> buscarColecciones() {
       List <Coleccion> colecciones = this.coleccionRepository.buscarCopiaColecciones();
-    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
-    List<Hecho> hechosGuardados = this.hechoService.guardarHechos(hechosProxy);
-    colecciones.forEach(coleccion -> {
-      coleccion.cargarHechos(hechosGuardados);
-    });
+//    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
+//    List<Hecho> hechosGuardados = this.hechoService.guardarHechos(hechosProxy);
+//    colecciones.forEach(coleccion -> {
+//      coleccion.cargarHechos(hechosGuardados);
+//    });
     List <ColeccionOutputDTO> coleccionesDTO = UtilsDTO.mapColeccionesToDTO(colecciones);
     return coleccionesDTO;
   }
@@ -75,11 +75,9 @@ public class ColeccionService implements IColeccionService {
   private List<String> agregarHechoAColecciones(List<Coleccion> colecciones, Hecho hecho) {
     List<String> nombreColecciones = new ArrayList<>();
     colecciones.forEach(coleccion -> {
-      if(coleccion.getHechos().stream().noneMatch(h -> h.equals(hecho))) {
         boolean resultado = coleccion.cargarHecho(hecho);
         if (resultado) {
           nombreColecciones.add(coleccion.getTitulo());
-        }
       }
     });
     return nombreColecciones;

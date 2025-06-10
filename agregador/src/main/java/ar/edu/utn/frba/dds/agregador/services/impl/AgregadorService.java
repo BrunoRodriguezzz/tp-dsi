@@ -63,8 +63,9 @@ public class AgregadorService implements IAgregadorService {
       }
     }
     Hecho hecho = UtilsDTO.DTOToHecho(hechoDTO, contribuyente);
-    List<String> nombresColecciones = this.coleccionService.incorporarHecho(hecho);
-    this.hechoService.guardarHecho(hecho);
+    // Se hace primero para obtener el id (agregador) del hecho, que no viene por input dto
+    Hecho hechoGuardado = this.hechoService.guardarHecho(hecho);
+    List<String> nombresColecciones = this.coleccionService.incorporarHecho(hechoGuardado);
     return nombresColecciones;
   }
 
@@ -72,9 +73,6 @@ public class AgregadorService implements IAgregadorService {
   public void refrescarColecciones(){
     List<Hecho> nuevosHechos = this.fuenteService.buscarNuevosHechos(this.ultimaFechaRefresco);
     List<Hecho> hechos = this.hechoService.guardarHechos(nuevosHechos);
-    /* TODO: En la coleccion, el hecho si fue modificado, sigue teniendo los datos viejos (en el dao) entonces, no
-             solo debería guardar los hechos en el repoitory de hechos sino también persistir el modificado en el
-             repository de colecciones */
     this.coleccionService.incorporarHechos(hechos);
     this.ultimaFechaRefresco = LocalDateTime.now();
   }
