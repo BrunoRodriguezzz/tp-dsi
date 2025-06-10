@@ -288,7 +288,9 @@ public class DinamicaService implements IDinamicaService {
         this.webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/hechos").build())
                 .bodyValue(hechoParaEnviar)
-                .retrieve().bodyToMono(HechoOutputDTO.class).subscribe();
+                .retrieve()
+                .toBodilessEntity()
+                .subscribe();
     }
 
     private Boolean sonIguales(HechoEliminarInputDTO hechoA, Hecho hechoB){
