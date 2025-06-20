@@ -1,7 +1,9 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
@@ -36,6 +38,15 @@ public class ColeccionService implements IColeccionService {
 //    });
     List <ColeccionOutputDTO> coleccionesDTO = UtilsDTO.mapColeccionesToDTO(colecciones);
     return coleccionesDTO;
+  }
+
+  public List<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params) {
+    Coleccion coleccion = this.coleccionRepository.buscarCopiaColeccion(id);
+    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
+    coleccion.cargarHechos(hechosProxy);
+    List<Hecho> hechosOutput = coleccion.consultarHechos(params.instanciarFiltros());
+    List<HechoOutputDTO> hechosOutputDTO = UtilsDTO.mapHechoToDTO(hechosOutput);
+    return hechosOutputDTO;
   }
 
   public ColeccionOutputDTO buscarColeccion(Long id) {
