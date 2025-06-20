@@ -24,9 +24,9 @@
     'Fuente
     Coleccion --> Fuente
     Fuente ..> Hecho
-    FuenteEstatica ..|> Fuente
-    FuenteDinamica ..|> Fuente
-    FuenteProxy ..|> Fuente
+    FuenteEstatica --|> Fuente
+    FuenteDinamica --|> Fuente
+    FuenteProxy --|> Fuente
 
     'Criterio
     Criterio --> Filtro
@@ -95,23 +95,31 @@
         +estaEliminado(): Boolean
     }
 
-    interface Fuente {
+    abstract Fuente {
         +importarHechos(): List<Hecho> hechos
+        +uscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho> b
+        +eliminarHecho(Hecho hecho): void
     }
 
     class FuenteEstatica {
-        -rutaAPI: String
+        -WebClient fuenteAPI
         +importarHechos(): List<Hecho> hechos
+        +uscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho> b
+        +eliminarHecho(Hecho hecho): void
     }
 
     class FuenteDinamica {
-        -rutaAPI: String
+        -WebClient fuenteAPI
         +importarHechos(): List<Hecho> hechos
+        +uscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho> b
+        +eliminarHecho(Hecho hecho): void
     }
 
     class FuenteProxy {
-       -rutaAPI: String
+        -WebClient fuenteAPI
        +importarHechos(): List<Hecho> hechos
+        +uscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho> b
+        +eliminarHecho(Hecho hecho): void
     }
 
     class Etiqueta {
