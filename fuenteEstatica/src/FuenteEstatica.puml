@@ -1,0 +1,117 @@
+@startuml
+package controller {
+  class HechoController {
+    - hechoService: IHechoService
+    + getAll(): ResponseEntity<List<ArchivoOutputDTO>>
+    + getWithFilters(filtro: FiltroEstatica): ResponseEntity<List<ArchivoOutputDTO>>
+    + getById(id: Long): ResponseEntity<ArchivoOutputDTO>
+    + deleteHecho(id: Long): ResponseEntity<Void>
+  }
+}
+
+package service {
+
+  interface IHechoService {
+    + List<ArchivoOutputDTO> getAll()
+    + ArchivoOutputDTO getById(id: Long)
+    + List<ArchivoOutputDTO> getWithFilters(filtro: FiltroEstatica)
+    + void deleteHecho(id: Long)
+  }
+
+  class HechoService {
+    - hechoRepository: IHechoRepository
+    - archivoRepository: IArchivoRepository
+    + List<ArchivoOutputDTO> getAll()
+    + ArchivoOutputDTO getById(id: Long)
+    + List<ArchivoOutputDTO> getWithFilters(filtro: FiltroEstatica)
+    + void deleteHecho(id: Long)
+    - void toOutputArchivo(outputFuentes: List<ArchivoOutputDTO>, id: Long, hechos: List<HechoEstatica>)
+  }
+
+  IHechoService <|.. HechoService : implements
+  HechoService --> ArchivoOutputDTO
+  HechoService --> HechoOutputDTO
+
+  class Seeder {
+        - service: IHechoService
+        - repository: IArchivoRepository
+  }
+  controller.HechoController --> IHechoService : import
+}
+Seeder --> IHechoService
+Seeder --> repository.IArchivoRepository
+Seeder --> models.Archivo
+
+package repository {
+  interface IHechoRepository {
+    + List<HechoEstatica> getAll()
+    + List<HechoEstatica> getByIdArchivo(id: Long)
+    + List<HechoEstatica> getFiltrados(idFuente: Long, filtro: FiltroEstatica)
+    + void delete(id: Long)
+  }
+  interface IArchivoRepository {
+  + List<Archivo> getAll()
+  + Archivo getById(id: Long)
+  + List<Long> devolverIDs();
+  }
+
+  class ArchivoRepositoryMemory {
+    - archivos: List<Archivo>
+    + List<Archivo> getAll()
+    + Archivo getById(id: Long)
+    + List<Long> devolverIDs();
+  }
+  class HechoRepositoryMemory {
+      - hechos: List<HechoEstatica>
+      + List<HechoEstatica> getAll()
+      + List<HechoEstatica> getByIdArchivo(id: Long)
+      + List<HechoEstatica> getFiltrados(idFuente: Long, filtro: FiltroEstatica)
+      + void delete(id: Long)
+    }
+
+  HechoRepositoryMemory --> models.HechoEstatica : *
+  ArchivoRepositoryMemory --> Archivo : *
+  HechoRepositoryMemory --|> IHechoRepository
+  ArchivoRepositoryMemory --|> IArchivoRepository
+  service.HechoService --> IArchivoRepository : import
+  service.HechoService --> IHechoRepository : import
+}
+
+package models {
+    interface TipoArchivo {
+        + Flux<HechoEstatica> importarHechos(ruta: String)
+      }
+
+      class ArchivoCSV {
+        + Flux<HechoEstatica> importarHechos(ruta: String)
+      }
+      ArchivoCSV ..|> TipoArchivo : implements
+
+      class Archivo {
+        - id: Long
+        - nombre: String
+        - rutaArchivo: String
+        - tipoArchivo: TipoArchivo
+        + importarHechos(): Flux<HechoEstatica>
+      }
+
+      class HechoEstatica {
+              - Long id
+              - Long idExterno
+              - Long idFuente
+              - String titulo
+              - String descripcion
+              - String categoria
+              - Ubicacion ubicacion
+              - LocalDate fechaHecho
+              - LocalDateTime fechaCreacion
+              - LocalDateTime fechaModificacion
+              - Boolean eliminado
+              - Origen origen
+              - String nombreFuente
+            }
+
+      Archivo --> TipoArchivo : uses
+}
+
+@enduml
