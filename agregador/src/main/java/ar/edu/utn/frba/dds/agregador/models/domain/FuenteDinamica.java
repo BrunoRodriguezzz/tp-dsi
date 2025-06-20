@@ -1,36 +1,25 @@
-package ar.edu.utn.frba.dds.agregador.services.impl.adapters;
+package ar.edu.utn.frba.dds.agregador.models.domain;
 
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.HechoServicioResponseDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.external.ServicioDinamicoResponseDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.external.ServicioResponseDTO;
-import ar.edu.utn.frba.dds.agregador.services.IFuenteAdapter;
-import ar.edu.utn.frba.dds.agregador.services.impl.TipoFuente;
+import ar.edu.utn.frba.dds.agregador.services.impl.FuenteService;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 
-public class FuenteDinamicaAdapter implements IFuenteAdapter {
-  private final WebClient fuenteAPI;
+public class FuenteDinamica extends Fuente {
+  private WebClient fuenteAPI;
 
-  private final TipoFuente tipoFuente;
-
-  public FuenteDinamicaAdapter(String baseUrl, TipoFuente tipoFuente) {
+  public FuenteDinamica(String baseUrl) {
     this.fuenteAPI = WebClient.builder()
         .baseUrl(baseUrl + "/api/fuenteDinamica")
         .build();
-    this.tipoFuente = tipoFuente;
   }
 
-  public TipoFuente getTipoFuente() {
-    return tipoFuente;
-  }
-
-  public List<Hecho> buscarHechos() {
+  public List<Hecho> importarHechos() {
     return fuenteAPI.get()
         .uri(uriBuilder -> uriBuilder
             .path("/hechos") // TODO: Corregir menos harcodeado
@@ -40,7 +29,7 @@ public class FuenteDinamicaAdapter implements IFuenteAdapter {
         .map(response -> {
           List<Hecho> hechos = this.servicioResponseToHechos(response);
           return hechos;
-        }).block(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
+        }).block();
   }
 
   public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
@@ -68,7 +57,6 @@ public class FuenteDinamicaAdapter implements IFuenteAdapter {
         .block();
   }
 
-  //Privados
   public List<Hecho> servicioResponseToHechos(List<HechoServicioResponseDTO> hechosDTO) {
     List<Hecho> hechos = hechosDTO
         .stream()
