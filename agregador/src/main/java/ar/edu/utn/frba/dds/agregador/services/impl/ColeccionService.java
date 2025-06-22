@@ -1,13 +1,17 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.TipoFuente;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
+import ar.edu.utn.frba.dds.domain.models.entities.criterio.Filtro;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,15 +32,23 @@ public class ColeccionService implements IColeccionService {
   }
 
   public List<ColeccionOutputDTO> buscarColecciones() {
-    List <Coleccion> colecciones = this.coleccionRepository.buscarCopiaColecciones();
-    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
-    List<Hecho> hechosGuardados = this.hechoService.guardarHechos(hechosProxy);
-    colecciones.forEach(coleccion -> {
-      coleccion.cargarHechos(hechosGuardados);
-    });
-
+      List <Coleccion> colecciones = this.coleccionRepository.buscarCopiaColecciones();
+//    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
+//    List<Hecho> hechosGuardados = this.hechoService.guardarHechos(hechosProxy);
+//    colecciones.forEach(coleccion -> {
+//      coleccion.cargarHechos(hechosGuardados);
+//    });
     List <ColeccionOutputDTO> coleccionesDTO = UtilsDTO.mapColeccionesToDTO(colecciones);
     return coleccionesDTO;
+  }
+
+  public List<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params) {
+    Coleccion coleccion = this.coleccionRepository.buscarCopiaColeccion(id);
+    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
+    coleccion.cargarHechos(hechosProxy);
+    List<Hecho> hechosOutput = coleccion.consultarHechos(params.instanciarFiltros());
+    List<HechoOutputDTO> hechosOutputDTO = UtilsDTO.mapHechoToDTO(hechosOutput);
+    return hechosOutputDTO;
   }
 
   public ColeccionOutputDTO buscarColeccion(Long id) {
@@ -72,7 +84,31 @@ public class ColeccionService implements IColeccionService {
     return this.coleccionRepository.eliminarHechoDeColecciones(hecho);
   }
 
-  // ---------------------------------------------------- Privados ----------------------------------------------------
+  @Override
+  public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
+    Coleccion coleccion = UtilsDTO.inputColeccionToColeccion(coleccionInputDTO);
+    // TODO: Funcion que le cargue los hechos
+    this.coleccionRepository.guardarColeccion(coleccion);
+    return UtilsDTO.coleccionToDTO(coleccion);
+  }
+
+  @Override
+  public ColeccionOutputDTO actualizarColeccion(Long id, ColeccionInputDTO coleccionInputDTO) {
+    Coleccion coleccion = coleccionRepository.buscarColeccion(id);
+    if(coleccion == null) {
+      throw new NotFoundException("No se encontro la coleccion");
+    }
+    this.actualizarDatosColeccion(coleccion, coleccionInputDTO);
+    this.coleccionRepository.guardarColeccion(coleccion);
+    return UtilsDTO.coleccionToDTO(coleccion);
+  }
+
+  @Override
+  public void eliminarColeccion(Long id) {
+      coleccionRepository.eliminarColeccion(id);
+  }
+
+    // ---------------------------------------------------- Privados ----------------------------------------------------
   private List<String> agregarHechoAColecciones(List<Coleccion> colecciones, Hecho hecho) {
     List<String> nombreColecciones = new ArrayList<>();
     colecciones.forEach(coleccion -> {
@@ -96,5 +132,20 @@ public class ColeccionService implements IColeccionService {
         }
       });
     });
+  }
+
+  private void actualizarDatosColeccion(Coleccion coleccion, ColeccionInputDTO coleccionInputDTO) {
+      if (coleccionInputDTO.getNombre() != null) {
+          coleccion.setTitulo(coleccionInputDTO.getNombre());
+      }
+
+      if (coleccionInputDTO.getDescripcion() != null) {
+          coleccion.setDescripcion(coleccionInputDTO.getDescripcion());
+      }
+
+      List<Filtro> filtros = UtilsDTO.crearFiltros(coleccionInputDTO);
+      if (!filtros.isEmpty()) {
+        coleccion.getCriterio().setFiltros(filtros);
+      }
   }
 }

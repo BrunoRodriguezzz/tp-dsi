@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.ContribuyenteServicioResponseDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.HechoServicioResponseDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.AdministradorInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.AdministradorOutputDTO;
@@ -13,17 +14,16 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ResolucionSolicitudEliminacionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.SolicitudEliminacionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.UbicacionOutputDTO;
+import ar.edu.utn.frba.dds.domain.models.entities.criterio.*;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.ResolucionSolicitudEliminacion;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.SolicitudEliminacion;
 import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Administrador;
 import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.ContenidoMultimedia;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Etiqueta;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
+import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -222,5 +222,46 @@ public class UtilsDTO {
     } catch (Exception e){
       throw new RuntimeException(e);
     }
+  }
+
+  public static Coleccion inputColeccionToColeccion(ColeccionInputDTO coleccionInputDTO) {
+    Criterio criterio = new Criterio();
+    List<Filtro> filtros = UtilsDTO.crearFiltros(coleccionInputDTO);
+
+    if (filtros.isEmpty()) {
+      throw new RuntimeException("Filtros vacios");
+    }
+    criterio.setFiltros(filtros);
+//    List<Fuente> fuentes = UtilsDTO.crearFuentes(coleccionInputDTO.getFuentes()); Esto es lo que vamos a tener que hacer en el futuro.
+    List<String> fuentes = new ArrayList<>();
+    coleccionInputDTO.getFuentes().forEach(fuente -> fuentes.add(fuente.getNombre()));
+
+
+    return new Coleccion(coleccionInputDTO.getNombre(), coleccionInputDTO.getDescripcion(), fuentes, criterio);
+  }
+
+  public static List<Filtro> crearFiltros(ColeccionInputDTO coleccionInputDTO) {
+    List<Filtro> filtros = new ArrayList<>();
+
+    try {
+      if (!coleccionInputDTO.getCriterio().getTitulo().isEmpty()) { // Quiero filtrar por título
+        FiltroTitulo filtroTitulo = new FiltroTitulo(coleccionInputDTO.getCriterio().getTitulo());
+        filtros.add(filtroTitulo);
+      }
+
+      if (coleccionInputDTO.getCriterio().getFechaAcontecimiento() != null) { // Quiero filtrar por Fecha
+        RangoFechas rangoFechas = new RangoFechas(coleccionInputDTO.getCriterio().getFechaAcontecimiento().getFechaInicio(), coleccionInputDTO.getCriterio().getFechaAcontecimiento().getFechaFin());
+        FiltroFechaAcontecimiento filtroFechaAcontecimiento = new FiltroFechaAcontecimiento(rangoFechas);
+        filtros.add(filtroFechaAcontecimiento);
+      }
+
+      if (!coleccionInputDTO.getCriterio().getCategoria().isEmpty()) { // Quiero filtrar por categoría
+        FiltroCategoria filtroCategoria = new FiltroCategoria(new Categoria(coleccionInputDTO.getCriterio().getCategoria()));
+        filtros.add(filtroCategoria);
+      }
+
+    } catch (Exception e){ throw new RuntimeException(e); }
+
+    return filtros;
   }
 }

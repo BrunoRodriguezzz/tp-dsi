@@ -1,16 +1,16 @@
 package ar.edu.utn.frba.dds.agregador.controllers;
 
+import ar.edu.utn.frba.dds.agregador.controllers.validadores.ValidadorInput;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/colecciones")
@@ -28,6 +28,27 @@ public class ColeccionController {
     return ResponseEntity.status(HttpStatus.OK).body(colecciones);
   }
 
+  @GetMapping("/{id}/hechos")
+  public ResponseEntity buscarHechosColeccion(
+      @PathVariable("id") Long id,
+      @RequestParam(required = false) String categoria,
+      @RequestParam(required = false) String fechaInicio,
+      @RequestParam(required = false) String fechaFin,
+      @RequestParam(required = false) String titulo
+  ) {
+    QueryParamsFiltro params = new QueryParamsFiltro();
+    params.setCategoria(categoria);
+    params.setFechaInicio(fechaInicio);
+    params.setFechaFin(fechaFin);
+    params.setTitulo(titulo);
+
+    List<HechoOutputDTO> hechos = this.coleccionService.buscarHechosColeccion(id,params);
+    if(hechos == null) {
+      return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(hechos);
+  }
+
   @GetMapping("/{id}")
   public ResponseEntity buscarColeccion(@PathVariable("id") Long id) {
     ColeccionOutputDTO coleccion = this.coleccionService.buscarColeccion(id);
@@ -35,5 +56,31 @@ public class ColeccionController {
       return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
     return ResponseEntity.status(HttpStatus.OK).body(coleccion);
+  }
+
+  @PostMapping()
+  public ResponseEntity guardarColeccion(@RequestBody ColeccionInputDTO coleccion) {
+    ValidadorInput.validarColeccionInput(coleccion);
+    ColeccionOutputDTO coleccionOutputDTO = coleccionService.guardarColeccion(coleccion);
+    return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity actualizarColeccion(@PathVariable("id") Long id, @RequestBody ColeccionInputDTO coleccion) {
+    if (id == null || id <= 0) {
+      return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+    ValidadorInput.validarColeccionInput(coleccion);
+    ColeccionOutputDTO coleccionOutputDTO = coleccionService.actualizarColeccion(id, coleccion);
+    return ResponseEntity.status(HttpStatus.OK).body(coleccionOutputDTO);
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity eliminarColeccion(@PathVariable("id") Long id) {
+    if (id == null || id <= 0) {
+      return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+    coleccionService.eliminarColeccion(id);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
   }
 }

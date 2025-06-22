@@ -8,15 +8,20 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class InstanciaMetaMapa implements TipoFuente {
     private WebClient webClient; //TODO Ver como instanciamos distintas instancias de MetaMapa
 
+    public InstanciaMetaMapa(String baseUrl) { // Lo construimos cuando sale del repo.
+        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+    }
+
     @Override
     public Flux<InputHecho> getAll() {
-        //TODO
-        return Flux.fromArray(new InputHecho[] {});
+        return webClient.get()
+                .uri("/hechos")
+                .retrieve()
+                .bodyToFlux(InputHecho.class);
     }
 
     @Override

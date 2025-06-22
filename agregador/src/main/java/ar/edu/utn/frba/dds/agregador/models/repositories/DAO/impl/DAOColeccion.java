@@ -56,4 +56,13 @@ public class DAOColeccion implements IDAOColeccion {
     });
     return true;
   }
+
+  @Override
+  public void eliminarColeccion(Long id) {
+    Coleccion coleccion = this.colecciones.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
+    if (coleccion == null) {
+      throw new RuntimeException("La coleccion a eliminar no existe");
+    }
+    this.colecciones.remove(coleccion);
+  }
 }

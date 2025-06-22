@@ -8,4 +8,6 @@ public interface IDAOColeccion {
   public Boolean save(List<Coleccion> colecciones);
   public Coleccion find(Long id);
   public Boolean eliminarHechoDeColecciones(Long id);
+
+  public void eliminarColeccion(Long id);
 }
