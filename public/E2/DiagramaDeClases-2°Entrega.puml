@@ -212,6 +212,8 @@
         +consultarHechosCurados(filtros: <List> Filtro): <List> Hecho
         +agregarFiltroACriterio(filtro: Filtro): Boolean
         +recalcularHechos(): <List> Hecho
+        +refrescar(): void
+        +refrescar(ultimoRefresco: DateTime): void
     }
 
     class Criterio{
