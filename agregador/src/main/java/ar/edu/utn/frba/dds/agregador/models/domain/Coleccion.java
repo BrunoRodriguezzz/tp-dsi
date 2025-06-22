@@ -18,9 +18,23 @@ public class Coleccion {
     private Criterio criterio;
     private List<Hecho> hechos;
 
-    public Coleccion(String titulo, String descripcion) {
+    public Coleccion(String titulo, String descripcion, List<String> fuentes, Criterio criterio) {
+        if (titulo == null || titulo.isEmpty()) {
+            throw new RuntimeException("El título es obligatorio");
+        }
+        if (descripcion == null || descripcion.isEmpty()) {
+            throw new RuntimeException("La descripcion es obligatoria");
+        }
+        if (fuentes == null || fuentes.isEmpty()) {
+            throw new RuntimeException("Las fuentes son obligatorias");
+        }
+        if (criterio == null) {
+            throw new RuntimeException("El criterio es obligatorio");
+        }
         this.titulo = titulo;
         this.descripcion = descripcion;
+        this.fuentes = fuentes;
+        this.criterio = criterio;
         this.hechos = new ArrayList<>();
     }
 

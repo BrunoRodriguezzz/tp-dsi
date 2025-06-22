@@ -87,6 +87,7 @@ public class ColeccionService implements IColeccionService {
   @Override
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
     Coleccion coleccion = UtilsDTO.inputColeccionToColeccion(coleccionInputDTO);
+    // TODO: Funcion que le cargue los hechos
     this.coleccionRepository.guardarColeccion(coleccion);
     return UtilsDTO.coleccionToDTO(coleccion);
   }
@@ -95,7 +96,7 @@ public class ColeccionService implements IColeccionService {
   public ColeccionOutputDTO actualizarColeccion(Long id, ColeccionInputDTO coleccionInputDTO) {
     Coleccion coleccion = coleccionRepository.buscarColeccion(id);
     if(coleccion == null) {
-      throw new NotFoundException("No se encontro el coleccion");
+      throw new NotFoundException("No se encontro la coleccion");
     }
     this.actualizarDatosColeccion(coleccion, coleccionInputDTO);
     this.coleccionRepository.guardarColeccion(coleccion);
@@ -143,6 +144,8 @@ public class ColeccionService implements IColeccionService {
       }
 
       List<Filtro> filtros = UtilsDTO.crearFiltros(coleccionInputDTO);
-      coleccion.getCriterio().setFiltros(filtros);
+      if (!filtros.isEmpty()) {
+        coleccion.getCriterio().setFiltros(filtros);
+      }
   }
 }

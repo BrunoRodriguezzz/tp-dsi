@@ -34,6 +34,4 @@ public class Ubicacion {
     public boolean longitudInvalida(String longitud){
         return (Double.parseDouble(longitud) < -180) || (Double.parseDouble(longitud) > 180);
     }
-
-
 }

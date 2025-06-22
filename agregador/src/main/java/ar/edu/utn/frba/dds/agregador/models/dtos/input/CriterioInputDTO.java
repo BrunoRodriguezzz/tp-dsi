@@ -3,8 +3,8 @@ package ar.edu.utn.frba.dds.agregador.models.dtos.input;
 import lombok.Data;
 
 @Data
-public class InputCriterioDTO {
+public class CriterioInputDTO {
     String titulo;
-    InputRangoFechas fechaAcontecimiento;
+    RangoFechasInputDTO fechaAcontecimiento;
     String categoria;
 }

@@ -148,7 +148,6 @@ public class SeederService implements ISeederService, ApplicationRunner {
     }
 
     Coleccion coleccion;
-    coleccion = new Coleccion("Colección prueba", "Esto es una prueba");
     List<String> fuentes = new ArrayList<>();
     fuentes.add("Accidentes");
     fuentes.add("Incidentes");
@@ -157,15 +156,13 @@ public class SeederService implements ISeederService, ApplicationRunner {
     fuentes.add("Derrumbes");
     fuentes.add("Provistos por contribuyentes");
 
-    coleccion.setFuentes(fuentes);
-
-    coleccion.setId(123456L);
-
     Criterio criterioPruebas;
     criterioPruebas = new Criterio();
 
+    coleccion = new Coleccion("Colección prueba", "Esto es una prueba", fuentes, criterioPruebas);
+
+    coleccion.setId(123456L);
     coleccion.cargarHechos(hechos);
-    coleccion.setCriterio(criterioPruebas);
 
     RangoFechas rangoFechasFiltro = null;
     try {
@@ -180,17 +177,13 @@ public class SeederService implements ISeederService, ApplicationRunner {
     coleccion.recalcularHechos();
 
     Coleccion coleccion1;
-    coleccion1 = new Coleccion("Colección prueba 1", "Esto es una prueba");
-
-    coleccion1.setFuentes(fuentes);
-
-    coleccion1.setId(123457L);
 
     Criterio criterioPruebas1;
     criterioPruebas1 = new Criterio();
+    coleccion1 = new Coleccion("Colección prueba 1", "Esto es una prueba", fuentes, criterioPruebas1);
+    coleccion1.setId(123457L);
 
     coleccion1.cargarHechos(hechos);
-    coleccion1.setCriterio(criterioPruebas1);
 
     FiltroCategoria filtroCategoria = null;
     try {

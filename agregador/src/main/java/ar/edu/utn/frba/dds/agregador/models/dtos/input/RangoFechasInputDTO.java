@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class InputRangoFechas {
+public class RangoFechasInputDTO {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
 }

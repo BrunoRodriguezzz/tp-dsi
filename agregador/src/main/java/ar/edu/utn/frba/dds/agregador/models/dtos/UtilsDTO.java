@@ -225,9 +225,6 @@ public class UtilsDTO {
   }
 
   public static Coleccion inputColeccionToColeccion(ColeccionInputDTO coleccionInputDTO) {
-    Coleccion coleccion = new Coleccion(coleccionInputDTO.getNombre(), coleccionInputDTO.getDescripcion());
-
-    // Aca hay unos pares de code smells
     Criterio criterio = new Criterio();
     List<Filtro> filtros = UtilsDTO.crearFiltros(coleccionInputDTO);
 
@@ -235,9 +232,12 @@ public class UtilsDTO {
       throw new RuntimeException("Filtros vacios");
     }
     criterio.setFiltros(filtros);
-    coleccion.setCriterio(criterio);
+//    List<Fuente> fuentes = UtilsDTO.crearFuentes(coleccionInputDTO.getFuentes()); Esto es lo que vamos a tener que hacer en el futuro.
+    List<String> fuentes = new ArrayList<>();
+    coleccionInputDTO.getFuentes().forEach(fuente -> fuentes.add(fuente.getNombre()));
 
-    return coleccion;
+
+    return new Coleccion(coleccionInputDTO.getNombre(), coleccionInputDTO.getDescripcion(), fuentes, criterio);
   }
 
   public static List<Filtro> crearFiltros(ColeccionInputDTO coleccionInputDTO) {

@@ -93,5 +93,9 @@ public class ValidadorInput {
     if (coleccion.getCriterio() == null) {
       throw new RequestException("Criterio faltante");
     }
+
+    if (coleccion.getFuentes().isEmpty()) {
+      throw new RequestException("Fuentes faltantes");
+    }
   }
 }
