@@ -7,6 +7,7 @@
     Hecho -->"*" Etiqueta
     Hecho --o Coleccion
     Hecho -->"*" ContenidoMultimedia
+    Hecho --> Fuente
 
     'Solicitudes de Eliminacion
     SolicitudEliminacion --* Hecho
@@ -20,13 +21,26 @@
     'Colecciones
     Coleccion --> Criterio
     Coleccion ..> Filtro
+    Coleccion --> AlgConsenso
+    AlgConsenso --> IStratConsenso
+    AlgConsensoMultMenciones ..|> IStratConsenso
+    AlgConsensoMaySimple ..|> IStratConsenso
+    AlgConsensoAbsoluto ..|> IStratConsenso
+    AlgConsenso --> Fuente
+
 
     'Fuente
     Coleccion --> Fuente
     Fuente ..> Hecho
-    FuenteEstatica --|> Fuente
-    FuenteDinamica --|> Fuente
-    FuenteProxy --|> Fuente
+    Fuente --> TipoFuente
+
+    AdapImpHDinamico ..|> IAdapImpH
+    AdapImpHEstatico ..|> IAdapImpH
+    AdapImpHProxy ..|> IAdapImpH
+    AdapImpC ..|> IAdapImpC
+
+    Fuente --> IAdapImpC
+    Fuente --> IAdapImpH
 
     'Criterio
     Criterio --> Filtro
@@ -80,6 +94,8 @@
     }
 
     class Hecho {
+        -id: Long
+        -idHFuente: Long
         -titulo: String
         -descripcion: String
         -categoria: Categoria
@@ -88,38 +104,67 @@
         -fechaAcontecimiento: LocalDate
         -fechaCarga: LocalDate
         -origen: Origen
+        -contribuyente: Contribuyente
         -eliminado: Boolean
+        -fuente: Fuente
+        -idFuente: Long
         -contenidoMultimedia: List<ContenidoMultimedia>
         +eliminar(): Void
-        +tieneContenidoMultimedia(): Boolean
         +estaEliminado(): Boolean
+        +tieneContenidoMultimedia(): Boolean
     }
 
-    abstract Fuente {
+    class Fuente {
+        -nombre: String
+        -path: String
+        -webClient: WebClient
+        -tipoFuente: TipoFuente
+        -adapImpH: IAdapImpH
+        -adapImpC: IAdapImpC
         +importarHechos(): List<Hecho> hechos
-        +uscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho> b
+        +buscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho>
         +eliminarHecho(Hecho hecho): void
     }
 
-    class FuenteEstatica {
-        -WebClient fuenteAPI
+    enum TipoFuente {
+        ESTATICA,
+        DIMAMICA,
+        PROXY
+    }
+
+    interface IAdapImpH {
         +importarHechos(): List<Hecho> hechos
-        +uscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho> b
+        +buscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho>
         +eliminarHecho(Hecho hecho): void
     }
 
-    class FuenteDinamica {
-        -WebClient fuenteAPI
+
+    class AdapImpHDinamico {
         +importarHechos(): List<Hecho> hechos
-        +uscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho> b
+        +buscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho>
         +eliminarHecho(Hecho hecho): void
     }
 
-    class FuenteProxy {
-        -WebClient fuenteAPI
-       +importarHechos(): List<Hecho> hechos
-        +uscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho> b
+    class AdapImpHEstatico {
+        +importarHechos(): List<Hecho> hechos
+        +buscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho>
         +eliminarHecho(Hecho hecho): void
+    }
+
+    class AdapImpHProxy {
+        +importarHechos(): List<Hecho> hechos
+        +buscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho>
+        +eliminarHecho(Hecho hecho): void
+    }
+
+    interface IAdapImpC {
+        +importarColecciones(): List<Coleccion> colecciones
+        +importarColeccion(): Coleccion coleccion
+    }
+
+    class AdapImpC {
+        +importarColecciones(): List<Coleccion> colecciones
+        +importarHechosColeccion(Long id): List<Hecho> hechos
     }
 
     class Etiqueta {
@@ -158,12 +203,14 @@
         -titulo: String
         -descripcion: String
         -criterio: Criterio
-        'Solo para representar overload
+        -algConsenso: AlgConsenso
         +cargarHechos(hechos: <List> Hecho): <List> Hecho
         +consultarHechos(): <List> Hecho
+        +consultarHechos(filtros: <List> Filtro): <List> Hecho
+        +consultarHechosCurados(): <List> Hecho
+        +consultarHechosCurados(filtros: <List> Filtro): <List> Hecho
         +agregarFiltroACriterio(filtro: Filtro): Boolean
         +recalcularHechos(): <List> Hecho
-        +consultarHechos(filtros: <List> Filtro): <List> Hecho
     }
 
     class Criterio{
@@ -173,13 +220,35 @@
         +agregarFiltro((Filtro filtro): Void
     }
 
-    class RangoFechas {
-        -fechaInicio: LocalDate
-        -fechaFin: LocalDate
+    class AlgConsenso {
+        -fuentes: <List> Fuente
+        -stratConsenso: <List> IStratConsenso
+        +consensuados(hechos: <List> Hecho): <List> Hecho
+    }
+
+    class AlgConsensoMaySimple {
+        +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
+    }
+
+    class AlgConsensoMultMenciones {
+        +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
+    }
+
+    class AlgConsensoAbsoluto {
+        +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
+    }
+
+    interface IStratConsenso {
+        +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
     }
 
     interface Filtro{
         +coincide(algo): Boolean
+    }
+
+    class RangoFechas {
+        -fechaInicio: LocalDate
+        -fechaFin: LocalDate
     }
 
     class FiltroTitulo{
