@@ -200,6 +200,7 @@
     class Coleccion {
         -fuente: <List> Fuente
         -hechos: <List> Hecho
+        -hechosConsensuados: <List> Hecho
         -titulo: String
         -descripcion: String
         -criterio: Criterio
