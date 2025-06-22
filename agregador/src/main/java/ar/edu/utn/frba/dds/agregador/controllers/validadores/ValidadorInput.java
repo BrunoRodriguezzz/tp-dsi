@@ -1,10 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.controllers.validadores;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.RequestException;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.GestionInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.UbicacionInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.*;
 
 public class ValidadorInput {
   public static void validarHechoInputDTO(HechoInputDTO hechoInputDTO) {
@@ -84,4 +81,17 @@ public class ValidadorInput {
     }
   }
 
+  public static void validarColeccionInput(ColeccionInputDTO coleccion) {
+    if (coleccion.getNombre() == null || coleccion.getNombre().isBlank()) {
+      throw new RequestException("Nombre faltante");
+    }
+
+    if (coleccion.getDescripcion() == null || coleccion.getDescripcion().isBlank()) {
+      throw new RequestException("Descripcion faltante");
+    }
+
+    if (coleccion.getCriterio() == null) {
+      throw new RequestException("Criterio faltante");
+    }
+  }
 }

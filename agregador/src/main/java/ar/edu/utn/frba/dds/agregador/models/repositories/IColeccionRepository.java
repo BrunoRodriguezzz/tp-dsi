@@ -13,4 +13,6 @@ public interface IColeccionRepository {
   public Boolean eliminarHechoDeColecciones(Hecho hecho);
   public List<Coleccion> buscarCopiaColecciones();
   public Coleccion buscarCopiaColeccion(Long id);
+
+  public void eliminarColeccion(Long id);
 }

@@ -22,11 +22,10 @@ public class FuenteSeeder implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        Fuente fuenteAPICatedra = new Fuente();
+    public void run(String... args) {
+        Fuente fuenteAPICatedra = new Fuente(apiCatedra, "Desastres Naturales", "https://api-ddsi.disilab.ar/public");
         fuenteAPICatedra.setTipoFuente(apiCatedra);
         fuenteAPICatedra.setNombre("Desastres Naturales");
         fuentesRepository.save(fuenteAPICatedra);
     }
-
 }

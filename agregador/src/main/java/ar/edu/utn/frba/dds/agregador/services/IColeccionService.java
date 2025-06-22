@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.services;
 
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
@@ -13,4 +14,8 @@ public interface IColeccionService {
   public List<String> incorporarHecho(Hecho hecho);
   public Boolean eliminarHechoDeColecciones(Hecho hecho);
   public void incorporarHechos(List<Hecho> hecho);
+
+  public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccion);
+  public ColeccionOutputDTO actualizarColeccion(Long id, ColeccionInputDTO coleccion);
+  public void eliminarColeccion(Long id);
 }

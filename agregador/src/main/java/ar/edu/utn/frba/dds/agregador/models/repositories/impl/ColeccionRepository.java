@@ -77,4 +77,8 @@ public class ColeccionRepository implements IColeccionRepository {
     return this.dao.eliminarHechoDeColecciones(hecho.getId());
   }
 
+  @Override
+  public void eliminarColeccion(Long id) {
+    this.dao.eliminarColeccion(id);
+  }
 }

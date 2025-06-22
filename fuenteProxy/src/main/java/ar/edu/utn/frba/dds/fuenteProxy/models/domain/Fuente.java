@@ -8,7 +8,6 @@ import lombok.Setter;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +16,12 @@ public class Fuente {
     private Long id;
     private String nombre;
     private String ruta; // TODO debería usarse.
+
+    public Fuente(TipoFuente tipoFuente, String nombre, String ruta) {
+        this.tipoFuente = tipoFuente; // Asumo que se lo contruyo y después se lo seteo.
+        this.nombre = nombre;
+        this.ruta = ruta;
+    }
 
     public Flux<InputHecho> getAllHechos() {
         return tipoFuente.getAll().map(inputHecho -> {
