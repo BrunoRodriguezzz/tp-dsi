@@ -1,7 +1,5 @@
 package ar.edu.utn.frba.dds.domain;
 
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.Fuente;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
 import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.ResolucionSolicitudEliminacion;

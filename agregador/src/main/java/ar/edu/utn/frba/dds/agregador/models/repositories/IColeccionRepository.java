@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.util.List;
 

@@ -8,6 +8,7 @@
     Hecho --o Coleccion
     Hecho -->"*" ContenidoMultimedia
     Hecho --> Fuente
+    Hecho --> Consenso
 
     'Solicitudes de Eliminacion
     SolicitudEliminacion --* Hecho
@@ -21,12 +22,14 @@
     'Colecciones
     Coleccion --> Criterio
     Coleccion ..> Filtro
-    Coleccion --> AlgConsenso
-    AlgConsenso --> IStratConsenso
+    Coleccion --> Consenso
+
+    Consensuador --> IStratConsenso
+    Consensuador ..> Consenso
+    Consensuador ..> Hecho
     AlgConsensoMultMenciones ..|> IStratConsenso
     AlgConsensoMaySimple ..|> IStratConsenso
     AlgConsensoAbsoluto ..|> IStratConsenso
-    AlgConsenso --> Fuente
 
 
     'Fuente
@@ -105,6 +108,7 @@
         -fechaCarga: LocalDate
         -origen: Origen
         -contribuyente: Contribuyente
+        -consensuado: <List> Consenso
         -eliminado: Boolean
         -fuente: Fuente
         -idFuente: Long
@@ -204,7 +208,7 @@
         -titulo: String
         -descripcion: String
         -criterio: Criterio
-        -algConsenso: AlgConsenso
+        -consenso: <List> Consenso
         +cargarHechos(hechos: <List> Hecho): <List> Hecho
         +consultarHechos(): <List> Hecho
         +consultarHechos(filtros: <List> Filtro): <List> Hecho
@@ -223,10 +227,10 @@
         +agregarFiltro((Filtro filtro): Void
     }
 
-    class AlgConsenso {
-        -fuentes: <List> Fuente
+    class Consensuador {
         -stratConsenso: <List> IStratConsenso
-        +consensuados(hechos: <List> Hecho): <List> Hecho
+        +consensuarHechos(fuentes: <List> Fuentes, hecho: <List> Hecho): <List> Hecho
+        -consultarFuentes(fuentes: <List> Fuentes, hecho: <List> Hecho): <List> Hecho
     }
 
     class AlgConsensoMaySimple {
@@ -244,6 +248,14 @@
     interface IStratConsenso {
         +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
     }
+
+    enum Consenso {
+        ABSOLUTO,
+        MULTMENCIONES,
+        MAYSIMPLE
+    }
+
+
 
     interface Filtro{
         +coincide(algo): Boolean

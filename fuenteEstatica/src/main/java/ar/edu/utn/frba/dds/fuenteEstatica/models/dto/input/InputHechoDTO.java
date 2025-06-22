@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.dto.input;
 
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
 import lombok.Data;
 
 import java.time.LocalDate;

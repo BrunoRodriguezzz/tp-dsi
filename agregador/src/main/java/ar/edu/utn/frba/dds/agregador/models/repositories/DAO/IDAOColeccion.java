@@ -1,5 +1,5 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories.DAO;
-import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import java.util.List;
 
 public interface IDAOColeccion {

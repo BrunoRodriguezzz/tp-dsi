@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.agregador.services.impl;
+package ar.edu.utn.frba.dds.domain.models.entities.fuentes;
 
 public enum TipoFuente {
   ESTATICA,

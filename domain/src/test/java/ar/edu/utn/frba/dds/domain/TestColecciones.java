@@ -4,8 +4,6 @@ import ar.edu.utn.frba.dds.domain.models.entities.criterio.Filtro;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroCategoria;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroFechaAcontecimiento;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroTitulo;
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.Fuente;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Etiqueta;

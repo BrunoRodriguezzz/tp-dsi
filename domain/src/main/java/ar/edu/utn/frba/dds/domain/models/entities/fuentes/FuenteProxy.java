@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.agregador.models.domain;
+package ar.edu.utn.frba.dds.domain.models.entities.fuentes;
 
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.FuenteResponseDTO;

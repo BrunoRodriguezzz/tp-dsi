@@ -1,43 +1,37 @@
 package ar.edu.utn.frba.dds.domain.models.entities.hechos;
 
-import java.util.ArrayList;
-import lombok.Getter;
-import lombok.Setter;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.Criterio;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.Filtro;
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.Fuente;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public class Coleccion {
     private Long id;
     private String titulo;
     private String descripcion;
-    private List<Fuente> fuentes;
+    private List<String> fuentes;
     private Criterio criterio;
     private List<Hecho> hechos;
 
     public Coleccion(String titulo, String descripcion) {
         this.titulo = titulo;
         this.descripcion = descripcion;
+        this.hechos = new ArrayList<>();
     }
 
     public List<Hecho> cargarHechos(List<Hecho> hechos) {
-        this.hechos = this.filtrarHechosSegunCriterio(hechos);
+        this.hechos.addAll(this.filtrarHechosSegunCriterio(hechos));
         return this.hechos;
     }
 
     public boolean cargarHecho(Hecho hecho) {
-        // Carga el hecho y si existe lo reemplaza modificado
         if (!hecho.getEstaEliminado() && cumpleCriterioColeccion(hecho)) {
             if (this.hechos == null) {
                 this.hechos = new ArrayList<>();
-            }
-            if(this.hechos.stream().anyMatch(h -> h.getIdHFuente().equals(hecho.getIdHFuente()) && h.getOrigen().equals(hecho.getOrigen()))) {
-                Hecho hechoAux = this.hechos.stream().filter(h -> h.getIdHFuente().equals(hecho.getIdHFuente()) && h.getOrigen().equals(hecho.getOrigen())).findFirst().get();
-                this.hechos.remove(hechoAux);
             }
             return this.hechos.add(hecho);
         }
@@ -69,9 +63,13 @@ public class Coleccion {
 
     // Auxiliares a consultas de Hechos
     private List<Hecho> filtrarHechosSegunCriterio(List<Hecho> hechos) {
-        return hechos.stream()
-            .filter(hecho -> this.cumpleCriterioColeccion(hecho) && !hecho.getEstaEliminado())
+        List<Hecho> hechosFiltrados = hechos.stream()
+            .filter(hecho ->
+                this.cumpleCriterioColeccion(hecho) &&
+                    !hecho.getEstaEliminado() &&
+                this.getFuentes().contains(hecho.getFuente()))
             .collect(Collectors.toList());
+        return hechosFiltrados;
     }
 
 
@@ -90,9 +88,6 @@ public class Coleccion {
                     try {
                         return filtro.coincide(hecho);
                     } catch (Exception e) {
-                        //TODO: Throw exception acá y en todos los que devuelvan false para que lo agarre el que los llamo y eventualmente una capa superior
-                        // throw new Exception("No se pudo aplicar los filtros de búsqueda")
-                        // TODO: Catchea el controller?
                         System.out.println("Error en filtro: " + filtro.getClass().getSimpleName());
                         return false;
                     }
@@ -100,4 +95,5 @@ public class Coleccion {
                 .collect(Collectors.toList());
         return hechosQueCumplenFiltros;
     }
+
 }

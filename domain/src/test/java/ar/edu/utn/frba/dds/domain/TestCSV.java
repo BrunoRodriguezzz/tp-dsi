@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.domain;
 
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.FuenteEstatica;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;

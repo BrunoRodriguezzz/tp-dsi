@@ -7,7 +7,7 @@ import ar.edu.utn.frba.dds.agregador.services.ISeederService;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.Criterio;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroCategoria;
 import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroFechaAcontecimiento;
-import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
 import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.FechaInvalidaException;
 import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;

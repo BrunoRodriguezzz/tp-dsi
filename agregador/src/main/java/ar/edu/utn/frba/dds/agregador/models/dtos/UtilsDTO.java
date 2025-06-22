@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
+import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.ContribuyenteServicioResponseDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.HechoServicioResponseDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.AdministradorInputDTO;
