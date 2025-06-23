@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
-import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaExistenteException;
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
@@ -9,9 +8,8 @@ import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
-import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
-import java.lang.invoke.ConstantBootstraps;
+import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

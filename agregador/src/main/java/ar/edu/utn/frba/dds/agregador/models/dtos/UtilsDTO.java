@@ -1,7 +1,8 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos;
 
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.ContribuyenteServicioResponseDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.external.FuenteResponseDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.HechoServicioResponseDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.AdministradorInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
@@ -14,14 +15,14 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ResolucionSolicitudEliminacionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.SolicitudEliminacionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.UbicacionOutputDTO;
-import ar.edu.utn.frba.dds.domain.models.entities.criterio.*;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
-import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
-import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.ResolucionSolicitudEliminacion;
-import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.SolicitudEliminacion;
-import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Administrador;
-import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.*;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.*;
+import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.EstadoSolicitudEliminacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.ResolucionSolicitudEliminacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.SolicitudEliminacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Administrador;
+import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -263,5 +264,22 @@ public class UtilsDTO {
     } catch (Exception e){ throw new RuntimeException(e); }
 
     return filtros;
+  }
+
+  public static List<Hecho> servicioResponseToHechos(List<FuenteResponseDTO> servicioResponse) {
+    List<Hecho> hechos = new ArrayList<>();
+    servicioResponse.forEach(fuente -> {
+      List<Hecho> hechosEnFuente = fuente
+          .getHechos()
+          .stream().map(h -> {
+            Hecho hecho = UtilsDTO.hechoServicioResponseDTOtoHecho(h);
+            hecho.setFuente(fuente.getNombre());
+            hecho.setIdFuente(fuente.getId());
+            return hecho;
+          })
+          .toList();
+      hechos.addAll(hechosEnFuente);
+    });
+    return hechos;
   }
 }

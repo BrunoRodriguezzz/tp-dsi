@@ -1,16 +1,16 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos.input;
 
-import ar.edu.utn.frba.dds.domain.models.entities.criterio.Filtro;
-import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroCategoria;
-import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroFechaAcontecimiento;
-import ar.edu.utn.frba.dds.domain.models.entities.criterio.FiltroTitulo;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.RangoFechas;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroCategoria;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroFechaAcontecimiento;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroTitulo;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.RangoFechas;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Setter;
-import org.springframework.web.bind.annotation.RequestParam;
+
 @Setter
 public class QueryParamsFiltro {
   public String categoria;

@@ -1,14 +1,14 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.entities.impl;
 
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.UbicacionInvalidaException;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Ubicacion;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.TipoArchivo;
 import com.opencsv.CSVReader;
 
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 

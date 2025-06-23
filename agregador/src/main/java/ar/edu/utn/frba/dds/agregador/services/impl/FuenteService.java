@@ -1,13 +1,13 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.Fuente;
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.FuenteDinamica;
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.FuenteEstatica;
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.FuenteProxy;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.FuenteDinamica;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.FuenteEstatica;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.FuenteProxy;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
-import ar.edu.utn.frba.dds.domain.models.entities.fuentes.TipoFuente;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
+import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories;
 
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Coleccion;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
 import java.util.List;
 
 
@@ -13,4 +13,6 @@ public interface IColeccionRepository {
   public Boolean eliminarHechoDeColecciones(Hecho hecho);
   public List<Coleccion> buscarCopiaColecciones();
   public Coleccion buscarCopiaColeccion(Long id);
+
+  public void eliminarColeccion(Long id);
 }

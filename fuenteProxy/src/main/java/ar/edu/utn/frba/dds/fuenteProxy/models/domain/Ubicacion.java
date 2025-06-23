@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain;
 
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
+import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.UbicacionInvalidaException;
 import lombok.Getter;
 
 @Getter

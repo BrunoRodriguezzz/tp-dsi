@@ -1,284 +1,289 @@
-    @startuml
-    'Hecho
-    Hecho --> Contribuyente
-    Hecho --> Origen
-    Hecho --> Categoria
-    Hecho --> Ubicacion
-    Hecho -->"*" Etiqueta
-    Hecho --o Coleccion
-    Hecho -->"*" ContenidoMultimedia
-    Hecho --> Fuente
-    Hecho --> Consenso
+@startuml
+'Hecho
+Hecho --> Contribuyente
+Hecho --> Origen
+Hecho --> Categoria
+Hecho --> Ubicacion
+Hecho -->"*" Etiqueta
+Hecho --o Coleccion
+Hecho -->"*" ContenidoMultimedia
+Hecho --> Fuente
+Hecho --> Consenso
 
-    'Solicitudes de Eliminacion
-    SolicitudEliminacion --* Hecho
-    SolicitudEliminacion --> EstadoSolicitudEliminacion
-    SolicitudEliminacion --> ResolucionSolicitudEliminacion
-    SolicitudEliminacion --> Contribuyente
+'Solicitudes de Eliminacion
+SolicitudEliminacion --* Hecho
+SolicitudEliminacion --> EstadoSolicitudEliminacion
+SolicitudEliminacion --> ResolucionSolicitudEliminacion
+SolicitudEliminacion --> Contribuyente
 
-    'Resoluciones de Solicitudes de Eliminacion
-    ResolucionSolicitudEliminacion --> Administrador
+'Resoluciones de Solicitudes de Eliminacion
+ResolucionSolicitudEliminacion --> Administrador
 
-    'Colecciones
-    Coleccion --> Criterio
-    Coleccion ..> Filtro
-    Coleccion --> Consenso
+'Colecciones
+Coleccion --> Criterio
+Coleccion ..> Filtro
+Coleccion --> Consenso
 
-    Consensuador --> IStratConsenso
-    Consensuador ..> Consenso
-    Consensuador ..> Hecho
-    AlgConsensoMultMenciones ..|> IStratConsenso
-    AlgConsensoMaySimple ..|> IStratConsenso
-    AlgConsensoAbsoluto ..|> IStratConsenso
-
-
-    'Fuente
-    Coleccion --> Fuente
-    Fuente ..> Hecho
-    Fuente --> TipoFuente
-
-    AdapImpHDinamico ..|> IAdapImpH
-    AdapImpHEstatico ..|> IAdapImpH
-    AdapImpHProxy ..|> IAdapImpH
-    AdapImpC ..|> IAdapImpC
-
-    Fuente --> IAdapImpC
-    Fuente --> IAdapImpH
-
-    'Criterio
-    Criterio --> Filtro
-
-    'ElementoCriterio
-    Filtro <|.. FiltroTitulo
-    Filtro <|.. FiltroCategoria
-    Filtro <|.. FiltroFechaAcontecimiento
-
-    'Estrategias
-    FiltroCategoria --> Categoria
-    FiltroFechaAcontecimiento --> RangoFechas
-
-    'Contenido Multimedia
-    ContenidoMultimedia --> Formato
+Consensuador --> IStratConsenso
+Consensuador ..> Consenso
+Consensuador ..> Hecho
+AlgConsensoMultMenciones ..|> IStratConsenso
+AlgConsensoMaySimple ..|> IStratConsenso
+AlgConsensoAbsoluto ..|> IStratConsenso
 
 
-    class Contribuyente {
-        -nombre: String
-        -apellido: String
-        -fechaNacimiento: LocalDate
-        +laEdadEs(): Integer
-    }
+'Fuente
+Coleccion --> Fuente
+Fuente ..> Hecho
+Fuente --> TipoFuente
 
-    class Administrador {
-        -nombre: String
-        -apellido: String
-    }
+AdapImpHDinamico ..|> IAdapImpH
+AdapImpHEstatico ..|> IAdapImpH
+AdapImpHProxy ..|> IAdapImpH
+AdapImpC ..|> IAdapImpC
 
-    enum EstadoSolicitudEliminacion {
-        ACEPTADA,
-        RECHAZADA,
-        PENDIENTE
-    }
+Fuente --> IAdapImpC
+Fuente --> IAdapImpH
 
-    class ResolucionSolicitudEliminacion {
-        -fechaResolucion: LocalDateTime
-        -administrador: Administrador
-    }
+'Criterio
+Criterio --> Filtro
 
-    class ContenidoMultimedia {
-        -nombre: String
-        -ruta: String
-        -formato: Formato
-    }
+'ElementoCriterio
+Filtro <|.. FiltroTitulo
+Filtro <|.. FiltroCategoria
+Filtro <|.. FiltroFechaAcontecimiento
 
-    enum Formato {
-        VIDEO
-        AUDIO
-        IMAGEN
-    }
+'Estrategias
+FiltroCategoria --> Categoria
+FiltroFechaAcontecimiento --> RangoFechas
 
-    class Hecho {
-        -id: Long
-        -idHFuente: Long
-        -titulo: String
-        -descripcion: String
-        -categoria: Categoria
-        -ubicacion: Ubicacion
-        -etiquetas: <List>Etiqueta
-        -fechaAcontecimiento: LocalDate
-        -fechaCarga: LocalDate
-        -origen: Origen
-        -contribuyente: Contribuyente
-        -consensuado: <List> Consenso
-        -eliminado: Boolean
-        -fuente: Fuente
-        -idFuente: Long
-        -contenidoMultimedia: List<ContenidoMultimedia>
-        +eliminar(): Void
-        +estaEliminado(): Boolean
-        +tieneContenidoMultimedia(): Boolean
-    }
-
-    class Fuente {
-        -nombre: String
-        -path: String
-        -webClient: WebClient
-        -tipoFuente: TipoFuente
-        -adapImpH: IAdapImpH
-        -adapImpC: IAdapImpC
-        +importarHechos(): List<Hecho> hechos
-        +buscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho>
-        +eliminarHecho(Hecho hecho): void
-    }
-
-    enum TipoFuente {
-        ESTATICA,
-        DIMAMICA,
-        PROXY
-    }
-
-    interface IAdapImpH {
-        +importarHechos(): List<Hecho> hechos
-        +buscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho>
-        +eliminarHecho(Hecho hecho): void
-    }
+'Contenido Multimedia
+ContenidoMultimedia --> Formato
 
 
-    class AdapImpHDinamico {
-        +importarHechos(): List<Hecho> hechos
-        +buscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho>
-        +eliminarHecho(Hecho hecho): void
-    }
+class Contribuyente {
+    -nombre: String
+    -apellido: String
+    -fechaNacimiento: LocalDate
+    +laEdadEs(): Integer
+}
 
-    class AdapImpHEstatico {
-        +importarHechos(): List<Hecho> hechos
-        +buscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho>
-        +eliminarHecho(Hecho hecho): void
-    }
+class Administrador {
+    -nombre: String
+    -apellido: String
+}
 
-    class AdapImpHProxy {
-        +importarHechos(): List<Hecho> hechos
-        +buscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho>
-        +eliminarHecho(Hecho hecho): void
-    }
+enum EstadoSolicitudEliminacion {
+    ACEPTADA,
+    RECHAZADA,
+    PENDIENTE
+}
 
-    interface IAdapImpC {
-        +importarColecciones(): List<Coleccion> colecciones
-        +importarColeccion(): Coleccion coleccion
-    }
+class ResolucionSolicitudEliminacion {
+    -fechaResolucion: LocalDateTime
+    -administrador: Administrador
+}
 
-    class AdapImpC {
-        +importarColecciones(): List<Coleccion> colecciones
-        +importarHechosColeccion(Long id): List<Hecho> hechos
-    }
+class ContenidoMultimedia {
+    -nombre: String
+    -ruta: String
+    -formato: Formato
+}
 
-    class Etiqueta {
-        -titulo: String
-    }
+enum Formato {
+    VIDEO
+    AUDIO
+    IMAGEN
+}
 
-    enum Origen {
-        MANUAL
-        DATASET
-        CONTRIBUYENTE
-    }
+class Hecho {
+    -id: Long
+    -idHFuente: Long
+    -titulo: String
+    -descripcion: String
+    -categoria: Categoria
+    -ubicacion: Ubicacion
+    -etiquetas: <List>Etiqueta
+    -fechaAcontecimiento: LocalDate
+    -fechaCarga: LocalDate
+    -origen: Origen
+    -contribuyente: Contribuyente
+    -consensuado: <List> Consenso
+    -eliminado: Boolean
+    -fuente: Fuente
+    -idFuente: Long
+    -contenidoMultimedia: List<ContenidoMultimedia>
+    +eliminar(): Void
+    +estaEliminado(): Boolean
+    +tieneContenidoMultimedia(): Boolean
+}
 
-    class Categoria {
-        -titulo: String
-    }
+class Fuente {
+    -nombre: String
+    -path: String
+    -webClient: WebClient
+    -tipoFuente: TipoFuente
+    -adapImpH: IAdapImpH
+    -adapImpC: IAdapImpC
+    +importarHechos(): List<Hecho> hechos
+    +buscarNuevosHechos(LocalDateTime ultimaFechaRefresco): List<Hecho>
+    +eliminarHecho(Hecho hecho): void
+    +importarColecciones(): List<Coleccion> colecciones
+    +importarColeccion(Long id): Coleccion coleccion
+    +importarHechosColeccion(Long id): List<Hecho> hechos
+}
 
-    class Ubicacion {
-        -latitud: String
-        -longitud: String
-    }
+enum TipoFuente {
+    ESTATICA,
+    DIMAMICA,
+    PROXY
+}
 
-    class SolicitudEliminacion {
-        -hecho: Hecho
-        -fundamento: String
-        -estadoSolicitudEliminacion: EstadoSolicitudEliminacion
-        -fechaCreacion: LocalDateTime
-        -resolucionSolicitud: ResolucionSolicitudEliminacion
-        -contribuyente: Contribuyente
-        +serAceptada(): Void
-        +serRechazada(): Void
-    }
-
-    class Coleccion {
-        -fuente: <List> Fuente
-        -hechos: <List> Hecho
-        -hechosConsensuados: <List> Hecho
-        -titulo: String
-        -descripcion: String
-        -criterio: Criterio
-        -consenso: <List> Consenso
-        +cargarHechos(hechos: <List> Hecho): <List> Hecho
-        +consultarHechos(): <List> Hecho
-        +consultarHechos(filtros: <List> Filtro): <List> Hecho
-        +consultarHechosCurados(): <List> Hecho
-        +consultarHechosCurados(filtros: <List> Filtro): <List> Hecho
-        +agregarFiltroACriterio(filtro: Filtro): Boolean
-        +recalcularHechos(): <List> Hecho
-        +refrescar(): void
-        +refrescar(ultimoRefresco: DateTime): void
-    }
-
-    class Criterio{
-        -filtros: <List> Filtro
-
-        +cumpleCriterio(hecho: Hecho): Boolean
-        +agregarFiltro((Filtro filtro): Void
-    }
-
-    class Consensuador {
-        -stratConsenso: <List> IStratConsenso
-        +consensuarHechos(fuentes: <List> Fuentes, hecho: <List> Hecho): <List> Hecho
-        -consultarFuentes(fuentes: <List> Fuentes, hecho: <List> Hecho): <List> Hecho
-    }
-
-    class AlgConsensoMaySimple {
-        +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
-    }
-
-    class AlgConsensoMultMenciones {
-        +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
-    }
-
-    class AlgConsensoAbsoluto {
-        +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
-    }
-
-    interface IStratConsenso {
-        +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
-    }
-
-    enum Consenso {
-        ABSOLUTO,
-        MULTMENCIONES,
-        MAYSIMPLE
-    }
+interface IAdapImpH {
+    +importarHechos(WebCliente webClient,): List<Hecho> hechos
+    +buscarNuevosHechos(WebCliente webClient,LocalDateTime ultimaFechaRefresco): List<Hecho>
+    +eliminarHecho(WebCliente webClient,Hecho hecho): void
+}
 
 
+class AdapImpHDinamico {
+    +importarHechos(WebCliente webClient): List<Hecho> hechos
+    +buscarNuevosHechos(WebCliente webClient, LocalDateTime ultimaFechaRefresco): List<Hecho>
+    +eliminarHecho(WebCliente webClient, Hecho hecho): void
+}
 
-    interface Filtro{
-        +coincide(algo): Boolean
-    }
+class AdapImpHEstatico {
+    +importarHechos(WebCliente webClient): List<Hecho> hechos
+    +buscarNuevosHechos(WebCliente webClient, LocalDateTime ultimaFechaRefresco): List<Hecho>
+    +eliminarHecho(WebCliente webClient, Hecho hecho): void
+}
 
-    class RangoFechas {
-        -fechaInicio: LocalDate
-        -fechaFin: LocalDate
-    }
+class AdapImpHProxy {
+    +importarHechos(WebCliente webClient): List<Hecho> hechos
+    +buscarNuevosHechos(WebCliente webClient, LocalDateTime ultimaFechaRefresco): List<Hecho>
+    +eliminarHecho(WebCliente webClient, Hecho hecho): void
+}
 
-    class FiltroTitulo{
-        -titulo: String
-        +coincide(algo): Boolean
-    }
+interface IAdapImpC {
+    +importarColecciones(WebClient webClient): List<Coleccion> colecciones
+    +importarColeccion(WebClient webClient, Long id): Coleccion coleccion
+    +importarHechosColeccion(WebClient webClient, Long id): List<Hecho> hechos
+}
 
-    class FiltroFechaAcontecimiento{
-        -fechaAcontecimientoEntre: RangoFechas
-        +coincide(algo): Boolean
-    }
+class AdapImpC {
+    +importarColecciones(WebClient webClient, ): List<Coleccion> colecciones
+    +importarColeccion(WebClient webClient, Long id): Coleccion coleccion
+    +importarHechosColeccion(WebClient webClient, Long id): List<Hecho> hechos
+}
 
-    class FiltroCategoria{
-        -categoria: Categoria
-        +coincide(algo): Boolean
-    }
+class Etiqueta {
+    -titulo: String
+}
 
-    @enduml
+enum Origen {
+    MANUAL
+    DATASET
+    CONTRIBUYENTE
+}
+
+class Categoria {
+    -titulo: String
+}
+
+class Ubicacion {
+    -latitud: String
+    -longitud: String
+}
+
+class SolicitudEliminacion {
+    -hecho: Hecho
+    -fundamento: String
+    -estadoSolicitudEliminacion: EstadoSolicitudEliminacion
+    -fechaCreacion: LocalDateTime
+    -resolucionSolicitud: ResolucionSolicitudEliminacion
+    -contribuyente: Contribuyente
+    +serAceptada(): Void
+    +serRechazada(): Void
+}
+
+class Coleccion {
+    -fuente: <List> Fuente
+    -hechos: <List> Hecho
+    -hechosConsensuados: <List> Hecho
+    -titulo: String
+    -descripcion: String
+    -criterio: Criterio
+    -consenso: <List> Consenso
+    +cargarHechos(hechos: <List> Hecho): <List> Hecho
+    +consultarHechos(): <List> Hecho
+    +consultarHechos(filtros: <List> Filtro): <List> Hecho
+    +consultarHechosCurados(): <List> Hecho
+    +consultarHechosCurados(filtros: <List> Filtro): <List> Hecho
+    +agregarFiltroACriterio(filtro: Filtro): Boolean
+    +recalcularHechos(): <List> Hecho
+    +refrescar(): void
+    +refrescar(ultimoRefresco: DateTime): void
+}
+
+class Criterio{
+    -filtros: <List> Filtro
+
+    +cumpleCriterio(hecho: Hecho): Boolean
+    +agregarFiltro((Filtro filtro): Void
+}
+
+class Consensuador {
+    -stratConsenso: <List> IStratConsenso
+    +consensuarHechos(fuentes: <List> Fuentes, hecho: <List> Hecho): <List> Hecho
+    -consultarFuentes(fuentes: <List> Fuentes, hecho: <List> Hecho): <List> Hecho
+}
+
+class AlgConsensoMaySimple {
+    +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
+}
+
+class AlgConsensoMultMenciones {
+    +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
+}
+
+class AlgConsensoAbsoluto {
+    +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
+}
+
+interface IStratConsenso {
+    +consensuados(hechos: <List> Hecho, fuentes: <List> Fuente): <List> Hecho
+}
+
+enum Consenso {
+    ABSOLUTO,
+    MULTMENCIONES,
+    MAYSIMPLE
+}
+
+
+
+interface Filtro{
+    +coincide(algo): Boolean
+}
+
+class RangoFechas {
+    -fechaInicio: LocalDate
+    -fechaFin: LocalDate
+}
+
+class FiltroTitulo{
+    -titulo: String
+    +coincide(algo): Boolean
+}
+
+class FiltroFechaAcontecimiento{
+    -fechaAcontecimientoEntre: RangoFechas
+    +coincide(algo): Boolean
+}
+
+class FiltroCategoria{
+    -categoria: Categoria
+    +coincide(algo): Boolean
+}
+
+@enduml

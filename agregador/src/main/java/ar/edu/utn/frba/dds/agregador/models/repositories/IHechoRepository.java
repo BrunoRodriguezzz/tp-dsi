@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories;
 
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
 import java.util.List;
 
 public interface IHechoRepository {

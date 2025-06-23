@@ -14,11 +14,11 @@ import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.services.ISolicitudEliminacionService;
 import ar.edu.utn.frba.dds.agregador.services.IDetectorSpamService;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
-import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
-import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.SolicitudEliminacion;
-import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Administrador;
-import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
+import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.EstadoSolicitudEliminacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.SolicitudEliminacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Administrador;
+import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,11 +1,10 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl;
 
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOSolicitudEliminacion;
-import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.SolicitudEliminacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.SolicitudEliminacion;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import lombok.Setter;
 
 public class DAOSolicitudEliminacion implements IDAOSolicitudEliminacion {
   List<SolicitudEliminacion> solicitudesEliminacion;

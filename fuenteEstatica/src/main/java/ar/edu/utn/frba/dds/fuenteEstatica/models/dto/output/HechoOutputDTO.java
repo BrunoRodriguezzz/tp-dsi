@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output;
 
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Ubicacion;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Contribuyente;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Fuente;
 import java.util.List;

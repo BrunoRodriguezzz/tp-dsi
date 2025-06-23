@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain;
 
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Ubicacion;
 import lombok.Getter;
 import lombok.Setter;
 

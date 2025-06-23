@@ -3,7 +3,7 @@ package ar.edu.utn.frba.dds.agregador.models.repositories.impl;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOHecho;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl.DAOHecho;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
