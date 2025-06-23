@@ -11,11 +11,15 @@ import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl.AdapImp
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class Fuente {
   @Getter
   private String nombre;
+  @Getter
+  @Setter
+  private Long id;
   private String path;
   private WebClient webClient;
   @Getter

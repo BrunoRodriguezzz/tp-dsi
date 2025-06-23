@@ -9,4 +9,5 @@ public interface IDAOFuente {
   public Boolean saveAll(List<Fuente> fuentes);
   public Fuente findById(Long id);
   public Fuente findExistent(Fuente fuente);
+  public Fuente findByName(String name);
 }
