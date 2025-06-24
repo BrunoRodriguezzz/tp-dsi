@@ -13,6 +13,7 @@ import lombok.Setter;
 @Getter @Setter
 public class Coleccion {
     private Long id;
+    private Long idInternoFuente;
     private String titulo;
     private String descripcion;
     private List<Fuente> fuentes;

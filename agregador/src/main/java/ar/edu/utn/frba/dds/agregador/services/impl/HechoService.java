@@ -1,6 +1,13 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
+import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
+import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
+import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
+import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
 import java.util.List;
@@ -10,7 +17,46 @@ import org.springframework.stereotype.Service;
 @Service
 public class HechoService implements IHechoService {
   @Autowired
-  IHechoRepository hechoRepository;
+  private IHechoRepository hechoRepository;
+
+  private IColeccionService coleccionService;
+  private IFuenteService fuenteService;
+
+  public HechoService(IColeccionService coleccionService, IFuenteService fuenteService) {
+    this.coleccionService = coleccionService;
+    this.fuenteService = fuenteService;
+  }
+
+  @Override
+  public List<HechoOutputDTO> buscarHechos() {
+    List<Hecho> hechos = this.fuenteService.buscarHechos();
+    // Se guardan tambien los de la proxy, si
+    hechos = this.guardarHechos(hechos);
+    List<HechoOutputDTO> hechosDTO = HechoOutputDTO.mapHechoToDTO(hechos);
+    return hechosDTO;
+  }
+
+  @Override
+  public List<String> incorporarHecho(HechoInputDTO hechoDTO) {
+    Contribuyente contribuyente = null;
+    if(hechoDTO.getContribuyente() != null) {
+      try {
+        contribuyente = new Contribuyente(
+            hechoDTO.getContribuyente().getNombre(),
+            hechoDTO.getContribuyente().getApellido(),
+            hechoDTO.getContribuyente().getFechaNacimiento()
+        );
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+    Fuente fuente = this.fuenteService.buscarFuente(hechoDTO.getFuente());
+    Hecho hecho = HechoInputDTO.DTOToHecho(hechoDTO, contribuyente, fuente);
+    // Se hace primero para obtener el id (agregador) del hecho, que no viene por input dto
+    Hecho hechoGuardado = this.guardarHecho(hecho);
+    List<String> nombresColecciones = this.coleccionService.incorporarHecho(hechoGuardado);
+    return nombresColecciones;
+  }
 
   @Override
   public Hecho buscarHecho(Long id) {

@@ -98,4 +98,19 @@ public class ValidadorInput {
       throw new RequestException("Fuentes faltantes");
     }
   }
+
+  public static void validarFuenteInputDTO(FuenteInputDTO fuente) {
+    if(fuente.getNombre() == null || fuente.getNombre().isBlank()) {
+      throw new RequestException("Nombre faltante");
+    }
+    if(fuente.getTipoFuente() == null || fuente.getTipoFuente().isBlank()) {
+      throw new RequestException("Tipo de fuente faltante");
+    }
+    if(fuente.getPath() == null || fuente.getPath().isBlank()) {
+      throw new RequestException("Path faltante");
+    }
+    if(fuente.getIdInterno() == null) {
+      throw new RequestException("ID del interno faltante");
+    }
+  }
 }

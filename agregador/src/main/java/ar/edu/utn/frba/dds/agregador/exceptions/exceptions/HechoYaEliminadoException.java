@@ -11,6 +11,6 @@ public class HechoYaEliminadoException extends RuntimeException {
 
   public HechoYaEliminadoException(String mensaje, Hecho hecho) {
     super(mensaje);
-    this.hechoEliminado = UtilsDTO.HechoToDTO(hecho);
+    this.hechoEliminado = HechoOutputDTO.HechoToDTO(hecho);
   }
 }

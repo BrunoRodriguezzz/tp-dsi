@@ -20,6 +20,7 @@ public class Fuente {
   @Getter
   @Setter
   private Long id;
+  private Long idInternoFuente;
   private String path;
   private WebClient webClient;
   @Getter
@@ -27,10 +28,11 @@ public class Fuente {
   private IAdapImpH iAdapImpH;
   private IAdapImpC iAdapImpC;
 
-  public Fuente(String nombre, String path, TipoFuente tipoFuente) {
+  public Fuente(String nombre, String path, TipoFuente tipoFuente, Long idInternoFuente) {
     this.nombre = nombre;
     this.path = path;
     this.tipoFuente = tipoFuente;
+    this.idInternoFuente = idInternoFuente;
     // Dependiendo el tipo de fuente se configura el Adapter y otras cuestiones particulares
     switch(tipoFuente) {
       case DINAMICA -> {
@@ -59,15 +61,17 @@ public class Fuente {
 
   public List<Hecho> importarHechos() {
     List<Hecho> hechos = iAdapImpH.importarHechos(this.webClient);
+    hechos.stream().forEach(h -> h.setFuente(this));
     return hechos;
   }
 
   public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
     List<Hecho> hechos = iAdapImpH.buscarNuevosHechos(ultimaFechaRefresco, this.webClient);
+    hechos.stream().forEach(h -> h.setFuente(this));
     return hechos;
   }
 
-  public void eliminarHecho(Hecho hecho, WebClient webClient) {
+  public void eliminarHecho(Hecho hecho) {
     this.iAdapImpH.eliminarHecho(hecho, webClient);
   }
 

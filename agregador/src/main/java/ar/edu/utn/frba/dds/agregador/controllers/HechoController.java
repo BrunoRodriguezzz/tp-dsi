@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.agregador.controllers.validadores.ValidadorInput;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
+import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.services.ISeederService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,24 +18,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/agregador")
+@RequestMapping("/hechos")
 @CrossOrigin(origins = "http://localhost:8082")
-public class AgregadorController {
+public class HechoController {
   @Autowired
-  private IAgregadorService agregadorService;
+  private IHechoService hechoService;
 
   @Autowired
   private ISeederService seederService;
 
-  @GetMapping("/inicializacion")
-  public ResponseEntity inicializarDatos() {
-    this.seederService.init();
-    return ResponseEntity.status(HttpStatus.OK).build();
-  }
-
-  @GetMapping("/hechos")
+  @GetMapping
   public ResponseEntity buscarHechos() {
-    List<HechoOutputDTO> hechos = this.agregadorService.buscarHechos();
+    List<HechoOutputDTO> hechos = this.hechoService.buscarHechos();
     if(hechos.isEmpty()){
       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -42,17 +37,10 @@ public class AgregadorController {
   }
 
   // Incorpora nuevos hechos que le envíen las fuentes(push based)
-  @PostMapping("/hechos")
+  @PostMapping
   public ResponseEntity incorporarHecho(@RequestBody HechoInputDTO hecho) {
     ValidadorInput.validarHechoInputDTO(hecho);
-    List<String> incorporadoEn = this.agregadorService.incorporarHecho(hecho);
+    List<String> incorporadoEn = this.hechoService.incorporarHecho(hecho);
     return ResponseEntity.status(HttpStatus.OK).body(incorporadoEn);
-  }
-
-  // TODO: Borrar esto, creado para tests nada más
-  @GetMapping("/refresco")
-  public ResponseEntity refrescarColecciones() {
-    this.agregadorService.refrescarColecciones();
-    return ResponseEntity.status(HttpStatus.OK).build();
   }
 }

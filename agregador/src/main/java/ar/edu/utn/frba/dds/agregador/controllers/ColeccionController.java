@@ -62,8 +62,12 @@ public class ColeccionController {
   public ResponseEntity guardarColeccion(@RequestBody ColeccionInputDTO coleccion) {
     ValidadorInput.validarColeccionInput(coleccion);
     ColeccionOutputDTO coleccionOutputDTO = coleccionService.guardarColeccion(coleccion);
+    // TODO: Cargar fuentes ID -> Long
     return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
   }
+
+  // TODO: Poner y sacar fuentes
+  // TODO: Poner y sacar filtros al criterio
 
   @PutMapping("/{id}")
   public ResponseEntity actualizarColeccion(@PathVariable("id") Long id, @RequestBody ColeccionInputDTO coleccion) {
@@ -82,5 +86,12 @@ public class ColeccionController {
     }
     coleccionService.eliminarColeccion(id);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+  }
+
+  // TODO: Borrar esto, creado para tests nada más
+  @GetMapping("/refresco")
+  public ResponseEntity refrescarColecciones() {
+    this.coleccionService.refrescarColecciones();
+    return ResponseEntity.status(HttpStatus.OK).build();
   }
 }

@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface IFuenteRepository {
   public Fuente guardarFuente(Fuente fuente);
-  public Boolean inicializarFuentes(List<Fuente> fuentes);
-  public Fuente buscarFuenteID(Long id);
-  public List<Fuente> guardarFuente(List<Fuente> hechos);
+  public Fuente buscarFuente(Long id);
+  public Fuente buscarFuente(String nombre);
   public Fuente buscarFuenteNombre(String nombre);
+  public List<Fuente> buscarFuentes();
 }

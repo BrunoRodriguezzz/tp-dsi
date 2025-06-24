@@ -3,7 +3,8 @@ package ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl;
 import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpH;
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.external.HechoServicioResponseDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ public class AdapImpHDinamico implements IAdapImpH {
             .path("/hechos") // TODO: Corregir menos harcodeado
             .build())
         .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<List<HechoServicioResponseDTO>>() {})
+        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
         .map(this::servicioResponseToHechos).block();
   }
 
@@ -36,7 +37,7 @@ public class AdapImpHDinamico implements IAdapImpH {
             .queryParam("dateTimeGT", ultimaFechaRefresco.toString())
             .build())
         .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<List<HechoServicioResponseDTO>>() {})
+        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
         .map(this::servicioResponseToHechos).block(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
   }
 
@@ -45,16 +46,16 @@ public class AdapImpHDinamico implements IAdapImpH {
     webClient.patch()
         .uri(uriBuilder -> uriBuilder
             .path("/eliminacion/{id}")
-            .build(hecho.getIdHFuente()))
-        .bodyValue(UtilsDTO.HechoToDTO(hecho))
+            .build(hecho.getIdInternoFuente()))
+        .bodyValue(HechoOutputDTO.HechoToDTO(hecho))
         .retrieve()
         .toBodilessEntity()
         .block();
   }
 
-  private List<Hecho> servicioResponseToHechos(List<HechoServicioResponseDTO> hechosDTO) {
+  private List<Hecho> servicioResponseToHechos(List<HechoInputDTO> hechosDTO) {
     return hechosDTO
         .stream()
-        .map(UtilsDTO::hechoServicioResponseDTOtoHecho).collect(Collectors.toList());
+        .map(HechoInputDTO::DTOToHecho).collect(Collectors.toList());
   }
 }

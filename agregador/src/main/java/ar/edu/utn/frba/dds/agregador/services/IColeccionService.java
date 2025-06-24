@@ -14,7 +14,7 @@ public interface IColeccionService {
   public List<String> incorporarHecho(Hecho hecho);
   public Boolean eliminarHechoDeColecciones(Hecho hecho);
   public void incorporarHechos(List<Hecho> hecho);
-
+  public void refrescarColecciones();
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccion);
   public ColeccionOutputDTO actualizarColeccion(Long id, ColeccionInputDTO coleccion);
   public void eliminarColeccion(Long id);

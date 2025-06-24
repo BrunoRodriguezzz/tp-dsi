@@ -11,6 +11,6 @@ public class HechoYaExistenteException extends RuntimeException {
 
   public HechoYaExistenteException(String mensaje, Hecho hecho) {
     super(mensaje);
-    this.hechoExistente = UtilsDTO.HechoToDTO(hecho);
+    this.hechoExistente = HechoOutputDTO.HechoToDTO(hecho);
   }
 }

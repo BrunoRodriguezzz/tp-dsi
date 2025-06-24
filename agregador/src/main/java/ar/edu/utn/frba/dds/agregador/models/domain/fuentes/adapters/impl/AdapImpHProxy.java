@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -77,7 +76,7 @@ public class AdapImpHProxy implements IAdapImpH {
     webClient.delete()
         .uri(uriBuilder -> uriBuilder
             .path("/hechos/{id}")
-            .build(hecho.getIdHFuente()))
+            .build(hecho.getIdInternoFuente()))
         .retrieve()
         .toBodilessEntity()
         .block();

@@ -30,24 +30,23 @@ public class FuenteRepository implements IFuenteRepository {
   }
 
   @Override
-  public Boolean inicializarFuentes(List<Fuente> fuentes) {
-    fuentes.forEach(this::guardarFuente);
-    return true;
-  }
-
-  @Override
-  public Fuente buscarFuenteID(Long id) {
+  public Fuente buscarFuente(Long id) {
     return this.dao.findById(id);
   }
 
   @Override
-  public List<Fuente> guardarFuente(List<Fuente> fuentes) {
-    fuentes.forEach(this::guardarFuente);
-    return fuentes;
+  public Fuente buscarFuente(String nombre) {
+    return this.dao.findByName(nombre);
   }
 
   @Override
   public Fuente buscarFuenteNombre(String nombre) {
     return this.dao.findByName(nombre);
+  }
+
+  @Override
+  public List<Fuente> buscarFuentes() {
+    List<Fuente> fuentes = this.dao.findAll();
+    return fuentes;
   }
 }

@@ -19,7 +19,7 @@ public class DAOHecho implements IDAOHecho {
       Hecho hechoExistente = existente.get();
 
       hechoExistente.setTitulo(hecho.getTitulo());
-      hechoExistente.setIdHFuente(hecho.getIdHFuente());
+      hechoExistente.setIdInternoFuente(hecho.getIdInternoFuente());
       hechoExistente.setDescripcion(hecho.getDescripcion());
       hechoExistente.setContribuyente(hecho.getContribuyente());
       hechoExistente.setUbicacion(hecho.getUbicacion());
@@ -54,7 +54,7 @@ public class DAOHecho implements IDAOHecho {
 
   public Hecho findExistent(Hecho hecho) {
     Hecho hechoExistente = this.hechos.stream().filter(h ->
-                h.getIdHFuente().equals(hecho.getIdHFuente()) &&
+                h.getIdInternoFuente().equals(hecho.getIdInternoFuente()) &&
                 h.getOrigen().equals(hecho.getOrigen())
         ).findFirst().orElse(null);
     return hechoExistente;

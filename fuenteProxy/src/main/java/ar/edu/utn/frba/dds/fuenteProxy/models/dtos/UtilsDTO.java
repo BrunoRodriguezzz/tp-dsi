@@ -2,9 +2,11 @@ package ar.edu.utn.frba.dds.fuenteProxy.models.dtos;
 
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputFuenteDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.ContribuyenteDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuenteAgregador;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
 
 import java.util.ArrayList;
@@ -60,6 +62,20 @@ public class UtilsDTO {
         output.setNombre(fuente.getNombre());
         output.setHechos(hechosDTO);
 
+        return output;
+    }
+
+  public static Fuente toFuente(InputFuenteDTO inputFuenteDTO) {
+        // TODO: COMO SABEMOS EL TIPO??
+        return null;
+  }
+
+    public static OutputFuenteAgregador toOutputFuenteAgregador(Fuente fuente) {
+        OutputFuenteAgregador output = new OutputFuenteAgregador();
+        output.setNombre(fuente.getNombre());
+        output.setPath(fuente.getRuta());
+        //output.setTipoFuente(fuente.getTipoFuente()); TODO: Ver como lo hacemos
+        output.setIdInterno(fuente.getId());
         return output;
     }
 }

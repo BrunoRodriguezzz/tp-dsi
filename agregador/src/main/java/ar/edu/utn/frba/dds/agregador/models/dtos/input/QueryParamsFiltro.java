@@ -25,7 +25,7 @@ public class QueryParamsFiltro {
         filtros.add(new FiltroCategoria(new Categoria(categoria)));
       } catch(Exception e){throw new RuntimeException("Categoria invalida");}
     }
-    if(fechaInicio != null && !fechaInicio.isEmpty() && fechaFin != null && !fechaFin.isEmpty()) {
+    if((fechaInicio != null && !fechaInicio.isEmpty()) || (fechaFin != null && !fechaFin.isEmpty())) {
       try{
         filtros.add(new FiltroFechaAcontecimiento(new RangoFechas(LocalDate.parse(fechaInicio), LocalDate.parse(fechaFin))));
       } catch(Exception e){throw new RuntimeException("Rango fechas invalida");}

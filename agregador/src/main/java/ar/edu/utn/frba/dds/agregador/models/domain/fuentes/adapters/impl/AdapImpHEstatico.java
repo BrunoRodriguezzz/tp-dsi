@@ -79,7 +79,7 @@ public class AdapImpHEstatico implements IAdapImpH {
     webClient.delete()
         .uri(uriBuilder -> uriBuilder
             .path("/hechos/{id}")
-            .build(hecho.getIdHFuente()))
+            .build(hecho.getIdInternoFuente()))
         .retrieve()
         .toBodilessEntity()
         .block();

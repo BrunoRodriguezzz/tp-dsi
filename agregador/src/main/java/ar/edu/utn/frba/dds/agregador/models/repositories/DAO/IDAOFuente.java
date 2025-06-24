@@ -10,4 +10,5 @@ public interface IDAOFuente {
   public Fuente findById(Long id);
   public Fuente findExistent(Fuente fuente);
   public Fuente findByName(String name);
+  public List<Fuente> findAll();
 }

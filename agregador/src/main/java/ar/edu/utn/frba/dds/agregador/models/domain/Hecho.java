@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter @Setter
 public class Hecho {
     private Long id;
-    private Long idHFuente;
+    private Long idInternoFuente;
     private String titulo;
     private String descripcion;
     private Categoria categoria;
@@ -32,7 +32,6 @@ public class Hecho {
     private Contribuyente contribuyente;
     private Boolean estaEliminado;
     private Fuente fuente;
-    private Long idFuente;
     private List<ContenidoMultimedia> contenidoMultimedia;
 
     public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) throws FechaInvalidaException, TituloInvalidoException, DescripcionInvalidaException {
@@ -82,7 +81,7 @@ public class Hecho {
             this.ubicacion.getLongitud().equals(hecho.getUbicacion().getLongitud()) &&
             this.fechaAcontecimiento.equals(hecho.fechaAcontecimiento) &&
             this.id.equals(hecho.getId()) &&
-            this.idHFuente.equals(hecho.getIdHFuente()) &&
+            this.idInternoFuente.equals(hecho.getIdInternoFuente()) &&
             this.origen.equals(hecho.getOrigen()) &&
             this.fuente.equals(hecho.getFuente());
         return resultado;

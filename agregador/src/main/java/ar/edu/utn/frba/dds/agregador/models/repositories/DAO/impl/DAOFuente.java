@@ -55,4 +55,9 @@ public class DAOFuente implements IDAOFuente {
             .findFirst()
             .orElse(null);
   }
+
+  @Override
+  public List<Fuente> findAll() {
+    return this.fuentes;
+  }
 }

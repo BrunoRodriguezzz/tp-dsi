@@ -12,8 +12,8 @@ import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,20 +26,24 @@ public class ColeccionService implements IColeccionService {
 
   private IFuenteService fuenteService;
   private IHechoService hechoService;
+  private LocalDateTime ultimaFechaRefresco;
 
   public ColeccionService(IFuenteService fuenteService, HechoService hechoService) {
     this.hechoService = hechoService;
     this.fuenteService = fuenteService;
+    this.ultimaFechaRefresco = LocalDateTime.now().minusDays(1); // TODO: Debería persistirse
   }
 
   public List<ColeccionOutputDTO> buscarColecciones() {
-      List <Coleccion> colecciones = this.coleccionRepository.buscarCopiaColecciones();
-//    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
-//    List<Hecho> hechosGuardados = this.hechoService.guardarHechos(hechosProxy);
-//    colecciones.forEach(coleccion -> {
-//      coleccion.cargarHechos(hechosGuardados);
-//    });
-    List <ColeccionOutputDTO> coleccionesDTO = UtilsDTO.mapColeccionesToDTO(colecciones);
+    List <Coleccion> colecciones = this.coleccionRepository.buscarCopiaColecciones();
+    // TODO: Pedirle a la proxy solo los hechos de las fuentes que use. No todos, evitar consultas al pedo
+    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
+    List<Hecho> hechosGuardados = this.hechoService.guardarHechos(hechosProxy);
+    colecciones.forEach(coleccion -> {
+      coleccion.cargarHechos(hechosGuardados);
+    });
+    // TODO: Buscar colecciones del servicio PROXY
+    List <ColeccionOutputDTO> coleccionesDTO = ColeccionOutputDTO.mapColeccionesToDTO(colecciones);
     return coleccionesDTO;
   }
 
@@ -48,15 +52,16 @@ public class ColeccionService implements IColeccionService {
     List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
     coleccion.cargarHechos(hechosProxy);
     List<Hecho> hechosOutput = coleccion.consultarHechos(params.instanciarFiltros());
-    List<HechoOutputDTO> hechosOutputDTO = UtilsDTO.mapHechoToDTO(hechosOutput);
+    List<HechoOutputDTO> hechosOutputDTO = HechoOutputDTO.mapHechoToDTO(hechosOutput);
     return hechosOutputDTO;
   }
 
   public ColeccionOutputDTO buscarColeccion(Long id) {
     Coleccion coleccion = this.coleccionRepository.buscarCopiaColeccion(id);
+    // TODO: Pedirle a la proxy solo los hechos de las fuentes que use. No todos, evitar consultas al pedo
     List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
     coleccion.cargarHechos(hechosProxy);
-    ColeccionOutputDTO coleccionDTO = UtilsDTO.coleccionToDTO(coleccion);
+    ColeccionOutputDTO coleccionDTO = ColeccionOutputDTO.coleccionToDTO(coleccion);
     return coleccionDTO;
   }
 
@@ -87,10 +92,10 @@ public class ColeccionService implements IColeccionService {
 
   @Override
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
-    Coleccion coleccion = UtilsDTO.inputColeccionToColeccion(coleccionInputDTO);
-    // TODO: Funcion que le cargue los hechos
+    // TODO: Buscar fuentes de la coleccion para transformar el input en una instancia de Colecciòn
+    Coleccion coleccion = ColeccionInputDTO.inputColeccionToColeccion(coleccionInputDTO);
     this.coleccionRepository.guardarColeccion(coleccion);
-    return UtilsDTO.coleccionToDTO(coleccion);
+    return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
   @Override
@@ -101,7 +106,7 @@ public class ColeccionService implements IColeccionService {
     }
     this.actualizarDatosColeccion(coleccion, coleccionInputDTO);
     this.coleccionRepository.guardarColeccion(coleccion);
-    return UtilsDTO.coleccionToDTO(coleccion);
+    return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
   @Override
@@ -109,7 +114,7 @@ public class ColeccionService implements IColeccionService {
       coleccionRepository.eliminarColeccion(id);
   }
 
-    // ---------------------------------------------------- Privados ----------------------------------------------------
+  // ---------------------------------------------------- Privados ----------------------------------------------------
   private List<String> agregarHechoAColecciones(List<Coleccion> colecciones, Hecho hecho) {
     List<String> nombreColecciones = new ArrayList<>();
     colecciones.forEach(coleccion -> {
@@ -139,14 +144,16 @@ public class ColeccionService implements IColeccionService {
       if (coleccionInputDTO.getNombre() != null) {
           coleccion.setTitulo(coleccionInputDTO.getNombre());
       }
-
       if (coleccionInputDTO.getDescripcion() != null) {
           coleccion.setDescripcion(coleccionInputDTO.getDescripcion());
       }
+  }
 
-      List<Filtro> filtros = UtilsDTO.crearFiltros(coleccionInputDTO);
-      if (!filtros.isEmpty()) {
-        coleccion.getCriterio().setFiltros(filtros);
-      }
+  @Override
+  public void refrescarColecciones(){
+    List<Hecho> nuevosHechos = this.fuenteService.buscarNuevosHechos(this.ultimaFechaRefresco);
+    List<Hecho> hechos = this.hechoService.guardarHechos(nuevosHechos);
+    this.incorporarHechos(hechos);
+    this.ultimaFechaRefresco = LocalDateTime.now();
   }
 }
