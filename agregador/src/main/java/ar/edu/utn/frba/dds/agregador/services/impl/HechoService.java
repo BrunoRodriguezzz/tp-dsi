@@ -12,6 +12,7 @@ import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,11 +20,9 @@ public class HechoService implements IHechoService {
   @Autowired
   private IHechoRepository hechoRepository;
 
-  private IColeccionService coleccionService;
   private IFuenteService fuenteService;
 
-  public HechoService(IColeccionService coleccionService, IFuenteService fuenteService) {
-    this.coleccionService = coleccionService;
+  public HechoService(IFuenteService fuenteService) {
     this.fuenteService = fuenteService;
   }
 
@@ -37,7 +36,7 @@ public class HechoService implements IHechoService {
   }
 
   @Override
-  public List<String> incorporarHecho(HechoInputDTO hechoDTO) {
+  public Hecho incorporarHecho(HechoInputDTO hechoDTO) {
     Contribuyente contribuyente = null;
     if(hechoDTO.getContribuyente() != null) {
       try {
@@ -52,10 +51,8 @@ public class HechoService implements IHechoService {
     }
     Fuente fuente = this.fuenteService.buscarFuente(hechoDTO.getFuente());
     Hecho hecho = HechoInputDTO.DTOToHecho(hechoDTO, contribuyente, fuente);
-    // Se hace primero para obtener el id (agregador) del hecho, que no viene por input dto
     Hecho hechoGuardado = this.guardarHecho(hecho);
-    List<String> nombresColecciones = this.coleccionService.incorporarHecho(hechoGuardado);
-    return nombresColecciones;
+    return hechoGuardado;
   }
 
   @Override

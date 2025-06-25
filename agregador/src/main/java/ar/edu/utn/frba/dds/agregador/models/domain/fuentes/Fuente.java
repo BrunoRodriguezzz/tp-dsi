@@ -60,28 +60,28 @@ public class Fuente {
   }
 
   public List<Hecho> importarHechos() {
-    List<Hecho> hechos = iAdapImpH.importarHechos(this.webClient);
+    List<Hecho> hechos = iAdapImpH.importarHechos(this.webClient, this.idInternoFuente);
     hechos.stream().forEach(h -> h.setFuente(this));
     return hechos;
   }
 
   public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
-    List<Hecho> hechos = iAdapImpH.buscarNuevosHechos(ultimaFechaRefresco, this.webClient);
+    List<Hecho> hechos = iAdapImpH.buscarNuevosHechos(ultimaFechaRefresco, this.webClient, this.idInternoFuente);
     hechos.stream().forEach(h -> h.setFuente(this));
     return hechos;
   }
 
   public void eliminarHecho(Hecho hecho) {
-    this.iAdapImpH.eliminarHecho(hecho, webClient);
+    this.iAdapImpH.eliminarHecho(hecho, webClient, this.idInternoFuente);
   }
 
   public List<Coleccion> importarColecciones() {
-    List<Coleccion> colecciones = iAdapImpC.importarColecciones(this.webClient);
+    List<Coleccion> colecciones = iAdapImpC.importarColecciones(this.webClient, this.idInternoFuente);
     return colecciones;
   }
 
   public Coleccion importarColeccion(Long id) {
-    Coleccion coleccion = iAdapImpC.importarColeccion(this.webClient, id);
+    Coleccion coleccion = iAdapImpC.importarColeccion(this.webClient, id,this.idInternoFuente);
     return coleccion;
   }
 
@@ -90,7 +90,7 @@ public class Fuente {
       throw new RuntimeException("El tipo de fuente no es PROXY, no se le debería pedir Colecciones");
     }
     else {
-      List<Hecho> hechos = iAdapImpC.importarHechosColeccion(this.webClient, id);
+      List<Hecho> hechos = iAdapImpC.importarHechosColeccion(this.webClient, id, this.idInternoFuente);
       return hechos;
     }
   }

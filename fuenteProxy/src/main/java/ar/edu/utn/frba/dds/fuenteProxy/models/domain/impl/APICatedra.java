@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.TipoFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.PaginaHechoDTO;

@@ -19,7 +19,7 @@ public class AdapImpHEstatico implements IAdapImpH {
   private AdapImpHEstatico() {} // Constructor privado para evitar instanciación externa
 
   @Override
-  public List<Hecho> importarHechos(WebClient webClient) {
+  public List<Hecho> importarHechos(WebClient webClient, Long idInternoFuente) {
     List<FuenteResponseDTO> respuesta;
     try {
       respuesta = webClient.get()
@@ -49,11 +49,11 @@ public class AdapImpHEstatico implements IAdapImpH {
       return Collections.emptyList();
     }
 
-    return UtilsDTO.servicioResponseToHechos(respuesta);
+    return FuenteResponseDTO.servicioResponseToHechos(respuesta);
   }
 
   @Override
-  public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient) {
+  public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient, Long idInternoFuente) {
     List<FuenteResponseDTO> respuesta = webClient.get()
         .uri(uriBuilder -> uriBuilder
             .path("/hechos")
@@ -66,7 +66,7 @@ public class AdapImpHEstatico implements IAdapImpH {
     List<Hecho> respuestaFinal = new ArrayList<>();
     if(respuesta != null) {
       respuesta.stream().map(response -> {
-        List<Hecho> hechos = UtilsDTO.servicioResponseToHechos(respuesta);
+        List<Hecho> hechos = FuenteResponseDTO.servicioResponseToHechos(respuesta);
         respuestaFinal.addAll(hechos);
         return hechos;
       }).toList(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
@@ -75,7 +75,7 @@ public class AdapImpHEstatico implements IAdapImpH {
   }
 
   @Override
-  public void eliminarHecho(Hecho hecho, WebClient webClient) {
+  public void eliminarHecho(Hecho hecho, WebClient webClient, Long idInternoFuente) {
     webClient.delete()
         .uri(uriBuilder -> uriBuilder
             .path("/hechos/{id}")

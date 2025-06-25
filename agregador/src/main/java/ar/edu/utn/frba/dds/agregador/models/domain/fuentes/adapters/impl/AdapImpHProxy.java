@@ -19,21 +19,18 @@ public class AdapImpHProxy implements IAdapImpH {
   private AdapImpHProxy() {} // Constructor privado para evitar instanciación externa
 
   @Override
-  public List<Hecho> importarHechos(WebClient webClient) {
+  public List<Hecho> importarHechos(WebClient webClient, Long idInternoFuente) {
     try {
       List<FuenteResponseDTO> respuesta = webClient.get()
           .uri(uriBuilder -> uriBuilder
-              .path("/hechos")
+              .path("/hechos/filtered")
+              .queryParam("fuenteId", idInternoFuente)
               .build())
           .retrieve()
           .bodyToMono(new ParameterizedTypeReference<List<FuenteResponseDTO>>() {})
-          .doOnError(error -> {
-            // Registro detallado del error
-            System.err.println("Error al obtener los hechos: " + error.getMessage());
-            error.printStackTrace();
-          })
           .onErrorMap(error -> {
-            // Transformar la excepción en una más específica
+            System.err.println("ERROR al hacer request: " + error.getClass().getSimpleName() + " - " + error.getMessage());
+            error.printStackTrace(); // esto te da todo el detalle
             return new RuntimeException("Error al consumir el servicio de hechos", error);
           })
           .block();
@@ -42,9 +39,8 @@ public class AdapImpHProxy implements IAdapImpH {
         return Collections.emptyList();
       }
 
-      return UtilsDTO.servicioResponseToHechos(respuesta);
+      return FuenteResponseDTO.servicioResponseToHechos(respuesta);
     } catch (Exception e) {
-      // Manejo de excepciones no controladas
       System.err.println("Excepción inesperada: " + e.getMessage());
       e.printStackTrace();
       return Collections.emptyList();
@@ -52,19 +48,19 @@ public class AdapImpHProxy implements IAdapImpH {
   }
 
   @Override
-  public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient) {
+  public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient, Long idInternoFuente) {
     List<FuenteResponseDTO> respuesta = webClient.get()
         .uri(uriBuilder -> uriBuilder
-            .path("/hechos")
+            .path("/hechos/filtered")
+            .queryParam("fuenteId", idInternoFuente)
             .queryParam("dateTimeGT", ultimaFechaRefresco.toString())
             .build())
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<FuenteResponseDTO>>() {})
         .block();
-
     List<Hecho> respuestaFinal = new ArrayList<>();
     respuesta.stream().map(response -> {
-      List<Hecho> hechos = UtilsDTO.servicioResponseToHechos(respuesta);
+      List<Hecho> hechos = FuenteResponseDTO.servicioResponseToHechos(respuesta);
       respuestaFinal.addAll(hechos);
       return hechos;
     }).toList(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
@@ -72,7 +68,7 @@ public class AdapImpHProxy implements IAdapImpH {
   }
 
   @Override
-  public void eliminarHecho(Hecho hecho, WebClient webClient) {
+  public void eliminarHecho(Hecho hecho, WebClient webClient, Long idInternoFuente) {
     webClient.delete()
         .uri(uriBuilder -> uriBuilder
             .path("/hechos/{id}")

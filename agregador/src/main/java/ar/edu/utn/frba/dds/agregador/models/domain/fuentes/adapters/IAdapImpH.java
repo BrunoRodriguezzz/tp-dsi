@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public interface IAdapImpH {
-    public List<Hecho> importarHechos(WebClient webClient);
-    public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient);
-    public void eliminarHecho(Hecho hecho, WebClient webClient);
+    public List<Hecho> importarHechos(WebClient webClient, Long idInternoFuente);
+    public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient, Long idInternoFuente);
+    public void eliminarHecho(Hecho hecho, WebClient webClient, Long idInternoFuente);
 }

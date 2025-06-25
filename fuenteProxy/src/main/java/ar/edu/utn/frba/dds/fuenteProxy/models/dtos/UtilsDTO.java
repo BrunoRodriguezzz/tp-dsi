@@ -4,7 +4,6 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputFuenteDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
-import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.ContribuyenteDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuenteAgregador;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
@@ -14,6 +13,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UtilsDTO {
+    private static final String rutaProxy = "http://localhost:8083";
+
     public static OutputHecho hechoToDtoOutput(HechoProxy hecho) {
         OutputHecho dto = new OutputHecho();
         dto.setId(hecho.getId());
@@ -73,8 +74,8 @@ public class UtilsDTO {
     public static OutputFuenteAgregador toOutputFuenteAgregador(Fuente fuente) {
         OutputFuenteAgregador output = new OutputFuenteAgregador();
         output.setNombre(fuente.getNombre());
-        output.setPath(fuente.getRuta());
-        //output.setTipoFuente(fuente.getTipoFuente()); TODO: Ver como lo hacemos
+        output.setPath(rutaProxy);
+        output.setTipoFuente("PROXY");
         output.setIdInterno(fuente.getId());
         return output;
     }

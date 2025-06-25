@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public interface IAdapImpC {
-  public List<Coleccion> importarColecciones(WebClient webClient);
-  public Coleccion importarColeccion(WebClient webClient, Long id);
-  public List<Hecho> importarHechosColeccion(WebClient webClient, Long id);
+  public List<Coleccion> importarColecciones(WebClient webClient, Long idInternoFuente);
+  public Coleccion importarColeccion(WebClient webClient, Long id, Long idInternoFuente);
+  public List<Hecho> importarHechosColeccion(WebClient webClient, Long id, Long idInternoFuente);
 }

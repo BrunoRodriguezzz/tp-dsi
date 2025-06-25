@@ -29,10 +29,9 @@ public class DAOHecho implements IDAOHecho {
       hechoExistente.setOrigen(hecho.getOrigen());
       hechoExistente.setContribuyente(hecho.getContribuyente());
       hechoExistente.setEstaEliminado(hecho.getEstaEliminado());
-      if(hecho.getIdFuente() != null){
-        hechoExistente.setIdFuente(hecho.getIdFuente());
+      if(hecho.getFuente() != null){
+        hechoExistente.setFuente(hecho.getFuente());
       }
-      hechoExistente.setFuente(hecho.getFuente());
       hechoExistente.setContenidoMultimedia(hecho.getContenidoMultimedia());
 
       return hechoExistente;

@@ -25,11 +25,6 @@ public class ColeccionInputDTO {
             throw new RuntimeException("Filtros vacios");
         }
         criterio.setFiltros(filtros);
-//    List<Fuente> fuentes = UtilsDTO.crearFuentes(coleccionInputDTO.getFuentes()); Esto es lo que vamos a tener que hacer en el futuro.
-        List<String> fuentes = new ArrayList<>();
-        coleccionInputDTO.getFuentes().forEach(fuente -> fuentes.add(fuente.getNombre()));
-
-
         return new Coleccion(coleccionInputDTO.getNombre(), coleccionInputDTO.getDescripcion(), fuentes, criterio);
     }
 }

@@ -19,43 +19,46 @@ public class AdapImpHDinamico implements IAdapImpH {
   private AdapImpHDinamico() {} // Constructor privado para evitar instanciación externa
 
   @Override
-  public List<Hecho> importarHechos(WebClient webClient) {
-    return webClient.get()
-        .uri(uriBuilder -> uriBuilder
-            .path("/hechos") // TODO: Corregir menos harcodeado
-            .build())
-        .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
-        .map(this::servicioResponseToHechos).block();
+  public List<Hecho> importarHechos(WebClient webClient, Long idInternoFuente) {
+//    return webClient.get()
+//        .uri(uriBuilder -> uriBuilder
+//            .path("/hechos") // TODO: Corregir menos harcodeado
+//            .build())
+//        .retrieve()
+//        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
+//        .map(this::servicioResponseToHechos).block();
+    return null; // TODO: Arreglar
   }
 
   @Override
-  public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient) {
-    return webClient.get()
-        .uri(uriBuilder -> uriBuilder
-            .path("/hechos")
-            .queryParam("dateTimeGT", ultimaFechaRefresco.toString())
-            .build())
-        .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
-        .map(this::servicioResponseToHechos).block(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
+  public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient, Long idInternoFuente) {
+//    return webClient.get()
+//        .uri(uriBuilder -> uriBuilder
+//            .path("/hechos")
+//            .queryParam("dateTimeGT", ultimaFechaRefresco.toString())
+//            .build())
+//        .retrieve()
+//        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
+//        .map(this::servicioResponseToHechos).block(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
+    return null; // TODO: Arreglar
   }
 
   @Override
-  public void eliminarHecho(Hecho hecho, WebClient webClient) {
-    webClient.patch()
-        .uri(uriBuilder -> uriBuilder
-            .path("/eliminacion/{id}")
-            .build(hecho.getIdInternoFuente()))
-        .bodyValue(HechoOutputDTO.HechoToDTO(hecho))
-        .retrieve()
-        .toBodilessEntity()
-        .block();
+  public void eliminarHecho(Hecho hecho, WebClient webClient, Long idInternoFuente) {
+//    webClient.patch()
+//        .uri(uriBuilder -> uriBuilder
+//            .path("/eliminacion/{id}")
+//            .build(hecho.getIdInternoFuente()))
+//        .bodyValue(HechoOutputDTO.HechoToDTO(hecho))
+//        .retrieve()
+//        .toBodilessEntity()
+//        .block();
   }
 
-  private List<Hecho> servicioResponseToHechos(List<HechoInputDTO> hechosDTO) {
-    return hechosDTO
-        .stream()
-        .map(HechoInputDTO::DTOToHecho).collect(Collectors.toList());
+  private List<Hecho> servicioResponseToHechos(List<HechoInputDTO> hechosDTO, Long idInternoFuente) {
+//    return hechosDTO
+//        .stream()
+//        .map(HechoInputDTO::DTOToHecho).collect(Collectors.toList());
+    return null; // TODO: Arreglar
   }
 }

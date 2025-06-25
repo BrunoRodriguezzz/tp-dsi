@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IHechoService {
   public List<HechoOutputDTO> buscarHechos();
-  public List<String> incorporarHecho(HechoInputDTO hecho);
+  public Hecho incorporarHecho(HechoInputDTO hecho);
   public Hecho guardarHecho(Hecho hecho);
   public Hecho buscarHecho(Long id);
   public List<Hecho> guardarHechos(List<Hecho> hechos);

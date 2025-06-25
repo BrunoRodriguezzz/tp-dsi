@@ -25,6 +25,9 @@ public class HechoController {
   private IHechoService hechoService;
 
   @Autowired
+  private IAgregadorService agregadorService;
+
+  @Autowired
   private ISeederService seederService;
 
   @GetMapping
@@ -40,7 +43,7 @@ public class HechoController {
   @PostMapping
   public ResponseEntity incorporarHecho(@RequestBody HechoInputDTO hecho) {
     ValidadorInput.validarHechoInputDTO(hecho);
-    List<String> incorporadoEn = this.hechoService.incorporarHecho(hecho);
+    List<String> incorporadoEn = this.agregadorService.incorporarHecho(hecho);
     return ResponseEntity.status(HttpStatus.OK).body(incorporadoEn);
   }
 }

@@ -8,14 +8,14 @@ import lombok.Data;
 @Data
 public class OutputHecho {
     private Long id;
-    private ContribuyenteDTO contribuyente;
     private String titulo;
     private String descripcion;
     private String categoria;
-    private List<String> contenidoMultimedia;
     private Ubicacion ubicacion;
     private String fechaAcontecimiento;
-    private List<String> etiquetas;
+    private ContribuyenteDTO contribuyente;
     private Origen origen;
     private String fuente;
+    private List<String> contenidoMultimedia;
+    private List<String> etiquetas;
 }

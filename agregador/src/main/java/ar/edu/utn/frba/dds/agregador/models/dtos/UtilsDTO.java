@@ -55,22 +55,4 @@ public class UtilsDTO {
 
     return filtros;
   }
-
-  // TODO: Revisar, es el tema del formato que devuelve proxy y estàtica
-  public static List<Hecho> servicioResponseToHechos(List<FuenteResponseDTO> servicioResponse) {
-    List<Hecho> hechos = new ArrayList<>();
-    servicioResponse.forEach(fuente -> {
-      List<Hecho> hechosEnFuente = fuente
-          .getHechos()
-          .stream().map(h -> {
-            Hecho hecho = HechoInputDTO.DTOToHecho(h);
-            hecho.setFuente(fuente.getNombre());
-            hecho.setIdFuente(fuente.getId());
-            return hecho;
-          })
-          .toList();
-      hechos.addAll(hechosEnFuente);
-    });
-    return hechos;
-  }
 }

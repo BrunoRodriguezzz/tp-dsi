@@ -14,15 +14,15 @@ public class AdapImpC implements IAdapImpC {
   private static final AdapImpC instance = new AdapImpC(); // Creacion de la instancia clase única
   private AdapImpC() {} // Constructor privado para evitar instanciación externa
 
-  public List<Coleccion> importarColecciones(WebClient webClient) {
+  public List<Coleccion> importarColecciones(WebClient webClient, Long idInternoFuente) {
     //TODO: Implementar metodos + funcionalidad en proxy
     return new ArrayList<Coleccion>();
   }
-  public Coleccion importarColeccion(WebClient webClient, Long id) {
+  public Coleccion importarColeccion(WebClient webClient, Long id, Long idInternoFuente) {
     //TODO: Implementar metodos + funcionalidad en proxy
     return null;
   }
-  public List<Hecho> importarHechosColeccion(WebClient webClient, Long id) {
+  public List<Hecho> importarHechosColeccion(WebClient webClient, Long id, Long idInternoFuente) {
     //TODO: Implementar metodos + funcionalidad en proxy
     return null;
   }

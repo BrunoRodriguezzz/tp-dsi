@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
@@ -92,8 +93,15 @@ public class ColeccionService implements IColeccionService {
 
   @Override
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
-    // TODO: Buscar fuentes de la coleccion para transformar el input en una instancia de Colecciòn
-    Coleccion coleccion = ColeccionInputDTO.inputColeccionToColeccion(coleccionInputDTO);
+    List<Fuente> fuentesColeccion = new ArrayList<>();
+    coleccionInputDTO.getFuentes().forEach(fuente -> {
+      Fuente temp = this.fuenteService.buscarFuente(fuente.getNombre());
+      if(temp == null){
+        throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
+      }
+      fuentesColeccion.add(temp);
+    });
+    Coleccion coleccion = ColeccionInputDTO.inputColeccionToColeccion(coleccionInputDTO, fuentesColeccion);
     this.coleccionRepository.guardarColeccion(coleccion);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
