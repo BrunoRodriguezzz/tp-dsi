@@ -73,7 +73,7 @@ public class UtilsDTO {
         ArchivoOutputAgregadorDTO dto = new ArchivoOutputAgregadorDTO();
         dto.setNombre(archivo.getNombre());
         dto.setIdInterno(archivo.getId());
-        dto.setTipoArchivo("ESTATICA");
+        dto.setTipoFuente("ESTATICA");
         dto.setPath(path);
 
         return dto;

@@ -78,9 +78,9 @@ public class HechoInputDTO {
       hecho.setEstaEliminado(false);
       if(hechoDTO.getContribuyente() != null) {
         hecho.setContribuyente(new Contribuyente(
-            hecho.getContribuyente().getNombre(),
-            hecho.getContribuyente().getApellido(),
-            hecho.getContribuyente().getFechaNacimiento()
+            hechoDTO.getContribuyente().getNombre(),
+            hechoDTO.getContribuyente().getApellido(),
+            hechoDTO.getContribuyente().getFechaNacimiento()
         ));
       }
       if(hechoDTO.getEtiquetas() != null) {
@@ -96,4 +96,7 @@ public class HechoInputDTO {
     return null;
   }
 
+  public static List<Hecho> mapDTOToHechos (List<HechoInputDTO> hechosInput) {
+    return hechosInput.stream().map(HechoInputDTO::DTOToHecho).collect(Collectors.toList());
+  }
 }

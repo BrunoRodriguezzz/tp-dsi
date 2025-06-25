@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpH;
-import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import java.time.LocalDateTime;
@@ -20,45 +19,43 @@ public class AdapImpHDinamico implements IAdapImpH {
 
   @Override
   public List<Hecho> importarHechos(WebClient webClient, Long idInternoFuente) {
-//    return webClient.get()
-//        .uri(uriBuilder -> uriBuilder
-//            .path("/hechos") // TODO: Corregir menos harcodeado
-//            .build())
-//        .retrieve()
-//        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
-//        .map(this::servicioResponseToHechos).block();
-    return null; // TODO: Arreglar
+    List<Hecho> hechos = webClient.get()
+        .uri(uriBuilder -> uriBuilder
+            .path("/hechos") // TODO: Corregir menos harcodeado
+            .build())
+        .retrieve()
+        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
+        .map(HechoInputDTO::mapDTOToHechos).block();
+    return hechos;
   }
 
   @Override
   public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient, Long idInternoFuente) {
-//    return webClient.get()
-//        .uri(uriBuilder -> uriBuilder
-//            .path("/hechos")
-//            .queryParam("dateTimeGT", ultimaFechaRefresco.toString())
-//            .build())
-//        .retrieve()
-//        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
-//        .map(this::servicioResponseToHechos).block(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
-    return null; // TODO: Arreglar
+    return webClient.get()
+        .uri(uriBuilder -> uriBuilder
+            .path("/hechos")
+            .queryParam("dateTimeGT", ultimaFechaRefresco.toString())
+            .build())
+        .retrieve()
+        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
+        .map(HechoInputDTO::mapDTOToHechos).block(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
   }
 
   @Override
   public void eliminarHecho(Hecho hecho, WebClient webClient, Long idInternoFuente) {
-//    webClient.patch()
-//        .uri(uriBuilder -> uriBuilder
-//            .path("/eliminacion/{id}")
-//            .build(hecho.getIdInternoFuente()))
-//        .bodyValue(HechoOutputDTO.HechoToDTO(hecho))
-//        .retrieve()
-//        .toBodilessEntity()
-//        .block();
+    webClient.patch()
+        .uri(uriBuilder -> uriBuilder
+            .path("/eliminacion/{id}")
+            .build(hecho.getIdInternoFuente()))
+        .bodyValue(HechoOutputDTO.HechoToDTO(hecho))
+        .retrieve()
+        .toBodilessEntity()
+        .block();
   }
 
   private List<Hecho> servicioResponseToHechos(List<HechoInputDTO> hechosDTO, Long idInternoFuente) {
-//    return hechosDTO
-//        .stream()
-//        .map(HechoInputDTO::DTOToHecho).collect(Collectors.toList());
-    return null; // TODO: Arreglar
+    return hechosDTO
+        .stream()
+        .map(HechoInputDTO::DTOToHecho).collect(Collectors.toList());
   }
 }

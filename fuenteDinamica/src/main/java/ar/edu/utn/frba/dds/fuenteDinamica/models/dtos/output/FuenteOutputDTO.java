@@ -1,9 +1,9 @@
-package ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output;
+package ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output;
 
 import lombok.Data;
 
 @Data
-public class ArchivoOutputAgregadorDTO {
+public class FuenteOutputDTO {
   private String nombre;
   private String path;
   private String tipoFuente;

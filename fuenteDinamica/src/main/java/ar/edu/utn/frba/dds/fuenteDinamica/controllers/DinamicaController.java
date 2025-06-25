@@ -31,7 +31,8 @@ public class DinamicaController {
     public List<HechoOutputDTO> buscarTodos(
             @RequestParam(required = false) Boolean enviado,
             @RequestParam(required = false) LocalDateTime dateTimeGT){
-            return dinamicaService.buscarHechos(enviado,dateTimeGT);
+            List<HechoOutputDTO> hechos = dinamicaService.buscarHechos(enviado,dateTimeGT);
+            return hechos;
     }
 
     // Uso de los Usuarios
