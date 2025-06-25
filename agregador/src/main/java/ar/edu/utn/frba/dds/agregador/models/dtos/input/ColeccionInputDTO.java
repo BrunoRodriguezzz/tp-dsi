@@ -21,9 +21,6 @@ public class ColeccionInputDTO {
         Criterio criterio = new Criterio();
         List<Filtro> filtros = UtilsDTO.crearFiltros(coleccionInputDTO);
 
-        if (filtros.isEmpty()) {
-            throw new RuntimeException("Filtros vacios");
-        }
         criterio.setFiltros(filtros);
         return new Coleccion(coleccionInputDTO.getNombre(), coleccionInputDTO.getDescripcion(), fuentes, criterio);
     }

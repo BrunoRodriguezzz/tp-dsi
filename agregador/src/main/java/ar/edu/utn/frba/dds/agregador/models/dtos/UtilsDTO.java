@@ -35,6 +35,10 @@ public class UtilsDTO {
     List<Filtro> filtros = new ArrayList<>();
 
     try {
+      if(coleccionInputDTO.getCriterio() == null) {
+        return new ArrayList<>();
+      }
+
       if (!coleccionInputDTO.getCriterio().getTitulo().isEmpty()) { // Quiero filtrar por título
         FiltroTitulo filtroTitulo = new FiltroTitulo(coleccionInputDTO.getCriterio().getTitulo());
         filtros.add(filtroTitulo);
@@ -46,9 +50,11 @@ public class UtilsDTO {
         filtros.add(filtroFechaAcontecimiento);
       }
 
-      if (!coleccionInputDTO.getCriterio().getCategoria().isEmpty()) { // Quiero filtrar por categoría
-        FiltroCategoria filtroCategoria = new FiltroCategoria(new Categoria(coleccionInputDTO.getCriterio().getCategoria()));
-        filtros.add(filtroCategoria);
+      if (coleccionInputDTO.getCriterio().getCategoria() != null) { // Quiero filtrar por categoría
+        if(!coleccionInputDTO.getCriterio().getCategoria().isEmpty()) {
+          FiltroCategoria filtroCategoria = new FiltroCategoria(new Categoria(coleccionInputDTO.getCriterio().getCategoria()));
+          filtros.add(filtroCategoria);
+        }
       }
 
     } catch (Exception e){ throw new RuntimeException(e); }
