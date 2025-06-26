@@ -1,6 +1,6 @@
 //package ar.edu.utn.frba.dds.agregador.models.domain.test;
 //
-//import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+//import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 //import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.FuenteEstatica;
 //import java.nio.file.Path;
 //import org.junit.jupiter.api.Assertions;

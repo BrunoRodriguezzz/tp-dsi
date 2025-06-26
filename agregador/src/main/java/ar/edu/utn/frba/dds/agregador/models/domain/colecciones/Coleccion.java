@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.colecciones;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
@@ -41,7 +41,7 @@ public class Coleccion {
     }
 
     public List<Hecho> cargarHechos(List<Hecho> hechos) {
-        this.hechos.addAll(this.filtrarHechosSegunCriterio(hechos));
+        this.hechos.addAll(this.filtrarHechosSegunCriterioYFuentes(hechos));
         return this.hechos;
     }
 
@@ -73,20 +73,24 @@ public class Coleccion {
     }
 
     public List<Hecho> recalcularHechos(){
-        List<Hecho> hechos = this.filtrarHechosSegunCriterio(this.hechos);
+        List<Hecho> hechos = this.filtrarHechosSegunCriterioYFuentes(this.hechos);
         this.hechos = hechos;
         return hechos;
     }
 
     // Auxiliares a consultas de Hechos
-    private List<Hecho> filtrarHechosSegunCriterio(List<Hecho> hechos) {
-        List<Hecho> hechosFiltrados = hechos.stream()
+    private List<Hecho> filtrarHechosSegunCriterioYFuentes(List<Hecho> hechos) {
+        List<Long> idsFuentes = this.getFuentes().stream()
+            .map(Fuente::getId)
+            .collect(Collectors.toList());
+
+        return hechos.stream()
             .filter(hecho ->
                 this.cumpleCriterioColeccion(hecho) &&
                     !hecho.getEstaEliminado() &&
-                this.getFuentes().contains(hecho.getFuente()))
+                    idsFuentes.contains(hecho.getFuente().getId())
+            )
             .collect(Collectors.toList());
-        return hechosFiltrados;
     }
 
 

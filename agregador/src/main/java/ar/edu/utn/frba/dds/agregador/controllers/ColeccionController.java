@@ -1,7 +1,10 @@
 package ar.edu.utn.frba.dds.agregador.controllers;
 
 import ar.edu.utn.frba.dds.agregador.controllers.validadores.ValidadorInput;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.CriterioInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
@@ -62,12 +65,26 @@ public class ColeccionController {
   public ResponseEntity guardarColeccion(@RequestBody ColeccionInputDTO coleccion) {
     ValidadorInput.validarColeccionInput(coleccion);
     ColeccionOutputDTO coleccionOutputDTO = coleccionService.guardarColeccion(coleccion);
-    // TODO: Cargar fuentes ID -> Long
     return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
   }
 
-  // TODO: Poner y sacar fuentes
-  // TODO: Poner y sacar filtros al criterio
+  // TODO: Fijarse que ande bien
+  @PutMapping("/{id}/adicion/criterio")
+  public ResponseEntity agregarFiltrosACriterioColeccion(@PathVariable("id") Long id, @RequestBody CriterioInputDTO criterio) {
+    ValidadorInput.validarCriterioInput(criterio);
+    ColeccionOutputDTO coleccionOutputDTO = coleccionService.agregarFiltrosCriterio(id, criterio);
+    return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
+  }
+
+  @PutMapping("/{id}/eliminacion/fuentes")
+  public ResponseEntity quitarFuenteAColeccion(@PathVariable("id") Long id, @RequestBody List<FuenteInputDTO> fuentesInputDTO) {
+    fuentesInputDTO.stream().forEach(ValidadorInput::validarFuenteInputDTO);
+    ColeccionOutputDTO coleccionOutputDTO = coleccionService.quitarFuentesAColeccion(id, fuentesInputDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
+  }
+
+  // TODO: Poner fuentes
+  // TODO: Sacar filtros al criterio
 
   @PutMapping("/{id}")
   public ResponseEntity actualizarColeccion(@PathVariable("id") Long id, @RequestBody ColeccionInputDTO coleccion) {

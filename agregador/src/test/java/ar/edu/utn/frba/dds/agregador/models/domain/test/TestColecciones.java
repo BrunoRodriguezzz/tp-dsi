@@ -1,11 +1,11 @@
 //package ar.edu.utn.frba.dds.agregador.models.domain.test;
 //import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
-//import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+//import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 //import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
 //import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
-//import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroCategoria;
-//import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroFechaAcontecimiento;
-//import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroTitulo;
+//import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroCategoria;
+//import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroFechaAcontecimiento;
+//import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroTitulo;
 //import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 //import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 //import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Etiqueta;

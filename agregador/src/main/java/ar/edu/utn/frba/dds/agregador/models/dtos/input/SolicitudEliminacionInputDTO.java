@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos.input;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.EstadoSolicitudEliminacion;
 import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.SolicitudEliminacion;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;

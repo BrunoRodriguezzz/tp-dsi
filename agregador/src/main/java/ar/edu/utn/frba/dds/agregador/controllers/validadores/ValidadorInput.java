@@ -109,4 +109,25 @@ public class ValidadorInput {
       throw new RequestException("ID del interno faltante");
     }
   }
+
+  public static void validarCriterioInput(CriterioInputDTO criterio) {
+    if (criterio == null) {
+      throw new RequestException("El criterio está vacío");
+    }
+    if (criterio.getTitulo() != null) {
+      if (criterio.getTitulo().isBlank()) {
+        throw new RequestException("El título está vacío");
+      }
+    }
+    if (criterio.getCategoria() != null) {
+      if (criterio.getCategoria().isBlank()) {
+        throw new RequestException("La categoría está vacía");
+      }
+    }
+    if (criterio.getFechaAcontecimiento() != null) {
+      if (criterio.getFechaAcontecimiento().getFechaInicio() == null && criterio.getFechaAcontecimiento().getFechaFin() == null) {
+        throw new RequestException("Ambas fechas no pueden ser nulas");
+      }
+    }
+  }
 }

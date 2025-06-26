@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
-import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpC;
 import java.util.ArrayList;
 import java.util.List;

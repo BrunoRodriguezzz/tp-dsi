@@ -1,17 +1,23 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.criterio;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
+import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Setter
+@Getter
 public class Criterio {
     private List<Filtro> filtros;
 
     public Criterio() {
         this.filtros = new ArrayList<>();
+    }
+
+    public Criterio(List<Filtro> filtros) {
+        this.filtros = filtros;
     }
 
     public Boolean cumpleCriterio(Hecho hecho) {

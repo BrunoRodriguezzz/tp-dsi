@@ -1,9 +1,9 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos.input;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroCategoria;
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroFechaAcontecimiento;
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroTitulo;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroCategoria;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroFechaAcontecimiento;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroTitulo;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.RangoFechas;
 import java.time.LocalDate;

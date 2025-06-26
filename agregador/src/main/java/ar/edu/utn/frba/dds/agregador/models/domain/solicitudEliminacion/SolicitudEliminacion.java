@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Administrador;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.FundamentoInvalidoException;

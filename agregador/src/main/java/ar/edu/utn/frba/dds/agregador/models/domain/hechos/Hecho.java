@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.agregador.models.domain;
+package ar.edu.utn.frba.dds.agregador.models.domain.hechos;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.DescripcionInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.FechaInvalidaException;

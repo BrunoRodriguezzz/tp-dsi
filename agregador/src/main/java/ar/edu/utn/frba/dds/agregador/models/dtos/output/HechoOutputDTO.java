@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos.output;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
-import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;

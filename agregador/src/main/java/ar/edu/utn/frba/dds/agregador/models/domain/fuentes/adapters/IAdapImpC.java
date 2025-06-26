@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
-import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.util.List;
 import org.springframework.web.reactive.function.client.WebClient;
 

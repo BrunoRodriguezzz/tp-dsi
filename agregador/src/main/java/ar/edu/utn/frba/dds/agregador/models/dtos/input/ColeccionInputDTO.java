@@ -19,7 +19,7 @@ public class ColeccionInputDTO {
 
     public static Coleccion inputColeccionToColeccion(ColeccionInputDTO coleccionInputDTO, List<Fuente> fuentes) {
         Criterio criterio = new Criterio();
-        List<Filtro> filtros = UtilsDTO.crearFiltros(coleccionInputDTO);
+        List<Filtro> filtros = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
 
         criterio.setFiltros(filtros);
         return new Coleccion(coleccionInputDTO.getNombre(), coleccionInputDTO.getDescripcion(), fuentes, criterio);

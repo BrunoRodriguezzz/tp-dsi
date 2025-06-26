@@ -1,10 +1,13 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
-import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.CriterioInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
@@ -13,7 +16,7 @@ import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
-import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +105,46 @@ public class ColeccionService implements IColeccionService {
       fuentesColeccion.add(temp);
     });
     Coleccion coleccion = ColeccionInputDTO.inputColeccionToColeccion(coleccionInputDTO, fuentesColeccion);
+    this.coleccionRepository.guardarColeccion(coleccion);
+    return ColeccionOutputDTO.coleccionToDTO(coleccion);
+  }
+
+  @Override
+  public ColeccionOutputDTO agregarFiltrosCriterio(Long id, CriterioInputDTO criterioInputDTO) {
+    List<Filtro> nuevosFiltros = CriterioInputDTO.crearFiltros(criterioInputDTO);
+    Criterio criterio = new Criterio(nuevosFiltros);
+
+    Coleccion coleccion = coleccionRepository.buscarColeccion(id);
+    if(coleccion == null) {
+      throw new NotFoundException("No se encontro la coleccion");
+    }
+
+    coleccion.setCriterio(criterio);
+    coleccion.recalcularHechos();
+
+    this.coleccionRepository.guardarColeccion(coleccion);
+    return ColeccionOutputDTO.coleccionToDTO(coleccion);
+  }
+
+  @Override
+  public ColeccionOutputDTO quitarFuentesAColeccion(Long id, List<FuenteInputDTO> fuentesInputDTO) {
+    Coleccion coleccion = coleccionRepository.buscarColeccion(id);
+    if(coleccion == null) {
+      throw new NotFoundException("No se encontro la coleccion");
+    }
+
+    List<Fuente> fuentesColeccion = new ArrayList<>();
+    fuentesInputDTO.forEach(fuente -> {
+      Fuente temp = this.fuenteService.buscarFuente(fuente.getNombre());
+      if(temp == null){
+        throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
+      }
+      fuentesColeccion.add(temp);
+    });
+
+    coleccion.setFuentes(fuentesColeccion);
+    coleccion.recalcularHechos();
+
     this.coleccionRepository.guardarColeccion(coleccion);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }

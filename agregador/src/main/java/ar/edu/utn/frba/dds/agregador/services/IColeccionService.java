@@ -1,10 +1,12 @@
 package ar.edu.utn.frba.dds.agregador.services;
 
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.CriterioInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
-import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.util.List;
 
 public interface IColeccionService {
@@ -16,6 +18,8 @@ public interface IColeccionService {
   public void incorporarHechos(List<Hecho> hecho);
   public void refrescarColecciones();
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccion);
+  public ColeccionOutputDTO agregarFiltrosCriterio(Long id, CriterioInputDTO criterioInputDTO);
+  public ColeccionOutputDTO quitarFuentesAColeccion(Long id, List<FuenteInputDTO> fuentesInputDTO);
   public ColeccionOutputDTO actualizarColeccion(Long id, ColeccionInputDTO coleccion);
   public void eliminarColeccion(Long id);
 }

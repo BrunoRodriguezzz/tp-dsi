@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.web.reactive.function.client.WebClient;
