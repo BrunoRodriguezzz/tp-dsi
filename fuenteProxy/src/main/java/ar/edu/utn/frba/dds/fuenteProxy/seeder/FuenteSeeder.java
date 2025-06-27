@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.fuenteProxy.Services.IFuenteService;
 import ar.edu.utn.frba.dds.fuenteProxy.Services.impl.HechoService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl.APICatedra;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl.InstanciaMetaMapa;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
@@ -14,10 +15,12 @@ import org.springframework.stereotype.Component;
 public class FuenteSeeder implements CommandLineRunner {
     private final IFuenteService fuenteService;
     private final APICatedra apiCatedra;
+    private final InstanciaMetaMapa apiMetaMapa;
 
-    public FuenteSeeder(IFuenteService fuenteService, APICatedra apiCatedra) {
+    public FuenteSeeder(IFuenteService fuenteService, APICatedra apiCatedra, InstanciaMetaMapa apiMetaMapa) {
         this.fuenteService = fuenteService;
         this.apiCatedra = apiCatedra;
+        this.apiMetaMapa = apiMetaMapa;
     }
 
     @Override
@@ -26,5 +29,10 @@ public class FuenteSeeder implements CommandLineRunner {
         fuenteAPICatedra.setTipoFuente(apiCatedra);
         fuenteAPICatedra.setNombre("Desastres Naturales");
         fuenteService.guardarFuente(fuenteAPICatedra);
+
+        Fuente fuenteMetaMapa1 = new Fuente(apiMetaMapa, "Instancia MetaMapa 1", "http://???");
+        fuenteMetaMapa1.setTipoFuente(apiMetaMapa);
+        fuenteMetaMapa1.setNombre("Instancia MetaMapa 1");
+        fuenteService.guardarFuente(fuenteMetaMapa1);
     }
 }
