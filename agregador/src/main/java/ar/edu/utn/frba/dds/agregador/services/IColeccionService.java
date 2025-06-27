@@ -20,6 +20,7 @@ public interface IColeccionService {
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccion);
   public ColeccionOutputDTO agregarFiltrosCriterio(Long id, CriterioInputDTO criterioInputDTO);
   public ColeccionOutputDTO quitarFuentesAColeccion(Long id, List<FuenteInputDTO> fuentesInputDTO);
+  public ColeccionOutputDTO agregarFuenteAColeccion(Long id, FuenteInputDTO fuentesInputDTO);
   public ColeccionOutputDTO actualizarColeccion(Long id, ColeccionInputDTO coleccion);
   public void eliminarColeccion(Long id);
 }

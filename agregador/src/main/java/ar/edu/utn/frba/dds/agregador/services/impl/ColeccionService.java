@@ -127,6 +127,26 @@ public class ColeccionService implements IColeccionService {
   }
 
   @Override
+  public ColeccionOutputDTO agregarFuenteAColeccion(Long id, FuenteInputDTO fuenteInputDTO) {
+    Coleccion coleccion = coleccionRepository.buscarColeccion(id);
+    if(coleccion == null) {
+      throw new NotFoundException("No se encontro la coleccion");
+    }
+
+    Fuente fuente = this.fuenteService.buscarFuente(fuenteInputDTO.getNombre());
+    if(fuente == null){
+      throw new RuntimeException("La fuente " + fuenteInputDTO.getNombre() + " no existe");
+    }
+
+    coleccion.agregarFuente(fuente);
+    List<Hecho> hechos = fuente.importarHechos();
+    coleccion.cargarHechos(hechos);
+
+    this.coleccionRepository.guardarColeccion(coleccion);
+    return ColeccionOutputDTO.coleccionToDTO(coleccion);
+  }
+
+  @Override
   public ColeccionOutputDTO quitarFuentesAColeccion(Long id, List<FuenteInputDTO> fuentesInputDTO) {
     Coleccion coleccion = coleccionRepository.buscarColeccion(id);
     if(coleccion == null) {

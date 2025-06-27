@@ -45,6 +45,10 @@ public class Coleccion {
         return this.hechos;
     }
 
+    public void agregarFuente(Fuente fuente) {
+        this.fuentes.add(fuente);
+    }
+
     public boolean cargarHecho(Hecho hecho) {
         if (!hecho.getEstaEliminado() && cumpleCriterioColeccion(hecho)) {
             if (this.hechos == null) {

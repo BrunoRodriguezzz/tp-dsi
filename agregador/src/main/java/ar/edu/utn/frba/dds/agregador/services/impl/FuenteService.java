@@ -51,6 +51,13 @@ public class FuenteService implements IFuenteService {
   }
 
   @Override
+  public List<Hecho> buscarHechosFuente(String nombre) {
+    Fuente fuente = this.fuenteRepository.buscarFuente(nombre);
+    List<Hecho> hechosFuente = fuente.importarHechos();
+    return hechosFuente;
+  }
+
+  @Override
   public Fuente buscarFuente(Long id) {
     return this.fuenteRepository.buscarFuente(id);
   }

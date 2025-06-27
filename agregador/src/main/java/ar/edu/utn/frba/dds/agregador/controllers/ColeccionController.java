@@ -76,14 +76,21 @@ public class ColeccionController {
     return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
   }
 
-  @PutMapping("/{id}/eliminacion/fuentes")
-  public ResponseEntity quitarFuenteAColeccion(@PathVariable("id") Long id, @RequestBody List<FuenteInputDTO> fuentesInputDTO) {
+  // TODO: Fijarse que ande bien
+  @PutMapping("/{id}/adicion/fuente")
+  public ResponseEntity agregarFuenteAColeccion(@PathVariable("id") Long id, @RequestBody FuenteInputDTO fuenteInputDTO) {
+    ValidadorInput.validarFuenteInputDTO(fuenteInputDTO);
+    ColeccionOutputDTO coleccionOutputDTO = coleccionService.agregarFuenteAColeccion(id, fuenteInputDTO);
+    return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
+  }
+
+  @PutMapping("/{id}/eliminacion/fuente")
+  public ResponseEntity quitarFuentesAColeccion(@PathVariable("id") Long id, @RequestBody List<FuenteInputDTO> fuentesInputDTO) {
     fuentesInputDTO.stream().forEach(ValidadorInput::validarFuenteInputDTO);
     ColeccionOutputDTO coleccionOutputDTO = coleccionService.quitarFuentesAColeccion(id, fuentesInputDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
   }
 
-  // TODO: Poner fuentes
   // TODO: Sacar filtros al criterio
 
   @PutMapping("/{id}")

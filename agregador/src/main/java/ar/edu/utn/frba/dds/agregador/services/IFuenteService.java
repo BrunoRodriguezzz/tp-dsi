@@ -11,6 +11,7 @@ public interface IFuenteService {
   public List<Hecho> buscarHechos();
   public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco);
   public List<Hecho> buscarHechosFuente(TipoFuente tipoFuente);
+  public List<Hecho> buscarHechosFuente(String nombre);
   public Fuente buscarFuente(Long id);
   public Fuente buscarFuente(String nombre);
   public Fuente incorporarFuente(FuenteInputDTO fuenteInputDTO);
