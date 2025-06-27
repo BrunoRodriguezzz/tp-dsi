@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOHecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.util.ArrayList;
@@ -57,5 +58,10 @@ public class DAOHecho implements IDAOHecho {
                 h.getOrigen().equals(hecho.getOrigen())
         ).findFirst().orElse(null);
     return hechoExistente;
+  }
+
+  public List<Hecho> findByFuente(Fuente fuente) {
+    List<Hecho> hechos = this.hechos.stream().filter(h -> h.getFuente().getId().equals(fuente.getId())).toList();
+    return hechos;
   }
 }

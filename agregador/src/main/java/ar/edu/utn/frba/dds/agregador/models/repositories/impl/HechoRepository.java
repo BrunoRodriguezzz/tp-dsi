@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories.impl;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOHecho;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl.DAOHecho;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
@@ -45,5 +46,11 @@ public class HechoRepository implements IHechoRepository {
       hechosNuevos.add(hechoGuardado);
     });
     return hechosNuevos;
+  }
+
+  @Override
+  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente){
+    List<Hecho> hechos = this.dao.findByFuente(fuente);
+    return hechos;
   }
 }

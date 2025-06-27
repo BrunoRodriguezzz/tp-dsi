@@ -11,6 +11,6 @@ public class FiltroLatitud implements Filtro {
   }
 
   public String toDTO() {
-    return this.latitud;
+    return "latitud: " + this.latitud;
   }
 }

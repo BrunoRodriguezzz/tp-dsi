@@ -14,4 +14,9 @@ public class FiltroCategoria implements Filtro {
     public Boolean coincide(Hecho hecho) {
         return this.categoria.getTitulo().equals(hecho.getCategoria().getTitulo());
     }
+
+    @Override
+    public String toDTO() {
+        return this.categoria.getTitulo();
+    }
 }

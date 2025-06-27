@@ -124,10 +124,5 @@ public class ValidadorInput {
         throw new RequestException("La categoría está vacía");
       }
     }
-    if (criterio.getFechaAcontecimiento() != null) {
-      if (criterio.getFechaAcontecimiento().getFechaInicio() == null && criterio.getFechaAcontecimiento().getFechaFin() == null) {
-        throw new RequestException("Ambas fechas no pueden ser nulas");
-      }
-    }
   }
 }

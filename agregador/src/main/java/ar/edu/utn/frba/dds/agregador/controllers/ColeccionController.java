@@ -9,6 +9,7 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,14 +36,14 @@ public class ColeccionController {
   public ResponseEntity buscarHechosColeccion(
       @PathVariable("id") Long id,
       @RequestParam(required = false) String categoria,
-      @RequestParam(required = false) String fechaInicio,
-      @RequestParam(required = false) String fechaFin,
+      @RequestParam(required = false) LocalDate fechaInicio,
+      @RequestParam(required = false) LocalDate fechaFin,
       @RequestParam(required = false) String titulo
   ) {
     QueryParamsFiltro params = new QueryParamsFiltro();
     params.setCategoria(categoria);
-    params.setFechaInicio(fechaInicio);
-    params.setFechaFin(fechaFin);
+    params.setFechaAcontecimientoInicio(fechaInicio);
+    params.setFechaAcontecimientoFin(fechaFin);
     params.setTitulo(titulo);
 
     List<HechoOutputDTO> hechos = this.coleccionService.buscarHechosColeccion(id,params);
@@ -84,6 +85,7 @@ public class ColeccionController {
     return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
   }
 
+  // TODO: Fijarse que ande bien
   @PutMapping("/{id}/eliminacion/fuente")
   public ResponseEntity quitarFuentesAColeccion(@PathVariable("id") Long id, @RequestBody List<FuenteInputDTO> fuentesInputDTO) {
     fuentesInputDTO.stream().forEach(ValidadorInput::validarFuenteInputDTO);
@@ -92,6 +94,14 @@ public class ColeccionController {
   }
 
   // TODO: Sacar filtros al criterio
+  // TODO: Fijarse que ande bien
+  @PutMapping("/{id}/eliminacion/criterio")
+  public ResponseEntity quitarFiltrosACriterioColeccion(@PathVariable("id") Long id, @RequestBody CriterioInputDTO criterio) {
+    ValidadorInput.validarCriterioInput(criterio);
+    ColeccionOutputDTO coleccionOutputDTO = coleccionService.quitarFiltrosCriterio(id, criterio);
+    return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
+  }
+
 
   @PutMapping("/{id}")
   public ResponseEntity actualizarColeccion(@PathVariable("id") Long id, @RequestBody ColeccionInputDTO coleccion) {

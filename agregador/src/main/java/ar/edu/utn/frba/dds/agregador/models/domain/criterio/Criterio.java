@@ -23,15 +23,15 @@ public class Criterio {
     public Boolean cumpleCriterio(Hecho hecho) {
         Boolean resultado = false;
         resultado = this.filtros.stream().allMatch(filtro ->
-                {
-                    try {
-                        return filtro.coincide(hecho);
-                    } catch (Exception e) {
-                        // TODO: Catchea el controller?
-                        throw new RuntimeException(e);
-                    }
+            {
+                try {
+                    return filtro.coincide(hecho);
+                } catch (Exception e) {
+                    // TODO: Catchea el controller?
+                    throw new RuntimeException(e);
                 }
-            );
+            }
+        );
         return resultado;
     }
 

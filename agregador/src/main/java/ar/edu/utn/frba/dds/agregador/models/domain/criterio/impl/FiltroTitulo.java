@@ -10,7 +10,13 @@ public class FiltroTitulo implements Filtro {
         this.titulo = titulo;
     }
 
+    @Override
     public Boolean coincide(Hecho hecho) {
         return this.titulo.equals(hecho.getTitulo());
+    }
+
+    @Override
+    public String toDTO() {
+        return this.titulo;
     }
 }

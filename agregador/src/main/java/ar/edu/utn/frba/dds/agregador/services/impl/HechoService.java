@@ -1,14 +1,20 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +30,26 @@ public class HechoService implements IHechoService {
   }
 
   @Override
-  public List<HechoOutputDTO> buscarHechos() {
+  public List<HechoOutputDTO> buscarHechos(QueryParamsFiltro params) {
     List<Hecho> hechos = this.fuenteService.buscarHechos();
-    // Se guardan tambien los de la proxy, si
     hechos = this.guardarHechos(hechos);
-    List<HechoOutputDTO> hechosDTO = HechoOutputDTO.mapHechoToDTO(hechos);
+
+    List<Filtro> filtrosBusqueda = params.instanciarFiltros();
+    List<Hecho> hechosFiltrados;
+
+    if(!filtrosBusqueda.isEmpty()) {
+      hechosFiltrados = hechos
+          .stream()
+          .filter(h -> filtrosBusqueda.stream().allMatch(f -> f.coincide(h)))
+          .toList();
+    }
+    else hechosFiltrados = hechos;
+
+    List<HechoOutputDTO> hechosDTO = HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
+
     return hechosDTO;
   }
+
 
   @Override
   public Hecho incorporarHecho(HechoInputDTO hechoDTO) {
@@ -68,5 +87,11 @@ public class HechoService implements IHechoService {
   public List<Hecho> guardarHechos(List<Hecho> hechos){
     List<Hecho> hechosGuardados = this.hechoRepository.guardarHechos(hechos);
     return hechosGuardados;
+  }
+
+  @Override
+  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente){
+    List<Hecho> hechos = this.hechoRepository.buscarHechosGuardadosFuente(fuente);
+    return hechos;
   }
 }

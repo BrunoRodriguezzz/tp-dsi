@@ -20,6 +20,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -123,6 +124,27 @@ public class ColeccionService implements IColeccionService {
     coleccion.recalcularHechos();
 
     this.coleccionRepository.guardarColeccion(coleccion);
+    return ColeccionOutputDTO.coleccionToDTO(coleccion);
+  }
+
+  @Override
+  public ColeccionOutputDTO quitarFiltrosCriterio(Long id, CriterioInputDTO criterio) {
+    Coleccion coleccion = coleccionRepository.buscarColeccion(id);
+    if(coleccion == null) {
+      throw new NotFoundException("No se encontro la coleccion");
+    }
+
+    List<Filtro> filtrosNuevos = CriterioInputDTO.crearFiltros(criterio);
+    coleccion.cambiarCriterio(new Criterio(filtrosNuevos));
+
+    List<Hecho> hechosFuentes = coleccion.getFuentes()
+        .stream()
+        .map(f -> {
+          return this.hechoService.buscarHechosGuardadosFuente(f);
+        })
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+    coleccion.cargarHechos(hechosFuentes);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 

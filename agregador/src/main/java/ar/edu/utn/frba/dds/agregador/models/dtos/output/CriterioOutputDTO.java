@@ -1,19 +1,19 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos.output;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.RangoFechasInputDTO;
-import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Data;
 
+@Data
 public class CriterioOutputDTO {
-  String titulo;
-  LocalDateTime fechaInicio;
-  LocalDateTime fechaFin;
-  String categoria;
+  List<FiltroOutputDTO> filtros;
 
   public static CriterioOutputDTO criterioOutputDTO(Criterio criterio) {
-    List<Filtro> filtros = criterio.getFiltros();
+    CriterioOutputDTO criterioOutputDTO = new CriterioOutputDTO();
 
+    List<FiltroOutputDTO> filtros = criterio.getFiltros().stream().map(FiltroOutputDTO::filtroToDTO).toList();
+    criterioOutputDTO.setFiltros(filtros);
+
+    return criterioOutputDTO;
   }
 }

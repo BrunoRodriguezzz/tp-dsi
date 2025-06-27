@@ -49,6 +49,10 @@ public class Coleccion {
         this.fuentes.add(fuente);
     }
 
+    public void cambiarCriterio(Criterio criterio) {
+        this.setCriterio(criterio);
+    }
+
     public boolean cargarHecho(Hecho hecho) {
         if (!hecho.getEstaEliminado() && cumpleCriterioColeccion(hecho)) {
             if (this.hechos == null) {

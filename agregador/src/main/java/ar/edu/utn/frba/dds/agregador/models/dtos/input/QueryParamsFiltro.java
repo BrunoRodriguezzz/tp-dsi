@@ -2,7 +2,8 @@ package ar.edu.utn.frba.dds.agregador.models.dtos.input;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroCategoria;
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroFechaAcontecimiento;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroFechaAcontecimientoFinal;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroFechaAcontecimientoInicio;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroTitulo;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.RangoFechas;
@@ -10,12 +11,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Setter;
+import org.springframework.cglib.core.Local;
 
 @Setter
 public class QueryParamsFiltro {
   public String categoria;
-  public String fechaInicio;
-  public String fechaFin;
+  public LocalDate fechaAcontecimientoInicio;
+  public LocalDate fechaAcontecimientoFin;
   public String titulo;
 
   public List<Filtro> instanciarFiltros() {
@@ -25,10 +27,15 @@ public class QueryParamsFiltro {
         filtros.add(new FiltroCategoria(new Categoria(categoria)));
       } catch(Exception e){throw new RuntimeException("Categoria invalida");}
     }
-    if((fechaInicio != null && !fechaInicio.isEmpty()) || (fechaFin != null && !fechaFin.isEmpty())) {
-      try{
-        filtros.add(new FiltroFechaAcontecimiento(new RangoFechas(LocalDate.parse(fechaInicio), LocalDate.parse(fechaFin))));
-      } catch(Exception e){throw new RuntimeException("Rango fechas invalida");}
+    if(fechaAcontecimientoInicio != null) {
+      FiltroFechaAcontecimientoInicio filtroFechaAcontecimientoInicio = new FiltroFechaAcontecimientoInicio();
+      filtroFechaAcontecimientoInicio.setFechaInicio(this.fechaAcontecimientoInicio);
+      filtros.add(filtroFechaAcontecimientoInicio);
+    }
+    if (fechaAcontecimientoFin != null) {
+      FiltroFechaAcontecimientoFinal filtroFechaAcontecimientoFinal = new FiltroFechaAcontecimientoFinal();
+      filtroFechaAcontecimientoFinal.setFechaFinal(this.fechaAcontecimientoFin);
+      filtros.add(filtroFechaAcontecimientoFinal);
     }
     if(titulo != null && !titulo.isEmpty()) {
       try{

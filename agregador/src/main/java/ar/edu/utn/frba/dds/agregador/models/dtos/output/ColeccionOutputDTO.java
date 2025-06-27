@@ -12,6 +12,7 @@ public class ColeccionOutputDTO {
   private String titulo;
   private String descripcion;
   private List<HechoOutputDTO> hechos;
+  private CriterioOutputDTO criterio;
 
   public static ColeccionOutputDTO coleccionToDTO(Coleccion coleccion) {
     ColeccionOutputDTO coleccionDTO = new ColeccionOutputDTO();
@@ -19,6 +20,7 @@ public class ColeccionOutputDTO {
     coleccionDTO.setTitulo(coleccion.getTitulo());
     coleccionDTO.setDescripcion(coleccion.getDescripcion());
     coleccionDTO.setHechos(HechoOutputDTO.mapHechoToDTO(coleccion.getHechos()));
+    coleccionDTO.setCriterio(CriterioOutputDTO.criterioOutputDTO(coleccion.getCriterio()));
     return coleccionDTO;
   }
 

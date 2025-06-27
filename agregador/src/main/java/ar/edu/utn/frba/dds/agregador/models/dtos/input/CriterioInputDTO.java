@@ -2,8 +2,8 @@ package ar.edu.utn.frba.dds.agregador.models.dtos.input;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroCategoria;
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroFechaFinal;
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroFechaInicio;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroFechaAcontecimientoFinal;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroFechaAcontecimientoInicio;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroTitulo;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import java.time.LocalDateTime;
@@ -14,8 +14,8 @@ import lombok.Data;
 @Data
 public class CriterioInputDTO {
     String titulo;
-    LocalDateTime fechaInicio;
-    LocalDateTime fechaFin;
+    LocalDateTime fechaAcontecimientoInicio;
+    LocalDateTime fechaAcontecimientoFin;
     String categoria;
 
     public static List<Filtro> crearFiltros(CriterioInputDTO criterioInputDTO) {
@@ -33,14 +33,14 @@ public class CriterioInputDTO {
                 }
             }
 
-            if (criterioInputDTO.getFechaInicio() != null) {
-                FiltroFechaInicio filtroFechaInicio = new FiltroFechaInicio();
-                filtros.add(filtroFechaInicio);
+            if (criterioInputDTO.getFechaAcontecimientoInicio() != null) {
+                FiltroFechaAcontecimientoInicio filtroFechaAcontecimientoInicio = new FiltroFechaAcontecimientoInicio();
+                filtros.add(filtroFechaAcontecimientoInicio);
             }
 
-            if (criterioInputDTO.getFechaFin() != null) {
-                FiltroFechaFinal filtroFechaFinal = new FiltroFechaFinal();
-                filtros.add(filtroFechaFinal);
+            if (criterioInputDTO.getFechaAcontecimientoFin() != null) {
+                FiltroFechaAcontecimientoFinal filtroFechaAcontecimientoFinal = new FiltroFechaAcontecimientoFinal();
+                filtros.add(filtroFechaAcontecimientoFinal);
             }
 
             if (criterioInputDTO.getCategoria() != null) { // Quiero filtrar por categoría
