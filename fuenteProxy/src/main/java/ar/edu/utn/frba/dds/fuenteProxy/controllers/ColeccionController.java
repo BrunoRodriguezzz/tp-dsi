@@ -2,6 +2,8 @@ package ar.edu.utn.frba.dds.fuenteProxy.controllers;
 
 import ar.edu.utn.frba.dds.fuenteProxy.Services.impl.ColeccionService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputColeccionDTO;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputColeccionDTO;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @RestController
@@ -21,12 +22,12 @@ public class ColeccionController {
     private ColeccionService coleccionService;
 
     @GetMapping
-    public ResponseEntity<List<InputColeccionDTO>> getAll() {
-        return ResponseEntity.ok(coleccionService.getAll());
+    public ResponseEntity<List<OutputColeccionDTO>> getAll() {
+        return new ResponseEntity<>(coleccionService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{identificador}/hechos")
-    public ResponseEntity<List<OutputHecho>> getHechosByColeccion(@PathVariable String identificador) {
+    public ResponseEntity<List<OutputHecho>> getHechosByColeccion(@PathVariable Long identificador) {
         List<OutputHecho> hechos = coleccionService.getHechosByColeccion(identificador);
         if (hechos.isEmpty()) {
             return ResponseEntity.noContent().build(); // 204

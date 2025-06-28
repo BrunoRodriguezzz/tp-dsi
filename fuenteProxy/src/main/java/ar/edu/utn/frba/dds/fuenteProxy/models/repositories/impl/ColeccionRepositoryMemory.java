@@ -17,11 +17,6 @@ public class ColeccionRepositoryMemory implements IColeccionRepository {
     private final AtomicLong idGenerator = new AtomicLong(1);
 
     @Override
-    public void guardar(Coleccion coleccion) {
-        colecciones.put(coleccion.getId(), coleccion);
-    }
-
-    @Override
     public List<Coleccion> getAll() {
         return new ArrayList<>(colecciones.values());
     }
@@ -32,13 +27,8 @@ public class ColeccionRepositoryMemory implements IColeccionRepository {
     }
 
     @Override
-    public void guardarHecho(Coleccion coleccion) {
+    public void guardarColeccion(Coleccion coleccion) {
         coleccion.setId(idGenerator.getAndIncrement());
         colecciones.put(coleccion.getId(), coleccion);
-    }
-
-    @Override
-    public void eliminar(Long id) {
-        colecciones.remove(id);
     }
 }
