@@ -52,6 +52,11 @@ public class DAOHecho implements IDAOHecho {
     return hecho;
   }
 
+  @Override
+  public List<Hecho> findAll() {
+    return this.hechos;
+  }
+
   public Hecho findExistent(Hecho hecho) {
     Hecho hechoExistente = this.hechos.stream().filter(h ->
                 h.getIdInternoFuente().equals(hecho.getIdInternoFuente()) &&

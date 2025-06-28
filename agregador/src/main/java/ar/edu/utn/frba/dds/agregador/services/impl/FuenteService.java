@@ -68,6 +68,11 @@ public class FuenteService implements IFuenteService {
   }
 
   @Override
+  public List<Fuente> buscarFuentes() {
+    return this.fuenteRepository.buscarFuentes();
+  }
+
+  @Override
   public Fuente incorporarFuente(FuenteInputDTO fuenteInputDTO) {
     Fuente fuente = FuenteInputDTO.DTOToFuente(fuenteInputDTO);
     return this.fuenteRepository.guardarFuente(fuente);

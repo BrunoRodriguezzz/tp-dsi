@@ -65,6 +65,12 @@ public class Fuente {
     return hechos;
   }
 
+  public List<Hecho> importarHechosMismoTitulo(Hecho hecho) {
+    List<Hecho> hechosImportados = iAdapImpH.importarHechosMismoTitulo(this.webClient, this.idInternoFuente, hecho);
+    hechosImportados.stream().forEach(h -> h.setFuente(this));
+    return hechosImportados;
+  }
+
   public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
     List<Hecho> hechos = iAdapImpH.buscarNuevosHechos(ultimaFechaRefresco, this.webClient, this.idInternoFuente);
     hechos.stream().forEach(h -> h.setFuente(this));

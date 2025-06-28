@@ -27,6 +27,11 @@ public class HechoRepository implements IHechoRepository {
     return this.dao.findById(id);
   }
 
+  @Override
+  public List<Hecho> buscarHechos() {
+    return this.dao.findAll();
+  }
+
   public Hecho guardarHecho(Hecho hecho) {
     Hecho hechoExistente = this.dao.findExistent(hecho);
     if(hechoExistente != null){

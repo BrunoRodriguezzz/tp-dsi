@@ -14,4 +14,5 @@ public interface IHechoService {
   public Hecho buscarHecho(Long id);
   public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente);
   public List<Hecho> guardarHechos(List<Hecho> hechos);
+  public void consensuarHechos();
 }

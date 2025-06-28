@@ -9,4 +9,5 @@ public interface IAdapImpH {
     public List<Hecho> importarHechos(WebClient webClient, Long idInternoFuente);
     public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient, Long idInternoFuente);
     public void eliminarHecho(Hecho hecho, WebClient webClient, Long idInternoFuente);
+    public List<Hecho> importarHechosMismoTitulo(WebClient webClient, Long idInternoFuente, Hecho hechos);
 }

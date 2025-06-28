@@ -14,6 +14,7 @@ public interface IFuenteService {
   public List<Hecho> buscarHechosFuente(String nombre);
   public Fuente buscarFuente(Long id);
   public Fuente buscarFuente(String nombre);
+  public List<Fuente> buscarFuentes();
   public Fuente incorporarFuente(FuenteInputDTO fuenteInputDTO);
   public void eliminarHecho(Hecho hecho);
 }

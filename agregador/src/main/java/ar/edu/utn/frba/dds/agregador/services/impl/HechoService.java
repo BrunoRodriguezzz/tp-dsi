@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consensuador;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
@@ -87,6 +88,13 @@ public class HechoService implements IHechoService {
   public List<Hecho> guardarHechos(List<Hecho> hechos){
     List<Hecho> hechosGuardados = this.hechoRepository.guardarHechos(hechos);
     return hechosGuardados;
+  }
+
+  @Override
+  public void consensuarHechos() {
+    List<Hecho> hechosGuardados = this.hechoRepository.buscarHechos();
+    List<Hecho> hechosConsensuados = Consensuador.consensuarHechos(this.fuenteService.buscarFuentes(), hechosGuardados);
+    this.hechoRepository.guardarHechos(hechosConsensuados);
   }
 
   @Override

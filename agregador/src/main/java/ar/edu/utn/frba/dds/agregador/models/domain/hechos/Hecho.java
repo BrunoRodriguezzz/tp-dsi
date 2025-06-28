@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.agregador.models.domain.hechos;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.DescripcionInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.FechaInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.TituloInvalidoException;
+import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import lombok.Getter;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ContenidoMultimedia;
@@ -33,6 +34,7 @@ public class Hecho {
     private Boolean estaEliminado;
     private Fuente fuente;
     private List<ContenidoMultimedia> contenidoMultimedia;
+    private List<Consenso> consensuado;
 
     public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) throws FechaInvalidaException, TituloInvalidoException, DescripcionInvalidaException {
         if(titulo == null || titulo.isBlank()) throw new TituloInvalidoException("El título no puede estar vacío");

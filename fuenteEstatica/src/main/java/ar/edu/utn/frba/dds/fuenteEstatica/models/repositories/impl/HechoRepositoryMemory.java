@@ -79,4 +79,12 @@ public class HechoRepositoryMemory implements IHechoRepository {
         hecho.setId(idGenerator.getAndIncrement());
         hechos.put(hecho.getId(), hecho);
     }
+
+    @Override
+    public List<HechoEstatica> getByName(String title) {
+        return this.hechos.values()
+            .stream()
+            .filter(h -> h.getTitulo().equals(title))
+            .toList();
+    }
 }

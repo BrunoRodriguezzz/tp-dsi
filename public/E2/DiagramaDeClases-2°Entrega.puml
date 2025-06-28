@@ -209,7 +209,6 @@ class SolicitudEliminacion {
 class Coleccion {
     -fuente: <List> Fuente
     -hechos: <List> Hecho
-    -hechosConsensuados: <List> Hecho
     -titulo: String
     -descripcion: String
     -criterio: Criterio
@@ -233,9 +232,9 @@ class Criterio{
 }
 
 class Consensuador {
-    -stratConsenso: <List> IStratConsenso
+    -stratConsensos: <List> IStratConsenso
     +consensuarHechos(fuentes: <List> Fuentes, hecho: <List> Hecho): <List> Hecho
-    -consultarFuentes(fuentes: <List> Fuentes, hecho: <List> Hecho): <List> Hecho
+    -pedirHechosRepetidos(fuentes: <List> Fuentes, hecho: <List> Hecho): <List> Hecho
 }
 
 class AlgConsensoMaySimple {
