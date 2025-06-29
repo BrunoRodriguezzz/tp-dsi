@@ -53,6 +53,12 @@ public class AdapImpHDinamico implements IAdapImpH {
         .block();
   }
 
+  @Override
+  public List<Hecho> importarHechosMismoTitulo(WebClient webClient, Long idInternoFuente, Hecho hechos) {
+    // TODO
+    return List.of();
+  }
+
   private List<Hecho> servicioResponseToHechos(List<HechoInputDTO> hechosDTO, Long idInternoFuente) {
     return hechosDTO
         .stream()

@@ -34,7 +34,7 @@ public class Hecho {
     private Boolean estaEliminado;
     private Fuente fuente;
     private List<ContenidoMultimedia> contenidoMultimedia;
-    private List<Consenso> consensuado;
+    private List<Consenso> consensos;
 
     public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) throws FechaInvalidaException, TituloInvalidoException, DescripcionInvalidaException {
         if(titulo == null || titulo.isBlank()) throw new TituloInvalidoException("El título no puede estar vacío");
@@ -51,6 +51,7 @@ public class Hecho {
         this.fechaAcontecimiento = fechaAcontecimiento;
         this.origen = origen;
         this.fechaCarga = null;
+        this.consensos = new ArrayList<>();
     }
 
     public void eliminar() throws Exception {
@@ -72,6 +73,10 @@ public class Hecho {
         return false;
     }
 
+    public void agregarConsenso(Consenso consenso) {
+        this.consensos.add(consenso);
+    }
+
     public boolean equals(Hecho hecho) {
         if (this == hecho) return true;
         if (hecho == null || getClass() != hecho.getClass()) return false;
@@ -81,11 +86,7 @@ public class Hecho {
             this.categoria.getTitulo().equals(hecho.getCategoria().getTitulo()) &&
             this.ubicacion.getLatitud().equals(hecho.getUbicacion().getLatitud()) &&
             this.ubicacion.getLongitud().equals(hecho.getUbicacion().getLongitud()) &&
-            this.fechaAcontecimiento.equals(hecho.fechaAcontecimiento) &&
-            this.id.equals(hecho.getId()) &&
-            this.idInternoFuente.equals(hecho.getIdInternoFuente()) &&
-            this.origen.equals(hecho.getOrigen()) &&
-            this.fuente.equals(hecho.getFuente());
+            this.fechaAcontecimiento.equals(hecho.fechaAcontecimiento);
         return resultado;
     }
 }

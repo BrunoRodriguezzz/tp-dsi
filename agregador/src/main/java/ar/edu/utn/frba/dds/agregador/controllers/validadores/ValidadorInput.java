@@ -1,7 +1,10 @@
 package ar.edu.utn.frba.dds.agregador.controllers.validadores;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.RequestException;
+import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ValidadorInput {
   public static void validarHechoInputDTO(HechoInputDTO hechoInputDTO) {
@@ -93,6 +96,14 @@ public class ValidadorInput {
     if (coleccion.getFuentes().isEmpty()) {
       throw new RequestException("Fuentes faltantes");
     }
+
+   coleccion.getConsensos().forEach(c -> {
+     try {
+       Consenso.valueOf(c.toUpperCase());
+     } catch (IllegalArgumentException e) {
+       throw new RuntimeException("El consenso " + c + " no es valido");
+     }
+   });
   }
 
   public static void validarFuenteInputDTO(FuenteInputDTO fuente) {

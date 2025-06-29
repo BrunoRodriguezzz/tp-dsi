@@ -76,4 +76,9 @@ public class AdapImpHProxy implements IAdapImpH {
         .toBodilessEntity()
         .block();
   }
+
+  @Override
+  public List<Hecho> importarHechosMismoTitulo(WebClient webClient, Long idInternoFuente, Hecho hechos) {
+    return null; //TODO
+  }
 }

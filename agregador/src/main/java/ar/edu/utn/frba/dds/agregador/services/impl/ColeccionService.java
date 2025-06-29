@@ -224,7 +224,7 @@ public class ColeccionService implements IColeccionService {
     hechos.forEach(hecho -> {
       colecciones.forEach(c -> {
         if(c.getFuentes().contains(hecho.getFuente())) {
-          if(c.getHechos()==null || c.getHechos().stream().noneMatch(h -> h.equals(hecho))) {
+          if(c.getHechos()==null || c.getHechos().stream().noneMatch(h -> h.equals(hecho))) { // TODO: Revisar, esto es lo que hace que no haya hechos repetidos en las colecciones
             c.cargarHecho(hecho);
             this.hechoService.guardarHecho(hecho);
           }

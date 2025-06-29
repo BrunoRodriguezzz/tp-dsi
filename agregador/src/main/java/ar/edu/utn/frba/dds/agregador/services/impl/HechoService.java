@@ -93,7 +93,7 @@ public class HechoService implements IHechoService {
   @Override
   public void consensuarHechos() {
     List<Hecho> hechosGuardados = this.hechoRepository.buscarHechos();
-    List<Hecho> hechosConsensuados = Consensuador.consensuarHechos(this.fuenteService.buscarFuentes(), hechosGuardados);
+    List<Hecho> hechosConsensuados = Consensuador.getInstance().consensuarHechos(this.fuenteService.buscarFuentes(), hechosGuardados);
     this.hechoRepository.guardarHechos(hechosConsensuados);
   }
 

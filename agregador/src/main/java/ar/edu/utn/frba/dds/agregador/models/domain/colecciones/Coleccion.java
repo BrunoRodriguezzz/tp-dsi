@@ -66,6 +66,20 @@ public class Coleccion {
     }
 
     // Consultas de Hechos
+    public List<Hecho> consultarHechosCurados() {
+        if(this.hechos == null){
+            return new ArrayList<>();
+        }
+        return this.hechos.stream().filter(h -> h
+            .getConsensos().stream().allMatch(consensoHecho ->
+                this.consensos.stream().anyMatch(consensoInterno ->
+                    consensoInterno.equals(consensoHecho)
+                    )
+                )
+        ).collect(Collectors.toList());
+    }
+
+    // Consultas de Hechos
     public List<Hecho> consultarHechos() {
         if(this.hechos == null){
             return new ArrayList<>();
