@@ -13,7 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 public class Coleccion {
     private Long id;
-    private String nombre;
+    private String titulo;
     private String descripcion;
+    private String criterio;
+    private List<Fuente> fuentes;
     private List<Long> idsHechos;
 }
