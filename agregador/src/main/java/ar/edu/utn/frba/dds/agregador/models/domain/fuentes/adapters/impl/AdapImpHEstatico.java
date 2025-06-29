@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpH;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.FuenteResponseDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,8 +85,38 @@ public class AdapImpHEstatico implements IAdapImpH {
         .block();
   }
 
-  @Override
-  public List<Hecho> importarHechosMismoTitulo(WebClient webClient, Long idInternoFuente, Hecho hechos) {
-    return null; //TODO
+  public List<Hecho> importarHechosMismoTitulo(WebClient webClient, Long idInternoFuente, Hecho hecho) {
+    List<FuenteResponseDTO> respuesta;
+    try {
+      respuesta = webClient.get()
+          .uri(uriBuilder -> uriBuilder
+              .path("/hechos")
+              .queryParam("titulo", hecho.getTitulo())
+              .queryParam("fuente",idInternoFuente)
+              .build())
+          .retrieve()
+          .bodyToMono(new ParameterizedTypeReference<List<FuenteResponseDTO>>() {})
+          .doOnError(error -> {
+            // Registro detallado del error
+            System.err.println("Error al obtener los hechos: " + error.getMessage());
+            error.printStackTrace();
+          })
+          .onErrorMap(error -> {
+            // Transformar la excepción en una más específica
+            return new RuntimeException("Error al consumir el servicio de hechos", error);
+          })
+          .block();
+
+      if (respuesta == null) {
+        return Collections.emptyList();
+      }
+    } catch (Exception e) {
+      // Manejo de excepciones no controladas
+      System.err.println("Excepción inesperada: " + e.getMessage());
+      e.printStackTrace();
+      return Collections.emptyList();
+    }
+
+    return FuenteResponseDTO.servicioResponseToHechos(respuesta);
   }
 }

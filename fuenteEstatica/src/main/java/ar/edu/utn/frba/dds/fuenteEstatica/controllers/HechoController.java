@@ -23,9 +23,12 @@ public class HechoController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ArchivoOutputDTO>> getByTitle(@RequestParam(required = false) String title) {
-        if(title != null && !title.isEmpty()) {
-            List<ArchivoOutputDTO> outputDTO = this.hechoService.getByTitle(title);
+    public ResponseEntity<List<ArchivoOutputDTO>> getByTitle(
+        @RequestParam(name = "titulo", required = false) String title,
+        @RequestParam(name = "id", required = false) Long idFuente
+    ) {
+        if(title != null && !title.isEmpty() && idFuente != null && idFuente > 0) {
+            List<ArchivoOutputDTO> outputDTO = this.hechoService.getByTitleAndIdFuente(title, idFuente);
             return new ResponseEntity<>(outputDTO, HttpStatus.OK);
         }
         else {

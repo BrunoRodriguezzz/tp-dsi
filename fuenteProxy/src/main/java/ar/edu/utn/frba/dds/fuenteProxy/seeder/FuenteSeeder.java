@@ -30,9 +30,10 @@ public class FuenteSeeder implements CommandLineRunner {
         fuenteAPICatedra.setNombre("Desastres Naturales");
         fuenteService.guardarFuente(fuenteAPICatedra);
 
-        Fuente fuenteMetaMapa1 = new Fuente(apiMetaMapa, "Instancia MetaMapa 1", "http://???");
-        fuenteMetaMapa1.setTipoFuente(apiMetaMapa);
-        fuenteMetaMapa1.setNombre("Instancia MetaMapa 1");
-        fuenteService.guardarFuente(fuenteMetaMapa1);
+        //TODO: No tenemos ruta de otra instancia por ahora
+//        Fuente fuenteMetaMapa1 = new Fuente(apiMetaMapa, "Instancia MetaMapa 1", "https://???");
+//        fuenteMetaMapa1.setTipoFuente(apiMetaMapa);
+//        fuenteMetaMapa1.setNombre("Instancia MetaMapa 1");
+//        fuenteService.guardarFuente(fuenteMetaMapa1);
     }
 }

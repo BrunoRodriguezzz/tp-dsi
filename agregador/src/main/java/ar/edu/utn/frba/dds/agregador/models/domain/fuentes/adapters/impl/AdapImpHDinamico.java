@@ -54,9 +54,16 @@ public class AdapImpHDinamico implements IAdapImpH {
   }
 
   @Override
-  public List<Hecho> importarHechosMismoTitulo(WebClient webClient, Long idInternoFuente, Hecho hechos) {
-    // TODO
-    return List.of();
+  public List<Hecho> importarHechosMismoTitulo(WebClient webClient, Long idInternoFuente, Hecho hecho) {
+    List<Hecho> hechosDevueltos = webClient.get()
+        .uri(uriBuilder -> uriBuilder
+            .path("/hechos")
+            .queryParam("titulo",hecho.getTitulo())
+            .build())
+        .retrieve()
+        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
+        .map(HechoInputDTO::mapDTOToHechos).block();
+    return hechosDevueltos;
   }
 
   private List<Hecho> servicioResponseToHechos(List<HechoInputDTO> hechosDTO, Long idInternoFuente) {

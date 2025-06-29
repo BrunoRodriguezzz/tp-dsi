@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.services.impl;
 
 import ar.edu.utn.frba.dds.fuenteEstatica.exceptions.ValidationError;
-import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.input.InputHechoDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.ArchivoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.UtilsDTO;
@@ -95,8 +94,9 @@ public class HechoService implements IHechoService {
     }
 
     @Override
-    public List<ArchivoOutputDTO> getByTitle(String title) {
+    public List<ArchivoOutputDTO> getByTitleAndIdFuente(String title, Long idFuente) {
         List<HechoEstatica> hechos = this.hechoRepository.getByName(title);
+        hechos = hechos.stream().filter(h -> h.getIdArchivo().equals(idFuente)).toList();
         List<ArchivoOutputDTO> outputArchivos = new ArrayList<>();
         List<Long> idFuentes = hechos.stream()
             .map(HechoEstatica::getIdArchivo)
