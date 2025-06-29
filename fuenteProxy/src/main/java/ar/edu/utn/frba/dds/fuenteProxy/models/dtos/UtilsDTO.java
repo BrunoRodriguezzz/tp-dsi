@@ -1,9 +1,12 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.dtos;
 
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Coleccion;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputColeccionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputFuenteDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputColeccionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuenteAgregador;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
@@ -78,5 +81,26 @@ public class UtilsDTO {
         output.setTipoFuente("PROXY");
         output.setIdInterno(fuente.getId());
         return output;
+    }
+
+    public static Coleccion toColeccion(InputColeccionDTO dto) {
+        Coleccion coleccion = new Coleccion();
+        coleccion.setTitulo(dto.getTitulo());
+        coleccion.setDescripcion(dto.getDescripcion());
+        coleccion.setCriterio(dto.getCriterio());
+        //coleccion.setFuentes(fuentes);
+        coleccion.setIdsHechos(dto.getIdsHechos());
+        return coleccion;
+    }
+
+    public static OutputColeccionDTO toOutputColeccion(Coleccion coleccion) {
+        OutputColeccionDTO dto = new OutputColeccionDTO();
+        dto.setId(coleccion.getId());
+        dto.setTitulo(coleccion.getTitulo());
+        dto.setDescripcion(coleccion.getDescripcion());
+        dto.setCriterio(coleccion.getCriterio());
+        dto.setFuentes(coleccion.getFuentes());
+        //dto.setHechos(hechos);
+        return dto;
     }
 }
