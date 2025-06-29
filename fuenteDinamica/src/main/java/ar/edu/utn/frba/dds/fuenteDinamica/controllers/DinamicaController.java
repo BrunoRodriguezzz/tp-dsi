@@ -11,6 +11,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDT
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IDinamicaService;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +31,15 @@ public class DinamicaController {
     @GetMapping("/hechos")
     public List<HechoOutputDTO> buscarTodos(
             @RequestParam(required = false) Boolean enviado,
-            @RequestParam(required = false) LocalDateTime dateTimeGT){
+            @RequestParam(required = false) LocalDateTime dateTimeGT,
+            @RequestParam(required = false) String titulo){
             List<HechoOutputDTO> hechos = dinamicaService.buscarHechos(enviado,dateTimeGT);
-            return hechos;
+
+            if (titulo == null || titulo.isEmpty()){
+                return hechos;
+            }else{
+                return hechos.stream().filter(h -> h.getTitulo().equals(titulo)).toList();
+            }
     }
 
     // Uso de los Usuarios
