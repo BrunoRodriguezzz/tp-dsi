@@ -162,6 +162,7 @@ public class ColeccionService implements IColeccionService {
 
     coleccion.agregarFuente(fuente);
     List<Hecho> hechos = fuente.importarHechos();
+    hechoService.guardarHechos(hechos);
     coleccion.cargarHechos(hechos);
 
     this.coleccionRepository.guardarColeccion(coleccion);

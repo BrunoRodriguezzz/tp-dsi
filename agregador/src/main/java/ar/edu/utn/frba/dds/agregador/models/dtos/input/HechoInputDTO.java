@@ -89,12 +89,18 @@ public class HechoInputDTO {
             hechoDTO.getContribuyente().getFechaNacimiento()
         ));
       }
+
       if(hechoDTO.getEtiquetas() != null) {
         hecho.setEtiquetas(hechoDTO.getEtiquetas().stream().map(Etiqueta::new).collect(Collectors.toList()));
       }
       if(hechoDTO.getContenidoMultimedia() != null) {
         hecho.setContenidoMultimedia(hechoDTO.getContenidoMultimedia().stream().map(ContenidoMultimedia::new).collect(Collectors.toList()));
       }
+
+      if(hechoDTO.getFechaCarga() != null) {
+        hecho.setFechaCarga(hechoDTO.getFechaCarga());
+      }
+
       return hecho;
     } catch (Exception e){
       System.out.println(e.getMessage());
