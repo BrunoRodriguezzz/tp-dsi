@@ -145,6 +145,7 @@ public class ColeccionService implements IColeccionService {
         .flatMap(List::stream)
         .collect(Collectors.toList());
     coleccion.cargarHechos(hechosFuentes);
+    coleccion.recalcularHechos();
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
