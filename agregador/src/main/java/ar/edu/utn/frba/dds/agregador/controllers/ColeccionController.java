@@ -35,15 +35,23 @@ public class ColeccionController {
   @GetMapping("/{id}/hechos")
   public ResponseEntity buscarHechosColeccion(
       @PathVariable("id") Long id,
-      @RequestParam(required = false) String categoria,
-      @RequestParam(required = false) LocalDate fechaInicio,
-      @RequestParam(required = false) LocalDate fechaFin,
-      @RequestParam(required = false) String titulo
+      @RequestParam(name = "categoria", required = false) String categoria,
+      @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDate fechaAcontecimientoInicio,
+      @RequestParam(name = "fechaAcontecimientoFin", required = false) LocalDate fechaAcontecimientoFin,
+      @RequestParam(name = "titulo", required = false) String titulo,
+      @RequestParam(name = "latitud", required = false) String latitud,
+      @RequestParam(name = "longitud", required = false) String longitud,
+      @RequestParam(name = "fechaCargaInicio", required = false) LocalDate fechaCargaInicio,
+      @RequestParam(name = "fechaCargaFin", required = false) LocalDate fechaCargaFin
   ) {
     QueryParamsFiltro params = new QueryParamsFiltro();
     params.setCategoria(categoria);
-    params.setFechaAcontecimientoInicio(fechaInicio);
-    params.setFechaAcontecimientoFin(fechaFin);
+    params.setFechaAcontecimientoInicio(fechaAcontecimientoInicio);
+    params.setFechaAcontecimientoFin(fechaAcontecimientoFin);
+    params.setFechaCargaInicio(fechaCargaInicio);
+    params.setFechaCargaFin(fechaCargaFin);
+    params.setLatitud(latitud);
+    params.setLongitud(longitud);
     params.setTitulo(titulo);
 
     List<HechoOutputDTO> hechos = this.coleccionService.buscarHechosColeccion(id,params);
@@ -78,6 +86,14 @@ public class ColeccionController {
   }
 
   // TODO: Fijarse que ande bien
+  @PutMapping("/{id}/eliminacion/criterio")
+  public ResponseEntity quitarFiltrosACriterioColeccion(@PathVariable("id") Long id, @RequestBody CriterioInputDTO criterio) {
+    ValidadorInput.validarCriterioInput(criterio);
+    ColeccionOutputDTO coleccionOutputDTO = coleccionService.quitarFiltrosCriterio(id, criterio);
+    return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
+  }
+
+  // TODO: Fijarse que ande bien
   @PutMapping("/{id}/adicion/fuente")
   public ResponseEntity agregarFuenteAColeccion(@PathVariable("id") Long id, @RequestBody FuenteInputDTO fuenteInputDTO) {
     ValidadorInput.validarFuenteInputDTO(fuenteInputDTO);
@@ -93,14 +109,6 @@ public class ColeccionController {
     return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
   }
 
-  // TODO: Sacar filtros al criterio
-  // TODO: Fijarse que ande bien
-  @PutMapping("/{id}/eliminacion/criterio")
-  public ResponseEntity quitarFiltrosACriterioColeccion(@PathVariable("id") Long id, @RequestBody CriterioInputDTO criterio) {
-    ValidadorInput.validarCriterioInput(criterio);
-    ColeccionOutputDTO coleccionOutputDTO = coleccionService.quitarFiltrosCriterio(id, criterio);
-    return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
-  }
 
 
   @PutMapping("/{id}")

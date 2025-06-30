@@ -17,6 +17,7 @@ public class HechoOutputDTO {
   private ContribuyenteOutputDTO contribuyente;
   private String fuente;
   private String origen;
+  private LocalDate fechaCarga;
 
   public static HechoOutputDTO HechoToDTO(Hecho hecho) {
     HechoOutputDTO hechoDTO = new HechoOutputDTO();
@@ -26,6 +27,7 @@ public class HechoOutputDTO {
     hechoDTO.setCategoria(hecho.getCategoria().getTitulo());
     hechoDTO.setUbicacion(UbicacionOutputDTO.UbicacionToDTO(hecho.getUbicacion()));
     hechoDTO.setFechaAcontecimiento(hecho.getFechaAcontecimiento());
+    hechoDTO.setFechaCarga(hecho.getFechaCarga());
 
     if(hecho.getContribuyente() != null){
       hechoDTO.setContribuyente(ContribuyenteOutputDTO.ContribuyenteToDTO(hecho.getContribuyente()));

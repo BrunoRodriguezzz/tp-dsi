@@ -26,6 +26,7 @@ public class HechoInputDTO {
   private String fuente;
   private List<String> contenidoMultimedia;
   private List<String> etiquetas;
+  private LocalDate fechaCarga;
 
   public static Hecho DTOToHecho(HechoInputDTO hechoDTO, Contribuyente contribuyente, Fuente fuente) {
     Hecho hecho;
@@ -53,6 +54,11 @@ public class HechoInputDTO {
       if(hechoDTO.getContenidoMultimedia() != null) {
         hecho.setContenidoMultimedia(hechoDTO.getContenidoMultimedia().stream().map(ContenidoMultimedia::new).collect(Collectors.toList()));
       }
+
+      if(hechoDTO.getFechaCarga() != null) {
+        hecho.setFechaCarga(hechoDTO.getFechaCarga());
+      }
+
       return hecho;
     } catch (Exception e){
       System.out.println(e.getMessage());

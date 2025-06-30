@@ -39,6 +39,7 @@ public class UtilsDTO {
         dto.setOrigen(hecho.getOrigen());
         dto.setContribuyente(null);
         dto.setFuente(null);
+        dto.setFechaCarga(hecho.getFechaCreacion().toString());
         dto.setContenidoMultimedia(new ArrayList<>());
         dto.setEtiquetas(new ArrayList<>());
 

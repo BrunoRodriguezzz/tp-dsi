@@ -22,10 +22,9 @@ public class ColeccionService implements IColeccionService {
 
     @Override
     public List<OutputColeccionDTO> getAll() {
-        return null;
-//        return coleccionRepository.getAll().stream()
-//                .map(UtilsDTO::toOutputColeccion)
-//                .toList();
+        return coleccionRepository.getAll().stream()
+                .map(UtilsDTO::toOutputColeccion)
+                .toList();
     }
 
     @Override

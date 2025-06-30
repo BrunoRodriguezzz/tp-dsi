@@ -30,7 +30,6 @@ public class ArchivoCSV implements TipoArchivo {
     public Flux<HechoEstatica> leerHechos(String ruta) {
         try (CSVReader lector = this.crearLectorCSV(ruta)) {
             return this.instanciarHechosSegunCSV(lector);
-            // TODO: Catchea el controller?
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error de lectura: " + e.getMessage());
             return null;

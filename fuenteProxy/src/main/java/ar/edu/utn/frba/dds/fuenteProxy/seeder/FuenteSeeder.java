@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 public class FuenteSeeder implements CommandLineRunner {
     private final IFuenteService fuenteService;
     private final APICatedra apiCatedra;
-    private final InstanciaMetaMapa apiMetaMapa;
+    //private final InstanciaMetaMapa apiMetaMapa;
 
-    public FuenteSeeder(IFuenteService fuenteService, APICatedra apiCatedra, InstanciaMetaMapa apiMetaMapa) {
+    public FuenteSeeder(IFuenteService fuenteService, APICatedra apiCatedra/*, InstanciaMetaMapa apiMetaMapa*/) {
         this.fuenteService = fuenteService;
         this.apiCatedra = apiCatedra;
-        this.apiMetaMapa = apiMetaMapa;
+        //this.apiMetaMapa = apiMetaMapa;
     }
 
     @Override

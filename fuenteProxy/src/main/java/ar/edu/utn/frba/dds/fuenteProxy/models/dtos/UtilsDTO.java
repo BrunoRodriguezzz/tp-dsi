@@ -26,9 +26,10 @@ public class UtilsDTO {
         dto.setCategoria(hecho.getCategoria());
         dto.setUbicacion(hecho.getUbicacion());
         dto.setOrigen(hecho.getOrigen());
+        dto.setFechaCarga(hecho.getFechaCreacion().toString());
 
         if (hecho.getFechaHecho() != null)
-            dto.setFechaAcontecimiento(hecho.getFechaHecho().toString());
+            dto.setFechaAcontecimiento(hecho.getFechaHecho()); // String?
 
         //TODO Implementado para pruebas
         dto.setEtiquetas(new ArrayList<>());

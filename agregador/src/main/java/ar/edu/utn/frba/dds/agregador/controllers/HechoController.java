@@ -39,12 +39,20 @@ public class HechoController {
       @RequestParam(name = "categoria", required = false) String categoria,
       @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDate fechaAcontecimientoInicio,
       @RequestParam(name = "fechaAcontecimientoFin", required = false) LocalDate fechaAcontecimientoFin,
-      @RequestParam(name = "titulo", required = false) String titulo
+      @RequestParam(name = "titulo", required = false) String titulo,
+      @RequestParam(name = "latitud", required = false) String latitud,
+      @RequestParam(name = "longitud", required = false) String longitud,
+      @RequestParam(name = "fechaCargaInicio", required = false) LocalDate fechaCargaInicio,
+      @RequestParam(name = "fechaCargaFin", required = false) LocalDate fechaCargaFin
   ) {
     QueryParamsFiltro params = new QueryParamsFiltro();
     params.setCategoria(categoria);
     params.setFechaAcontecimientoInicio(fechaAcontecimientoInicio);
     params.setFechaAcontecimientoFin(fechaAcontecimientoFin);
+    params.setFechaCargaInicio(fechaCargaInicio);
+    params.setFechaCargaFin(fechaCargaFin);
+    params.setLatitud(latitud);
+    params.setLongitud(longitud);
     params.setTitulo(titulo);
 
     List<HechoOutputDTO> hechos = this.hechoService.buscarHechos(params);

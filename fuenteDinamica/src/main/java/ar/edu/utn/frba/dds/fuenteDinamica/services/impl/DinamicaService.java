@@ -264,6 +264,7 @@ public class DinamicaService implements IDinamicaService {
                 .etiquetas(hecho.getEtiquetas())
                 .origen(hecho.getOrigen())
                 .fuente(hecho.getFuente())
+                .fechaCarga(hecho.getFechaGuardado().toLocalDate())
                 .build();
 
     }

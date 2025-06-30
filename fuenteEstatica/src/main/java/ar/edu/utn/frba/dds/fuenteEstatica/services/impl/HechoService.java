@@ -96,14 +96,16 @@ public class HechoService implements IHechoService {
     @Override
     public List<ArchivoOutputDTO> getByTitleAndIdFuente(String title, Long idFuente) {
         List<HechoEstatica> hechos = this.hechoRepository.getByName(title);
-        hechos = hechos.stream().filter(h -> h.getIdArchivo().equals(idFuente)).toList();
+        List<HechoEstatica> hechosFiltrados = hechos.stream()
+            .filter(h -> h.getIdArchivo().equals(idFuente))
+            .toList();
         List<ArchivoOutputDTO> outputArchivos = new ArrayList<>();
-        List<Long> idFuentes = hechos.stream()
+        List<Long> idFuentes = hechosFiltrados.stream()
             .map(HechoEstatica::getIdArchivo)
             .distinct()
             .toList();
         idFuentes.forEach(id -> {
-            List<HechoEstatica> hechosFuente = hechos.stream()
+            List<HechoEstatica> hechosFuente = hechosFiltrados.stream()
                 .filter(e -> e.getIdArchivo().equals(id))
                 .toList();
             this.toOutputArchivo(outputArchivos, id, hechosFuente);

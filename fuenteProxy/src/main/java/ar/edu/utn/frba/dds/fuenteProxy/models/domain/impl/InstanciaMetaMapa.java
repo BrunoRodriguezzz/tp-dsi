@@ -10,12 +10,12 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
-@Component
+//@Component
 public class InstanciaMetaMapa implements TipoFuente {
     private WebClient webClient; //TODO Ver como instanciamos distintas instancias de MetaMapa
 
     public InstanciaMetaMapa(String baseUrl) { // Lo construimos cuando sale del repo.
-        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+        WebClient.builder().baseUrl(baseUrl).build();
     }
 
     @Override
