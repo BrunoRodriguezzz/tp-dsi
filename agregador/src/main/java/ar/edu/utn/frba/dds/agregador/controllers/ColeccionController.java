@@ -24,7 +24,7 @@ public class ColeccionController {
   public ResponseEntity buscarColecciones() {
     List<ColeccionOutputDTO> colecciones = this.coleccionService.buscarColecciones();
     if(colecciones.isEmpty()) {
-      return new ResponseEntity(HttpStatus.NOT_FOUND);
+      return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
     return ResponseEntity.status(HttpStatus.OK).body(colecciones);
   }

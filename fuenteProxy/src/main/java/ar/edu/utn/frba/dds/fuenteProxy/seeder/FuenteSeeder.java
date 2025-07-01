@@ -15,25 +15,19 @@ import org.springframework.stereotype.Component;
 public class FuenteSeeder implements CommandLineRunner {
     private final IFuenteService fuenteService;
     private final APICatedra apiCatedra;
-    //private final InstanciaMetaMapa apiMetaMapa;
 
-    public FuenteSeeder(IFuenteService fuenteService, APICatedra apiCatedra/*, InstanciaMetaMapa apiMetaMapa*/) {
+    public FuenteSeeder(IFuenteService fuenteService, APICatedra apiCatedra) {
         this.fuenteService = fuenteService;
         this.apiCatedra = apiCatedra;
-        //this.apiMetaMapa = apiMetaMapa;
     }
 
-    @Override
     public void run(String... args) {
         Fuente fuenteAPICatedra = new Fuente(apiCatedra, "Desastres Naturales", "https://api-ddsi.disilab.ar/public");
-        fuenteAPICatedra.setTipoFuente(apiCatedra);
-        fuenteAPICatedra.setNombre("Desastres Naturales");
         fuenteService.guardarFuente(fuenteAPICatedra);
 
-        //TODO: No tenemos ruta de otra instancia por ahora
-//        Fuente fuenteMetaMapa1 = new Fuente(apiMetaMapa, "Instancia MetaMapa 1", "https://???");
-//        fuenteMetaMapa1.setTipoFuente(apiMetaMapa);
-//        fuenteMetaMapa1.setNombre("Instancia MetaMapa 1");
+//        //TODO: No tenemos ruta de otra instancia por ahora
+//        InstanciaMetaMapa nuestraInstancia = new InstanciaMetaMapa("http://localhost:8082");
+//        Fuente fuenteMetaMapa1 = new Fuente(nuestraInstancia, "Nuestra instancia Metamapa", "http://localhost:8082");
 //        fuenteService.guardarFuente(fuenteMetaMapa1);
     }
 }

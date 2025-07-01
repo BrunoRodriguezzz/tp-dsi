@@ -10,12 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(2)
 public class HechoSeeder implements CommandLineRunner {
-    private final APICatedra apiCatedra;
     private final HechoService hechoService;
     private final IFuenteRepository fuenteRepository;
 
-    public HechoSeeder(APICatedra apiCatedra, HechoService hechoService, IFuenteRepository fuenteRepository) {
-        this.apiCatedra = apiCatedra;
+    public HechoSeeder(HechoService hechoService, IFuenteRepository fuenteRepository) {
         this.hechoService = hechoService;
         this.fuenteRepository = fuenteRepository;
     }

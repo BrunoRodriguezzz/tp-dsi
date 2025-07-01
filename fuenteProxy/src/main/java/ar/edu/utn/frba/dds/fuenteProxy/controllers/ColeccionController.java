@@ -23,7 +23,8 @@ public class ColeccionController {
 
     @GetMapping
     public ResponseEntity<List<OutputColeccionDTO>> getAll() {
-        return new ResponseEntity<>(coleccionService.getAll(), HttpStatus.OK);
+        List<OutputColeccionDTO> outputColeccionDTO = coleccionService.getAll();
+        return new ResponseEntity<>(outputColeccionDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{identificador}/hechos")

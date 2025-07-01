@@ -2,20 +2,21 @@ package ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl;
 
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.TipoFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.SolicitudEliminacionDTO;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputColeccionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
-import org.springframework.stereotype.Component;
+import lombok.Data;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
-//@Component
+@Data
 public class InstanciaMetaMapa implements TipoFuente {
     private WebClient webClient; //TODO Ver como instanciamos distintas instancias de MetaMapa
 
     public InstanciaMetaMapa(String baseUrl) { // Lo construimos cuando sale del repo.
-        WebClient.builder().baseUrl(baseUrl).build();
+        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
     }
 
     @Override
@@ -43,6 +44,16 @@ public class InstanciaMetaMapa implements TipoFuente {
                 .build())
                 .retrieve()
                 .bodyToFlux(InputHecho.class);
+    }
+
+    @Override
+    public Flux<InputColeccionDTO> getAllColecciones() {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/colecciones")
+                .build())
+                .retrieve()
+                .bodyToFlux(InputColeccionDTO.class);
     }
 
     @Override
