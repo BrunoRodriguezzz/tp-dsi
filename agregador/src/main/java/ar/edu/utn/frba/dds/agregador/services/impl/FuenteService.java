@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.FuenteOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
@@ -38,6 +39,15 @@ public class FuenteService implements IFuenteService {
   // Eliminar de la fuente
   public void eliminarHecho(Hecho hecho){
     hecho.getFuente().eliminarHecho(hecho);
+  }
+
+  @Override
+  public List<FuenteOutputDTO> buscarFuentesOutput() {
+    return this.fuenteRepository
+            .buscarFuentes()
+            .stream()
+            .map(FuenteOutputDTO::toOutputDTO)
+            .collect(Collectors.toList());
   }
 
   public List<Hecho> buscarHechosFuente(TipoFuente tipoFuente){

@@ -1,9 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.services;
 
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.CriterioInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.*;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
@@ -20,8 +17,8 @@ public interface IColeccionService {
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccion);
   public ColeccionOutputDTO agregarFiltrosCriterio(Long id, CriterioInputDTO criterioInputDTO);
   public ColeccionOutputDTO quitarFiltrosCriterio(Long id, CriterioInputDTO criterio);
-  public ColeccionOutputDTO quitarFuentesAColeccion(Long id, List<FuenteInputDTO> fuentesInputDTO);
-  public ColeccionOutputDTO agregarFuenteAColeccion(Long id, FuenteInputDTO fuentesInputDTO);
+  public ColeccionOutputDTO quitarFuentesAColeccion(Long id, List<NombreFuenteInputDTO> fuentesInputDTO);
+  public ColeccionOutputDTO agregarFuenteAColeccion(Long id, NombreFuenteInputDTO fuenteInputDTO);
   public ColeccionOutputDTO actualizarColeccion(Long id, ColeccionInputDTO coleccion);
   public void eliminarColeccion(Long id);
 }

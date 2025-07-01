@@ -106,7 +106,7 @@ public class Coleccion {
     private List<Hecho> filtrarHechosSegunCriterioYFuentes(List<Hecho> hechos) {
         List<Long> idsFuentes = this.getFuentes().stream()
             .map(Fuente::getId)
-            .collect(Collectors.toList());
+            .toList();
 
         return hechos.stream()
             .filter(hecho ->
@@ -116,7 +116,6 @@ public class Coleccion {
             )
             .collect(Collectors.toList());
     }
-
 
     private Boolean cumpleCriterioColeccion(Hecho hecho){
     if(this.criterio == null){ //Si no tengo criterio, lo cumple
@@ -140,5 +139,4 @@ public class Coleccion {
                 .collect(Collectors.toList());
         return hechosQueCumplenFiltros;
     }
-
 }

@@ -5,10 +5,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.CriterioInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.*;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
@@ -150,7 +147,7 @@ public class ColeccionService implements IColeccionService {
   }
 
   @Override
-  public ColeccionOutputDTO agregarFuenteAColeccion(Long id, FuenteInputDTO fuenteInputDTO) {
+  public ColeccionOutputDTO agregarFuenteAColeccion(Long id, NombreFuenteInputDTO fuenteInputDTO) {
     Coleccion coleccion = coleccionRepository.buscarColeccion(id);
     if(coleccion == null) {
       throw new NotFoundException("No se encontro la coleccion");
@@ -158,7 +155,7 @@ public class ColeccionService implements IColeccionService {
 
     Fuente fuente = this.fuenteService.buscarFuente(fuenteInputDTO.getNombre());
     if(fuente == null){
-      throw new RuntimeException("La fuente " + fuenteInputDTO.getNombre() + " no existe");
+      throw new RuntimeException("La fuente " + fuenteInputDTO + " no existe");
     }
 
     coleccion.agregarFuente(fuente);
@@ -171,7 +168,7 @@ public class ColeccionService implements IColeccionService {
   }
 
   @Override
-  public ColeccionOutputDTO quitarFuentesAColeccion(Long id, List<FuenteInputDTO> fuentesInputDTO) {
+  public ColeccionOutputDTO quitarFuentesAColeccion(Long id, List<NombreFuenteInputDTO> fuentesInputDTO) {
     Coleccion coleccion = coleccionRepository.buscarColeccion(id);
     if(coleccion == null) {
       throw new NotFoundException("No se encontro la coleccion");
@@ -181,7 +178,7 @@ public class ColeccionService implements IColeccionService {
     fuentesInputDTO.forEach(fuente -> {
       Fuente temp = this.fuenteService.buscarFuente(fuente.getNombre());
       if(temp == null){
-        throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
+        throw new RuntimeException("La fuente " + fuente + " no existe");
       }
       fuentesColeccion.add(temp);
     });

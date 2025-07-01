@@ -16,7 +16,7 @@ public class ColeccionInputDTO {
     String nombre;
     String descripcion;
     CriterioInputDTO criterio;
-    List<FuenteInputDTO> fuentes;
+    List<NombreFuenteInputDTO> fuentes;
     List<String> consensos;
 
     public static Coleccion inputColeccionToColeccion(ColeccionInputDTO coleccionInputDTO, List<Fuente> fuentes) {
