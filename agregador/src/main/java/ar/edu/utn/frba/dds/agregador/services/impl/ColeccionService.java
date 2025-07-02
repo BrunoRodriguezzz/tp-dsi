@@ -120,14 +120,15 @@ public class ColeccionService implements IColeccionService {
   @Override
   public ColeccionOutputDTO agregarFiltrosCriterio(Long id, CriterioInputDTO criterioInputDTO) {
     List<Filtro> nuevosFiltros = CriterioInputDTO.crearFiltros(criterioInputDTO);
-    Criterio criterio = new Criterio(nuevosFiltros);
+    //Criterio criterio = new Criterio(nuevosFiltros);
 
     Coleccion coleccion = coleccionRepository.buscarColeccion(id);
     if(coleccion == null) {
       throw new NotFoundException("No se encontro la coleccion");
     }
 
-    coleccion.setCriterio(criterio);
+    //coleccion.setCriterio(criterio);
+    coleccion.getCriterio().getFiltros().addAll(nuevosFiltros);
     coleccion.recalcularHechos();
 
     this.coleccionRepository.guardarColeccion(coleccion);
@@ -193,7 +194,8 @@ public class ColeccionService implements IColeccionService {
       fuentesColeccion.add(temp);
     });
 
-    coleccion.setFuentes(fuentesColeccion);
+    //coleccion.setFuentes(fuentesColeccion);
+    coleccion.getFuentes().removeAll(fuentesColeccion);
     coleccion.recalcularHechos();
 
     this.coleccionRepository.guardarColeccion(coleccion);
