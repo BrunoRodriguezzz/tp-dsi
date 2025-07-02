@@ -136,4 +136,10 @@ public class ValidadorInput {
       }
     }
   }
+
+  public static void validarNombreFuente(NombreFuenteInputDTO f) {
+    if(f == null || f.getNombre() == null || f.getNombre().isBlank()) {
+      throw new RequestException("Nombre faltante");
+    }
+  }
 }

@@ -22,7 +22,8 @@ public class ColeccionService implements IColeccionService {
 
     @Override
     public List<OutputColeccionDTO> getAll() {
-        return coleccionRepository.getAll().stream()
+        return coleccionRepository.getAll()
+                .stream()
                 .map(UtilsDTO::toOutputColeccion)
                 .toList();
     }
@@ -42,7 +43,7 @@ public class ColeccionService implements IColeccionService {
     }
 
     @Override
-    public void guardarHecho(InputColeccionDTO coleccionDTO) {
+    public void guardarColeccion(InputColeccionDTO coleccionDTO) {
         Coleccion coleccion = UtilsDTO.toColeccion(coleccionDTO);
         coleccionRepository.guardarColeccion(coleccion);
     }

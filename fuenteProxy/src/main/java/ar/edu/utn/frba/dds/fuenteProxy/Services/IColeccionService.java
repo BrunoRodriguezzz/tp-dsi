@@ -10,5 +10,5 @@ import java.util.List;
 public interface IColeccionService {
     List<OutputColeccionDTO> getAll();
     List<OutputHecho> getHechosByColeccion(Long id);
-    void guardarHecho(InputColeccionDTO coleccionDTO);
+    void guardarColeccion(InputColeccionDTO coleccionDTO);
 }

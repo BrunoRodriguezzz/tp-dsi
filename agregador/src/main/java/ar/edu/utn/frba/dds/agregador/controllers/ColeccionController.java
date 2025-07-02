@@ -3,10 +3,7 @@ package ar.edu.utn.frba.dds.agregador.controllers;
 import ar.edu.utn.frba.dds.agregador.controllers.validadores.ValidadorInput;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.CriterioInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.*;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
@@ -28,7 +25,7 @@ public class ColeccionController {
   public ResponseEntity buscarColecciones() {
     List<ColeccionOutputDTO> colecciones = this.coleccionService.buscarColecciones();
     if(colecciones.isEmpty()) {
-      return new ResponseEntity(HttpStatus.NOT_FOUND);
+      return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
     return ResponseEntity.status(HttpStatus.OK).body(colecciones);
   }
@@ -125,16 +122,16 @@ public class ColeccionController {
 
   // TODO: Fijarse que ande bien
   @PutMapping("/{id}/adicion/fuente")
-  public ResponseEntity agregarFuenteAColeccion(@PathVariable("id") Long id, @RequestBody FuenteInputDTO fuenteInputDTO) {
-    ValidadorInput.validarFuenteInputDTO(fuenteInputDTO);
+  public ResponseEntity agregarFuenteAColeccion(@PathVariable("id") Long id, @RequestBody NombreFuenteInputDTO fuenteInputDTO) {
+    ValidadorInput.validarNombreFuente(fuenteInputDTO);
     ColeccionOutputDTO coleccionOutputDTO = coleccionService.agregarFuenteAColeccion(id, fuenteInputDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
   }
 
   // TODO: Fijarse que ande bien
   @PutMapping("/{id}/eliminacion/fuente")
-  public ResponseEntity quitarFuentesAColeccion(@PathVariable("id") Long id, @RequestBody List<FuenteInputDTO> fuentesInputDTO) {
-    fuentesInputDTO.stream().forEach(ValidadorInput::validarFuenteInputDTO);
+  public ResponseEntity quitarFuentesAColeccion(@PathVariable("id") Long id, @RequestBody List<NombreFuenteInputDTO> fuentesInputDTO) {
+    fuentesInputDTO.forEach(ValidadorInput::validarNombreFuente);
     ColeccionOutputDTO coleccionOutputDTO = coleccionService.quitarFuentesAColeccion(id, fuentesInputDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
   }
