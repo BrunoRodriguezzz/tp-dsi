@@ -1,10 +1,12 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.test;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.IStratConsenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.impl.AlgConsensoAbsoluto;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.impl.AlgConsensoMaySimple;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.impl.AlgConsensoMultMenciones;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
@@ -149,14 +151,26 @@ public class ConsensoTest {
       strats.add(AlgConsensoAbsoluto.getInstance());
 
       strats.forEach(strat -> {
-        Hecho aux = strat.consensuados(hechos, fuentes, hecho1);
-        hechosConsensuados.add(aux);
+        strat.consensuados(hechos, fuentes, hecho1);
       });
+      hechosConsensuados.add(hecho1);
+
+      Coleccion unaColeccion = new Coleccion("Fuente Ejemplo", "Esta es una fuente de ejemplo", fuentes, new Criterio());
+      List<Consenso> consensos = new ArrayList<>();
+      consensos.add(Consenso.ABSOLUTO);
+      consensos.add(Consenso.MAYSIMPLE);
+      consensos.add(Consenso.MULTMENCIONES);
+
+      unaColeccion.setConsensos(consensos);
+      unaColeccion.cargarHecho(hecho1);
+      unaColeccion.cargarHecho(hecho4);
+      unaColeccion.cargarHecho(hecho5);
 
       assertEquals(3, hecho1.getConsensos().size());
       assertTrue(hecho1.getConsensos().contains(Consenso.MULTMENCIONES));
       assertTrue(hecho1.getConsensos().contains(Consenso.MAYSIMPLE));
       assertTrue(hecho1.getConsensos().contains(Consenso.ABSOLUTO));
+      assertEquals(1, unaColeccion.consultarHechosCurados().size());
     }
 
     @Test

@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
+import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
@@ -57,6 +58,15 @@ public class ColeccionService implements IColeccionService {
     List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
     coleccion.cargarHechos(hechosProxy);
     List<Hecho> hechosOutput = coleccion.consultarHechos(params.instanciarFiltros());
+    List<HechoOutputDTO> hechosOutputDTO = HechoOutputDTO.mapHechoToDTO(hechosOutput);
+    return hechosOutputDTO;
+  }
+
+  public List<HechoOutputDTO> buscarHechosCuradosColeccion(Long id, QueryParamsFiltro params) {
+    Coleccion coleccion = this.coleccionRepository.buscarCopiaColeccion(id);
+    List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
+    coleccion.cargarHechos(hechosProxy);
+    List<Hecho> hechosOutput = coleccion.consultarHechosCurados(params.instanciarFiltros());
     List<HechoOutputDTO> hechosOutputDTO = HechoOutputDTO.mapHechoToDTO(hechosOutput);
     return hechosOutputDTO;
   }
@@ -187,6 +197,19 @@ public class ColeccionService implements IColeccionService {
 
     coleccion.setFuentes(fuentesColeccion);
     coleccion.recalcularHechos();
+
+    this.coleccionRepository.guardarColeccion(coleccion);
+    return ColeccionOutputDTO.coleccionToDTO(coleccion);
+  }
+
+  @Override
+  public ColeccionOutputDTO agregarConsensoAColeccion(Long id, Consenso consenso) {
+    Coleccion coleccion = coleccionRepository.buscarColeccion(id);
+    if(coleccion == null) {
+      throw new NotFoundException("No se encontro la coleccion");
+    }
+
+    coleccion.agregarConsenso(consenso);
 
     this.coleccionRepository.guardarColeccion(coleccion);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);

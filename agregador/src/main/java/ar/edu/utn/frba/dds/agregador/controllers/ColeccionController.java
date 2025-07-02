@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.controllers;
 
 import ar.edu.utn.frba.dds.agregador.controllers.validadores.ValidadorInput;
+import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.CriterioInputDTO;
@@ -61,6 +62,35 @@ public class ColeccionController {
     return ResponseEntity.status(HttpStatus.OK).body(hechos);
   }
 
+  @GetMapping("/{id}/hechos/curados")
+  public ResponseEntity buscarHechosCuradosColeccion(
+      @PathVariable("id") Long id,
+      @RequestParam(name = "categoria", required = false) String categoria,
+      @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDate fechaAcontecimientoInicio,
+      @RequestParam(name = "fechaAcontecimientoFin", required = false) LocalDate fechaAcontecimientoFin,
+      @RequestParam(name = "titulo", required = false) String titulo,
+      @RequestParam(name = "latitud", required = false) String latitud,
+      @RequestParam(name = "longitud", required = false) String longitud,
+      @RequestParam(name = "fechaCargaInicio", required = false) LocalDate fechaCargaInicio,
+      @RequestParam(name = "fechaCargaFin", required = false) LocalDate fechaCargaFin
+  ) {
+    QueryParamsFiltro params = new QueryParamsFiltro();
+    params.setCategoria(categoria);
+    params.setFechaAcontecimientoInicio(fechaAcontecimientoInicio);
+    params.setFechaAcontecimientoFin(fechaAcontecimientoFin);
+    params.setFechaCargaInicio(fechaCargaInicio);
+    params.setFechaCargaFin(fechaCargaFin);
+    params.setLatitud(latitud);
+    params.setLongitud(longitud);
+    params.setTitulo(titulo);
+
+    List<HechoOutputDTO> hechos = this.coleccionService.buscarHechosCuradosColeccion(id,params);
+    if(hechos == null) {
+      return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(hechos);
+  }
+
   @GetMapping("/{id}")
   public ResponseEntity buscarColeccion(@PathVariable("id") Long id) {
     ColeccionOutputDTO coleccion = this.coleccionService.buscarColeccion(id);
@@ -109,7 +139,11 @@ public class ColeccionController {
     return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
   }
 
-
+  @PutMapping("/{id}/adicion/consenso")
+  public ResponseEntity agregarConsensoAColeccion(@PathVariable("id") Long id, @RequestBody String consenso) {
+    ColeccionOutputDTO coleccionOutputDTO = coleccionService.agregarConsensoAColeccion(id, Consenso.valueOf(consenso));
+    return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
+  }
 
   @PutMapping("/{id}")
   public ResponseEntity actualizarColeccion(@PathVariable("id") Long id, @RequestBody ColeccionInputDTO coleccion) {

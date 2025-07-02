@@ -30,9 +30,9 @@ public class Consensuador {
     hechos.forEach(h -> {
       List<Hecho> hechosMismoNombre = this.pedirHechosRepetidos(fuentes, h);
       this.stratConsensos.forEach(strat -> {
-        Hecho aux = strat.consensuados(hechosMismoNombre, fuentes, h);
-        hechosConsensuados.add(aux);
+        strat.consensuados(hechosMismoNombre, fuentes, h);
       });
+      hechosConsensuados.add(h);
     });
 
     return hechosConsensuados;

@@ -51,6 +51,12 @@ public class Coleccion {
         this.fuentes.add(fuente);
     }
 
+    public void agregarConsenso(Consenso consenso) {
+        if(!this.consensos.contains(consenso)){
+            this.consensos.add(consenso);
+        }
+    }
+
     public void cambiarCriterio(Criterio criterio) {
         this.setCriterio(criterio);
     }
@@ -66,17 +72,35 @@ public class Coleccion {
     }
 
     // Consultas de Hechos
+    public List<Hecho> consultarHechosCurados(List<Filtro> filtros) {
+        List<Hecho> hechosQueCumplenFiltrosUsuario = this.aplicarFiltros(filtros);
+        if(hechosQueCumplenFiltrosUsuario == null){
+            return new ArrayList<>();
+        }
+        return this.filtrarCurados(hechosQueCumplenFiltrosUsuario);
+    }
+
     public List<Hecho> consultarHechosCurados() {
         if(this.hechos == null){
             return new ArrayList<>();
         }
-        return this.hechos.stream().filter(h -> h
-            .getConsensos().stream().allMatch(consensoHecho ->
-                this.consensos.stream().anyMatch(consensoInterno ->
-                    consensoInterno.equals(consensoHecho)
-                    )
-                )
+        return this.filtrarCurados(this.hechos);
+    }
+
+    private List<Hecho> filtrarCurados(List<Hecho> hechos) {
+        List<Hecho> filtrados = hechos.stream().filter(h ->
+            {
+                if(h.getConsensos().isEmpty()){
+                    return false;
+                }
+                else
+                return h.getConsensos().stream().allMatch(consensoHecho ->
+                    this.consensos.stream().anyMatch(consensoInterno ->
+                        consensoInterno.equals(consensoHecho))
+                );
+            }
         ).collect(Collectors.toList());
+        return filtrados;
     }
 
     // Consultas de Hechos

@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos.output;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
 import java.util.List;
 import java.util.stream.Collectors;
