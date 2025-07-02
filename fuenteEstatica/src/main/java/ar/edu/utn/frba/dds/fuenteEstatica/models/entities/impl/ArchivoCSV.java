@@ -31,14 +31,11 @@ public class ArchivoCSV implements TipoArchivo {
         try (CSVReader lector = this.crearLectorCSV(ruta)) {
             return this.instanciarHechosSegunCSV(lector);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error de lectura: " + e.getMessage());
-            return null;
+            throw new RuntimeException("Error de lectura: " + e.getMessage());
         } catch (CsvException e) {
-            JOptionPane.showMessageDialog(null, "Error en CSV de formato: " + e.getMessage());
-            return null;
+            throw new RuntimeException("Error en CSV de formato: " + e.getMessage());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error inesperado: " + e.getMessage());
-            return null;
+            throw new RuntimeException("Error inesperado: " + e.getMessage());
         }
     }
 

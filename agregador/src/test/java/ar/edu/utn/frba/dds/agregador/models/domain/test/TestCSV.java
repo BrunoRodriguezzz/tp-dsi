@@ -17,7 +17,7 @@
 //    public void importarCSV() {
 //        Path path = null;
 //        try {
-//            path = Paths.get(ClassLoader.getSystemResource("desastres_tecnologicos_argentina.csv").toURI());
+//            path = Paths.get(ClassLoader.getSystemResource("aa.csv").toURI());
 //        }
 //        catch (Exception e) {}
 //        FuenteEstatica fuenteEstatica = new FuenteEstatica(path.toString());
