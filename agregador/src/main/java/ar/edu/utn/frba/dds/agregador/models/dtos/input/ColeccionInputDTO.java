@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 import lombok.Data;
 
 import java.util.List;
@@ -24,11 +25,11 @@ public class ColeccionInputDTO {
         List<Filtro> filtros = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
         List<Consenso> listaConsensos = new ArrayList<>();
         if (coleccionInputDTO.getConsensos() != null) {
-            listaConsensos = coleccionInputDTO.getConsensos().stream().map(Consenso::valueOf).toList();
+            listaConsensos = coleccionInputDTO.getConsensos().stream().map(Consenso::valueOf).collect(Collectors.toList());
         }
         criterio.setFiltros(filtros);
         Coleccion coleccion = new Coleccion(coleccionInputDTO.getNombre(), coleccionInputDTO.getDescripcion(), fuentes, criterio);
-        coleccion.setConsensos(listaConsensos);
+        listaConsensos.forEach(coleccion::agregarConsenso);
         return coleccion;
     }
 

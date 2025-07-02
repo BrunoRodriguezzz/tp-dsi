@@ -40,6 +40,7 @@ public class Coleccion {
         this.fuentes = fuentes;
         this.criterio = criterio;
         this.hechos = new ArrayList<>();
+        this.consensos = new ArrayList<>();
     }
 
     public List<Hecho> cargarHechos(List<Hecho> hechos) {

@@ -15,6 +15,7 @@ public class ColeccionOutputDTO {
   private List<HechoOutputDTO> hechos;
   private CriterioOutputDTO criterio;
   private List<String> fuentes;
+  private List<String> consensos;
 
   public static ColeccionOutputDTO coleccionToDTO(Coleccion coleccion) {
     ColeccionOutputDTO coleccionDTO = new ColeccionOutputDTO();
@@ -23,6 +24,7 @@ public class ColeccionOutputDTO {
     coleccionDTO.setDescripcion(coleccion.getDescripcion());
     coleccionDTO.setHechos(HechoOutputDTO.mapHechoToDTO(coleccion.getHechos()));
     coleccionDTO.setCriterio(CriterioOutputDTO.criterioOutputDTO(coleccion.getCriterio()));
+    coleccionDTO.setConsensos(coleccion.getConsensos().stream().map(Enum::toString).collect(Collectors.toList()));
 
     List<String> nombreFuentes = new ArrayList<>();
     coleccion.getFuentes().forEach(f -> nombreFuentes.add(f.getNombre()));

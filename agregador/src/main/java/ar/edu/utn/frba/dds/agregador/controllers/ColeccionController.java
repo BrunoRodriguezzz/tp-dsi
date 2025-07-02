@@ -136,8 +136,8 @@ public class ColeccionController {
     return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
   }
 
-  @PutMapping("/{id}/adicion/consenso")
-  public ResponseEntity agregarConsensoAColeccion(@PathVariable("id") Long id, @RequestBody String consenso) {
+  @PutMapping("/{id}/adicion")
+  public ResponseEntity agregarConsensoAColeccion(@PathVariable("id") Long id, @RequestParam (name = "consenso", required = false) String consenso) {
     ColeccionOutputDTO coleccionOutputDTO = coleccionService.agregarConsensoAColeccion(id, Consenso.valueOf(consenso));
     return ResponseEntity.status(HttpStatus.CREATED).body(coleccionOutputDTO);
   }

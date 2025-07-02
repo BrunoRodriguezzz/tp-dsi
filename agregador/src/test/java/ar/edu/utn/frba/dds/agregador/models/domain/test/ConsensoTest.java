@@ -199,7 +199,7 @@ public class ConsensoTest {
 
     @Test
     @DisplayName("Si al menos la mitad de las fuentes contienen el mismo hecho el hecho cumple con mayoria simple\n")
-    public void casoNegativoMaySimpple(){
+    public void casoNegativoMaySimple(){
       List<Hecho> hechos = new ArrayList<>();
       hechos.add(hecho1);
       hechos.add(hecho4);
