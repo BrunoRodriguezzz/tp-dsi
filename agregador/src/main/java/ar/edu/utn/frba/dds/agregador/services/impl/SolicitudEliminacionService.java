@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaEliminadoException;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
-import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.SolicitudEliminacionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IAdministradorRepository;
@@ -14,11 +13,11 @@ import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.services.ISolicitudEliminacionService;
 import ar.edu.utn.frba.dds.agregador.services.IDetectorSpamService;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
-import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.EstadoSolicitudEliminacion;
-import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.SolicitudEliminacion;
-import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Administrador;
-import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.EstadoSolicitudEliminacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.SolicitudEliminacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Administrador;
+import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +66,7 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
       throw new NotFoundException("No se encontró el contribuyente de id: " + solicitudInputDTO.getIdContribuyente());
     }
 
-    SolicitudEliminacion solicitud = UtilsDTO.DTOtoSolicitud(solicitudInputDTO, hecho, contribuyente);
+    SolicitudEliminacion solicitud = SolicitudEliminacionInputDTO.DTOtoSolicitud(solicitudInputDTO, hecho, contribuyente);
 
     if(this.detectorSpam.esSpam(solicitud)) {
       // Es marcada como spam y no se guarda, solo se devuelve
@@ -99,7 +98,7 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
       throw new RuntimeException(e.getMessage());
     }
     this.solicitudEliminacionRepository.guardarSolicitud(solicitud);
-    SolicitudEliminacionOutputDTO solicitudRechazadaDTO = UtilsDTO.SolicitudToDTO(solicitud);
+    SolicitudEliminacionOutputDTO solicitudRechazadaDTO = SolicitudEliminacionOutputDTO.SolicitudToDTO(solicitud);
     return solicitudRechazadaDTO;
   }
 
@@ -127,28 +126,28 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
       this.coleccionService.eliminarHechoDeColecciones(solicitud.getHecho());
       this.fuenteService.eliminarHecho(solicitud.getHecho());
     }
-    SolicitudEliminacionOutputDTO solicitudAceptadaDTO = UtilsDTO.SolicitudToDTO(solicitud);
+    SolicitudEliminacionOutputDTO solicitudAceptadaDTO = SolicitudEliminacionOutputDTO.SolicitudToDTO(solicitud);
     return solicitudAceptadaDTO;
   }
 
   @Override
   public SolicitudEliminacionOutputDTO buscarSolicitud(Long id) {
     SolicitudEliminacion solicitud = this.solicitudEliminacionRepository.buscarSolicitud(id);
-    SolicitudEliminacionOutputDTO solicitudDTO = UtilsDTO.SolicitudToDTO(solicitud);
+    SolicitudEliminacionOutputDTO solicitudDTO = SolicitudEliminacionOutputDTO.SolicitudToDTO(solicitud);
     return solicitudDTO;
   }
 
   // ---------------------------------------------------- Privados ----------------------------------------------------
   private SolicitudEliminacionOutputDTO gestionarSolicitudSpam(SolicitudEliminacion solicitud) {
     solicitud.setEstadoSolicitudEliminacion(EstadoSolicitudEliminacion.SPAM);
-    SolicitudEliminacionOutputDTO solicitudSpamDTO = UtilsDTO.SolicitudToDTO(solicitud);
+    SolicitudEliminacionOutputDTO solicitudSpamDTO = SolicitudEliminacionOutputDTO.SolicitudToDTO(solicitud);
     return solicitudSpamDTO;
   }
 
   private SolicitudEliminacionOutputDTO gestionarSolicitudValida(SolicitudEliminacion solicitud) {
     solicitud.setEstadoSolicitudEliminacion(EstadoSolicitudEliminacion.PENDIENTE);
     SolicitudEliminacion solicitudCreada = this.solicitudEliminacionRepository.guardarSolicitud(solicitud);
-    SolicitudEliminacionOutputDTO solicitudOutputDTO = UtilsDTO.SolicitudToDTO(solicitudCreada);
+    SolicitudEliminacionOutputDTO solicitudOutputDTO = SolicitudEliminacionOutputDTO.SolicitudToDTO(solicitudCreada);
     return solicitudOutputDTO;
   }
 }

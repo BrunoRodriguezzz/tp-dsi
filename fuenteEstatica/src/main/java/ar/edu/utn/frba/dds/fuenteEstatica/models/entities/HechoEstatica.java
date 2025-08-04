@@ -1,8 +1,5 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.entities;
 
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 

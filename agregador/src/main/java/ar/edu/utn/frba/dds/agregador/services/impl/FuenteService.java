@@ -1,62 +1,91 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
-import ar.edu.utn.frba.dds.agregador.services.IFuenteAdapter;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.FuenteOutputDTO;
+import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Categoria;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
-import java.time.LocalDate;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FuenteService implements IFuenteService {
-  @Setter
-  private List<IFuenteAdapter> fuentes;
+  @Autowired
+  private IFuenteRepository fuenteRepository;
 
-
-  // Constructor
-  public FuenteService() {
-    this.fuentes = new ArrayList<>();
-  }
-  public List<Hecho> buscarHechos(){
-    List<Hecho> todosLosHechos = this.fuentes.stream()
-        .map(IFuenteAdapter::buscarHechos)
+  public List<Hecho> buscarHechos() {
+    List<Fuente> fuentes = this.fuenteRepository.buscarFuentes();
+    List<Hecho> todosLosHechos = fuentes.stream()
+        .map(Fuente::importarHechos)
         .flatMap(List::stream)
         .collect(Collectors.toList());
     return todosLosHechos;
   }
+
   public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
+    List<Fuente> fuentes = this.fuenteRepository.buscarFuentes();
     List<Hecho> nuevosHechos = fuentes
-        .stream().filter(f -> f.getTipoFuente()!=TipoFuente.PROXY) // No me da los hechos de la proxy
+        .stream()
         .map(f -> f.buscarNuevosHechos(ultimaFechaRefresco))
         .flatMap(List::stream).collect(Collectors.toList());
     return nuevosHechos;
   }
+
   // Eliminar de la fuente
   public void eliminarHecho(Hecho hecho){
-    if(hecho.getOrigen() == Origen.CONTRIBUYENTE){
-      this.fuentes.stream().filter(fuente -> fuente.getTipoFuente() == TipoFuente.DINAMICA).forEach(fuente -> fuente.eliminarHecho(hecho));
-    }
-    if(hecho.getOrigen() == Origen.DATASET){
-      this.fuentes.stream().filter(fuente -> fuente.getTipoFuente() == TipoFuente.ESTATICA).forEach(fuente -> fuente.eliminarHecho(hecho));
-    }
-    if(hecho.getOrigen() == Origen.PROXY){
-      this.fuentes.stream().filter(fuente -> fuente.getTipoFuente() == TipoFuente.PROXY).forEach(fuente -> fuente.eliminarHecho(hecho));
-    }
+    hecho.getFuente().eliminarHecho(hecho);
   }
-  public void agregarFuenteAdapter(IFuenteAdapter fuenteAdapter){
-    this.fuentes.add(fuenteAdapter);
+
+  @Override
+  public List<FuenteOutputDTO> buscarFuentesOutput() {
+    return this.fuenteRepository
+            .buscarFuentes()
+            .stream()
+            .map(FuenteOutputDTO::toOutputDTO)
+            .collect(Collectors.toList());
   }
+
   public List<Hecho> buscarHechosFuente(TipoFuente tipoFuente){
-    IFuenteAdapter fuente = this.fuentes.stream().filter(f -> f.getTipoFuente().equals(tipoFuente)).findFirst().get();
-    List<Hecho> hechos = fuente.buscarHechos();
+    List<Fuente> fuentes = this.fuenteRepository.buscarFuentes();
+    List<Fuente> fuentesFiltradas = fuentes.stream().filter(f-> f.getTipoFuente().equals(tipoFuente)).toList();
+    List<Hecho> hechos = fuentesFiltradas.stream()
+        .map(Fuente::importarHechos)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
     return hechos;
+  }
+
+  @Override
+  public List<Hecho> buscarHechosFuente(String nombre) {
+    Fuente fuente = this.fuenteRepository.buscarFuente(nombre);
+    List<Hecho> hechosFuente = fuente.importarHechos();
+    return hechosFuente;
+  }
+
+  @Override
+  public Fuente buscarFuente(Long id) {
+    return this.fuenteRepository.buscarFuente(id);
+  }
+
+  @Override
+  public Fuente buscarFuente(String nombre) {
+    return this.fuenteRepository.buscarFuente(nombre);
+  }
+
+  @Override
+  public List<Fuente> buscarFuentes() {
+    return this.fuenteRepository.buscarFuentes();
+  }
+
+  @Override
+  public Fuente incorporarFuente(FuenteInputDTO fuenteInputDTO) {
+    Fuente fuente = FuenteInputDTO.DTOToFuente(fuenteInputDTO);
+    return this.fuenteRepository.guardarFuente(fuente);
   }
 }
 

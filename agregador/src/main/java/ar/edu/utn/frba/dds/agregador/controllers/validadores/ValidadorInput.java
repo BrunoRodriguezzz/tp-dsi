@@ -1,10 +1,10 @@
 package ar.edu.utn.frba.dds.agregador.controllers.validadores;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.RequestException;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.GestionInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.UbicacionInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ValidadorInput {
   public static void validarHechoInputDTO(HechoInputDTO hechoInputDTO) {
@@ -84,4 +84,62 @@ public class ValidadorInput {
     }
   }
 
+  public static void validarColeccionInput(ColeccionInputDTO coleccion) {
+    if (coleccion.getNombre() == null || coleccion.getNombre().isBlank()) {
+      throw new RequestException("Nombre faltante");
+    }
+
+    if (coleccion.getDescripcion() == null || coleccion.getDescripcion().isBlank()) {
+      throw new RequestException("Descripcion faltante");
+    }
+
+    if (coleccion.getFuentes().isEmpty()) {
+      throw new RequestException("Fuentes faltantes");
+    }
+
+   coleccion.getConsensos().forEach(c -> {
+     try {
+       Consenso.valueOf(c.toUpperCase());
+     } catch (IllegalArgumentException e) {
+       throw new RuntimeException("El consenso " + c + " no es valido");
+     }
+   });
+  }
+
+  public static void validarFuenteInputDTO(FuenteInputDTO fuente) {
+    if(fuente.getNombre() == null || fuente.getNombre().isBlank()) {
+      throw new RequestException("Nombre faltante");
+    }
+    if(fuente.getTipoFuente() == null || fuente.getTipoFuente().isBlank()) {
+      throw new RequestException("Tipo de fuente faltante");
+    }
+    if(fuente.getPath() == null || fuente.getPath().isBlank()) {
+      throw new RequestException("Path faltante");
+    }
+    if(fuente.getIdInterno() == null) {
+      throw new RequestException("ID del interno faltante");
+    }
+  }
+
+  public static void validarCriterioInput(CriterioInputDTO criterio) {
+    if (criterio == null) {
+      throw new RequestException("El criterio está vacío");
+    }
+    if (criterio.getTitulo() != null) {
+      if (criterio.getTitulo().isBlank()) {
+        throw new RequestException("El título está vacío");
+      }
+    }
+    if (criterio.getCategoria() != null) {
+      if (criterio.getCategoria().isBlank()) {
+        throw new RequestException("La categoría está vacía");
+      }
+    }
+  }
+
+  public static void validarNombreFuente(NombreFuenteInputDTO f) {
+    if(f == null || f.getNombre() == null || f.getNombre().isBlank()) {
+      throw new RequestException("Nombre faltante");
+    }
+  }
 }

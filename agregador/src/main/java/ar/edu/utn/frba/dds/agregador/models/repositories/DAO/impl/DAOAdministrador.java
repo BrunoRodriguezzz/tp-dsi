@@ -1,10 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl;
 
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOAdministrador;
-import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOContribuyente;
-import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Administrador;
-import ar.edu.utn.frba.dds.domain.models.entities.usuarios.Contribuyente;
-import java.time.LocalDate;
+import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Administrador;
 import java.util.ArrayList;
 import java.util.List;
 

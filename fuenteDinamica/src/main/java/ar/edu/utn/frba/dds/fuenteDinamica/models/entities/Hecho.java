@@ -12,7 +12,6 @@ import java.util.List;
 @Getter
 @Builder
 public class Hecho {
-
     private Long          id;
     private Contribuyente contribuyente;
     private String        titulo;

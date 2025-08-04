@@ -1,10 +1,9 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories.impl;
 
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOSolicitudEliminacion;
-import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl.DAOColeccion;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl.DAOSolicitudEliminacion;
 import ar.edu.utn.frba.dds.agregador.models.repositories.ISolicitudEliminacionRepository;
-import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.SolicitudEliminacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.SolicitudEliminacion;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Repository;
 

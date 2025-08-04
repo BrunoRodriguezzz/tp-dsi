@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl;
 
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.TipoFuente;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputColeccionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.PaginaHechoDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.SolicitudEliminacionDTO;
@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Component
 public class APICatedra implements TipoFuente {
@@ -42,6 +43,11 @@ public class APICatedra implements TipoFuente {
     public Flux<InputHecho> getNuevos(LocalDateTime date) {
         // La API Cátedra nunca se actualiza, de momento.
         return null;
+    }
+
+    @Override
+    public Flux<InputColeccionDTO> getAllColecciones() {
+        return Flux.fromIterable(new ArrayList<>()); // La API catedra no entiende de colecciones.
     }
 
     @Override

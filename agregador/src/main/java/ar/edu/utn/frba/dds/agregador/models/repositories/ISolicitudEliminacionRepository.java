@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories;
 
-import ar.edu.utn.frba.dds.domain.models.entities.solicitudEliminacion.SolicitudEliminacion;
-import org.springframework.stereotype.Repository;
+import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.SolicitudEliminacion;
 
 public interface ISolicitudEliminacionRepository {
   public SolicitudEliminacion guardarSolicitud(SolicitudEliminacion solicitud);

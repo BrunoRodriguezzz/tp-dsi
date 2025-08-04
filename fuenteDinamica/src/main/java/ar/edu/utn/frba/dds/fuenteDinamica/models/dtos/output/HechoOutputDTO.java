@@ -21,6 +21,7 @@ public class HechoOutputDTO {
     private List<String>   contenidoMultimedia;
     private Ubicacion      ubicacion;
     private LocalDate      fechaAcontecimiento;
+    private LocalDate      fechaCarga;
     private List<String>   etiquetas;
     private String         origen;
     private String         fuente;

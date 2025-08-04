@@ -19,7 +19,6 @@ public class HechoController {
     @GetMapping
     public ResponseEntity<List<OutputFuente>> getAll() {
         List<OutputFuente> response = hechoService.getAll();
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

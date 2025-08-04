@@ -1,10 +1,14 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.dtos;
 
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Coleccion;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputColeccionDTO;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputFuenteDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
-import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.ContribuyenteDTO;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputColeccionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuenteAgregador;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
 
 import java.util.ArrayList;
@@ -12,6 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UtilsDTO {
+    private static final String rutaProxy = "http://localhost:8083";
+
     public static OutputHecho hechoToDtoOutput(HechoProxy hecho) {
         OutputHecho dto = new OutputHecho();
         dto.setId(hecho.getId());
@@ -20,9 +26,10 @@ public class UtilsDTO {
         dto.setCategoria(hecho.getCategoria());
         dto.setUbicacion(hecho.getUbicacion());
         dto.setOrigen(hecho.getOrigen());
+        dto.setFechaCarga(hecho.getFechaCreacion().toString());
 
         if (hecho.getFechaHecho() != null)
-            dto.setFechaAcontecimiento(hecho.getFechaHecho().toString());
+            dto.setFechaAcontecimiento(hecho.getFechaHecho()); // String?
 
         //TODO Implementado para pruebas
         dto.setEtiquetas(new ArrayList<>());
@@ -61,5 +68,40 @@ public class UtilsDTO {
         output.setHechos(hechosDTO);
 
         return output;
+    }
+
+  public static Fuente toFuente(InputFuenteDTO inputFuenteDTO) {
+        // TODO: COMO SABEMOS EL TIPO??
+        return null;
+  }
+
+    public static OutputFuenteAgregador toOutputFuenteAgregador(Fuente fuente) {
+        OutputFuenteAgregador output = new OutputFuenteAgregador();
+        output.setNombre(fuente.getNombre());
+        output.setPath(rutaProxy);
+        output.setTipoFuente("PROXY");
+        output.setIdInterno(fuente.getId());
+        return output;
+    }
+
+    public static Coleccion toColeccion(InputColeccionDTO dto) {
+        Coleccion coleccion = new Coleccion();
+        coleccion.setTitulo(dto.getTitulo());
+        coleccion.setDescripcion(dto.getDescripcion());
+        coleccion.setCriterio(dto.getCriterio());
+        //coleccion.setFuentes(fuentes);
+        coleccion.setIdsHechos(dto.getIdsHechos());
+        return coleccion;
+    }
+
+    public static OutputColeccionDTO toOutputColeccion(Coleccion coleccion) {
+        OutputColeccionDTO dto = new OutputColeccionDTO();
+        dto.setId(coleccion.getId());
+        dto.setTitulo(coleccion.getTitulo());
+        dto.setDescripcion(coleccion.getDescripcion());
+        dto.setCriterio(coleccion.getCriterio());
+        dto.setFuentes(coleccion.getFuentes());
+        //dto.setHechos(hechos);
+        return dto;
     }
 }

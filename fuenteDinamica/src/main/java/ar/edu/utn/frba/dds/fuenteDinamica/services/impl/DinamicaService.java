@@ -33,7 +33,7 @@ public class DinamicaService implements IDinamicaService {
 
     private final WebClient webClient = WebClient
         .builder()
-        .baseUrl("http://localhost:8082/agregador")
+        .baseUrl("http://localhost:8082")
         .build();
 
     @Override
@@ -264,6 +264,7 @@ public class DinamicaService implements IDinamicaService {
                 .etiquetas(hecho.getEtiquetas())
                 .origen(hecho.getOrigen())
                 .fuente(hecho.getFuente())
+                .fechaCarga(hecho.getFechaGuardado().toLocalDate())
                 .build();
 
     }

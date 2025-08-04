@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.dto;
 
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.input.InputHechoDTO;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.ArchivoOutputAgregadorDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.ArchivoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Archivo;
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UtilsDTO {
+    private static String path = "http://localhost:8084";
+
     public static ArchivoOutputDTO toOutputArchivo(Archivo archivo, List<HechoEstatica> hechos) {
         if (hechos == null || hechos.isEmpty()) return null;
 
@@ -36,6 +39,7 @@ public class UtilsDTO {
         dto.setOrigen(hecho.getOrigen());
         dto.setContribuyente(null);
         dto.setFuente(null);
+        dto.setFechaCarga(hecho.getFechaCreacion().toString());
         dto.setContenidoMultimedia(new ArrayList<>());
         dto.setEtiquetas(new ArrayList<>());
 
@@ -63,5 +67,16 @@ public class UtilsDTO {
         hecho.setOrigen(input.getOrigen());
 
         return hecho;
+    }
+
+
+    public static ArchivoOutputAgregadorDTO toOutputArchivoAgregador(Archivo archivo) {
+        ArchivoOutputAgregadorDTO dto = new ArchivoOutputAgregadorDTO();
+        dto.setNombre(archivo.getNombre());
+        dto.setIdInterno(archivo.getId());
+        dto.setTipoFuente("ESTATICA");
+        dto.setPath(path);
+
+        return dto;
     }
 }

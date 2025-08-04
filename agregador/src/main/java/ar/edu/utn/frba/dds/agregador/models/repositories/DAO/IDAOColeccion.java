@@ -1,5 +1,5 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories.DAO;
-import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import java.util.List;
 
 public interface IDAOColeccion {
@@ -8,4 +8,6 @@ public interface IDAOColeccion {
   public Boolean save(List<Coleccion> colecciones);
   public Coleccion find(Long id);
   public Boolean eliminarHechoDeColecciones(Long id);
+
+  public void eliminarColeccion(Long id);
 }

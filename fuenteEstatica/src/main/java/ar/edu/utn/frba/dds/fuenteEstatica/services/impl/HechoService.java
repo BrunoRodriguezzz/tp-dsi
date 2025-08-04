@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.services.impl;
 
 import ar.edu.utn.frba.dds.fuenteEstatica.exceptions.ValidationError;
-import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.input.InputHechoDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.ArchivoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.UtilsDTO;
@@ -80,6 +79,40 @@ public class HechoService implements IHechoService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void save(HechoEstatica hecho) {
+        this.hechoRepository.save(hecho);
+    }
+
+    @Override
+    public void deleteHecho(Long id) {
+        if (id != null && id >= 1) {
+            hechoRepository.delete(id);
+        }else {
+            throw new ValidationError("ID invalido");
+        }
+    }
+
+    @Override
+    public List<ArchivoOutputDTO> getByTitleAndIdFuente(String title, Long idFuente) {
+        List<HechoEstatica> hechos = this.hechoRepository.getByName(title);
+        List<HechoEstatica> hechosFiltrados = hechos.stream()
+            .filter(h -> h.getIdArchivo().equals(idFuente))
+            .toList();
+        List<ArchivoOutputDTO> outputArchivos = new ArrayList<>();
+        List<Long> idFuentes = hechosFiltrados.stream()
+            .map(HechoEstatica::getIdArchivo)
+            .distinct()
+            .toList();
+        idFuentes.forEach(id -> {
+            List<HechoEstatica> hechosFuente = hechosFiltrados.stream()
+                .filter(e -> e.getIdArchivo().equals(id))
+                .toList();
+            this.toOutputArchivo(outputArchivos, id, hechosFuente);
+        });
+        return outputArchivos;
+    }
+
     private List<ArchivoOutputDTO> buscarPorIdHecho(Long idHecho) {
         HechoEstatica hecho = hechoRepository.getById(idHecho);
         Archivo archivo = this.archivoRepository.getById(hecho.getIdArchivo());
@@ -122,18 +155,4 @@ public class HechoService implements IHechoService {
 //    public void guardarHecho(HechoEstatica hecho) {
 //        hechoRepository.save(hecho);
 //    }
-
-    @Override
-    public void save(HechoEstatica hecho) {
-        this.hechoRepository.save(hecho);
-    }
-
-    @Override
-    public void deleteHecho(Long id) {
-        if (id != null && id >= 1) {
-            hechoRepository.delete(id);
-        }else {
-            throw new ValidationError("ID invalido");
-        }
-    }
 }

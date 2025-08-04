@@ -1,9 +1,10 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories.impl;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOHecho;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl.DAOHecho;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -26,6 +27,11 @@ public class HechoRepository implements IHechoRepository {
     return this.dao.findById(id);
   }
 
+  @Override
+  public List<Hecho> buscarHechos() {
+    return this.dao.findAll();
+  }
+
   public Hecho guardarHecho(Hecho hecho) {
     Hecho hechoExistente = this.dao.findExistent(hecho);
     if(hechoExistente != null){
@@ -45,5 +51,11 @@ public class HechoRepository implements IHechoRepository {
       hechosNuevos.add(hechoGuardado);
     });
     return hechosNuevos;
+  }
+
+  @Override
+  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente){
+    List<Hecho> hechos = this.dao.findByFuente(fuente);
+    return hechos;
   }
 }

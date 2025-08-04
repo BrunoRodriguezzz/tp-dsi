@@ -46,6 +46,6 @@ public class FiltroEstatica {
         if (this.date == null) {
             return true;
         }
-        return hecho.getFechaModificacion().isAfter(this.date);
+        return hecho.getFechaModificacion().isAfter(this.date) ;
     }
 }

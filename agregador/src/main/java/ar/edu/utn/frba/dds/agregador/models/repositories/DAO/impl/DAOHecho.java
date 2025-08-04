@@ -1,7 +1,8 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOHecho;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +20,7 @@ public class DAOHecho implements IDAOHecho {
       Hecho hechoExistente = existente.get();
 
       hechoExistente.setTitulo(hecho.getTitulo());
-      hechoExistente.setIdHFuente(hecho.getIdHFuente());
+      hechoExistente.setIdInternoFuente(hecho.getIdInternoFuente());
       hechoExistente.setDescripcion(hecho.getDescripcion());
       hechoExistente.setContribuyente(hecho.getContribuyente());
       hechoExistente.setUbicacion(hecho.getUbicacion());
@@ -29,10 +30,9 @@ public class DAOHecho implements IDAOHecho {
       hechoExistente.setOrigen(hecho.getOrigen());
       hechoExistente.setContribuyente(hecho.getContribuyente());
       hechoExistente.setEstaEliminado(hecho.getEstaEliminado());
-      if(hecho.getIdFuente() != null){
-        hechoExistente.setIdFuente(hecho.getIdFuente());
+      if(hecho.getFuente() != null){
+        hechoExistente.setFuente(hecho.getFuente());
       }
-      hechoExistente.setFuente(hecho.getFuente());
       hechoExistente.setContenidoMultimedia(hecho.getContenidoMultimedia());
 
       return hechoExistente;
@@ -52,11 +52,21 @@ public class DAOHecho implements IDAOHecho {
     return hecho;
   }
 
+  @Override
+  public List<Hecho> findAll() {
+    return this.hechos;
+  }
+
   public Hecho findExistent(Hecho hecho) {
     Hecho hechoExistente = this.hechos.stream().filter(h ->
-                h.getIdHFuente().equals(hecho.getIdHFuente()) &&
+                h.getIdInternoFuente().equals(hecho.getIdInternoFuente()) &&
                 h.getOrigen().equals(hecho.getOrigen())
         ).findFirst().orElse(null);
     return hechoExistente;
+  }
+
+  public List<Hecho> findByFuente(Fuente fuente) {
+    List<Hecho> hechos = this.hechos.stream().filter(h -> h.getFuente().getId().equals(fuente.getId())).toList();
+    return hechos;
   }
 }

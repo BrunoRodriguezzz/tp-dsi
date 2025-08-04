@@ -1,14 +1,14 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.entities.impl;
 
-import ar.edu.utn.frba.dds.domain.models.entities.utils.Errores.ER_ValueObjects.UbicacionInvalidaException;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Origen;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.TipoArchivo;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Ubicacion;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.UbicacionInvalidaException;
 import com.opencsv.CSVReader;
 
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
@@ -30,16 +30,12 @@ public class ArchivoCSV implements TipoArchivo {
     public Flux<HechoEstatica> leerHechos(String ruta) {
         try (CSVReader lector = this.crearLectorCSV(ruta)) {
             return this.instanciarHechosSegunCSV(lector);
-            // TODO: Catchea el controller?
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error de lectura: " + e.getMessage());
-            return null;
+            throw new RuntimeException("Error de lectura: " + e.getMessage());
         } catch (CsvException e) {
-            JOptionPane.showMessageDialog(null, "Error en CSV de formato: " + e.getMessage());
-            return null;
+            throw new RuntimeException("Error en CSV de formato: " + e.getMessage());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error inesperado: " + e.getMessage());
-            return null;
+            throw new RuntimeException("Error inesperado: " + e.getMessage());
         }
     }
 

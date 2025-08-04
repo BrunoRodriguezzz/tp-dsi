@@ -1,21 +1,23 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output;
 
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Origen;
-import ar.edu.utn.frba.dds.domain.models.entities.valueObjectsHecho.Ubicacion;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Origen;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Ubicacion;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.Data;
 
 @Data
 public class OutputHecho {
     private Long id;
-    private ContribuyenteDTO contribuyente;
     private String titulo;
     private String descripcion;
     private String categoria;
-    private List<String> contenidoMultimedia;
     private Ubicacion ubicacion;
-    private String fechaAcontecimiento;
-    private List<String> etiquetas;
+    private LocalDate fechaAcontecimiento;
+    private String fechaCarga;
+    private ContribuyenteDTO contribuyente;
     private Origen origen;
     private String fuente;
+    private List<String> contenidoMultimedia;
+    private List<String> etiquetas;
 }

@@ -4,8 +4,8 @@ import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.IDAOColeccion;
 import ar.edu.utn.frba.dds.agregador.models.repositories.DAO.impl.DAOColeccion;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.Coleccion;
-import ar.edu.utn.frba.dds.domain.models.entities.hechos.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -36,12 +36,10 @@ public class ColeccionRepository implements IColeccionRepository {
   public List<Coleccion> buscarCopiaColecciones() {
     List<Coleccion> colecciones = this.dao.getAll();
     List<Coleccion> copia = colecciones.stream().map(c -> {
-      Coleccion copy = new Coleccion(c.getTitulo(), c.getDescripcion());
+      Coleccion copy = new Coleccion(c.getTitulo(), c.getDescripcion(), c.getFuentes(), c.getCriterio());
       List<Hecho> hechosCopia = new ArrayList<>();
       c.getHechos().forEach(h -> {hechosCopia.add(h);});
       copy.setHechos(hechosCopia);
-      copy.setFuentes(c.getFuentes());
-      copy.setCriterio(c.getCriterio());
       copy.setId(c.getId());
       return copy;
     }).collect(Collectors.toList());
@@ -51,10 +49,8 @@ public class ColeccionRepository implements IColeccionRepository {
   @Override
   public Coleccion buscarCopiaColeccion(Long id) {
     Coleccion coleccion = this.dao.find(id);
-    Coleccion copia = new Coleccion(coleccion.getTitulo(), coleccion.getDescripcion());
-    copia.setFuentes(coleccion.getFuentes());
+    Coleccion copia = new Coleccion(coleccion.getTitulo(), coleccion.getDescripcion(), coleccion.getFuentes(), coleccion.getCriterio());
     copia.setId(coleccion.getId());
-    copia.setCriterio(coleccion.getCriterio());
     copia.setHechos(coleccion.getHechos());
     return copia;
   }
@@ -77,4 +73,8 @@ public class ColeccionRepository implements IColeccionRepository {
     return this.dao.eliminarHechoDeColecciones(hecho.getId());
   }
 
+  @Override
+  public void eliminarColeccion(Long id) {
+    this.dao.eliminarColeccion(id);
+  }
 }
