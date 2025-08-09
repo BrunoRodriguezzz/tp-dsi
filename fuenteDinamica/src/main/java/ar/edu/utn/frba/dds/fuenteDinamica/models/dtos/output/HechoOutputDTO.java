@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output;
 
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Ubicacion;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,4 +26,22 @@ public class HechoOutputDTO {
     private List<String>   etiquetas;
     private String         origen;
     private String         fuente;
+
+    public static HechoOutputDTO convertir(Hecho hecho){
+        return HechoOutputDTO
+                .builder()
+                .id(hecho.getId())
+                .contribuyente(hecho.getContribuyente())
+                .titulo(hecho.getTitulo())
+                .descripcion(hecho.getDescripcion())
+                .categoria(hecho.getCategoria())
+                .contenidoMultimedia(hecho.getContenidoMultimedia())
+                .ubicacion(hecho.getUbicacion())
+                .fechaAcontecimiento(hecho.getFechaAcontecimiento())
+                .etiquetas(hecho.getEtiquetas())
+                .origen(hecho.getOrigen())
+                .fuente(hecho.getFuente())
+                .fechaCarga(hecho.getFechaGuardado().toLocalDate())
+                .build();
+    }
 }
