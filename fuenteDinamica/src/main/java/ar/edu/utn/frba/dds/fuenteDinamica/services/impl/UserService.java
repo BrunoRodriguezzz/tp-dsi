@@ -1,9 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
-import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoEliminarInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
@@ -14,7 +12,6 @@ import ar.edu.utn.frba.dds.fuenteDinamica.services.IUserService;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,6 +21,10 @@ import java.time.temporal.ChronoUnit;
 public class UserService implements IUserService {
 
     private IRepositoryService dinamicaRepository;
+
+    public UserService(IRepositoryService dinamicaRepository){
+        this.dinamicaRepository = dinamicaRepository;
+    }
 
     @Autowired
     private IContribuyenteRepository contribuyentesRepository;

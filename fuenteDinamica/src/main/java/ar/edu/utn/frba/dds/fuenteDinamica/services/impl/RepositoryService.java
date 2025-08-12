@@ -4,10 +4,12 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IDinamicaRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class RepositoryService implements IRepositoryService {
 
     @Autowired
@@ -19,7 +21,7 @@ public class RepositoryService implements IRepositoryService {
     }
     @Override
     public void guardar(Hecho hecho){
-
+        this.dinamicaRepository.guardar(hecho);
     }
     @Override
     public List<Hecho> mostrarTodos(LocalDateTime filtro){

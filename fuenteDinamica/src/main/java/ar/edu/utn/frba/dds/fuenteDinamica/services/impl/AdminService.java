@@ -7,11 +7,17 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IAdminService;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Service
 public class AdminService implements IAdminService {
 
     private IRepositoryService dinamicaRepository;
+
+    public AdminService(IRepositoryService dinamicaRepository){
+        this.dinamicaRepository = dinamicaRepository;
+    }
 
     private final WebClient webClient = WebClient
             .builder()
