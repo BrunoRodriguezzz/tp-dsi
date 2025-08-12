@@ -1,0 +1,30 @@
+.division-line {
+    border: none;
+    height: 0.1vh;
+    width: 90%;
+    max-width: 1350px;
+    background-color: black;
+    margin: 10px auto 2% auto;
+}
+
+.container-footer {
+    background-color: black;
+    color: white;
+}
+
+.footer-links a {
+    text-decoration: none;
+    color: white;
+}
+
+.footer-legals a {
+    text-decoration: none;
+    color: white;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+    align-items: center;
+}

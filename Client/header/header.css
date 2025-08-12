@@ -1,0 +1,48 @@
+.division-line {
+    border: none;
+    height: 0.1vh;
+    width: 90%;
+    max-width: 1350px;
+    background-color: black;
+    margin: 10px auto 2% auto;
+}
+
+.container-header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.logo {
+    margin-top: 20px;
+}
+
+.navbar {
+    align-items: center;
+    margin-top: 18px;
+}
+
+.navbar ul {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    list-style: none;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: black;
+}
+
+
+.btn-outline-primary {
+    background-color: white;
+    color: black;
+    border-color: black;
+}    
+
+.btn-outline-primary:hover {
+    background-color: black;
+    color: white;
+    border-color: black;
+}
