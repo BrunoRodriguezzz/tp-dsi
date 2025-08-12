@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoEliminarInputDT
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IAdminService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:8081")
 public class AdminController {
 
+    @Autowired
     private IAdminService adminService;
 
     // Gestion del hecho (aceptacion, sugerir cambios o rechazar)
