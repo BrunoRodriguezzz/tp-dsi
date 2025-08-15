@@ -78,3 +78,19 @@
   color: black;
 }
 
+/* Carusel */
+
+.header-carusel {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-carusel {
+  border: 2px solid grey;
+  color: grey;
+}
+
+.btn-carusel:hover {
+  border: 2px solid grey;
+  color: black;
+}

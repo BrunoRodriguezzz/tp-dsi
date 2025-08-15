@@ -19,7 +19,9 @@
 
 .navbar {
     align-items: center;
-    margin-top: 18px;
+    background-color: white !important;
+    border-bottom: 0.1rem solid rgba(128, 128, 128, 0.4);
+    font-size: small;
 }
 
 .navbar ul {
@@ -32,4 +34,15 @@
 .navbar a {
     text-decoration: none;
     color: black;
+}
+
+@media (max-width: 991.98px) { 
+  .navbar-nav {
+    flex-direction: column !important;
+    width: 100%;
+  }
+
+  .navbar-nav .btn {
+    margin-top: 0.5rem; 
+  }
 }
