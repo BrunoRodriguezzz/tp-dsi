@@ -1,0 +1,80 @@
+/*Botones*/
+.btn-outline-light { 
+  color: var(--color-black);
+  border-color: var(--color-black);
+}
+
+.btn-outline-light:hover {
+  color: var(--color-white);
+  background-color: var(--color-white);
+}
+
+.btn-dark {
+  background-color: black;
+  color: white;
+}
+
+.btn-outline-primary {
+    background-color: white;
+    color: black;
+    border-color: black;
+}    
+
+.btn-outline-primary:hover {
+    background-color: black;
+    color: white;
+    border-color: black;
+}
+
+/* Card */
+.card.hecho-destacado-card{
+  width: 500px;
+  background-color: transparent;
+  border: solid var(--color-gray-300) 1px;
+  margin: 0 0.3rem;
+}
+
+.card.hecho-destacado-card h5 {
+  text-align: start;
+  margin-left: 0;
+}
+
+.card.hecho-destacado-card p {
+  text-align: start;
+  margin: 0;
+}
+
+.card.hecho-destacado-card:hover {
+  box-shadow: 3px 3px 3px var(--color-gray-200);
+  transition: 0.2s;
+}
+
+.card-body.hecho-destacado-card-body{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+}
+
+.etiqueta-categoria {
+  border: solid 0.1px var(--color-gray-300);
+  padding: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border-radius: 20px;
+  color: var(--color-gray-700);
+}
+
+.titulo-etiqueta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.etiqueta-interes {
+  font-size: 0.7rem;
+  padding: 0.1rem;
+  background-color: whitesmoke;
+  color: black;
+}
+

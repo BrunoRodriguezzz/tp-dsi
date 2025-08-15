@@ -1,0 +1,92 @@
+/* MetaMapa */
+.metaMapa-info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem;
+}
+
+.metaMapa-info-title{
+    font-size: 3rem;
+}
+
+.metaMapa-info-p{
+    margin:1.6rem;
+    text-align: center;
+    color: var(--color-gray-700);
+    font-size: 1.2rem;
+}
+
+/* Purpose */
+.purpose-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem;
+}
+
+.purpose-container{
+    padding: 2.5rem 0;
+    width: 100%;
+    background-color: var(--color-gray-50);
+}
+
+.col{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Card */
+.card {
+    width: 17rem;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+} 
+
+.card-body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-logo-container {
+    aspect-ratio: 1 / 1;
+    width: 3.5rem;
+    background-color: var(--color-black);
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.4rem;
+}
+
+h5.card-title{
+    color: var(--color-black);
+    text-align: center;
+    margin: 0.4rem;
+    margin-top: 0.7rem;
+}
+
+p.card-text{
+    text-align: center;
+    font-size: smaller;
+    color: var(--color-gray-700)
+}
+
+i.card-icon{
+    font-size: 1.5rem;
+    color: var(--color-white);
+}
+
+/* Hechos Destacados */
+.hechos-destacados-section{
+    margin: 2rem
+}
+
+.hechos-destacados-container{
+    display: flex;
+    justify-content: space-around;
+}
