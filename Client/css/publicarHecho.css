@@ -39,6 +39,8 @@ body p {
 
 .container-ubicacion {
     margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
 }
 
 .form-etiquetas {

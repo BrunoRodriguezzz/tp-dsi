@@ -83,12 +83,29 @@ i.card-icon{
 
 /* Hechos Destacados */
 .hechos-destacados-section{
-    margin: 2rem
+    margin: 2rem 4rem;
 }
 
 .hechos-destacados-container{
     display: flex;
     justify-content: space-around;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.hechos-destacados-section .btn {
+    width: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.hechos-destacados-container .col {
+    flex: 1;
+    min-width: 22rem;
+    max-width: 28rem;
+    display: flex;
+    justify-content: center;
 }
 button a {
     color:white
