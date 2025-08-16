@@ -95,5 +95,66 @@ main{
 }
 
 .hecho-card h3{
-    font-size: medium;
+    font-size: larger;
+}
+
+.colecciones-container{
+    margin: 2rem;
+}
+
+.etiquetas-algoritmos-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+.etiquetas-algoritmos-container p{
+    margin: 0;
+}
+
+
+.etiqueta-algoritmo-consenso{
+    border: solid 0.1px var(--color-gray-300);
+    padding: 0.3rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 20px;
+    color: var(--color-gray-700);
+}
+
+.multiples-menciones{
+    background-color: var(--color-sky-blue);
+    border: solid 0.8px var(--color-blue-200);
+    border-radius: 2rem;
+}
+
+.multiples-menciones p{
+    color: var(--color-blue-800)
+}
+
+.mayoria-simple{
+    background-color: var(--color-green-100);
+    border: solid 0.8px var(--color-green-200);
+    border-radius: 2rem;
+}
+
+.mayoria-simple p{
+    color: var(--color-blue-800)
+}
+
+.mayoria-absoluta{
+    background-color: var(--color-violet-light);
+    border: solid 0.8px var(--color-violet-dark);
+    border-radius: 2rem;
+}
+
+.mayoria-absoluta p{
+    color: var(--color-blue-800)
+}
+
+.coleccion-cantidad-hechos{
+    font-size: small;
+    margin: 1rem 0;
+    font-size:medium;
 }
