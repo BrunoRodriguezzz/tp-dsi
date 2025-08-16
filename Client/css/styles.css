@@ -14,10 +14,13 @@
   --color-gray-900: #111827;
   --color-blue-50: #eff6ff;
   --color-blue-100: #dbeafe;
+  --color-blue-200: #5bb5ff;
   --color-blue-600: #2563eb;
   --color-blue-800: #1e40af;
+  --color-sky-blue: #e9f2fd;
   --color-green-50: #f0fdf4;
   --color-green-100: #dcfce7;
+  --color-green-200: #61ff5b;
   --color-green-600: #16a34a;
   --color-green-700: #15803d;
   --color-green-800: #166534;
@@ -27,6 +30,8 @@
   --color-red-600: #dc2626;
   --color-violet-100: #d1c7f8;
   --color-violet-600: #7c3aed;
+  --color-violet-dark: #af69ff;
+  --color-violet-light: #e9d8ff;
   --color-yellow-50: #fffbeb;
   --color-yellow-100: #fef3c7;
   --color-yellow-600: #d97706;
