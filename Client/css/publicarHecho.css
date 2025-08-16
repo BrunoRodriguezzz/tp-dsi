@@ -1,0 +1,50 @@
+.outer-form {
+    margin: 0 auto;
+    max-width: 40rem;
+    text-align: left;
+}
+
+.form-hecho {
+    margin: 0 auto;
+    max-width: 40rem;
+    text-align: left;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+body p {
+    color: var(--color-gray-500);
+}
+
+.header-form {
+    margin-bottom: 2rem;
+}
+
+.form-title {
+    margin-bottom: 2rem;
+}
+
+.form-desc {
+    margin-bottom: 2rem;
+}
+
+.form-category {
+    margin-bottom: 2rem;
+}
+
+.form-fechaAcontecimiento {
+    margin-bottom: 2rem;
+}
+
+.container-ubicacion {
+    margin-bottom: 2rem;
+}
+
+.form-etiquetas {
+    margin-bottom: 2rem;
+}
+
+.form-etiquetas p {
+    font-size: 0.875rem;
+}
