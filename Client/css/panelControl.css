@@ -28,6 +28,10 @@ h1 {
     margin-top: 7rem;
 }
 
+.accesos-container svg {
+    margin-bottom: 0.8rem;
+}
+
 /* Metricas */
 .metricas-container svg {
     margin-right: 1rem;
@@ -102,4 +106,9 @@ a {
 
 .card {
     margin-bottom: 2rem;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+    transition: box-shadow 0.3s ease-in-out;
 }

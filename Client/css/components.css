@@ -45,8 +45,8 @@
 }
 
 .card.hecho-destacado-card:hover {
-  box-shadow: 3px 3px 3px var(--color-gray-200);
-  transition: 0.2s;
+  box-shadow: var(--shadow-lg);
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .card-body.hecho-destacado-card-body{
