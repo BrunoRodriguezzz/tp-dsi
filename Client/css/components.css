@@ -105,3 +105,43 @@
   border: 2px solid grey;
   color: black;
 }
+
+.card.coleccion-destacada-card{
+  width: 100%;
+  max-width: 28rem;
+  background-color: transparent;
+  border: solid var(--color-gray-300) 1px;
+  margin: 0 0.3rem;
+  padding: 2rem;
+}
+
+.card.coleccion-destacada-card h5 {
+  text-align: start;
+  margin-left: 0;
+  margin-bottom: 0.5rem;
+}
+
+.card.coleccion-destacada-card p {
+  text-align: start;
+  margin: 0;
+}
+
+.card.coleccion-destacada-card .card-subtitle {
+  color: var(--color-gray-600);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.card.coleccion-destacada-card:hover {
+  box-shadow: var(--shadow-lg);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.card-body.coleccion-destacada-card-body{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  gap: 0.5rem;
+  padding: 0;
+}

@@ -100,6 +100,46 @@ i.card-icon{
     margin: 0 auto;
 }
 
+/* Colecciones Destacadas */
+.colecciones-destacadas-section{
+    margin: 0;
+    padding: 2.5rem 4rem;
+    background-color: var(--color-gray-50);
+    width: 100%;
+}
+
+.colecciones-destacadas-container{
+    display: flex;
+    justify-content: space-around;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.colecciones-destacadas-container .col {
+    flex: 1;
+    min-width: 22rem;
+    max-width: 28rem;
+    display: flex;
+    justify-content: center;
+}
+
+.colecciones-destacadas-section .btn {
+    width: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.unete-comunidad-section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem;
+    padding: 2.5rem 0;
+    width: 100%;
+    background-color: white;
+}
+
 .hechos-destacados-container .col {
     flex: 1;
     min-width: 22rem;
