@@ -90,3 +90,6 @@ i.card-icon{
     display: flex;
     justify-content: space-around;
 }
+button a {
+    color:white
+}
