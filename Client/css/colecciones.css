@@ -88,13 +88,27 @@ main{
     font-size: smaller;
 }
 
-.hecho-card{
+.coleccion-card{
     border: solid var(--color-gray-200) 2px;
     padding: 2rem 1rem;
     border-radius: 1rem;
 }
 
-.hecho-card h3{
+.coleccion-card:hover {
+    box-shadow: var(--shadow-lg);
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+a {
+    text-decoration: none;
+    font-size: smaller;
+}
+
+.link-coleccion {
+    color: var(--color-blue-600);
+}
+
+.coleccion-card h3{
     font-size: larger;
 }
 
@@ -104,6 +118,7 @@ main{
 
 .etiquetas-algoritmos-container {
     display: flex;
+    margin-bottom: 1rem;
     flex-wrap: wrap;
     gap: 0.5rem;
     justify-content: flex-start;
