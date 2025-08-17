@@ -8,6 +8,7 @@
 
 .metricas-container {
     gap: 1rem;
+    width: 100%;
 }
 
 .contenidos-metricas {
@@ -58,7 +59,6 @@ h1 {
 .blue {
     color: var(--color-blue-600);
     background-color: var(--color-blue-100);
-    
 }
 
 .green {
@@ -111,4 +111,29 @@ a {
 .card:hover {
     box-shadow: var(--shadow-lg);
     transition: box-shadow 0.3s ease-in-out;
+}
+
+.card {
+  transition: all 0.3s ease; /* suaviza animaciones */
+}
+
+.card-body svg {
+  padding: 8px;
+  border-radius: 30%;
+}
+
+.card:hover .blue {
+    background-color: #cde0f8;
+}
+
+.card:hover .green {
+    background-color: #c9f8d9;
+}
+
+.card:hover .red {
+    background-color: #ffd8d8;
+}
+
+.card:hover .violet {
+    background-color: #d8cfff;
 }

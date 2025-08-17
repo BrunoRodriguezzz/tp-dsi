@@ -21,14 +21,14 @@
             <h1>Importar CSV</h1>
             <p>Importa grandes volúmenes de hechos desde archivos CSV</p>
         </div>
-        <div class="estado-importacion">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-spreadsheet w-6 h-6 text-purple-600"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M8 13h2"></path><path d="M14 13h2"></path><path d="M8 17h2"></path><path d="M14 17h2"></path></svg>
+        <div class="estado-importacion col-12">
+            <svg class="violet" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-spreadsheet w-6 h-6 text-purple-600"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M8 13h2"></path><path d="M14 13h2"></path><path d="M8 17h2"></path><path d="M14 17h2"></path></svg>
             <div class="text-estado">
                 <p>Estado de importación</p>
                 <p id="estado">Listo</p>
             </div>
         </div>
-        <div class="container importar-csv">
+        <div class="container importar-csv col-12">
             <div class="titulo">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-spreadsheet w-6 h-6 text-purple-600"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M8 13h2"></path><path d="M14 13h2"></path><path d="M8 17h2"></path><path d="M14 17h2"></path></svg>
                 <h3>Importar Hechos desde CSV</h3>
@@ -44,12 +44,11 @@
                 </ul>
             </div>
             <div class="subir-csv">
-                <p>Seleccionar archivo CSV</p>
                 <form action="" method="post">
                     <div class="mb-3">
-                        <label for="formFile" class="form-label">Default file input example</label>
+                        <label for="formFile" class="form-label">Seleccionar archivo CSV</label>
                         <input class="form-control" type="file" id="formFile">
-                        <p>Archivo seleccionado: </p>
+                        <p style="display: none;">Archivo seleccionado: </p>
                     </div>
                     <button type="submit" class="btn btn-dark">
                         <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload w-4 h-4 mr-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" x2="12" y1="3" y2="15"></line></svg>
