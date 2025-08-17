@@ -184,25 +184,27 @@ body > p {
 }
 
 .btn-modificar {
-    background-color: var(--color-blue-600);
-    color: white;
+    background-color: var(--color-white);
+    color: var(--color-blue-600);
     border-color: var(--color-blue-600);
 }
 
 .btn-modificar:hover {
-    background-color: var(--color-blue-800);
-    border-color: var(--color-blue-800);
+    background-color: var(--color-blue-50);
+    border-color: var(--color-blue-600);
+    color: var(--color-blue-600);
 }
 
 .btn-rechazar {
-    background-color: var(--color-red-600);
-    color: white;
+    background-color: var(--color-white);
+    color: var(--color-red-600);
     border-color: var(--color-red-600);
 }
 
 .btn-rechazar:hover {
-    background-color: #dc2626;
-    border-color: #dc2626;
+    background-color: var(--color-red-50);
+    border-color: var(--color-red-600);
+    color: var(--color-red-600);
 }
 
 .btn-ver {
