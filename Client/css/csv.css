@@ -1,0 +1,31 @@
+:root {
+    --svg-size: 2rem;
+}
+
+a svg {
+    max-block-size: 1rem;
+}
+
+.estado-importacion {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--border-radius);
+    padding: 0.2rem;
+}
+
+.estado-importacion svg {
+    margin-right: 0.5rem;
+    width: var(--svg-size);
+    height: var(--svg-size);
+}
+
+.estado-importacion p {
+    margin-bottom: 0.1rem;
+    font-size: small;
+}
+
+#estado {
+    font-size: larger;
+    font-weight: bold;
+}

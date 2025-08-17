@@ -135,6 +135,7 @@
 .card.coleccion-destacada-card:hover {
   box-shadow: var(--shadow-lg);
   transition: box-shadow 0.3s ease-in-out;
+    border-color: var(--color-black);
 }
 
 .card-body.coleccion-destacada-card-body{

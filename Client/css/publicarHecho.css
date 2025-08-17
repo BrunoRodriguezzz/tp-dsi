@@ -41,6 +41,7 @@ body p {
     margin-bottom: 2rem;
     display: flex;
     gap: 1rem;
+    justify-content: space-between;
 }
 
 .form-etiquetas {
