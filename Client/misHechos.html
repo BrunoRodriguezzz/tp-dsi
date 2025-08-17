@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaMapa - Mis Hechos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/misHechos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container-responsive">
+        <div class="container-principal">
+            <div class="container-secundario">
+                <div>
+                    <h1 class="p1">Mis Hechos</h1>
+                    <p class="p2">Gestiona los hechos que has publicado en el sistema</p>
+                    <p class="p3">3 hechos publicados</p>
+                </div>
+                <button class="btn btn-primary btn-dark config-nuevoHecho">+ Publicar Nuevo Hecho</button>
+            </div>
+            
+            <!-- TODO: El siguiente objeto se debe crear por cada Hecho del usuario, de momento es solo maquetado -->
+            
+            <div class="container-hecho">
+                <div class="container-hecho-mas-opciones">
+                    <div class="titulo-mas-descripcion">
+                        <h2 class="titulo-Hecho">Manifestación por derechos laborales</h2>
+                        <p class="descripcion">Gran manifestación en el centro de la ciudad exigiendo mejores condiciones laborales y aumento salarial para trabajadores del sector público.</p>
+                    </div>
+                    <div class="opciones">
+                        <p class="etiqueta-categoria config-categoria distancia-opciones">Protesta Social</p>
+                        <button class="btn btn-primary btn-dark config-opciones">Ver Detalles</button>
+                        <button class="btn btn-white config-opciones">Modificar Hecho</button>
+                        <button class="btn btn-red config-opciones">Reportar</button>
+                    </div>
+                </div>
+                <div class="informacion-general">
+                    <div class="fecha-ubicacion-fuente encolumnar">
+                            <p class="info-fecha-ubicacion-fuente"><b>Fecha: </b>2024-01-15</p>
+                            <p class="info-fecha-ubicacion-fuente"><b>Ubicación: </b>Plaza de Mayo, Buenos Aires</p>
+                            <p class="info-fecha-ubicacion-fuente"><b>Fuente: </b>Reportes ciudadanos</p>
+                    </div>
+                    <div class="etiquetas">
+                        <p class="titulo-etiqueta etiqueta-interes">trabajo</p>
+                        <p class="titulo-etiqueta etiqueta-interes">derechos</p>
+                        <p class="titulo-etiqueta etiqueta-interes">manifestación</p>
+                        <p class="titulo-etiqueta etiqueta-interes">sector público</p>
+                    </div>
+                    <div class="ultima-linea">
+                        <div class="fechaPublicacion">
+                            <i class="fa-regular fa-calendar"></i>
+                            <p class="alineacion">Publicado: 2024-01-16</p>
+                        </div>
+                        <div class="tiempoRestante">
+                            <i class="fa-regular fa-clock"></i>
+                            <p class="alineacion">0 días restantes para editar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-hecho">
+                <div class="container-hecho-mas-opciones">
+                    <div class="titulo-mas-descripcion">
+                        <h2 class="titulo-Hecho">Operativo de seguridad en zona céntrica</h2>
+                        <p class="descripcion">Operativo policial preventivo en respuesta a reportes de actividad delictiva en el área comercial.</p>
+                    </div>
+                    <div class="opciones">
+                        <p class="etiqueta-categoria config-categoria distancia-opciones">Protesta Social</p>
+                        <button class="btn btn-primary btn-dark config-opciones">Ver Detalles</button>
+                        <button class="btn config-opciones" style="opacity: 0.3;" disabled>No Editable</button>
+                        <button class="btn btn-red config-opciones">Reportar</button>
+                    </div>
+                </div>
+                <div class="informacion-general">
+                    <div class="fecha-ubicacion-fuente encolumnar">
+                            <p class="info-fecha-ubicacion-fuente"><b>Fecha: </b>2024-01-25</p>
+                            <p class="info-fecha-ubicacion-fuente"><b>Ubicación: </b>Microcentro, Buenos Aires</p>
+                            <p class="info-fecha-ubicacion-fuente"><b>Fuente: </b>Parte policial</p>
+                    </div>
+                    <div class="etiquetas">
+                        <p class="titulo-etiqueta etiqueta-interes">seguridad</p>
+                        <p class="titulo-etiqueta etiqueta-interes">policía</p>
+                        <p class="titulo-etiqueta etiqueta-interes">operativo</p>
+                        <p class="titulo-etiqueta etiqueta-interes">prevención</p>
+                    </div>
+                    <div class="ultima-linea">
+                        <div class="fechaPublicacion">
+                            <i class="fa-regular fa-calendar"></i>
+                            <p class="alineacion">Publicado: 2024-01-10</p>
+                        </div>
+                        <div class="tiempoRestante tiempoExpirado">
+                            <i class="fa-regular fa-clock"></i>
+                            <p class="alineacion">Período de edición expirado</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-hecho">
+                <div class="container-hecho-mas-opciones">
+                    <div class="titulo-mas-descripcion">
+                        <h2 class="titulo-Hecho">Feria de emprendedores locales</h2>
+                        <p class="descripcion">Feria mensual de emprendedores locales con productos artesanales y gastronómicos del barrio.</p>
+                    </div>
+                    <div class="opciones">
+                        <p class="etiqueta-categoria config-categoria distancia-opciones">Protesta Social</p>
+                        <button class="btn btn-primary btn-dark config-opciones">Ver Detalles</button>
+                        <button class="btn btn-white config-opciones">Modificar Hecho</button>
+                        <button class="btn btn-red config-opciones">Reportar</button>
+                    </div>
+                </div>
+                <div class="informacion-general">
+                    <div class="fecha-ubicacion-fuente encolumnar">
+                            <p class="info-fecha-ubicacion-fuente"><b>Fecha: </b>2024-01-18</p>
+                            <p class="info-fecha-ubicacion-fuente"><b>Ubicación: </b>Plaza Dorrego, Buenos Aires</p>
+                            <p class="info-fecha-ubicacion-fuente"><b>Fuente: </b>Reportes ciudadanos</p>
+                    </div>
+                    <div class="etiquetas">
+                        <p class="titulo-etiqueta etiqueta-interes">emprendedores</p>
+                        <p class="titulo-etiqueta etiqueta-interes">feria</p>
+                        <p class="titulo-etiqueta etiqueta-interes">artesanías</p>
+                        <p class="titulo-etiqueta etiqueta-interes">gastronomía</p>
+                    </div>
+                    <div class="ultima-linea">
+                        <div class="fechaPublicacion">
+                            <i class="fa-regular fa-calendar"></i>
+                            <p class="alineacion">Publicado: 2024-01-17</p>
+                        </div>
+                        <div class="tiempoRestante">
+                            <i class="fa-regular fa-clock"></i>
+                            <p class="alineacion">0 días restantes para editar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+</html>
