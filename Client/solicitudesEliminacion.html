@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaMapa - Sistema de Mapeo Colaborativo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/solicitudesEliminacion.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a href="panelControl.html" class="link" id="link-panelDeControl">← Volver al Panel de Control</a>
+    <h2><strong>Solicitudes de Eliminación</strong></h2>
+    <p>Revisa y procesa las solicitudes de eliminación de hechos</p>
+    <div class="container-totalSolicitudes">
+        <div class="logo-alerta">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="m12 17 .01 0"></path></svg>
+        </div>
+        <div>
+            <p>Solicitudes Pendientes</p>
+            <h4><strong>2</strong></h4>
+        </div>
+    </div>
+    <div class="container-filtro">
+        <div class="filtro-solicitudes">
+            <select class="form-select filtro-select" id="filtroSolicitudes">
+                <option value="todas" selected>Todas las solicitudes</option>
+                <option value="pendientes">Pendientes</option>
+                <option value="rechazadas">Rechazadas</option>
+                <option value="aprobadas">Aprobadas</option>
+            </select>
+            <span class="filtro-contador">3 solicitudes mostradas</span>
+        </div>
+    </div>
+    <div class="container-solicitudes">
+        <section>
+            <div class="solicitud-card">
+                <div class="solicitud-header">
+                    <h3 class="solicitud-titulo">Solicitud #1</h3>
+                    <div class="solicitud-estado pendiente">Pendiente</div>
+                </div>
+                <div class="solicitud-fecha">
+                    <span><strong>Fecha:</strong> 2024-01-25</span>
+                </div>
+                
+                <div class="solicitud-seccion">
+                    <h4>Hecho Reportado:</h4>
+                    <p class="hecho-nombre">Manifestación por derechos laborales</p>
+                </div>
+                
+                <div class="solicitud-seccion">
+                    <h4>Motivo:</h4>
+                    <div class="motivo-tag">Información Incorrecta</div>
+                    <p class="motivo-descripcion">La fecha del evento está incorrecta. La manifestación fue el 16 de enero, no el 15.</p>
+                </div>
+                
+                <div class="solicitud-seccion">
+                    <h4>Contacto:</h4>
+                    <p class="contacto-info">usuario1@email.com</p>
+                </div>
+                
+                <div class="solicitud-acciones">
+                    <button class="btn btn-aprobar-full">
+                        Aprobar Eliminación
+                    </button>
+                    <button class="btn btn-rechazar-full">
+                        Rechazar Solicitud
+                    </button>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="solicitud-card">
+                <div class="solicitud-header">
+                    <h3 class="solicitud-titulo">Solicitud #2</h3>
+                    <div class="solicitud-estado pendiente">Pendiente</div>
+                </div>
+                <div class="solicitud-fecha">
+                    <span><strong>Fecha:</strong> 2024-01-23</span>
+                </div>
+                
+                <div class="solicitud-seccion">
+                    <h4>Hecho Reportado:</h4>
+                    <p class="hecho-nombre">Contaminación en río local</p>
+                </div>
+                
+                <div class="solicitud-seccion">
+                    <h4>Motivo:</h4>
+                    <div class="motivo-tag">Contenido Inapropiado</div>
+                    <p class="motivo-descripcion">Las imágenes mostradas contienen contenido gráfico que puede ser perturbador para algunos usuarios.</p>
+                </div>
+                
+                <div class="solicitud-seccion">
+                    <h4>Contacto:</h4>
+                    <p class="contacto-info">moderador@ong.org</p>
+                </div>
+                
+                <div class="solicitud-acciones">
+                    <button class="btn btn-aprobar-full">
+                        Aprobar Eliminación
+                    </button>
+                    <button class="btn btn-rechazar-full">
+                        Rechazar Solicitud
+                    </button>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="solicitud-card">
+                <div class="solicitud-header">
+                    <h3 class="solicitud-titulo">Solicitud #3</h3>
+                    <div class="solicitud-estado aprobada">Aprobada</div>
+                </div>
+                <div class="solicitud-fecha">
+                    <span><strong>Fecha:</strong> 2024-01-23</span>
+                </div>
+                
+                <div class="solicitud-seccion">
+                    <h4>Hecho Reportado:</h4>
+                    <p class="hecho-nombre">Inauguración de centro comunitario</p>
+                </div>
+                
+                <div class="solicitud-seccion">
+                    <h4>Motivo:</h4>
+                    <div class="motivo-tag">Violación de Privacidad</div>
+                    <p class="motivo-descripcion">En las fotos aparecen menores de edad sin autorización de sus padres.</p>
+                </div>
+                
+                <hr class="division-line-solicitud"/>
+                <span><p>Esta solicitud ya ha sido procesada.</p></span>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
