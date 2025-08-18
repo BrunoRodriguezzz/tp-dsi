@@ -56,7 +56,7 @@ body{
 
 /* Container para cada hecho*/
 
-.container-hecho{
+.hecho-card{
     display:block;
     justify-content: center;
     align-items: start;
@@ -68,14 +68,14 @@ body{
     border-radius: 0.7rem
 }
 
-.container-hecho:hover{
+.hecho-card:hover{
     box-shadow: 3px 3px 3px var(--color-gray-300);
     transition: 0.2s;
 }
 
 /* Container para cada hecho*/
 
-.container-hecho-mas-opciones{
+.hecho-card-mas-opciones{
     display:flex;
     justify-content: space-between;
     align-items: flex-start;
