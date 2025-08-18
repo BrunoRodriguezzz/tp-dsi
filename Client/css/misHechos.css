@@ -65,6 +65,7 @@ body{
     padding-bottom: 1.3vw;
     margin-bottom:1.3vw;
     border: solid var(--color-gray-300) 1px;
+    border-radius: 0.7rem
 }
 
 .container-hecho:hover{
