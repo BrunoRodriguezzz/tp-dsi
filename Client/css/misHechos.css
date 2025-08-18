@@ -193,7 +193,7 @@ body{
 
 .alineacion{
     margin:0vw;
-    padding-top: 0.1vw;
+    padding-bottom: 0.1rem;
 }
 
 @media (min-width: 1400px) {
