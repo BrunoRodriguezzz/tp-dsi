@@ -164,8 +164,17 @@ body{
 
 .etiquetas{
     display: flex;
-    gap: 1vw;
+    gap: 0.4rem;
     margin-bottom: 0.5vw;
+}
+
+.etiqueta-categoria {
+    text-align: center;
+}
+
+.etiquetas p {
+    padding: 0.3rem;
+    margin-bottom: 0;
 }
 
 .ultima-linea{
