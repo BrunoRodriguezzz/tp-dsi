@@ -56,7 +56,7 @@ body{
 
 /* Container para cada hecho*/
 
-.container-hecho{
+.hecho-card{
     display:block;
     justify-content: center;
     align-items: start;
@@ -65,16 +65,17 @@ body{
     padding-bottom: 1.3vw;
     margin-bottom:1.3vw;
     border: solid var(--color-gray-300) 1px;
+    border-radius: 0.7rem
 }
 
-.container-hecho:hover{
+.hecho-card:hover{
     box-shadow: 3px 3px 3px var(--color-gray-300);
     transition: 0.2s;
 }
 
 /* Container para cada hecho*/
 
-.container-hecho-mas-opciones{
+.hecho-card-mas-opciones{
     display:flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -163,8 +164,17 @@ body{
 
 .etiquetas{
     display: flex;
-    gap: 1vw;
+    gap: 0.4rem;
     margin-bottom: 0.5vw;
+}
+
+.etiqueta-categoria {
+    text-align: center;
+}
+
+.etiquetas p {
+    padding: 0.3rem;
+    margin-bottom: 0;
 }
 
 .ultima-linea{

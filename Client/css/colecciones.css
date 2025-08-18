@@ -5,17 +5,18 @@ main{
 
 .titulo-descripcion-opciones{
     display: flex;
-    width: 95%;
     margin-top: 4rem;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
 }
 
 .colecciones-opciones{
     display: flex;
     flex-direction: row;
-    align-items: center
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .modo-navegacion-container{
@@ -23,10 +24,12 @@ main{
     margin: 1rem;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     background-color: var(--color-gray-200);
     height: 2.5rem;
     border: solid 0.8px var(--color-gray-500);
     border-radius: 0.5rem;
+    max-width: 15rem;
 }
 
 .modo-navegacion-i-titulo{
@@ -48,12 +51,22 @@ main{
     background-color: var(--color-green-100);
     border: solid 0.8px var(--color-green-200);
     border-radius: 0.5rem;
+    width: 16rem;
+    margin-left: 0;
 }
 
 .modo-navegacion-container.irrestricto{
     background-color: var(--color-sky-blue);
     border: solid 0.8px var(--color-blue-200);
     border-radius: 0.5rem;
+    width: 16rem;
+    margin-left: 0;
+}
+
+.alinear-izquierda {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .modo-navegacion-container.curado h5{
@@ -62,6 +75,7 @@ main{
 
 .modo-navegacion-container.irrestricto h5{
     color: var(--color-blue-800);
+    width: 12.4rem;
 }
 
 .modo-navegacion-container.curado i{
@@ -74,13 +88,16 @@ main{
 
 .modos-navegacion-container{
     display: flex;
+    flex-direction: flex-start;
     width: 100%;
-    flex-direction: start;
+}
+
+.colecciones-titulo-descripcion-container {
+    padding-left: 0;
 }
 
 .parrafos-modos-navegacion{
     display: flex;
-    width: 100%;
     flex-direction: start;
 }
 
@@ -92,11 +109,13 @@ main{
     border: solid var(--color-gray-200) 2px;
     padding: 2rem 1rem;
     border-radius: 1rem;
+    margin-bottom: 1rem;
 }
 
 .coleccion-card:hover {
     box-shadow: var(--shadow-lg);
     transition: box-shadow 0.2s ease-in-out;
+    border-color: black;
 }
 
 a {
@@ -113,7 +132,11 @@ a {
 }
 
 .colecciones-container{
-    margin: 2rem;
+    margin-top: 2rem;
+}
+
+.colecciones-opciones .btn {
+    max-width: 12rem;
 }
 
 .etiquetas-algoritmos-container {

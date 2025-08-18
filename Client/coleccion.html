@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colecciones</title>
+    <title>Coleccion</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bo otstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="css/styles.css">
@@ -20,22 +20,6 @@
             <div class="colecciones-titulo-descripcion-container">
                 <h2>Protestas Sociales 2024</h2>
                 <p>Recopilación de manifestaciones y protestas sociales registradas durante el año 2024</p>
-            </div>
-            <div class="colecciones-opciones">
-                <div class="modo-navegacion-container">
-                    <div class="modo-navegacion-i-titulo">
-                        <i class="fa-solid fa-globe"></i>
-                        <h5>Irrestricto</h5>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
-                    </div>
-                    <div class="modo-navegacion-i-titulo">
-                        <i class="fa-solid fa-shield"></i>
-                        <h5>Curado</h5>
-                    </div>
-                </div>
-                <button class="btn btn-dark">+ Nueva Colección</button>
             </div>
         </div>
         
@@ -56,66 +40,150 @@
         </div>
 
         <div class="parrafos-modos-navegacion">
-            <p>Se muestran todos los hechos disponibles, incluyendo contenido no verificado</p>
-            <p>Solo se muestran hechos verificados y validados por la comunidad</p>
+            <p>Algoritmos:</p>
+            <div class="modos-navegacion-container">
+                <p class="etiqueta-algoritmo-consenso multiples-menciones">Multiples Menciones</p>
+                <p class="etiqueta-algoritmo-consenso mayoria-simple">Mayoría Simple</p>
+                <p class="etiqueta-algoritmo-consenso mayoria-absoluta">Mayoría Absoluta</p>
+            </div>
         </div>
 
-        <div class="colecciones-container">
+        <div class="filtros-container">
+            <h5>Filtros</h5>
+            <div class="filtros-grid">    
+                <div class="form-group">
+                    <label for="categoria">Categoría</label>
+                    <select id="categoria">
+                    <option>Todas las categorías</option>
+                    <option>Opción 1</option>
+                    <option>Opción 2</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha-desde">Fecha Desde</label>
+                    <input type="date" id="fecha-desde" placeholder="dd/mm/aaaa">
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha-hasta">Fecha Hasta</label>
+                    <input type="date" id="fecha-hasta" placeholder="dd/mm/aaaa">
+                </div>
+
+                <div class="form-group wide">
+                    <label for="ubicacion">Ubicación</label>
+                    <input type="text" id="ubicacion" placeholder="Buscar por ubicación...">
+                </div>
+
+                <div class="form-group wide">
+                    <label for="fuente">Fuente</label>
+                    <input type="text" id="fuente" placeholder="Buscar por fuente...">
+                </div>
+
+                <div class="form-group wide">
+                    <label>&nbsp;</label>
+                    <button>Limpiar Filtros</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="hechos-container">
             <div class="row">
                 <div class="col">
-                    <div class="coleccion-card">
-                        <h3>Protestas Sociales 2024</h3>
-                        <p class="coleccion-cantidad-hechos">15 hechos registrados</p>
-                        <p>Recopilación de manifestaciones y protestas sociales registradas durante el año 2024, incluyendo marchas por derechos laborales, estudiantes y civiles.</p>
-                        <p>Algoritmos de Consenso:</p>
-                        <div class="etiquetas-algoritmos-container">
-                            <p class="etiqueta-algoritmo-consenso multiples-menciones">Multiples Menciones</p>
-                            <p class="etiqueta-algoritmo-consenso mayoria-simple">Mayoría Simple</p>
-                            <p class="etiqueta-algoritmo-consenso mayoria-absoluta">Mayoría Simple</p>
+                    <div class="hecho-card">
+                        <div class="hecho-card-mas-opciones">
+                            <div class="titulo-mas-descripcion">
+                                <h2 class="titulo-Hecho">Manifestación por derechos laborales</h2>
+                                <p class="descripcion">Gran manifestación en el centro de la ciudad exigiendo mejores condiciones laborales y aumento salarial para trabajadores del sector público.</p>
+                            </div>
+                            <div class="opciones">
+                                <p class="etiqueta-categoria config-categoria distancia-opciones">Protesta Social</p>
+                                <a href="reportarHecho.html" class="btn btn-red config-opciones">Reportar</a>
+                            </div>
                         </div>
-                        <a href="coleccion.html" class="link-coleccion" id="link-coleccion-coleccion">Ver coleccion →</a>
+                        <div class="informacion-general">
+                            <div class="fecha-ubicacion-fuente encolumnar">
+                                    <p class="info-fecha-ubicacion-fuente"><b>Fecha: </b>2024-01-15</p>
+                                    <p class="info-fecha-ubicacion-fuente"><b>Ubicación: </b>Plaza de Mayo, Buenos Aires</p>
+                                    <p class="info-fecha-ubicacion-fuente"><b>Fuente: </b>Reportes ciudadanos</p>
+                            </div>
+                            <div class="etiquetas">
+                                <p class="titulo-etiqueta etiqueta-interes">trabajo</p>
+                                <p class="titulo-etiqueta etiqueta-interes">derechos</p>
+                                <p class="titulo-etiqueta etiqueta-interes">manifestación</p>
+                                <p class="titulo-etiqueta etiqueta-interes">sector público</p>
+                            </div>
+                            <div class="ultima-linea">
+                                <div class="fechaPublicacion">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <p class="alineacion">Publicado: 2024-01-16</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="coleccion-card">
-                        <h3>Protestas Sociales 2024</h3>
-                        <p class="coleccion-cantidad-hechos">15 hechos registrados</p>
-                        <p>Recopilación de manifestaciones y protestas sociales registradas durante el año 2024, incluyendo marchas por derechos laborales, estudiantes y civiles.</p>
-                        <p>Algoritmos de Consenso:</p>
-                        <div class="etiquetas-algoritmos-container">
-                            <p class="etiqueta-algoritmo-consenso multiples-menciones">Multiples Menciones</p>
-                            <p class="etiqueta-algoritmo-consenso mayoria-simple">Mayoría Simple</p>
-                            <p class="etiqueta-algoritmo-consenso mayoria-absoluta">Mayoría Simple</p>
+                    
+                    <div class="hecho-card">
+                        <div class="hecho-card-mas-opciones">
+                            <div class="titulo-mas-descripcion">
+                                <h2 class="titulo-Hecho">Manifestación por derechos laborales</h2>
+                                <p class="descripcion">Gran manifestación en el centro de la ciudad exigiendo mejores condiciones laborales y aumento salarial para trabajadores del sector público.</p>
+                            </div>
+                            <div class="opciones">
+                                <p class="etiqueta-categoria config-categoria distancia-opciones">Protesta Social</p>
+                                <a href="reportarHecho.html" class="btn btn-red config-opciones">Reportar</a>
+                            </div>
                         </div>
-                        <a href="hechosPendientes.html" class="link-coleccion" id="link-coleccion-coleccion">Ver Coleccion →</a>
+                        <div class="informacion-general">
+                            <div class="fecha-ubicacion-fuente encolumnar">
+                                    <p class="info-fecha-ubicacion-fuente"><b>Fecha: </b>2024-01-15</p>
+                                    <p class="info-fecha-ubicacion-fuente"><b>Ubicación: </b>Plaza de Mayo, Buenos Aires</p>
+                                    <p class="info-fecha-ubicacion-fuente"><b>Fuente: </b>Reportes ciudadanos</p>
+                            </div>
+                            <div class="etiquetas">
+                                <p class="titulo-etiqueta etiqueta-interes">trabajo</p>
+                                <p class="titulo-etiqueta etiqueta-interes">derechos</p>
+                                <p class="titulo-etiqueta etiqueta-interes">manifestación</p>
+                                <p class="titulo-etiqueta etiqueta-interes">sector público</p>
+                            </div>
+                            <div class="ultima-linea">
+                                <div class="fechaPublicacion">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <p class="alineacion">Publicado: 2024-01-16</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="coleccion-card">
-                        <h3>Protestas Sociales 2024</h3>
-                        <p class="coleccion-cantidad-hechos">15 hechos registrados</p>
-                        <p>Recopilación de manifestaciones y protestas sociales registradas durante el año 2024, incluyendo marchas por derechos laborales, estudiantes y civiles.</p>
-                        <p>Algoritmos de Consenso:</p>
-                        <div class="etiquetas-algoritmos-container">
-                            <p class="etiqueta-algoritmo-consenso multiples-menciones">Multiples Menciones</p>
-                            <p class="etiqueta-algoritmo-consenso mayoria-simple">Mayoría Simple</p>
-                            <p class="etiqueta-algoritmo-consenso mayoria-absoluta">Mayoría Simple</p>
+                    
+                    <div class="hecho-card">
+                        <div class="hecho-card-mas-opciones">
+                            <div class="titulo-mas-descripcion">
+                                <h2 class="titulo-Hecho">Manifestación por derechos laborales</h2>
+                                <p class="descripcion">Gran manifestación en el centro de la ciudad exigiendo mejores condiciones laborales y aumento salarial para trabajadores del sector público.</p>
+                            </div>
+                            <div class="opciones">
+                                <p class="etiqueta-categoria config-categoria distancia-opciones">Protesta Social</p>
+                                <a href="reportarHecho.html" class="btn btn-red config-opciones">Reportar</a>
+                            </div>
                         </div>
-                        <a href="hechosPendientes.html" class="link-coleccion" id="link-coleccion-coleccion">Ver Coleccion →</a>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="coleccion-card">
-                        <h3>Protestas Sociales 2024</h3>
-                        <p class="coleccion-cantidad-hechos">15 hechos registrados</p>
-                        <p>Recopilación de manifestaciones y protestas sociales registradas durante el año 2024, incluyendo marchas por derechos laborales, estudiantes y civiles.</p>
-                        <p>Algoritmos de Consenso:</p>
-                        <div class="etiquetas-algoritmos-container">
-                            <p class="etiqueta-algoritmo-consenso multiples-menciones">Multiples Menciones</p>
-                            <p class="etiqueta-algoritmo-consenso mayoria-simple">Mayoría Simple</p>
-                            <p class="etiqueta-algoritmo-consenso mayoria-absoluta">Mayoría Simple</p>
+                        <div class="informacion-general">
+                            <div class="fecha-ubicacion-fuente encolumnar">
+                                    <p class="info-fecha-ubicacion-fuente"><b>Fecha: </b>2024-01-15</p>
+                                    <p class="info-fecha-ubicacion-fuente"><b>Ubicación: </b>Plaza de Mayo, Buenos Aires</p>
+                                    <p class="info-fecha-ubicacion-fuente"><b>Fuente: </b>Reportes ciudadanos</p>
+                            </div>
+                            <div class="etiquetas">
+                                <p class="titulo-etiqueta etiqueta-interes">trabajo</p>
+                                <p class="titulo-etiqueta etiqueta-interes">derechos</p>
+                                <p class="titulo-etiqueta etiqueta-interes">manifestación</p>
+                                <p class="titulo-etiqueta etiqueta-interes">sector público</p>
+                            </div>
+                            <div class="ultima-linea">
+                                <div class="fechaPublicacion">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <p class="alineacion">Publicado: 2024-01-16</p>
+                                </div>
+                            </div>
                         </div>
-                        <a href="hechosPendientes.html" class="link-coleccion" id="link-coleccion-coleccion">Ver Coleccion →</a>
                     </div>
                 </div>
             </div>
