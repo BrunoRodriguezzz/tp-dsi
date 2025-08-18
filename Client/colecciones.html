@@ -15,13 +15,13 @@
 </head>
 <body>
     <a href="index.html">Volver al inicio</a>
-    <main>
-        <div class="titulo-descripcion-opciones">
-            <div class="colecciones-titulo-descripcion-container">
+    <main class="container">
+        <div class="row titulo-descripcion-opciones">
+            <div class="colecciones-titulo-descripcion-container col">
                 <h2>Colecciones</h2>
                 <p class="descripcion">Explora las diferentes colecciones de hechos organizados por temática</p>
             </div>
-            <div class="colecciones-opciones">
+            <div class="colecciones-opciones col">
                 <div class="modo-navegacion-container">
                     <div class="modo-navegacion-i-titulo">
                         <i class="fa-solid fa-globe"></i>
@@ -40,24 +40,25 @@
         </div>
         
         <div class="modos-navegacion-container">
-            <div class="modo-navegacion-container curado">
-                <div class="modo-navegacion-i-titulo">
-                    <i class="fa-solid fa-shield"></i>
-                    <h5>Navegando en modo Curado</h5>
+            <div class="curado-container alinear-izquierda" style="display: none;">
+                <div class="modo-navegacion-container curado">
+                    <div class="modo-navegacion-i-titulo">
+                        <i class="fa-solid fa-shield"></i>
+                        <h5>Navegando en modo Curado</h5>
+                    </div>
                 </div>
+                <p class="parrafos-modos-navegacion">Solo se muestran hechos verificados y validados por la comunidad</p>
             </div>
             
-            <div class="modo-navegacion-container irrestricto">
-                <div class="modo-navegacion-i-titulo">
-                    <i class="fa-solid fa-shield"></i>
-                    <h5>Navegando en modo Irrestricto</h5>
+            <div class="irrestricto-container alinear-izquierda">
+                <div class="modo-navegacion-container irrestricto">
+                    <div class="modo-navegacion-i-titulo">
+                        <i class="fa-solid fa-shield"></i>
+                        <h5>Navegando en modo Irrestricto</h5>
+                    </div>
                 </div>
+                <p class="parrafos-modos-navegacion">Se muestran todos los hechos disponibles, incluyendo contenido no verificado</p>
             </div>
-        </div>
-
-        <div class="parrafos-modos-navegacion">
-            <p>Se muestran todos los hechos disponibles, incluyendo contenido no verificado</p>
-            <p>Solo se muestran hechos verificados y validados por la comunidad</p>
         </div>
 
         <div class="colecciones-container">
@@ -121,5 +122,6 @@
             </div>
         </div>
     </main>
+    <script src="js/colecciones.js"></script>
 </body>
 </html>
