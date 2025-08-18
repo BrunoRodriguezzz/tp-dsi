@@ -75,6 +75,7 @@ main{
 
 .modo-navegacion-container.irrestricto h5{
     color: var(--color-blue-800);
+    width: 12.4rem;
 }
 
 .modo-navegacion-container.curado i{
@@ -114,6 +115,7 @@ main{
 .coleccion-card:hover {
     box-shadow: var(--shadow-lg);
     transition: box-shadow 0.2s ease-in-out;
+    border-color: black;
 }
 
 a {
