@@ -10,8 +10,15 @@ body {
     color: var(--color-gray-600);
     text-decoration: none;
     font-size: 0.9rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     transition: color 0.2s ease;
+}
+
+.page-info {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 100%;
 }
 
 .link:hover {
