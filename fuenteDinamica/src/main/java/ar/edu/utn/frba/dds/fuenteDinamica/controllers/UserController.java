@@ -4,51 +4,28 @@ import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoNoAutorizado;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoProhibido;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorDeTiempo;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorTipoDeDatos;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoEliminarInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
-import ar.edu.utn.frba.dds.fuenteDinamica.services.IDinamicaService;
-import jakarta.websocket.server.PathParam;
+import ar.edu.utn.frba.dds.fuenteDinamica.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/fuenteDinamica")
 @CrossOrigin(origins = "http://localhost:8081")
-public class DinamicaController {
+public class UserController {
 
     @Autowired
-    private IDinamicaService dinamicaService;
+    private IUserService userService;
 
-    // Uso del Agregador
-
-    @GetMapping("/hechos")
-    public List<HechoOutputDTO> buscarTodos(
-            @RequestParam(required = false) Boolean enviado,
-            @RequestParam(required = false) LocalDateTime dateTimeGT,
-            @RequestParam(required = false) String titulo){
-            List<HechoOutputDTO> hechos = dinamicaService.buscarHechos(enviado,dateTimeGT);
-
-            if (titulo == null || titulo.isEmpty()){
-                return hechos;
-            }else{
-                return hechos.stream().filter(h -> h.getTitulo().equals(titulo)).toList();
-            }
-    }
-
-    // Uso de los Usuarios
+    // Solicitud de crear un hecho
 
     @PostMapping("/solicitud")
     public SolicitudOutputDTO solicitudCrearHecho(@RequestBody HechoInputDTO hecho){
         if(verificarEdadNecesaria(hecho)) {
             if(verificarTiposDeDatos(hecho)) {
-                return dinamicaService.crear(hecho);
+                return userService.crear(hecho);
             }else{
                 throw new ErrorTipoDeDatos("Error de ingreso de datos en: " + tipoDeDatoErroneo(hecho) + ". No puede haber campos vacios.");
             }
@@ -57,11 +34,13 @@ public class DinamicaController {
         }
     }
 
+    // Solicitud de modificar un hecho
+
     @PatchMapping("/modificacion")
     public SolicitudOutputDTO actualizarHecho(@RequestBody HechoModificadoInputDTO hecho){
         if(verificarUsuarioRegistrado(hecho)){
             if(verificarTiempoParaActualizar(hecho)){
-                return dinamicaService.actualizar(hecho);
+                return userService.actualizar(hecho);
             }else{
                 throw new ErrorDeTiempo("El plazo para modificar el hecho se termino.");
             }
@@ -70,47 +49,33 @@ public class DinamicaController {
         }
     }
 
-    // Uso de los Administradores
-
-    @PatchMapping("/gestion")
-    public SolicitudOutputDTO gestionarHecho(@RequestBody HechoRevisadoInputDTO hechoRevisado){
-
-        return this.dinamicaService.gestionarHecho(hechoRevisado);
-
-    }
-
-    @PatchMapping("/eliminacion/{id}")
-    public void eliminarHecho(@RequestBody HechoEliminarInputDTO hecho, @PathVariable Long id){
-        this.dinamicaService.eliminar(hecho,id);
-    }
-
     // Verificadores necesarios
 
     private Boolean verificarEdadNecesaria(HechoInputDTO hechoSolicitado){
 
-        return this.dinamicaService.verificarEdadNecesaria(hechoSolicitado);
+        return this.userService.verificarEdadNecesaria(hechoSolicitado);
     }
 
     private Boolean verificarUsuarioRegistrado(HechoModificadoInputDTO hechoParaActualizar){
 
-        return this.dinamicaService.verificarUsuarioRegistrado(hechoParaActualizar);
+        return this.userService.verificarUsuarioRegistrado(hechoParaActualizar);
     }
 
     private Boolean verificarTiposDeDatos(HechoInputDTO hecho){
 
-        return this.dinamicaService.verificarTiposDeDatos(hecho);
+        return this.userService.verificarTiposDeDatos(hecho);
 
     }
 
     private String tipoDeDatoErroneo(HechoInputDTO hecho){
 
-        return this.dinamicaService.tipoDeDatoErroneo(hecho);
+        return this.userService.tipoDeDatoErroneo(hecho);
 
     }
 
     private Boolean verificarTiempoParaActualizar(HechoModificadoInputDTO hecho) {
 
-        return this.dinamicaService.verificarTiempoParaActualizar(hecho);
+        return this.userService.verificarTiempoParaActualizar(hecho);
 
     }
 }
