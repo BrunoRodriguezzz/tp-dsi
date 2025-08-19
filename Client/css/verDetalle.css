@@ -23,6 +23,8 @@ body{
     display: flex;
     gap: 0.4rem;
     font-size: 0.9rem;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
 .boton-navegacion{
