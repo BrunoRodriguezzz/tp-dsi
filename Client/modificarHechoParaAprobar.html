@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaMapa - Modificar - Hecho</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/modificarHecho.css">
+    <link rel="stylesheet" href="css/modificarHechoParaAprobar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container-responsive">
+        <div class="container-navegador">
+            <nav class="config-nav">
+                <a href="index.html" class="boton-navegacion">Home</a>
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.5rem;"></i>
+                <a href="panelControl.html" class="boton-navegacion">Panel de Control</a>
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.5rem;"></i>
+                <span>Modificar Hecho</span>
+            </nav>
+            <div style="margin-bottom: 2rem;">
+                <h1 style="font-size: 2rem; margin-bottom: 0.5rem; margin-top: 0.4rem;">Modificar Hecho para Aprobación
+                </h1>
+                <p style="color: var(--color-gray-600);">Realiza las modificaciones necesarias antes de aprobar este hecho</p>
+            </div>
+
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert-info-card rounded p-4 mb-4 w-100">
+                    <div class="d-flex align-items-start gap-3">
+                        <!-- Ícono de alerta -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="alert-icon">
+                            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+                            <path d="M12 9v4"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+
+                        <!-- Contenido -->
+                        <div class="flex-grow-1">
+                            <h5 class="alert-title">Información del Envío</h5>
+
+                            <div class="row info-text">
+                                <div class="col-12 col-md-4 mb-2">
+                                    <span class="info-label">Autor:</span> usuario_anonimo_1
+                                </div>
+                                <div class="col-12 col-md-4 mb-2">
+                                    <span class="info-label">Fecha de envío:</span> 2024-01-18
+                                </div>
+                                <div class="col-12 col-md-4 mb-2">
+                                    <span class="info-label">Ubicación original:</span> Zona Norte, Buenos Aires
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <form>
+                    <div class="config-form">
+                        <div>
+                            <h3 style="font-size: 1.5rem; margin-bottom: 0.2rem;">Información del Hecho</h3>
+                            <p style="font-size: 0.9rem; color: var(--color-gray-500);">Modifica los datos principales
+                                de tu hecho</p>
+                        </div>
+                        <div>
+                            <label class="config-label">Título *</label>
+                            <input class="config-input" type="text" value="Manifestación por derechos laborales">
+                        </div>
+                        <div>
+                            <label class="config-label">Descripción *</label>
+                            <textarea class="config-input" rows="4"
+                                style="min-height: fit-content; margin-bottom: 0.4rem;">Gran manifestación en el centro de la ciudad exigiendo mejores condiciones laborales y aumento salarial para trabajadores del sector público.</textarea>
+                        </div>
+                        <div>
+                            <label class="config-label">Categoría *</label>
+                            <div>
+                                <select class="config-select" name="categoria">
+                                    <option value="Protesta Social">Protesta Social</option>
+                                    <option value="Desaroollo Social">Desarrollo Social</option>
+                                    <option value="Medio Ambiente">Medio Ambiente</option>
+                                    <option value="Seguridad">Seguridad</option>
+                                    <option value="Educacion">Educación</option>
+                                    <option value="Salud">Salud</option>
+                                    <option value="Infraestructura">Infraestructura</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="config-label">Fecha Acontecimiento *</label>
+                            <input class="config-input" type="date" value="2024-01-15">
+                        </div>
+                        <div class="latitud-y-longitud">
+                            <div style="width: 100%;">
+                                <label class="config-label">Latitud *</label>
+                                <input class="config-input" type="number" value="-34.6037">
+                            </div>
+                            <div style="width: 100%;">
+                                <label class="config-label">Longitud *</label>
+                                <input class="config-input" type="number" value="-58.3816">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="config-label">Etiquetas</label>
+                            <input class="config-input" style="margin-bottom: 0;" type="text"
+                                value="agua, corte, mantenimiento, zona norte">
+                            <p
+                                style="font-size: 0.75rem; line-height: 1rem; margin-top: 0.25rem; color: var(--color-gray-500);">
+                                Separa las etiquetas con comas</p>
+                        </div>
+                    </div>
+                    <div class="config-form">
+                        <div>
+                            <h3 style="font-size: 1.5rem; margin-bottom: 0.2rem;">Contenido Multimedia</h3>
+                            <p style="font-size: 0.9rem; color: var(--color-gray-500);">Gestiona las imágenes, videos y
+                                audios de tu hecho</p>
+                        </div>
+                        <div>
+                            <p class="config-label">Contenido Actual</p>
+                        </div>
+                        <div class="caja-de-imagenes">
+                            <div class="config-image">
+                                <div class="nombre-imagen">
+                                    <div>
+                                        <i class="fa-solid fa-image"></i>
+                                        <span>imagen1.jpg</span>
+                                    </div>
+                                    <a class="btn btn-red">X</a>
+                                </div>
+                                <div class="preview">
+                                    <i class="fa-solid fa-image"></i>
+                                </div>
+                            </div>
+                            <div class="config-image">
+                                <div class="nombre-imagen">
+                                    <div>
+                                        <i class="fa-solid fa-file-video"></i>
+                                        <span>video1.mp4</span>
+                                    </div>
+                                    <a class="btn btn-red">X</a>
+                                </div>
+                                <div class="preview">
+                                    <i class="fa-solid fa-file-video"></i>
+                                </div>
+                            </div>
+                            <div class="config-image">
+                                <div class="nombre-imagen">
+                                    <div>
+                                        <i class="fa-solid fa-image"></i>
+                                        <span>imagen2.jpg</span>
+                                    </div>
+                                    <a class="btn btn-red">X</a>
+                                </div>
+                                <div class="preview">
+                                    <i class="fa-solid fa-image"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="config-label">Agregar Nuevo Contenido</label>
+                            <input class="config-input" type="file">
+                        </div>
+                    </div>
+                    <div class="opciones">
+                        <button class="btn btn-approve flex-fill" type="submit">Aprobar Hecho</button>
+                        <button class="btn btn-reject flex-fill" type="button">Rechazar Hecho</button>
+                        <a href="panelControl.html" class="flex-fill text-decoration-none">
+                            <button class="btn btn-cancel w-100" type="button">Cancelar</button>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
