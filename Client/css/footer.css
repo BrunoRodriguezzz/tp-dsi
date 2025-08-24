@@ -103,3 +103,19 @@
     font-size: 0.85rem;
     margin: 0;
 }
+
+@media (max-width: 520px) {
+    .footer-content{
+        flex-direction: column;
+    }
+
+    .footer-container-links{
+        margin-top: 1rem;
+        margin-left: 0;
+    }
+    
+    .footer-legal {
+        margin-top: 1rem;
+        margin-left: 0;
+    }
+}
