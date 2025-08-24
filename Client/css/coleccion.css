@@ -5,6 +5,8 @@ main {
     max-width: 1200px; /* ancho máximo para desktop */
     margin: 0 auto;   /* centra en la pantalla */
     padding: 0 1.5rem; /* margen uniforme izquierda y derecha */
+    justify-content: start;
+    align-items: start;
 }
 
 body {
@@ -13,13 +15,14 @@ body {
     padding: 0;
 }
 
-.titulo-descripcion-opciones {
+.titulo-descripcion {
     display: flex;
     width: 95%;
     margin-top: 4rem;
+    margin-bottom: 2rem;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    padding: 0;
 }
 
 .colecciones-opciones {
@@ -30,7 +33,6 @@ body {
 
 .modo-navegacion-container {
     display: flex;
-    margin: 1rem;
     flex-direction: row;
     align-items: center;
     background-color: var(--color-gray-200);
@@ -85,7 +87,9 @@ body {
 .modos-navegacion-container {
     display: flex;
     width: 100%;
+    margin-bottom: 0.5rem;
     flex-direction: start;
+    padding: 0;
 }
 
 .parrafos-modos-navegacion {
@@ -112,6 +116,10 @@ body {
     transition: box-shadow 0.2s ease-in-out;
 }
 
+.col {
+    width: 100%;
+}
+
 a {
     text-decoration: none;
     font-size: smaller;
@@ -125,10 +133,6 @@ a {
     font-size: larger;
 }
 
-.hechos-container {
-    margin: 2rem;
-}
-
 .coleccion-cantidad-hechos {
     font-size: small;
     margin: 1rem 0;
@@ -138,11 +142,14 @@ a {
 /* FILTROS */
 .filtros-container {
     border: 1px solid #ddd;
-    width: 90%;
     border-radius: 8px;
-    padding: 20px;
     background: #fff;
+    width: 100%;
+    padding: 2rem;
+    margin-left: auto;
     margin-top: 2rem;
+    margin-right: auto;
+
 }
 
 .filtros-container h5 {
@@ -192,12 +199,13 @@ a {
 }
 
 .wide {
-    grid-column: span 2;
+    grid-column: span 3;
 }
 
 /* HECHOS */
 
 .hecho-card{
+    width: 100%;
     display:block;
     justify-content: center;
     align-items: start;
@@ -266,7 +274,7 @@ a {
 }
 
 .config-categoria{
-    width: 100%;
+    width: 60%;
     font-size: 0.75rem;
     font-weight: 600;
     white-space: nowrap;
@@ -291,6 +299,7 @@ a {
     background-color: white;
     color: red;
     border-color: rgb(250, 137, 137);
+    margin-left: 0.2rem ;
 }
 
 .btn-red:hover{
@@ -355,7 +364,7 @@ a {
     font-weight: 500;
     border-radius: 20px;
     color: var(--color-gray-700);
-    margin-right: 1rem;
+    margin-right: 0.5rem;
 }
 
 .multiples-menciones{
@@ -388,16 +397,6 @@ a {
     color: var(--color-blue-800)
 }
 
-/* Secciones principales alineadas */
-.titulo-descripcion-opciones,
-.modos-navegacion-container,
-.parrafos-modos-navegacion,
-.filtros-container {
-    width: 100%;
-    padding: 2rem;
-    margin-left: auto;
-    margin-right: auto;
-}
 
 /* Ajustes específicos */
 .titulo-descripcion-opciones {
@@ -406,10 +405,6 @@ a {
 
 .parrafos-modos-navegacion {
     margin-left: 0; /* lo saco porque ya está centrado por el main */
-}
-
-.filtros-container {
-    margin-top: 2rem;
 }
 
 .hechos-container {
