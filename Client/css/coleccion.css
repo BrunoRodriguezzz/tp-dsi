@@ -17,12 +17,25 @@ body {
 
 .titulo-descripcion {
     display: flex;
-    width: 95%;
+    width: 100%;
     margin-top: 4rem;
     margin-bottom: 2rem;
     flex-direction: row;
     justify-content: space-between;
     padding: 0;
+}
+
+.titulo-descripcion button{
+    font-size: 0.85rem;
+}
+
+.btn-filtro {
+    border: var(--color-gray-200) solid 1px;
+}
+
+.btn-filtro:hover {
+    border: var(--color-gray-200) solid 1px;
+    background-color: var(--color-gray-200);
 }
 
 .colecciones-opciones {
@@ -87,23 +100,29 @@ body {
 .modos-navegacion-container {
     display: flex;
     width: 100%;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     flex-direction: start;
     padding: 0;
+}
+
+#algoritmos {
+    margin-bottom: 0;
 }
 
 .parrafos-modos-navegacion {
     width: 100%;
     flex-direction: start;
     margin-left: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
 }
 
 .parrafos-modos-navegacion p {
     font-size: smaller;
     margin-bottom: 0;
+    
 }
-
-.modos-navegacion-container {}
 
 .hecho-card {
     border: solid var(--color-gray-200) 2px;
@@ -244,9 +263,16 @@ a {
 }
 
 .opciones{
-    width: 10rem;
     padding-left: 0rem;
     margin-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem
+}
+
+.opciones button {
+    width: 100%;
 }
 
 .descripcion{
@@ -274,7 +300,6 @@ a {
 }
 
 .config-categoria{
-    width: 60%;
     font-size: 0.75rem;
     font-weight: 600;
     white-space: nowrap;
@@ -299,7 +324,6 @@ a {
     background-color: white;
     color: red;
     border-color: rgb(250, 137, 137);
-    margin-left: 0.2rem ;
 }
 
 .btn-red:hover{
@@ -409,6 +433,7 @@ a {
 
 .hechos-container {
     margin-top: 2rem;
+    width: 100%;
 }
 
 /* RESPONSIVE */
