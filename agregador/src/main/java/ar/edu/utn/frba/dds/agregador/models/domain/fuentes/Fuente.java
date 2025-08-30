@@ -28,6 +28,7 @@ public class Fuente {
   private IAdapImpH iAdapImpH;
   private IAdapImpC iAdapImpC;
 
+  // TODO: GRITA PATRON FACTORY
   public Fuente(String nombre, String path, TipoFuente tipoFuente, Long idInternoFuente) {
     this.nombre = nombre;
     this.path = path;

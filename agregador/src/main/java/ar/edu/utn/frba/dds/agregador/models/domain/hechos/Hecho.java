@@ -31,10 +31,10 @@ public class Hecho {
     private LocalDate fechaCarga;
     private Origen origen;
     private Contribuyente contribuyente;
+    private List<Consenso> consensos;
     private Boolean estaEliminado;
     private Fuente fuente;
     private List<ContenidoMultimedia> contenidoMultimedia;
-    private List<Consenso> consensos;
 
     public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) throws FechaInvalidaException, TituloInvalidoException, DescripcionInvalidaException {
         if(titulo == null || titulo.isBlank()) throw new TituloInvalidoException("El título no puede estar vacío");

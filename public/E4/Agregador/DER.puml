@@ -1,0 +1,163 @@
+'||--o{ ONE TO MANY
+
+@startuml
+
+entity Hecho {
+  hecho_id INTEGER(11) <<PK>>
+  --
+  hecho_categoria_id INTEGER(11) <<FK>>
+  hecho_ubicacion_id INTEGER(11) <<FK>>
+  contribuyente_id INTEGER(11) <<FK>>
+  fuente_id INTEGER(11) <<FK>>
+  fuente_interno_id INTEGER(11)
+  titulo VARCHAR(50)
+  descripcion TEXT
+  fecha_acontecimiento DATE
+  fecha_carga DATE
+  origen VARCHAR(20)
+  esta_eliminado BOOLEAN
+}
+
+entity Etiquetas_x_Hecho {
+  hecho_id INTEGER(11) <<PK,FK>>
+  etiqueta_id INTEGER(11) <<PK,FK>>
+  --
+}
+
+entity Consensos_x_Hecho {
+  hecho_id INTEGER(11) <<PK,FK>>
+  conseso VARCHAR(50) <<PK>>
+  --
+}
+
+entity ContenidoMultimedia {
+  contenido_id INTEGER(11) <<PK>>
+  --
+  'TODO: Implementar en el dominio
+  nombre VARCHAR(50)
+  ruta VARCHAR(100)
+  formato VARCHAR(20)
+}
+
+entity Categoria {
+  'TODO: Implementar en el dominio
+  categoria_id INTEGER(11) <<PK>>
+  --
+  titulo VARCHAR(100)
+}
+
+entity Contribuyente {
+    contribuyente_id INTEGER(11) <<PK>>
+    --
+    nombre VARCHAR(50)
+    apellido VARCHAR(50)
+    fecha_nacimiento DATE
+}
+
+entity Ubicacion {
+    ubicacion_id INTEGER(11) <<PK>>
+    --
+    latitud VARCHAR(50)
+    longitud VARCHAR(50)
+}
+
+entity Fuente {
+    fuente_id INTEGER(11) <<PK>>
+    --
+    fuente_interno_id(11)
+    nombre VARCHAR(50)
+    path VARCHAR(100)
+    tipo_fuente VARCHAR(20)
+    'TODO Hacer el converter
+    iAdapImpH VARCHAR(50)
+    'TODO Hacer el converter
+    iAdapImpC VARCHAR(50)
+}
+
+entity Etiqueta {
+    'TODO: Implementar en el dominio
+    etiqueta_id INTEGER(11) <<PK>>
+    --
+    titulo VARCHAR(50)
+}
+
+entity Coleccion {
+    coleccion_id INTEGER(11) <<PK>>
+    --
+    fuente_interno_id INTEGER(11) <<FK>>
+    'TODO
+    criterio_id INTEGER(11) <<FK>>
+    titulo VARCHAR(50)
+    descripcion TEXT
+}
+
+entity Hechos_x_Coleccion {
+    coleccion_id INTEGER(11) <<PK,FK>>
+    hecho_id INTEGER(11) <<PK,FK>>
+    --
+}
+
+entity Fuentes_x_Coleccion {
+    coleccion_id INTEGER(11) <<PK,FK>>
+    fuente_id INTEGER(11) <<PK,FK>>
+    --
+}
+
+entity Consensos_x_Coleccion {
+    coleccion_id INTEGER(11) <<PK,FK>>
+    conseso VARCHAR(50) <<PK>>
+    --
+}
+
+entity Criterio {
+    criterio_id INTEGER(11) <<PK>>
+    --
+}
+
+entity Filtros_x_Criterio {
+    criterio_id INTEGER(11) <<PK, FK>>
+    filtro_id INTEGER(11) <<PK, FK>>
+    --
+}
+
+entity Filtro {
+    filtro_id INTEGER(11) <<PK>>
+}
+
+entity FiltroCategoria {
+    filtro_categoria_id INTEGER(11) <<PK>>
+    --
+    filtro_id INTEGER(11) <<FK>>
+
+}
+
+'RELACIONES
+Hecho ||--o{ Etiquetas_x_Hecho
+Hecho ||--o{ Consensos_x_Hecho
+Hecho ||--o{ ContenidoMultimedia
+Hecho ||--|| Ubicacion
+Hecho }|--|| Contribuyente
+Hecho }o--|| Fuente
+Hecho }o--|| Categoria
+
+Etiquetas_x_Hecho }o--|| Etiqueta
+
+Fuentes_x_Coleccion }o--|| Fuente
+Fuentes_x_Coleccion }|--|| Coleccion
+
+Hechos_x_Coleccion }o--|| Hecho
+
+Coleccion ||--o{ Hechos_x_Coleccion
+
+Consensos_x_Coleccion }o--|| Coleccion
+
+
+Coleccion ||--o| Criterio
+
+Filtros_x_Criterio }o--|| Criterio
+Filtros_x_Criterio }o--|| Filtro
+
+Filtro ||--||
+
+
+@enduml

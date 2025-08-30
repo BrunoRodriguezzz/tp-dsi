@@ -39,7 +39,6 @@ public class SeederService implements ISeederService, ApplicationRunner {
 //import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.FechaInvalidaException;
 //import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 //import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
-//import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.RangoFechas;
 //import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Ubicacion;
 //import java.time.LocalDate;
 //import java.util.ArrayList;
