@@ -5,6 +5,8 @@ main {
     max-width: 1200px; /* ancho máximo para desktop */
     margin: 0 auto;   /* centra en la pantalla */
     padding: 0 1.5rem; /* margen uniforme izquierda y derecha */
+    justify-content: start;
+    align-items: start;
 }
 
 body {
@@ -13,13 +15,27 @@ body {
     padding: 0;
 }
 
-.titulo-descripcion-opciones {
+.titulo-descripcion {
     display: flex;
-    width: 95%;
+    width: 100%;
     margin-top: 4rem;
+    margin-bottom: 2rem;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    padding: 0;
+}
+
+.titulo-descripcion button{
+    font-size: 0.85rem;
+}
+
+.btn-filtro {
+    border: var(--color-gray-200) solid 1px;
+}
+
+.btn-filtro:hover {
+    border: var(--color-gray-200) solid 1px;
+    background-color: var(--color-gray-200);
 }
 
 .colecciones-opciones {
@@ -30,7 +46,6 @@ body {
 
 .modo-navegacion-container {
     display: flex;
-    margin: 1rem;
     flex-direction: row;
     align-items: center;
     background-color: var(--color-gray-200);
@@ -85,21 +100,29 @@ body {
 .modos-navegacion-container {
     display: flex;
     width: 100%;
+    margin-bottom: 1rem;
     flex-direction: start;
+    padding: 0;
+}
+
+#algoritmos {
+    margin-bottom: 0;
 }
 
 .parrafos-modos-navegacion {
     width: 100%;
     flex-direction: start;
     margin-left: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
 }
 
 .parrafos-modos-navegacion p {
     font-size: smaller;
     margin-bottom: 0;
+    
 }
-
-.modos-navegacion-container {}
 
 .hecho-card {
     border: solid var(--color-gray-200) 2px;
@@ -110,6 +133,10 @@ body {
 .hecho-card:hover {
     box-shadow: var(--shadow-lg);
     transition: box-shadow 0.2s ease-in-out;
+}
+
+.col {
+    width: 100%;
 }
 
 a {
@@ -125,10 +152,6 @@ a {
     font-size: larger;
 }
 
-.hechos-container {
-    margin: 2rem;
-}
-
 .coleccion-cantidad-hechos {
     font-size: small;
     margin: 1rem 0;
@@ -138,11 +161,14 @@ a {
 /* FILTROS */
 .filtros-container {
     border: 1px solid #ddd;
-    width: 90%;
     border-radius: 8px;
-    padding: 20px;
     background: #fff;
+    width: 100%;
+    padding: 2rem;
+    margin-left: auto;
     margin-top: 2rem;
+    margin-right: auto;
+
 }
 
 .filtros-container h5 {
@@ -192,12 +218,13 @@ a {
 }
 
 .wide {
-    grid-column: span 2;
+    grid-column: span 3;
 }
 
 /* HECHOS */
 
 .hecho-card{
+    width: 100%;
     display:block;
     justify-content: center;
     align-items: start;
@@ -236,9 +263,16 @@ a {
 }
 
 .opciones{
-    width: 10rem;
     padding-left: 0rem;
     margin-left: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem
+}
+
+.opciones button {
+    width: 100%;
 }
 
 .descripcion{
@@ -266,7 +300,6 @@ a {
 }
 
 .config-categoria{
-    width: 100%;
     font-size: 0.75rem;
     font-weight: 600;
     white-space: nowrap;
@@ -355,7 +388,7 @@ a {
     font-weight: 500;
     border-radius: 20px;
     color: var(--color-gray-700);
-    margin-right: 1rem;
+    margin-right: 0.5rem;
 }
 
 .multiples-menciones{
@@ -388,16 +421,6 @@ a {
     color: var(--color-blue-800)
 }
 
-/* Secciones principales alineadas */
-.titulo-descripcion-opciones,
-.modos-navegacion-container,
-.parrafos-modos-navegacion,
-.filtros-container {
-    width: 100%;
-    padding: 2rem;
-    margin-left: auto;
-    margin-right: auto;
-}
 
 /* Ajustes específicos */
 .titulo-descripcion-opciones {
@@ -408,12 +431,9 @@ a {
     margin-left: 0; /* lo saco porque ya está centrado por el main */
 }
 
-.filtros-container {
-    margin-top: 2rem;
-}
-
 .hechos-container {
     margin-top: 2rem;
+    width: 100%;
 }
 
 /* RESPONSIVE */

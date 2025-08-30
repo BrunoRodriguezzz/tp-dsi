@@ -10,15 +10,12 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface IDinamicaService {
+public interface IUserService {
 
-    public List<HechoOutputDTO> buscarHechos(Boolean noEnviado, LocalDateTime filtro);
     public SolicitudOutputDTO   crear(HechoInputDTO hechoInputDTO);
-    public void                 eliminar(HechoEliminarInputDTO hecho, Long id);
     public SolicitudOutputDTO   actualizar(HechoModificadoInputDTO hechoModificado);
     public Boolean              verificarUsuarioRegistrado(HechoModificadoInputDTO hechoModificado);
     public Boolean              verificarEdadNecesaria(HechoInputDTO hechoInputDTO);
-    public SolicitudOutputDTO   gestionarHecho(HechoRevisadoInputDTO hechoRevisado);
     public Boolean              verificarTiposDeDatos(HechoInputDTO hechoIngresado);
     public String               tipoDeDatoErroneo(HechoInputDTO hecho);
     public Boolean              verificarTiempoParaActualizar(HechoModificadoInputDTO hecho);

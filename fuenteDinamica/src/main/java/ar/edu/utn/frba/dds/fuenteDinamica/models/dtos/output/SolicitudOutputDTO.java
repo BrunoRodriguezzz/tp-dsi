@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output;
 
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Ubicacion;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,4 +25,20 @@ public class SolicitudOutputDTO {
     private LocalDate      fechaAcontecimiento;
     private List<String>   etiquetas;
     private String         sugerenciaDeCambio;
+
+    public static SolicitudOutputDTO convertir(Hecho hecho){
+        return SolicitudOutputDTO
+                .builder()
+                .idHecho(hecho.getId())
+                .contribuyente(hecho.getContribuyente())
+                .titulo(hecho.getTitulo())
+                .descripcion(hecho.getDescripcion())
+                .categoria(hecho.getCategoria())
+                .contenidoMultimedia(hecho.getContenidoMultimedia())
+                .ubicacion(hecho.getUbicacion())
+                .fechaAcontecimiento(hecho.getFechaAcontecimiento())
+                .etiquetas(hecho.getEtiquetas())
+                .sugerenciaDeCambio(hecho.getSugerenciaDeCambio())
+                .build();
+    }
 }
