@@ -19,29 +19,41 @@ public class HechoProxy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // Nuestro ID
+
     @Column(nullable = false, name = "externo_id")
     private Long idExterno; // Es el ID que nos da el propietario del Hecho
+
     @Column(nullable = false, name = "fuente_id")
     private Long idFuente; // Es el ID de la fuente que es propietaria del hecho
+
     @Column(nullable = false)
     private String titulo;
+
     @Column
     private String descripcion;
+
     @Column(nullable = false)
     private String categoria;
-    @OneToOne
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ubicacion_id", referencedColumnName = "id")
     private Ubicacion ubicacion;
+
     @Column(nullable = false)
     private LocalDate fechaHecho;
+
     @Column(nullable = false)
     private LocalDateTime fechaCreacion;
+
     @Column
     private LocalDateTime fechaModificacion;
+
     @Column(nullable = false)
     private Boolean eliminado;
+
     @Column(nullable = false)
     private Origen origen;
+
     @Column
     private String nombreFuente;
 

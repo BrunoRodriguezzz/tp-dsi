@@ -1,12 +1,10 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain;
 
+import ar.edu.utn.frba.dds.fuenteProxy.converters.tipoFuenteConverter;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputColeccionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +22,8 @@ public class Fuente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Convert(converter = tipoFuenteConverter.class)
+    @Column(name = "tipo_fuente")
     private TipoFuente tipoFuente;
     private String nombre;
     private String ruta;
