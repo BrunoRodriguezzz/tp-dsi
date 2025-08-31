@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain;
 
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.enums.Origen;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,23 +21,24 @@ public class HechoProxy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // Nuestro ID
 
-    @Column(nullable = false, name = "externo_id")
+    @Column(nullable = false)
     private Long idExterno; // Es el ID que nos da el propietario del Hecho
 
-    @Column(nullable = false, name = "fuente_id")
+    @Column(nullable = false)
     private Long idFuente; // Es el ID de la fuente que es propietaria del hecho
 
     @Column(nullable = false)
     private String titulo;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String descripcion;
 
     @Column(nullable = false)
     private String categoria;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ubicacion_id", referencedColumnName = "id")
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private Ubicacion ubicacion;
 
     @Column(nullable = false)

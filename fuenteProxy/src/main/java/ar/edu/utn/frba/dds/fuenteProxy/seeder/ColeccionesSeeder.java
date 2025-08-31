@@ -19,7 +19,7 @@ public class ColeccionesSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        fuenteRepository.getAll()
+        fuenteRepository.findAll()
                 .stream()
                 .toList()
                 .forEach(f -> f.getAllColecciones()

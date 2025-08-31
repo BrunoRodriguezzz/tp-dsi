@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface IHechoRepository extends JpaRepository<HechoProxy, Long> {
+    List<HechoProxy> findByIdFuente(Long id);
 //    public List<HechoProxy> getAll();
 //    public List<HechoProxy> getWithFilters(FiltroProxy filtro);
 //    public void delete(Long idHecho);

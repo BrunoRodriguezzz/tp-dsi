@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.fuenteProxy.seeder;
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IFuenteService;
 import ar.edu.utn.frba.dds.fuenteProxy.Services.impl.HechoService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.enums.TipoFuenteEnum;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl.APICatedra;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl.InstanciaMetaMapa;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
@@ -14,15 +15,13 @@ import org.springframework.stereotype.Component;
 @Order(1)
 public class FuenteSeeder implements CommandLineRunner {
     private final IFuenteService fuenteService;
-    private final APICatedra apiCatedra;
 
-    public FuenteSeeder(IFuenteService fuenteService, APICatedra apiCatedra) {
+    public FuenteSeeder(IFuenteService fuenteService) {
         this.fuenteService = fuenteService;
-        this.apiCatedra = apiCatedra;
     }
 
     public void run(String... args) {
-        Fuente fuenteAPICatedra = new Fuente(apiCatedra, "Desastres Naturales", "https://api-ddsi.disilab.ar/public");
+        Fuente fuenteAPICatedra = new Fuente(TipoFuenteEnum.APICATEDRA, "Desastres Naturales", "https://api-ddsi.disilab.ar/public");
         fuenteService.guardarFuente(fuenteAPICatedra);
 
 //        //TODO: No tenemos ruta de otra instancia por ahora

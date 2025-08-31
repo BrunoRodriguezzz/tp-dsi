@@ -43,32 +43,33 @@ public class HechoService implements IHechoService {
 
     @Override
     public List<OutputFuente> getWithFilters(FiltroProxy filtro) {
-        filtro.validate();
-
-        if (filtro.getIdHecho() != null) {
-            return buscarPorIdHecho(filtro.getIdHecho());
-        }
-
-        List<Long> fuenteIds = (filtro.getFuenteId() == null)
-                ? this.devolverFuenteID()
-                : List.of(filtro.getFuenteId());
-
-        return fuenteIds.stream()
-                .map(id -> {
-                    List<HechoProxy> hechos = hechoRepository.getFiltrados(id, filtro);
-                    Optional<Fuente> fuente = fuenteRepository.findById(id);
-                    Fuente fuenteAux;
-                    if (fuente.isPresent()) {
-                        fuenteAux = fuente.get();
-                    }
-                    else {
-                        throw new NotFoundError("Fuente no encontrada con ID: " + id);
-                    }
-
-                    return UtilsDTO.toOutputFuente(fuenteAux, hechos);
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+//        filtro.validate();
+//
+//        if (filtro.getIdHecho() != null) {
+//            return buscarPorIdHecho(filtro.getIdHecho());
+//        }
+//
+//        List<Long> fuenteIds = (filtro.getFuenteId() == null)
+//                ? this.devolverFuenteID()
+//                : List.of(filtro.getFuenteId());
+//
+//        return fuenteIds.stream()
+//                .map(id -> {
+//                    List<HechoProxy> hechos = hechoRepository.getFiltrados(id, filtro);
+//                    Optional<Fuente> fuente = fuenteRepository.findById(id);
+//                    Fuente fuenteAux;
+//                    if (fuente.isPresent()) {
+//                        fuenteAux = fuente.get();
+//                    }
+//                    else {
+//                        throw new NotFoundError("Fuente no encontrada con ID: " + id);
+//                    }
+//
+//                    return UtilsDTO.toOutputFuente(fuenteAux, hechos);
+//                })
+//                .filter(Objects::nonNull)
+//                .collect(Collectors.toList());
+        return null;
     }
 
     private List<OutputFuente> buscarPorIdHecho(Long idHecho) {
