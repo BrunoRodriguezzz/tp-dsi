@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models;
 
-public class Hecho {
+public class EstadisticaHechos {
     Coleccion coleccion;
     Provincia provincia;
     Categoria categoria;
