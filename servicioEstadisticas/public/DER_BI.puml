@@ -1,0 +1,49 @@
+@startuml
+
+entity HECHO <<fact_table>> {
+    coleccion VARCHAR(50)  <<FK>>
+    provincia VARCHAR(50) <<FK>>
+    categoria VARCHAR(100) <<FK>>
+    hora TIME <<FK>>
+    --
+    cantidad_hechos BIGINT
+}
+
+entity COLECCION <<dimension>> {
+    coleccion_id INTEGER(11) <<FK>>
+    --
+    detalle VARCHAR(50)
+}
+
+entity PROVINCIA <<dimension>> {
+    provincia_id INTEGER(11) <<FK>>
+    --
+    detalle VARCHAR(50)
+}
+
+entity CATEGORIA <<dimension>> {
+    categoria_id INTEGER(11) <<FK>>
+    --
+    detalle VARCHAR(100)
+}
+
+entity HORA <<dimension>> {
+    hora_id INTEGER(11) <<FK>>
+    --
+    detalle TIME
+}
+
+entity SOLICITUD <<fact_table>> {
+    solicitud INTEGER(11)  <<FK>>
+    --
+    spam BOOLEAN <<FK>>
+}
+
+HECHO }o--|| COLECCION
+HECHO }o--|| PROVINCIA
+HECHO }o--|| CATEGORIA
+HECHO }o--|| HORA
+
+
+
+@enduml
