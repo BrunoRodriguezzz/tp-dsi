@@ -10,16 +10,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@Entity
-//@Table(name = "ubicacion")
+@Entity
+@Table(name = "ubicacion")
 public class Ubicacion {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Column(nullable = false)
+    @Column(nullable = false)
     private String latitud;
-//    @Column(nullable = false)
+    @Column(nullable = false)
     private String longitud;
 
     public Ubicacion(String latitud, String longitud) throws UbicacionInvalidaException {

@@ -29,7 +29,8 @@ public class HechoProxy {
     private String descripcion;
     @Column(nullable = false)
     private String categoria;
-    @Column(nullable = false)
+    @OneToOne
+    @JoinColumn(name = "ubicacion_id", referencedColumnName = "id")
     private Ubicacion ubicacion;
     @Column(nullable = false)
     private LocalDate fechaHecho;
