@@ -73,4 +73,6 @@ public class EstadisticaController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(cant);
     }
+
+    // TODO: Borrar, test a fines prácticos
 }

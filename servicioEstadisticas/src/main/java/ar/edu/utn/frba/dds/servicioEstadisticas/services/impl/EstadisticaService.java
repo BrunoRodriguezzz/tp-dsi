@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Categoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Provincia;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.IEstadisticaRepository;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.IEstadisticaHechosRepository;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @Service
 public class EstadisticaService implements IEstadisticaService {
     @Autowired
-    private IEstadisticaRepository estadisticaRepository;
+    private IEstadisticaHechosRepository estadisticaRepository;
 
     @Override
     public Provincia provinciaConMasHechosDeUnaColeccion(Long idColeccion) {

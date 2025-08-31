@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IEstadisticaRepository extends JpaRepository<EstadisticaHechos, Long> {
+public interface IEstadisticaHechosRepository extends JpaRepository<EstadisticaHechos, Long> {
 }

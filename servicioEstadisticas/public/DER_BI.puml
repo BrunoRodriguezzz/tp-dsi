@@ -1,48 +1,48 @@
 @startuml
 
-entity EstadisticaHechos <<fact_table>> {
-    coleccion VARCHAR(50)  <<FK>>
-    provincia VARCHAR(50) <<FK>>
+entity estadistica_hechos <<fact_table>> {
+    coleccion VARCHAR(100)  <<FK>>
+    provincia VARCHAR(100) <<FK>>
     categoria VARCHAR(100) <<FK>>
     hora TIME <<FK>>
     --
     cantidad_EstadisticaHechoss BIGINT
 }
 
-entity Coleccion <<dimension>> {
+entity coleccion <<dimension>> {
     coleccion_id INTEGER(11) <<FK>>
     --
-    detalle VARCHAR(50)
+    coleccion_detalle VARCHAR(100)
 }
 
-entity Provincia <<dimension>> {
+entity provincia <<dimension>> {
     provincia_id INTEGER(11) <<FK>>
     --
-    detalle VARCHAR(50)
+    provincia_detalle VARCHAR(100)
 }
 
-entity Categoria <<dimension>> {
+entity categoria <<dimension>> {
     categoria_id INTEGER(11) <<FK>>
     --
-    detalle VARCHAR(100)
+    categoria_detalle VARCHAR(100)
 }
 
-entity HoraDelDia <<dimension>> {
+entity hora <<dimension>> {
     hora_id INTEGER(11) <<FK>>
     --
-    detalle TIME
+    hora_detalle TIME
 }
 
-entity Solicitud<<fact_table>> {
-    solicitud INTEGER(11)  <<FK>>
+entity solicitud<<fact_table>> {
+    solicitud_id INTEGER(11)  <<FK>>
     --
-    spam BOOLEAN <<FK>>
+    solicitud_spam BOOLEAN <<FK>>
 }
 
-EstadisticaHechos }o--|| Coleccion
-EstadisticaHechos }o--|| Provincia
-EstadisticaHechos }o--|| Categoria
-EstadisticaHechos }o--|| HoraDelDia
+estadistica_hechos }o--|| coleccion
+estadistica_hechos }o--|| provincia
+estadistica_hechos }o--|| categoria
+estadistica_hechos }o--|| hora
 
 
 
