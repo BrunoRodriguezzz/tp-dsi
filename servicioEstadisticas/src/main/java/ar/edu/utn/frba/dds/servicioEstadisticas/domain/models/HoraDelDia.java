@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public enum HoraDelDia {
@@ -28,17 +29,18 @@ public enum HoraDelDia {
     H22(LocalTime.of(22, 0)),
     H23(LocalTime.of(23, 0));
 
-    private final LocalTime hora;
+    private final LocalTime hora; // Atributo del enum
 
     HoraDelDia(LocalTime hora) {
         this.hora = hora;
-    }
+    } // Constructor del enum
 
     public LocalTime getHora() {
         return hora;
-    }
+    } // Getter Hora asociada al enum
 
-    public static HoraDelDia de(LocalTime time) {
+    // Método estático para obtener el enum en base a un LocalDateTime
+    public static HoraDelDia de(LocalDateTime time) {
         return HoraDelDia.valueOf("H" + String.format("%02d", time.getHour()));
     }
 }
