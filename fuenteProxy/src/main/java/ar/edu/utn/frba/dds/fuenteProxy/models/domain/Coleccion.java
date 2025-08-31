@@ -26,9 +26,19 @@ public class Coleccion {
     @Column(nullable = false)
     private String criterio;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "coleccion_x_fuente",
+            joinColumns = @JoinColumn(name = "coleccion_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "fuente_id", referencedColumnName = "id")
+    )
     private List<Fuente> fuentes;
 
-
-    private List<Long> idsHechos;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "coleccion_x_hecho",
+            joinColumns = @JoinColumn(name = "coleccion_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id")
+    )
+    private List<HechoProxy> hechos;
 }

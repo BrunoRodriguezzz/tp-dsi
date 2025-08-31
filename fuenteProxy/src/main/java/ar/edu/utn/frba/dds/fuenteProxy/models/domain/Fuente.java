@@ -22,10 +22,15 @@ public class Fuente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Convert(converter = tipoFuenteConverter.class)
     @Column(name = "tipo_fuente")
     private TipoFuente tipoFuente;
+
+    @Column()
     private String nombre;
+
+    @Column()
     private String ruta;
 
     public Fuente(TipoFuente tipoFuente, String nombre, String ruta) {

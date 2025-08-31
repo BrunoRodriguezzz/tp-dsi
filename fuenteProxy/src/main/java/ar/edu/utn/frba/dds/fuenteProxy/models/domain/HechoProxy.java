@@ -35,7 +35,7 @@ public class HechoProxy {
     @Column(nullable = false)
     private String categoria;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ubicacion_id", referencedColumnName = "id")
     private Ubicacion ubicacion;
 
