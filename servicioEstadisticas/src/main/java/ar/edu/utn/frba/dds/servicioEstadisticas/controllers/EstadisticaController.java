@@ -80,7 +80,19 @@ public class EstadisticaController {
         return ResponseEntity.status(HttpStatus.OK).body(cant);
     }
 
-    // ----------------------------------------------------------------------
+    @PostMapping()
+    public ResponseEntity calcularEstadisticas() {
+        Categoria cat1 = new Categoria();
+        cat1.setDetalle("Historico");
+        Categoria cat2 = new Categoria();
+        cat2.setDetalle("Historico");
+        System.out.println("¿Iguales? " + cat1.equals(cat2)); // Debe ser true
+
+        List<EstadisticaHechos> estadisticas = this.estadisticaService.calcularEstadisticas();
+        return ResponseEntity.status(HttpStatus.CREATED).body(estadisticas);
+    }
+
+    // ---------------------------------- TEST ------------------------------------
     @GetMapping("/hechos")
     public ResponseEntity getHechos() {
         List<HechoInputDTO> hechos = this.importadorService.importarHechos();
@@ -99,9 +111,9 @@ public class EstadisticaController {
         return ResponseEntity.status(HttpStatus.OK).body(colecciones);
     }
 
-    // TODO: Borrar, test a fines prácticos
-    @PostMapping()
-    public ResponseEntity crearEstadisticaTest() {
+
+    @PostMapping("/test/unaSola")
+    public ResponseEntity crearUnaEstadistica() {
         Coleccion coleccion = new Coleccion();
         coleccion.setDetalle("Una coleccion");
 

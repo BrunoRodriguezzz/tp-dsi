@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos;
 
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Coleccion;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -15,4 +16,11 @@ public class ColeccionInputDTO {
   private CriterioInputDTO criterio;
   private List<String> fuentes;
   private List<String> consensos;
+
+  public Coleccion convertirAColeccion() {
+    Coleccion coleccion = new Coleccion();
+    coleccion.setId(this.id);
+    coleccion.setDetalle(this.titulo);
+    return coleccion;
+  }
 }

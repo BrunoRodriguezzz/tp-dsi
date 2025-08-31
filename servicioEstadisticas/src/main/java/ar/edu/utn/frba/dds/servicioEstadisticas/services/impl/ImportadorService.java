@@ -24,7 +24,7 @@ public class ImportadorService implements IImportadorService {
 
     @Override
     public List<HechoInputDTO> importarHechos() {
-        try {
+        /*try {
             List<HechoInputDTO> hechos = webClient
                     .get()
                     .uri("/hechos")
@@ -36,12 +36,13 @@ public class ImportadorService implements IImportadorService {
 
         } catch (Exception e) {
             throw new RuntimeException("Error al importar hechos: " + e.getMessage());
-        }
+        }*/
+        return GeneradorDatosPrueba.generarHechosIndependientes();
     }
 
     @Override
     public List<ColeccionInputDTO> importarColecciones() {
-        try {
+        /*try {
             List<ColeccionInputDTO> colecciones = webClient
                     .get()
                     .uri("/colecciones")
@@ -52,6 +53,7 @@ public class ImportadorService implements IImportadorService {
 
         } catch (Exception e) {
             throw new RuntimeException("Error al importar colecciones: " + e.getMessage());
-        }
+        }*/
+        return GeneradorDatosPrueba.generarColecciones();
     }
 }

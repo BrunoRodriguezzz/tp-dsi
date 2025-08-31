@@ -1,8 +1,10 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos;
 
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Categoria;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class HechoInputDTO {
@@ -11,9 +13,16 @@ public class HechoInputDTO {
   private String descripcion;
   private String categoria;
   private UbicacionInputDTO ubicacion;
-  private LocalDate fechaAcontecimiento;
+  private LocalDateTime fechaAcontecimiento;
   private ContribuyenteInputDTO contribuyente;
   private String fuente;
   private String origen;
-  private LocalDate fechaCarga;
+  private LocalDateTime fechaCarga;
+
+  public Categoria convertirACategoria() {
+    if (this.categoria == null) return null;
+    Categoria categoria = new Categoria();
+    categoria.setDetalle(this.categoria);
+    return categoria;
+  }
 }

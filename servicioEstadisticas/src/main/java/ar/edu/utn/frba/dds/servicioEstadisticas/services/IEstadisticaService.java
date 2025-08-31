@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.EstadisticaHechos;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Provincia;
 
 import java.time.LocalTime;
+import java.util.List;
 
 public interface IEstadisticaService {
     Provincia provinciaConMasHechosDeUnaColeccion(Long idColeccion);
@@ -12,5 +13,6 @@ public interface IEstadisticaService {
     Provincia provinciaConMasHechosSegunCategoria(Long idCategoria);
     LocalTime horaConMasHechosSegunCategoria(Long idCategoria);
     Integer cantSolicitudesSpam();
+    List<EstadisticaHechos> calcularEstadisticas();
     EstadisticaHechos crearEstadistica(EstadisticaHechos estadistica);
 }
