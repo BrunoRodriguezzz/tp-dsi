@@ -3,10 +3,11 @@ package ar.edu.utn.frba.dds.fuenteProxy.models.repositories;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 
-public interface IHechoRepository extends JpaRepository<HechoProxy, Long> {
+public interface IHechoRepository extends JpaRepository<HechoProxy, Long>, JpaSpecificationExecutor<HechoProxy> {
     List<HechoProxy> findByIdFuente(Long id);
 //    public List<HechoProxy> getAll();
 //    public List<HechoProxy> getWithFilters(FiltroProxy filtro);

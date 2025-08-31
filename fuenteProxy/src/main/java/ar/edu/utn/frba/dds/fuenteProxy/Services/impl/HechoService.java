@@ -10,6 +10,7 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
 import ar.edu.utn.frba.dds.fuenteProxy.models.exceptions.NotFoundError;
 import ar.edu.utn.frba.dds.fuenteProxy.models.exceptions.ValidationError;
+import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.HechoSpecification;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IHechoRepository;
 import org.springframework.stereotype.Service;
@@ -43,33 +44,32 @@ public class HechoService implements IHechoService {
 
     @Override
     public List<OutputFuente> getWithFilters(FiltroProxy filtro) {
-//        filtro.validate();
-//
-//        if (filtro.getIdHecho() != null) {
-//            return buscarPorIdHecho(filtro.getIdHecho());
-//        }
-//
-//        List<Long> fuenteIds = (filtro.getFuenteId() == null)
-//                ? this.devolverFuenteID()
-//                : List.of(filtro.getFuenteId());
-//
-//        return fuenteIds.stream()
-//                .map(id -> {
-//                    List<HechoProxy> hechos = hechoRepository.getFiltrados(id, filtro);
-//                    Optional<Fuente> fuente = fuenteRepository.findById(id);
-//                    Fuente fuenteAux;
-//                    if (fuente.isPresent()) {
-//                        fuenteAux = fuente.get();
-//                    }
-//                    else {
-//                        throw new NotFoundError("Fuente no encontrada con ID: " + id);
-//                    }
-//
-//                    return UtilsDTO.toOutputFuente(fuenteAux, hechos);
-//                })
-//                .filter(Objects::nonNull)
-//                .collect(Collectors.toList());
-        return null;
+        filtro.validate();
+
+        if (filtro.getIdHecho() != null) {
+            return buscarPorIdHecho(filtro.getIdHecho());
+        }
+
+        List<Long> fuenteIds = (filtro.getFuenteId() == null)
+                ? this.devolverFuenteID()
+                : List.of(filtro.getFuenteId());
+
+        return fuenteIds.stream()
+                .map(id -> {
+                    List<HechoProxy> hechos = hechoRepository.findAll(HechoSpecification.conFiltro(filtro));
+                    Optional<Fuente> fuente = fuenteRepository.findById(id);
+                    Fuente fuenteAux;
+                    if (fuente.isPresent()) {
+                        fuenteAux = fuente.get();
+                    }
+                    else {
+                        throw new NotFoundError("Fuente no encontrada con ID: " + id);
+                    }
+
+                    return UtilsDTO.toOutputFuente(fuenteAux, hechos);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     private List<OutputFuente> buscarPorIdHecho(Long idHecho) {
@@ -104,7 +104,15 @@ public class HechoService implements IHechoService {
     private void toOutputFuente(List<OutputFuente> outputFuentes, Long id, List<HechoProxy> hechos) {
         if (!hechos.isEmpty()) { // Tengo que agregarlos
             OutputFuente outputFuente = new OutputFuente();
-            String nombreFuente = this.fuenteRepository.getById(id).getNombre();
+            Optional<Fuente> fuente = fuenteRepository.findById(id);
+            String nombreFuente;
+            if (fuente.isPresent()) {
+                nombreFuente = fuente.get().getNombre();
+            }
+            else {
+                throw new NotFoundError("Fuente no encontrada con ID: " + id);
+            }
+
             // TODO: Sacar esto es solo para las pruebas porque sino rompe la reuqest
             List<OutputHecho> hechosOutput = hechos.stream().map(UtilsDTO::hechoToDtoOutput).toList();
 
