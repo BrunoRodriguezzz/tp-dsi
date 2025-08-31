@@ -2,9 +2,9 @@
 
 entity estadistica_hechos <<fact_table>> {
     coleccion VARCHAR(100)  <<FK>>
-    provincia VARCHAR(100) <<FK>>
+    provincia VARCHAR(100)
     categoria VARCHAR(100) <<FK>>
-    hora TIME <<FK>>
+    hora TIME
     --
     cantidad_EstadisticaHechoss BIGINT
 }
@@ -15,22 +15,10 @@ entity coleccion <<dimension>> {
     coleccion_detalle VARCHAR(100)
 }
 
-entity provincia <<dimension>> {
-    provincia_id INTEGER(11) <<FK>>
-    --
-    provincia_detalle VARCHAR(100)
-}
-
 entity categoria <<dimension>> {
     categoria_id INTEGER(11) <<FK>>
     --
     categoria_detalle VARCHAR(100)
-}
-
-entity hora <<dimension>> {
-    hora_id INTEGER(11) <<FK>>
-    --
-    hora_detalle TIME
 }
 
 entity solicitud<<fact_table>> {
@@ -40,10 +28,7 @@ entity solicitud<<fact_table>> {
 }
 
 estadistica_hechos }o--|| coleccion
-estadistica_hechos }o--|| provincia
 estadistica_hechos }o--|| categoria
-estadistica_hechos }o--|| hora
-
 
 
 @enduml

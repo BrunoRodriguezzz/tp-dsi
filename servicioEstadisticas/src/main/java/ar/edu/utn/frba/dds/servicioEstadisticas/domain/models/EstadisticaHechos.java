@@ -1,8 +1,12 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Entity
 @Table(name = "estadistica_hechos")

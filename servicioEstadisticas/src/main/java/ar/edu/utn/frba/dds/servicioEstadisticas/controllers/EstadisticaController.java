@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.controllers;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Categoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Provincia;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.*;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -75,4 +74,26 @@ public class EstadisticaController {
     }
 
     // TODO: Borrar, test a fines prácticos
+    @PostMapping()
+    public ResponseEntity crearEstadistica() {
+        Coleccion coleccion = new Coleccion();
+        coleccion.setDetalle("Una coleccion");
+
+        Categoria categoria = new Categoria();
+        categoria.setDetalle("Una categoria");
+
+        HoraDelDia hora = HoraDelDia.H12;
+        Provincia provincia = Provincia.CIUDAD_AUTONOMA_DE_BUENOS_AIRES;
+
+        EstadisticaHechos estadistica = new EstadisticaHechos();
+
+        estadistica.setHora(hora);
+        estadistica.setCategoria(categoria);
+        estadistica.setProvincia(provincia);
+        estadistica.setColeccion(coleccion);
+        estadistica.setCantidad_hechos(25);
+
+        EstadisticaHechos estadisticaCreada = this.estadisticaService.crearEstadistica(estadistica);
+        return ResponseEntity.status(HttpStatus.CREATED).body(estadisticaCreada);
+    }
 }
