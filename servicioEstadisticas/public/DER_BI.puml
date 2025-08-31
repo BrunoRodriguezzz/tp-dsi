@@ -33,7 +33,7 @@ entity HORA <<dimension>> {
     detalle TIME
 }
 
-entity SOLICITUD <<fact_table>> {
+entity SOLICITUD<<fact_table>> {
     solicitud INTEGER(11)  <<FK>>
     --
     spam BOOLEAN <<FK>>
