@@ -1,28 +1,29 @@
 @startuml
 
 entity estadistica_hechos <<fact_table>> {
-    coleccion VARCHAR(100)  <<FK>>
+    id INTEGER(11) <<PK>>
+    coleccion_id VARCHAR(100)  <<FK>>
     provincia VARCHAR(100)
-    categoria VARCHAR(100) <<FK>>
+    categoria_id VARCHAR(100) <<FK>>
     hora TIME
     --
-    cantidad_EstadisticaHechoss BIGINT
+    cantidad_hechos BIGINT
 }
 
 entity coleccion <<dimension>> {
-    coleccion_id INTEGER(11) <<FK>>
+    id INTEGER(11) <<FK>>
     --
     coleccion_detalle VARCHAR(100)
 }
 
 entity categoria <<dimension>> {
-    categoria_id INTEGER(11) <<FK>>
+    id INTEGER(11) <<FK>>
     --
     categoria_detalle VARCHAR(100)
 }
 
 entity solicitud<<fact_table>> {
-    solicitud_id INTEGER(11)  <<FK>>
+    id INTEGER(11)  <<FK>>
     --
     solicitud_spam BOOLEAN <<FK>>
 }

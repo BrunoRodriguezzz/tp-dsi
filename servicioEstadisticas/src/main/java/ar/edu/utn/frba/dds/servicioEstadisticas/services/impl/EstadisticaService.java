@@ -63,7 +63,11 @@ public class EstadisticaService implements IEstadisticaService {
         estadistica.setCategoria(categoriaGuardada);
         estadistica.setColeccion(coleccionGuardada);
 
-        return this.estadisticaRepository.save(estadistica);
+        EstadisticaHechos estadisticaGuardada = this.estadisticaRepository
+                .findByAllFieldsExceptId(estadistica)
+                .orElse(estadistica);
+
+        return this.estadisticaRepository.save(estadisticaGuardada);
     }
 
     private Coleccion findOrCreate(Coleccion coleccion) {
