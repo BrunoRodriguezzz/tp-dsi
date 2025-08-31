@@ -1,7 +1,10 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.controllers;
 
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.*;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticaService;
+import ar.edu.utn.frba.dds.servicioEstadisticas.services.IImportadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/estadisticas")
@@ -16,6 +20,9 @@ import java.time.LocalTime;
 public class EstadisticaController {
     @Autowired
     private IEstadisticaService estadisticaService;
+
+    @Autowired
+    private IImportadorService importadorService;
 
     // De una colección, ¿en qué provincia se agrupan la mayor cantidad de hechos reportados?
     @GetMapping("/coleccion/{idColeccion}/provincia/mayorCantidadHechos")
@@ -73,9 +80,28 @@ public class EstadisticaController {
         return ResponseEntity.status(HttpStatus.OK).body(cant);
     }
 
+    // ----------------------------------------------------------------------
+    @GetMapping("/hechos")
+    public ResponseEntity getHechos() {
+        List<HechoInputDTO> hechos = this.importadorService.importarHechos();
+        if(hechos == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(hechos);
+    }
+
+    @GetMapping("/colecciones")
+    public ResponseEntity getColecciones() {
+        List<ColeccionInputDTO> colecciones = this.importadorService.importarColecciones();
+        if(colecciones == null) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(colecciones);
+    }
+
     // TODO: Borrar, test a fines prácticos
     @PostMapping()
-    public ResponseEntity crearEstadistica() {
+    public ResponseEntity crearEstadisticaTest() {
         Coleccion coleccion = new Coleccion();
         coleccion.setDetalle("Una coleccion");
 
