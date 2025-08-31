@@ -122,13 +122,9 @@ entity Filtros_x_Criterio {
 
 entity Filtro {
     filtro_id INTEGER(11) <<PK>>
-}
-
-entity FiltroCategoria {
-    filtro_categoria_id INTEGER(11) <<PK>>
     --
-    filtro_id INTEGER(11) <<FK>>
-
+    tipo_filtro VARCHAR(50)
+    valor VARCHAR(100)
 }
 
 'RELACIONES
@@ -156,8 +152,5 @@ Coleccion ||--o| Criterio
 
 Filtros_x_Criterio }o--|| Criterio
 Filtros_x_Criterio }o--|| Filtro
-
-Filtro ||--||
-
 
 @enduml

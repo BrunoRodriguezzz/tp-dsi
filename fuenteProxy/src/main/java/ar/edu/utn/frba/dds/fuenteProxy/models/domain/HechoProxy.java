@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +10,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Entity
+@Table(name = "Hecho")
 public class HechoProxy {
     private Long id; // Nuestro ID
     private Long idExterno; // Es el ID que nos da el propietario del Hecho
