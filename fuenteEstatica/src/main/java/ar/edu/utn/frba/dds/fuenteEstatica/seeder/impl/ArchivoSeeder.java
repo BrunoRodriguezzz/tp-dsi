@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.fuenteEstatica.seeder.impl;
 
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Archivo;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.impl.ArchivoCSV;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.enums.TipoArchivoEnum;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.IArchivoRepository;
 import ar.edu.utn.frba.dds.fuenteEstatica.services.IArchivoService;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,16 +23,15 @@ public class ArchivoSeeder implements CommandLineRunner {
     public ArchivoSeeder(IArchivoService archivoService, ArchivoCSV archivoCSV) {
         this.archivoService = archivoService;
         this.archivoCSV = archivoCSV;
-
     }
 
     @Override
     public void run(String... args) throws Exception {
-        Archivo archivo = new Archivo();
-        archivo.setNombre(this.nombreArchivo);
-        archivo.setRutaArchivo(this.rutaArchivo);
-        archivo.setTipoArchivo(this.archivoCSV);
-
-        this.archivoService.guardarArchivo(archivo);
+//        Archivo archivo = new Archivo();
+//        archivo.setNombre(this.nombreArchivo);
+//        archivo.setRutaArchivo(this.rutaArchivo);
+//        archivo.setTipoArchivoEnum(TipoArchivoEnum.archivoCSV);
+//
+//        this.archivoService.guardarArchivo(archivo);
     }
 }

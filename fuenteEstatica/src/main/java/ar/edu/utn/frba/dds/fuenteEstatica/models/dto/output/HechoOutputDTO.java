@@ -14,7 +14,7 @@ public class HechoOutputDTO {
     private String titulo;
     private String descripcion;
     private String categoria;
-    private Ubicacion ubicacion;
+    private UbicacionDTO ubicacion;
     private String fechaAcontecimiento;
     private String fechaCarga;
     private Contribuyente contribuyente;

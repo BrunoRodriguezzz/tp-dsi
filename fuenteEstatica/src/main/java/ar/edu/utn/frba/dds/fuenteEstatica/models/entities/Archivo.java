@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.entities;
 
 import ar.edu.utn.frba.dds.fuenteEstatica.converters.tipoArchivoConverter;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.impl.ArchivoCSV;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.enums.TipoArchivoEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,5 +38,16 @@ public class Archivo {
             h.setIdArchivo(this.id);
             return h;
         });
+    }
+
+    @PostLoad
+    private void contruirTipoArchivo() {
+        switch (this.tipoArchivoEnum) {
+            case archivoCSV -> {
+                ArchivoCSV tipo = new ArchivoCSV();
+                this.tipoArchivo = tipo;
+            }
+            default -> {}
+        }
     }
 }

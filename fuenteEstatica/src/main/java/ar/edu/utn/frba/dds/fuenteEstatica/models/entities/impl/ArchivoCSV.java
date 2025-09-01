@@ -63,6 +63,7 @@ public class ArchivoCSV implements TipoArchivo {
                     hecho.setFechaCreacion(LocalDateTime.now());
                     hecho.setFechaModificacion(LocalDateTime.now());
                     hecho.setOrigen(Origen.DATASET);
+                    hecho.setEliminado(false);
                     return hecho;
                 });
     }

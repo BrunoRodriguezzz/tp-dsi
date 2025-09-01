@@ -11,8 +11,7 @@ public class tipoArchivoConverter implements AttributeConverter<TipoArchivoEnum,
         if (attribute == null) {return null;}
 
         return switch (attribute) {
-            case TIPO1 -> "TIPO1";
-            case TIPO2 -> "TIPO2";
+            case archivoCSV -> "archivoCSV";
         };
     }
 
@@ -21,8 +20,7 @@ public class tipoArchivoConverter implements AttributeConverter<TipoArchivoEnum,
         if (dbData == null) {return null;}
 
         return switch (dbData) {
-            case "TIPO1" -> TipoArchivoEnum.TIPO1;
-            case "TIPO2" -> TipoArchivoEnum.TIPO2;
+            case "archivoCSV" -> TipoArchivoEnum.archivoCSV;
             default -> null;
         };
     }
