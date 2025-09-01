@@ -16,13 +16,14 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-@Component
 public class APICatedra implements TipoFuente {
     private WebClient webClient;
     private String token;
 
-    public APICatedra(WebClient.Builder builder) {
+    public APICatedra(String ruta) {
         this.webClient = WebClient.builder().baseUrl("https://api-ddsi.disilab.ar/public").build();
+
+        this.init();
     }
 
     @Override

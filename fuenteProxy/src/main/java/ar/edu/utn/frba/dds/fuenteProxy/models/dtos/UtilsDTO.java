@@ -3,13 +3,11 @@ package ar.edu.utn.frba.dds.fuenteProxy.models.dtos;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Coleccion;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Ubicacion;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputColeccionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputFuenteDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
-import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputColeccionDTO;
-import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
-import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuenteAgregador;
-import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
+import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +22,7 @@ public class UtilsDTO {
         dto.setTitulo(hecho.getTitulo());
         dto.setDescripcion(hecho.getDescripcion());
         dto.setCategoria(hecho.getCategoria());
-        dto.setUbicacion(hecho.getUbicacion());
+        dto.setUbicacion(UtilsDTO.ubicacionToDto(hecho.getUbicacion()));
         dto.setOrigen(hecho.getOrigen());
         dto.setFechaCarga(hecho.getFechaCreacion().toString());
 
@@ -38,8 +36,15 @@ public class UtilsDTO {
         return dto;
     }
 
+    public static UbicacionDTO ubicacionToDto(Ubicacion ubicacion) {
+        UbicacionDTO dto = new UbicacionDTO();
+        dto.setLatitud(ubicacion.getLatitud());
+        dto.setLongitud(ubicacion.getLongitud());
+        return dto;
+    }
+
     public static HechoProxy toHechoProxy(InputHecho input) {
-        HechoProxy hecho = new HechoProxy(input.getId_hecho(), input.getTitulo());
+        HechoProxy hecho = new HechoProxy(input.getId(), input.getTitulo());
         hecho.setDescripcion(input.getDescripcion());
         hecho.setCategoria(input.getCategoria());
         hecho.establecerUbicacion(input.getLatitud(), input.getLongitud());
@@ -90,7 +95,6 @@ public class UtilsDTO {
         coleccion.setDescripcion(dto.getDescripcion());
         coleccion.setCriterio(dto.getCriterio());
         //coleccion.setFuentes(fuentes);
-        coleccion.setIdsHechos(dto.getIdsHechos());
         return coleccion;
     }
 

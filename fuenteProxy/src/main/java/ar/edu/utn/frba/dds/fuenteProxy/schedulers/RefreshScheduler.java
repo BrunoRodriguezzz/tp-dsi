@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.fuenteProxy.schedulers;
 
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IHechoService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
-import ar.edu.utn.frba.dds.fuenteProxy.seeder.HechoSeeder;
 import org.springframework.stereotype.Component;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -21,7 +20,7 @@ public class RefreshScheduler {
     @Scheduled(cron = "0 0 * * * *")
     public void refrescarColecciones() {
         LocalDateTime date = LocalDateTime.now().minusHours(1);
-        fuentes.getAll().forEach(f -> {
+        fuentes.findAll().forEach(f -> {
             f.getNuevos(date)
                     .doOnNext(h -> {
                         if (h != null) {

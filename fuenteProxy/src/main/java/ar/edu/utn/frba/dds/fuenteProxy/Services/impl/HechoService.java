@@ -8,7 +8,9 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputHecho;
+import ar.edu.utn.frba.dds.fuenteProxy.models.exceptions.NotFoundError;
 import ar.edu.utn.frba.dds.fuenteProxy.models.exceptions.ValidationError;
+import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.HechoSpecification;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IHechoRepository;
 import org.springframework.stereotype.Service;
@@ -16,24 +18,25 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class HechoService implements IHechoService {
-    private IFuenteRepository fuente; //TODO Podría implementar un DAO para cada uno.
+    private IFuenteRepository fuenteRepository; //TODO Podría implementar un DAO para cada uno.
     private IHechoRepository hechoRepository;
 
     public HechoService(IHechoRepository hechoRepository, IFuenteRepository fuentesRepository) {
         this.hechoRepository = hechoRepository;
-        this.fuente = fuentesRepository;
+        this.fuenteRepository = fuentesRepository;
     }
 
     @Override
     public List<OutputFuente> getAll() { //TODO: paginado de GET
         List<OutputFuente> outputFuentes = new ArrayList<>();
-        List<Long> ids = fuente.devolverIDs();
+        List<Long> ids = this.devolverFuenteID();
         ids.forEach(id -> {
-            List<HechoProxy> hechos = hechoRepository.getByIdFuente(id); // Devuelve los hechos con ese ID Fuente
+            List<HechoProxy> hechos = hechoRepository.findByIdFuente(id); // Devuelve los hechos con ese ID Fuente
             toOutputFuente(outputFuentes, id, hechos);
         });
         return outputFuentes;
@@ -48,28 +51,51 @@ public class HechoService implements IHechoService {
         }
 
         List<Long> fuenteIds = (filtro.getFuenteId() == null)
-                ? fuente.devolverIDs()
+                ? this.devolverFuenteID()
                 : List.of(filtro.getFuenteId());
 
         return fuenteIds.stream()
                 .map(id -> {
-                    List<HechoProxy> hechos = hechoRepository.getFiltrados(id, filtro);
-                    Fuente fuente = this.fuente.getById(id);
-                    return UtilsDTO.toOutputFuente(fuente, hechos);
+                    List<HechoProxy> hechos = hechoRepository.findAll(HechoSpecification.conFiltro(filtro));
+                    Optional<Fuente> fuente = fuenteRepository.findById(id);
+                    Fuente fuenteAux;
+                    if (fuente.isPresent()) {
+                        fuenteAux = fuente.get();
+                    }
+                    else {
+                        throw new NotFoundError("Fuente no encontrada con ID: " + id);
+                    }
+
+                    return UtilsDTO.toOutputFuente(fuenteAux, hechos);
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
     private List<OutputFuente> buscarPorIdHecho(Long idHecho) {
-        HechoProxy hecho = hechoRepository.getById(idHecho);
-        Fuente fuente = this.fuente.getById(hecho.getIdFuente());
+        Optional<HechoProxy> hecho = hechoRepository.findById(idHecho);
+        HechoProxy hechoAux;
+        if (hecho.isPresent()) {
+            hechoAux = hecho.get();
+        }
+        else {
+            throw new NotFoundError("Hecho no encontrada con ID: " + idHecho);
+        }
 
-        OutputHecho hechoDTO = UtilsDTO.hechoToDtoOutput(hecho);
+        Optional<Fuente> fuente = fuenteRepository.findById(hechoAux.getIdFuente());
+        Fuente fuenteAux;
+        if (fuente.isPresent()) {
+            fuenteAux = fuente.get();
+        }
+        else {
+            throw new NotFoundError("Fuente no encontrada con ID: " + hechoAux.getIdFuente());
+        }
+
+        OutputHecho hechoDTO = UtilsDTO.hechoToDtoOutput(hechoAux);
 
         OutputFuente output = new OutputFuente();
-        output.setId(fuente.getId());
-        output.setNombre(fuente.getNombre());
+        output.setId(fuenteAux.getId());
+        output.setNombre(fuenteAux.getNombre());
         output.setHechos(List.of(hechoDTO));
 
         return List.of(output);
@@ -78,7 +104,15 @@ public class HechoService implements IHechoService {
     private void toOutputFuente(List<OutputFuente> outputFuentes, Long id, List<HechoProxy> hechos) {
         if (!hechos.isEmpty()) { // Tengo que agregarlos
             OutputFuente outputFuente = new OutputFuente();
-            String nombreFuente = this.fuente.getById(id).getNombre();
+            Optional<Fuente> fuente = fuenteRepository.findById(id);
+            String nombreFuente;
+            if (fuente.isPresent()) {
+                nombreFuente = fuente.get().getNombre();
+            }
+            else {
+                throw new NotFoundError("Fuente no encontrada con ID: " + id);
+            }
+
             // TODO: Sacar esto es solo para las pruebas porque sino rompe la reuqest
             List<OutputHecho> hechosOutput = hechos.stream().map(UtilsDTO::hechoToDtoOutput).toList();
 
@@ -89,6 +123,10 @@ public class HechoService implements IHechoService {
         }
     }
 
+    private List<Long> devolverFuenteID() {
+        return fuenteRepository.findAll().stream().map(Fuente::getId).toList();
+    }
+
     @Override
     public List<OutputHecho> getAllFuente(Long fuenteId) { //TODO
         return List.of();
@@ -97,7 +135,15 @@ public class HechoService implements IHechoService {
     @Override
     public void delete(Long id) {
         if (id != null && id >= 1) {
-            hechoRepository.delete(id);
+            Optional<HechoProxy> hecho = hechoRepository.findById(id); // no se si va a romper lo del optional
+            HechoProxy hechoAux;
+            if (hecho.isPresent()) {
+                hechoAux = hecho.get();
+            }
+            else {
+                throw new NotFoundError("Hecho no encontrada con ID: " + id);
+            }
+            hechoRepository.delete(hechoAux);
         }else {
             throw new ValidationError("ID invalido");
         }
@@ -107,6 +153,6 @@ public class HechoService implements IHechoService {
     @Override
     public void guardarHecho(InputHecho hechoDTO) { //TODO Validador
         HechoProxy hecho = UtilsDTO.toHechoProxy(hechoDTO);
-        hechoRepository.guardarHecho(hecho);
+        hechoRepository.save(hecho);
     }
 }

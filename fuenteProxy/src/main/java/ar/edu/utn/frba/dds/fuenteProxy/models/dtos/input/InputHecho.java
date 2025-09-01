@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input;
 
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Origen;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.enums.Origen;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -17,6 +17,6 @@ public class InputHecho {
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
     private Long id_fuente;
-    private Long id_hecho;
+    private Long id;
     private Origen origen;
 }
