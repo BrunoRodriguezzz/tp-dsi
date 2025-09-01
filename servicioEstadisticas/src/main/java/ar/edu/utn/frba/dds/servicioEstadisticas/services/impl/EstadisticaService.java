@@ -60,7 +60,7 @@ public class EstadisticaService implements IEstadisticaService {
 
     @Override
     public Integer cantSolicitudesSpam() {
-        // TODO: Implementación pendiente - necesitaríamos más info sobre cómo detectar spam
+        // TODO
         return 0;
     }
 
@@ -86,6 +86,13 @@ public class EstadisticaService implements IEstadisticaService {
             estadisticas.add(estadisticaGuardada);
         });
 
+        try {
+            EscritorCSV.persistirEstadisticasEnCSV(estadisticas, "estadisticas");
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         return estadisticas;
     }
 
@@ -103,12 +110,7 @@ public class EstadisticaService implements IEstadisticaService {
                         HoraDelDia horaDelDia = HoraDelDia.de(hecho.getFechaAcontecimiento());
 
                         ClaveEstadistica clave = new ClaveEstadistica(coleccion, provincia, categoria, horaDelDia);
-                        System.out.println("🔍 Debug - Hecho: " + hecho.getTitulo());
-                        System.out.println("   Clave: " + clave);
-                        System.out.println("   Contador anterior: " + mapaEstadisticas.get(clave));
-                        System.out.println("¿Claves estadísticas iguales?" + mapaEstadisticas.keySet());
                         mapaEstadisticas.merge(clave, 1, Integer::sum);
-                        System.out.println("   Contador nuevo: " + mapaEstadisticas.get(clave));
                     }
                 }
             }
