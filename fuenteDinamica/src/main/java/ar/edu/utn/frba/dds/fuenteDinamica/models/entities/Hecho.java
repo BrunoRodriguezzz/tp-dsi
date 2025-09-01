@@ -20,7 +20,7 @@ public class Hecho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "contribuyente_id",referencedColumnName = "id")
     private Contribuyente contribuyente;
 
@@ -36,8 +36,8 @@ public class Hecho {
     @OneToMany(mappedBy = "hecho")
     private List<ContenidoMultimedia> contenidoMultimedia;
 
-    @OneToOne
-    @JoinColumn(name = "ubicacion_id", referencedColumnName = "id",nullable = false)
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "ubicacion_id", referencedColumnName = "id")
     private Ubicacion ubicacion;
 
     @Column(name = "fecha_acontecimiento",nullable = false)

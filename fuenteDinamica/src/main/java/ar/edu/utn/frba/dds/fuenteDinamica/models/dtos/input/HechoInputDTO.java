@@ -19,7 +19,7 @@ public class HechoInputDTO {
     private String                    titulo;
     private String                    descripcion;
     private String                    categoria;
-    private List<ContenidoMultimedia> contenidoMultimedia;
+    private List<String>              contenidoMultimedia;
     private String                    latitud;
     private String                    longitud;
     private LocalDate                 fechaAcontecimiento;

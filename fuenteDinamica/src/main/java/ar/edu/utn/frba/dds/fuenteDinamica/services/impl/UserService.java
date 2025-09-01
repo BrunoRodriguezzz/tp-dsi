@@ -3,10 +3,7 @@ package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Ubicacion;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.*;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IContribuyenteRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IDinamicaRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IUserService;
@@ -46,12 +43,18 @@ public class UserService implements IUserService {
                     .longitud(hechoInputDTO.getLongitud())
                     .build();
 
+            List<ContenidoMultimedia> contenidoMultimedia = hechoInputDTO
+                    .getContenidoMultimedia()
+                    .stream()
+                    .map(this::convertirMultimedia)
+                    .toList();
+
             Hecho hecho = Hecho
                     .builder()
                     .titulo(hechoInputDTO.getTitulo())
                     .descripcion(hechoInputDTO.getDescripcion())
                     .categoria(hechoInputDTO.getCategoria())
-                    .contenidoMultimedia(hechoInputDTO.getContenidoMultimedia())
+                    .contenidoMultimedia(contenidoMultimedia)
                     .ubicacion(ubicacion)
                     .fechaAcontecimiento(hechoInputDTO.getFechaAcontecimiento())
                     .contribuyente(usuario)
@@ -191,5 +194,13 @@ public class UserService implements IUserService {
                                 && usuario.getApellido().equals(contribuyente.getApellido())
                                 && usuario.getFechaNacimiento().equals(contribuyente.getFechaNacimiento()));
 
+    }
+
+    private Etiqueta convertirString(String etiqueta){
+        return Etiqueta.builder().titulo(etiqueta).build();
+    }
+
+    private ContenidoMultimedia convertirMultimedia(String url){
+        return ContenidoMultimedia.builder().url(url).build();
     }
 }
