@@ -1,10 +1,14 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.hechos;
 
+import ar.edu.utn.frba.dds.agregador.converters.consensoConverter;
+import ar.edu.utn.frba.dds.agregador.converters.origenConverter;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.DescripcionInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.FechaInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.TituloInvalidoException;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ContenidoMultimedia;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
@@ -16,24 +20,77 @@ import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "hecho")
 public class Hecho {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, name = "fuente_interno_id")
     private Long idInternoFuente;
+
+    @Column(nullable = false)
     private String titulo;
+
+    @Column
     private String descripcion;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private Categoria categoria;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private Ubicacion ubicacion;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "etiquetas_x_hecho",
+            joinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "etiqueta_id", referencedColumnName = "id")
+    )
     private List<Etiqueta> etiquetas;
+
+    @Column(name = "fecha_acontecimiento")
     private LocalDate fechaAcontecimiento;
+
+    @Column(name = "fecha_carga")
     private LocalDate fechaCarga;
+
+    @Column()
+    @Convert(converter = origenConverter.class)
     private Origen origen;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private Contribuyente contribuyente;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "hecho_consensos",
+            joinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id")
+    )
+    @Column(name = "consenso")
+    @Convert(converter = consensoConverter.class)
     private List<Consenso> consensos;
+
+    @Column(name = "esta_eliminado")
     private Boolean estaEliminado;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private Fuente fuente;
+
+    @OneToMany
+    @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     private List<ContenidoMultimedia> contenidoMultimedia;
 
     public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) throws FechaInvalidaException, TituloInvalidoException, DescripcionInvalidaException {

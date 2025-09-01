@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.colecciones;
 
+import ar.edu.utn.frba.dds.agregador.converters.origenConverter;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
@@ -8,18 +9,57 @@ import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "coleccion")
 public class Coleccion {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, name = "fuente_interno_id")
     private Long idInternoFuente;
+    @Column(nullable = false)
     private String titulo;
+    @Column
     private String descripcion;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "fuente_x_coleccion",
+            joinColumns = @JoinColumn(name = "coleccion_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "fuente_id", referencedColumnName = "id")
+    )
     private List<Fuente> fuentes;
+
+    @OneToOne(fetch = FetchType.LAZY)
     private Criterio criterio;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "consensos_x_coleccion",
+            joinColumns = @JoinColumn(name = "coleccion_id", referencedColumnName = "id")
+    )
+    @Column(name = "consenso")
+    @Convert(converter = origenConverter.class)
     private List<Consenso> consensos;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "hecho_x_coleccion",
+            joinColumns = @JoinColumn(name = "coleccion_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id")
+    )
     private List<Hecho> hechos;
 
     public Coleccion(String titulo, String descripcion, List<Fuente> fuentes, Criterio criterio) {

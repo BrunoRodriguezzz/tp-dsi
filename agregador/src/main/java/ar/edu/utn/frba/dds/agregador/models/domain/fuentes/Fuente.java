@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.fuentes;
 
+import ar.edu.utn.frba.dds.agregador.converters.tipoFuenteConverter;
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpC;
@@ -10,22 +11,41 @@ import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl.AdapImp
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl.AdapImpHProxy;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "fuente")
 public class Fuente {
-  @Getter
-  private String nombre;
-  @Getter
-  @Setter
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  @Column(nullable = false, name = "fuente_interno_id")
   private Long idInternoFuente;
+  @Column(nullable = false)
+  private String nombre;
+  @Column(nullable = false)
   private String path;
+  @Transient
   private WebClient webClient;
-  @Getter
+
+  @Column(nullable = false)
+  @Convert(converter = tipoFuenteConverter.class)
   private TipoFuente tipoFuente;
-  private IAdapImpH iAdapImpH;
+
+  @Transient
+  private IAdapImpH iAdapImpH; // TODO
+
+  @Transient
   private IAdapImpC iAdapImpC;
 
   // TODO: GRITA PATRON FACTORY
@@ -35,29 +55,7 @@ public class Fuente {
     this.tipoFuente = tipoFuente;
     this.idInternoFuente = idInternoFuente;
     // Dependiendo el tipo de fuente se configura el Adapter y otras cuestiones particulares
-    switch(tipoFuente) {
-      case DINAMICA -> {
-        this.webClient = WebClient.builder()
-          .baseUrl(path + "/api/fuenteDinamica")
-          .build();
-        this.iAdapImpH = AdapImpHDinamico.getInstance();
-      }
-      case ESTATICA -> {
-        this.webClient = WebClient.builder()
-          .baseUrl(path)
-          .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(20 * 1024 * 1024))
-          .build();
-        this.iAdapImpH = AdapImpHEstatico.getInstance();
-      }
-      case PROXY -> {
-        this.webClient = WebClient.builder()
-          .baseUrl(path)
-          .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(20 * 1024 * 1024))
-          .build();
-        this.iAdapImpH = AdapImpHProxy.getInstance();
-        this.iAdapImpC = AdapImpC.getInstance();
-      }
-    }
+    this.inicializar();
   }
 
   public List<Hecho> importarHechos() {
@@ -99,6 +97,33 @@ public class Fuente {
     else {
       List<Hecho> hechos = iAdapImpC.importarHechosColeccion(this.webClient, id, this.idInternoFuente);
       return hechos;
+    }
+  }
+
+  @PostLoad
+  private void inicializar() {
+    switch(this.tipoFuente) {
+      case DINAMICA -> {
+        this.webClient = WebClient.builder()
+                .baseUrl(path + "/api/fuenteDinamica")
+                .build();
+        this.iAdapImpH = AdapImpHDinamico.getInstance();
+      }
+      case ESTATICA -> {
+        this.webClient = WebClient.builder()
+                .baseUrl(path)
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(20 * 1024 * 1024))
+                .build();
+        this.iAdapImpH = AdapImpHEstatico.getInstance();
+      }
+      case PROXY -> {
+        this.webClient = WebClient.builder()
+                .baseUrl(path)
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(20 * 1024 * 1024))
+                .build();
+        this.iAdapImpH = AdapImpHProxy.getInstance();
+        this.iAdapImpC = AdapImpC.getInstance();
+      }
     }
   }
 }
