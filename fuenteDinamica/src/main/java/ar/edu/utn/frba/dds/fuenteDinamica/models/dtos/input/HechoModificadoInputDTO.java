@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.ContenidoMultimedia;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,15 +11,15 @@ import java.util.List;
 @Getter
 public class HechoModificadoInputDTO {
 
-    private Long          id;
-    private String        nombreUsuario;
-    private String        apellidoUsuario;
-    private LocalDate     fechaNacimientoUsuario;
-    private String        titulo;
-    private String        descripcion;
-    private String        categoria;
-    private List<String>  contenidoMultimedia;
-    private String        latitud;
-    private String        longitud;
-    private LocalDate     fechaAcontecimiento;
+    private Long                      id;
+    private String                    nombreUsuario;
+    private String                    apellidoUsuario;
+    private LocalDate                 fechaNacimientoUsuario;
+    private String                    titulo;
+    private String                    descripcion;
+    private String                    categoria;
+    private List<ContenidoMultimedia> contenidoMultimedia;
+    private String                    latitud;
+    private String                    longitud;
+    private LocalDate                 fechaAcontecimiento;
 }

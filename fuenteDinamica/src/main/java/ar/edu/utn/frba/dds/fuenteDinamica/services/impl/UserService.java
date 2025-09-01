@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Ubicacion;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IContribuyenteRepository;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IDinamicaRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IUserService;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +17,19 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements IUserService {
 
     private IRepositoryService dinamicaRepository;
-
-    public UserService(IRepositoryService dinamicaRepository){
-        this.dinamicaRepository = dinamicaRepository;
-    }
-
-    @Autowired
     private IContribuyenteRepository contribuyentesRepository;
+
+    public UserService(IRepositoryService dinamicaRepository, IContribuyenteRepository contribuyentesRepository){
+        this.dinamicaRepository = dinamicaRepository;
+        this.contribuyentesRepository = contribuyentesRepository;
+    }
 
     @Override
     public SolicitudOutputDTO crear(HechoInputDTO hechoInputDTO) {
@@ -61,7 +63,7 @@ public class UserService implements IUserService {
 
             // Guardo el contribuyente, solo si indico su nombre
             if(usuario.getNombre() != "" && usuario.getApellido() != ""){
-                this.contribuyentesRepository.guardar(usuario);
+                this.contribuyentesRepository.save(usuario);
             }
 
             return SolicitudOutputDTO.convertir(hecho);
@@ -70,15 +72,18 @@ public class UserService implements IUserService {
     @Override
     public SolicitudOutputDTO actualizar(HechoModificadoInputDTO hechoModificado){
 
-        Hecho hechoOriginal = this.dinamicaRepository.buscarPorID(hechoModificado.getId());
+        List<Hecho> hechos = this.dinamicaRepository.buscarTodos();
 
-        Hecho hechoCambiado = this.dinamicaRepository.buscarPorID(hechoModificado.getId());
+        Hecho hechoOriginal = hechos.stream()
+                .filter(hecho -> hecho.getId().equals(hechoModificado.getId()))
+                .findFirst()
+                .orElse(null);
 
-        hechoCambiado.setTitulo(hechoModificado.getTitulo());
-        hechoCambiado.setDescripcion(hechoModificado.getDescripcion());
-        hechoCambiado.setCategoria(hechoModificado.getCategoria());
-        hechoCambiado.setContenidoMultimedia(hechoModificado.getContenidoMultimedia());
-        hechoCambiado.setFechaModificacion(LocalDateTime.now());
+        hechoOriginal.setTitulo(hechoModificado.getTitulo());
+        hechoOriginal.setDescripcion(hechoModificado.getDescripcion());
+        hechoOriginal.setCategoria(hechoModificado.getCategoria());
+        hechoOriginal.setContenidoMultimedia(hechoModificado.getContenidoMultimedia());
+        hechoOriginal.setFechaModificacion(LocalDateTime.now());
 
         Ubicacion ubicacion = Ubicacion
                 .builder()
@@ -86,15 +91,15 @@ public class UserService implements IUserService {
                 .longitud(hechoModificado.getLongitud())
                 .build();
 
-        hechoCambiado.setUbicacion(ubicacion);
-        hechoCambiado.setFechaAcontecimiento(hechoModificado.getFechaAcontecimiento());
-        hechoCambiado.setFechaModificacion(LocalDateTime.now());
-        hechoCambiado.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
-        hechoCambiado.setEnviado(false);
+        hechoOriginal.setUbicacion(ubicacion);
+        hechoOriginal.setFechaAcontecimiento(hechoModificado.getFechaAcontecimiento());
+        hechoOriginal.setFechaModificacion(LocalDateTime.now());
+        hechoOriginal.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
+        hechoOriginal.setEnviado(false);
 
-        this.dinamicaRepository.guardarCambios(hechoOriginal,hechoCambiado);
+        this.dinamicaRepository.guardar(hechoOriginal);
 
-        return SolicitudOutputDTO.convertir(hechoCambiado);
+        return SolicitudOutputDTO.convertir(hechoOriginal);
 
     }
 
@@ -108,7 +113,7 @@ public class UserService implements IUserService {
                 .fechaNacimiento(hechoParaActualizar.getFechaNacimientoUsuario())
                 .build();
 
-        return this.contribuyentesRepository.comprobarUsuarioRegistrado(usuario);
+        return this.comprobarUsuarioRegistrado(usuario);
 
     }
 
@@ -167,7 +172,7 @@ public class UserService implements IUserService {
     @Override
     public Boolean verificarTiempoParaActualizar(HechoModificadoInputDTO solicitudCambio){
 
-        Hecho hechoGuardado = this.buscarPorID(solicitudCambio.getId());
+        Hecho hechoGuardado = this.dinamicaRepository.buscarPorID(solicitudCambio.getId());
 
         LocalDateTime fechaHoy = LocalDateTime.now();
         long diferencia = ChronoUnit.DAYS.between(hechoGuardado.getFechaGuardado(),fechaHoy);
@@ -175,9 +180,16 @@ public class UserService implements IUserService {
         return diferencia <= 7;
     }
 
-    private Hecho buscarPorID(Long id) {
+    private Boolean comprobarUsuarioRegistrado(Contribuyente contribuyente){
 
-        return this.dinamicaRepository.buscarPorID(id);
+        List<Contribuyente> contribuyentes = this.contribuyentesRepository.findAll();
+
+        return contribuyentes
+                .stream()
+                .anyMatch(usuario ->
+                        usuario.getNombre().equals(contribuyente.getNombre())
+                                && usuario.getApellido().equals(contribuyente.getApellido())
+                                && usuario.getFechaNacimiento().equals(contribuyente.getFechaNacimiento()));
 
     }
 }

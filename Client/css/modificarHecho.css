@@ -57,6 +57,7 @@ body{
 .caja-de-imagenes{
     display: grid;
     gap:1rem;
+    margin-bottom: 1rem;
 }
 
 
@@ -116,7 +117,6 @@ body{
     border-radius: 5px;
     border-color: rgb(204, 204, 204);
     padding: 1rem;
-    margin-bottom: 1rem;
 }
 
 .preview{

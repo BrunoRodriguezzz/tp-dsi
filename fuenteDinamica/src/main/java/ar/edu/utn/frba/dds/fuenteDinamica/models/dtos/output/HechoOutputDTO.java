@@ -1,8 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output;
 
-import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Ubicacion;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,18 +12,18 @@ import java.util.List;
 @Getter
 @Builder
 public class HechoOutputDTO {
-    private Long           id;
-    private Contribuyente  contribuyente;
-    private String         titulo;
-    private String         descripcion;
-    private String         categoria;
-    private List<String>   contenidoMultimedia;
-    private Ubicacion      ubicacion;
-    private LocalDate      fechaAcontecimiento;
-    private LocalDate      fechaCarga;
-    private List<String>   etiquetas;
-    private String         origen;
-    private String         fuente;
+    private Long                        id;
+    private Contribuyente               contribuyente;
+    private String                      titulo;
+    private String                      descripcion;
+    private String                      categoria;
+    private List<ContenidoMultimedia>   contenidoMultimedia;
+    private Ubicacion                   ubicacion;
+    private LocalDate                   fechaAcontecimiento;
+    private LocalDate                   fechaCarga;
+    private List<Etiqueta>              etiquetas;
+    private String                      origen;
+    private String                      fuente;
 
     public static HechoOutputDTO convertir(Hecho hecho){
         return HechoOutputDTO

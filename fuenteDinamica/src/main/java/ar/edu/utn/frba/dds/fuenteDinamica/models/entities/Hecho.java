@@ -1,8 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.entities;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,22 +10,63 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "hecho")
 public class Hecho {
-    private Long          id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "contribuyente_id",referencedColumnName = "id")
     private Contribuyente contribuyente;
-    private String        titulo;
-    private String        descripcion;
-    private String        categoria;
-    private List<String>  contenidoMultimedia;
-    private Ubicacion     ubicacion;
-    private LocalDate     fechaAcontecimiento;
-    private List<String>  etiquetas;
+
+    @Column(name = "titulo", nullable = false, columnDefinition = "TEXT")
+    private String titulo;
+
+    @Column(name = "descripcion", nullable = false, columnDefinition = "TEXT")
+    private String descripcion;
+
+    @Column(name = "categoria", columnDefinition = "VARCHAR(50)")
+    private String categoria;
+
+    @OneToMany(mappedBy = "hecho")
+    private List<ContenidoMultimedia> contenidoMultimedia;
+
+    @OneToOne
+    @JoinColumn(name = "ubicacion_id", referencedColumnName = "id",nullable = false)
+    private Ubicacion ubicacion;
+
+    @Column(name = "fecha_acontecimiento",nullable = false)
+    private LocalDate fechaAcontecimiento;
+
+    @OneToMany(mappedBy = "hecho")
+    private List<Etiqueta> etiquetas;
+
+    @Column(name = "fecha_guardado")
     private LocalDateTime fechaGuardado;
+
+    @Column(name = "fecha_de_modicacion")
     private LocalDateTime fechaModificacion;
-    private EstadoHecho   estadoHecho;
-    private String        sugerenciaDeCambio;
-    private Boolean       enviado;
-    private Boolean       estaEliminado;
-    private String        origen;
-    private String        fuente;
+
+    @Enumerated(EnumType.STRING)
+    private EstadoHecho estadoHecho;
+
+    @Column(name = "sugerencia_de_cambio")
+    private String sugerenciaDeCambio;
+
+    @Column(name = "enviado")
+    private Boolean enviado;
+
+    @Column(name = "eliminado")
+    private Boolean estaEliminado;
+
+    @Column(name = "origen")
+    private String origen;
+
+    @Column(name = "fuente")
+    private String fuente;
 }

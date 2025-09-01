@@ -27,19 +27,17 @@ public class AdminService implements IAdminService {
     @Override
     public SolicitudOutputDTO gestionarHecho(HechoRevisadoInputDTO hechoRevisado){
 
-        Hecho hechoActual = this.dinamicaRepository.buscarPorID(hechoRevisado.getId());
+        Hecho hecho = this.dinamicaRepository.buscarPorID(hechoRevisado.getId());
 
-        Hecho hechoCambiado = this.dinamicaRepository.buscarPorID(hechoRevisado.getId());
+        hecho.setEtiquetas(hechoRevisado.getEtiquetas());
+        hecho.setEstadoHecho(hechoRevisado.getEstadoHecho());
+        hecho.setSugerenciaDeCambio(hechoRevisado.getSugerenciaDeCambio());
 
-        hechoCambiado.setEtiquetas(hechoRevisado.getEtiquetas());
-        hechoCambiado.setEstadoHecho(hechoRevisado.getEstadoHecho());
-        hechoCambiado.setSugerenciaDeCambio(hechoRevisado.getSugerenciaDeCambio());
+        this.dinamicaRepository.guardar(hecho);
 
-        this.dinamicaRepository.guardarCambios(hechoActual,hechoCambiado);
+        this.enviarHecho(hecho);
 
-        this.enviarHecho(hechoCambiado);
-
-        return SolicitudOutputDTO.convertir(hechoCambiado);
+        return SolicitudOutputDTO.convertir(hecho);
     }
 
     @Override
@@ -52,7 +50,7 @@ public class AdminService implements IAdminService {
             Hecho hechoAGuardar = this.dinamicaRepository.buscarPorID(id);
             hechoAGuardar.setEstaEliminado(true);
 
-            this.dinamicaRepository.guardarCambios(hechoOriginal,hechoAGuardar);
+            this.dinamicaRepository.guardar(hechoOriginal);
         }
     }
 
@@ -63,7 +61,7 @@ public class AdminService implements IAdminService {
 
         hechoAntiguo.setEnviado(true);
 
-        this.dinamicaRepository.guardarCambios(hecho,hechoAntiguo);
+        this.dinamicaRepository.guardar(hecho);
 
         this.webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/hechos").build())
