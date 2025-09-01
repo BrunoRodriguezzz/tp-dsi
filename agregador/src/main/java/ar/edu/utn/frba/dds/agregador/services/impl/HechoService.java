@@ -1,10 +1,9 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consensuador;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
-import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
@@ -13,9 +12,9 @@ import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,32 +73,42 @@ public class HechoService implements IHechoService {
 
   @Override
   public Hecho buscarHecho(Long id) {
-    Hecho hecho = this.hechoRepository.buscarHecho(id);
+    Hecho hecho = this.buscarPorID(id);
     return hecho;
   }
 
   @Override
   public Hecho guardarHecho(Hecho hecho) {
-    Hecho hechoGuardado = this.hechoRepository.guardarHecho(hecho);
+    Hecho hechoGuardado = this.hechoRepository.save(hecho);
     return hechoGuardado;
   }
 
   @Override
   public List<Hecho> guardarHechos(List<Hecho> hechos){
-    List<Hecho> hechosGuardados = this.hechoRepository.guardarHechos(hechos);
+    List<Hecho> hechosGuardados = this.hechoRepository.saveAll(hechos);
     return hechosGuardados;
   }
 
   @Override
   public void consensuarHechos() {
-    List<Hecho> hechosGuardados = this.hechoRepository.buscarHechos();
+    List<Hecho> hechosGuardados = this.hechoRepository.findAll();
     List<Hecho> hechosConsensuados = Consensuador.getInstance().consensuarHechos(this.fuenteService.buscarFuentes(), hechosGuardados);
-    this.hechoRepository.guardarHechos(hechosConsensuados);
+    this.hechoRepository.saveAll(hechosConsensuados);
   }
 
   @Override
   public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente){
-    List<Hecho> hechos = this.hechoRepository.buscarHechosGuardadosFuente(fuente);
+    List<Hecho> hechos = this.hechoRepository.findByFuente(fuente);
     return hechos;
+  }
+
+  private Hecho buscarPorID(Long id){
+    Optional<Hecho> hechoOptional = this.hechoRepository.findById(id);
+    if(hechoOptional.isPresent()) {
+      return hechoOptional.get();
+    }
+    else {
+      throw new NotFoundException("Hecho no encontrado.");
+    }
   }
 }

@@ -40,7 +40,7 @@ public class Hecho {
     @Column(nullable = false)
     private String titulo;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String descripcion;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

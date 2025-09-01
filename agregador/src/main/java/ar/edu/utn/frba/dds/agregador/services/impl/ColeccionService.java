@@ -18,6 +18,8 @@ import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,8 +29,8 @@ public class ColeccionService implements IColeccionService {
   @Autowired
   private IColeccionRepository coleccionRepository;
 
-  private IFuenteService fuenteService;
-  private IHechoService hechoService;
+  private final IFuenteService fuenteService;
+  private final IHechoService hechoService;
   private LocalDateTime ultimaFechaRefresco;
 
   public ColeccionService(IFuenteService fuenteService, HechoService hechoService) {
@@ -38,7 +40,7 @@ public class ColeccionService implements IColeccionService {
   }
 
   public List<ColeccionOutputDTO> buscarColecciones() {
-    List <Coleccion> colecciones = this.coleccionRepository.buscarCopiaColecciones();
+    List <Coleccion> colecciones = this.coleccionRepository.findAll();
     // TODO: Pedirle a la proxy solo los hechos de las fuentes que use. No todos, evitar consultas al pedo
     List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
     List<Hecho> hechosGuardados = this.hechoService.guardarHechos(hechosProxy);
@@ -46,42 +48,38 @@ public class ColeccionService implements IColeccionService {
       coleccion.cargarHechos(hechosGuardados);
     });
     // TODO: Buscar colecciones del servicio PROXY
-    List <ColeccionOutputDTO> coleccionesDTO = ColeccionOutputDTO.mapColeccionesToDTO(colecciones);
-    return coleccionesDTO;
+    return ColeccionOutputDTO.mapColeccionesToDTO(colecciones);
   }
 
   public List<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params) {
-    Coleccion coleccion = this.coleccionRepository.buscarCopiaColeccion(id);
+    Coleccion coleccion = this.findColecccionAux(id);
     List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
     coleccion.cargarHechos(hechosProxy);
     List<Hecho> hechosOutput = coleccion.consultarHechos(params.instanciarFiltros());
-    List<HechoOutputDTO> hechosOutputDTO = HechoOutputDTO.mapHechoToDTO(hechosOutput);
-    return hechosOutputDTO;
+    return HechoOutputDTO.mapHechoToDTO(hechosOutput);
   }
 
   public List<HechoOutputDTO> buscarHechosCuradosColeccion(Long id, QueryParamsFiltro params) {
-    Coleccion coleccion = this.coleccionRepository.buscarCopiaColeccion(id);
+    Coleccion coleccion = this.findColecccionAux(id);
     List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
     coleccion.cargarHechos(hechosProxy);
     List<Hecho> hechosOutput = coleccion.consultarHechosCurados(params.instanciarFiltros());
-    List<HechoOutputDTO> hechosOutputDTO = HechoOutputDTO.mapHechoToDTO(hechosOutput);
-    return hechosOutputDTO;
+      return HechoOutputDTO.mapHechoToDTO(hechosOutput);
   }
 
   public ColeccionOutputDTO buscarColeccion(Long id) {
-    Coleccion coleccion = this.coleccionRepository.buscarCopiaColeccion(id);
+    Coleccion coleccion = this.findColecccionAux(id);
     // TODO: Pedirle a la proxy solo los hechos de las fuentes que use. No todos, evitar consultas al pedo
     List<Hecho> hechosProxy = this.fuenteService.buscarHechosFuente(TipoFuente.PROXY);
     coleccion.cargarHechos(hechosProxy);
-    ColeccionOutputDTO coleccionDTO = ColeccionOutputDTO.coleccionToDTO(coleccion);
-    return coleccionDTO;
+      return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
   // Guarda un Hecho en las colecciones
   public List<String> incorporarHecho(Hecho hecho) {
-    List<Coleccion> colecciones = this.coleccionRepository.buscarColecciones();
+    List<Coleccion> colecciones = this.coleccionRepository.findAll();
     List<String> nombreColecciones = this.agregarHechoAColecciones(colecciones, hecho);
-    Boolean resultado = this.coleccionRepository.guardarColecciones(colecciones);
+    boolean resultado = this.guardarColecciones(colecciones);
     if(!resultado){
       throw new RuntimeException("No se puedieron guardar las colecciones");
     }
@@ -90,16 +88,16 @@ public class ColeccionService implements IColeccionService {
 
   // Guarda multiples Hechos en las colecciones
   public void incorporarHechos(List<Hecho> hechos) {
-    List<Coleccion> colecciones = this.coleccionRepository.buscarColecciones();
+    List<Coleccion> colecciones = this.coleccionRepository.findAll();
     this.agregarHechosAColecciones(hechos, colecciones);
-    Boolean resultado = this.coleccionRepository.guardarColecciones(colecciones);
+    Boolean resultado = this.guardarColecciones(colecciones);
     if(!resultado){
       throw new RuntimeException("No se puedieron guardar las colecciones");
     }
   }
 
   public Boolean eliminarHechoDeColecciones(Hecho hecho) {
-    return this.coleccionRepository.eliminarHechoDeColecciones(hecho);
+    return this.deleteHechoFromColeccion(hecho);
   }
 
   @Override
@@ -113,7 +111,7 @@ public class ColeccionService implements IColeccionService {
       fuentesColeccion.add(temp);
     });
     Coleccion coleccion = ColeccionInputDTO.inputColeccionToColeccion(coleccionInputDTO, fuentesColeccion);
-    this.coleccionRepository.guardarColeccion(coleccion);
+    this.coleccionRepository.save(coleccion);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
@@ -122,34 +120,26 @@ public class ColeccionService implements IColeccionService {
     List<Filtro> nuevosFiltros = CriterioInputDTO.crearFiltros(criterioInputDTO);
     //Criterio criterio = new Criterio(nuevosFiltros);
 
-    Coleccion coleccion = coleccionRepository.buscarColeccion(id);
-    if(coleccion == null) {
-      throw new NotFoundException("No se encontro la coleccion");
-    }
+    Coleccion coleccion = this.findColecccionAux(id);
 
     //coleccion.setCriterio(criterio);
     coleccion.getCriterio().getFiltros().addAll(nuevosFiltros);
     coleccion.recalcularHechos();
 
-    this.coleccionRepository.guardarColeccion(coleccion);
+    this.coleccionRepository.save(coleccion);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
   @Override
   public ColeccionOutputDTO quitarFiltrosCriterio(Long id, CriterioInputDTO criterio) {
-    Coleccion coleccion = coleccionRepository.buscarColeccion(id);
-    if(coleccion == null) {
-      throw new NotFoundException("No se encontro la coleccion");
-    }
+    Coleccion coleccion = this.findColecccionAux(id);
 
     List<Filtro> filtrosNuevos = CriterioInputDTO.crearFiltros(criterio);
     coleccion.cambiarCriterio(new Criterio(filtrosNuevos));
 
     List<Hecho> hechosFuentes = coleccion.getFuentes()
         .stream()
-        .map(f -> {
-          return this.hechoService.buscarHechosGuardadosFuente(f);
-        })
+        .map(f -> this.hechoService.buscarHechosGuardadosFuente(f))
         .flatMap(List::stream)
         .collect(Collectors.toList());
     coleccion.cargarHechos(hechosFuentes);
@@ -159,10 +149,7 @@ public class ColeccionService implements IColeccionService {
 
   @Override
   public ColeccionOutputDTO agregarFuenteAColeccion(Long id, NombreFuenteInputDTO fuenteInputDTO) {
-    Coleccion coleccion = coleccionRepository.buscarColeccion(id);
-    if(coleccion == null) {
-      throw new NotFoundException("No se encontro la coleccion");
-    }
+    Coleccion coleccion = this.findColecccionAux(id);
 
     Fuente fuente = this.fuenteService.buscarFuente(fuenteInputDTO.getNombre());
     if(fuente == null){
@@ -174,16 +161,13 @@ public class ColeccionService implements IColeccionService {
     hechoService.guardarHechos(hechos);
     coleccion.cargarHechos(hechos);
 
-    this.coleccionRepository.guardarColeccion(coleccion);
+    this.coleccionRepository.save(coleccion);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
   @Override
   public ColeccionOutputDTO quitarFuentesAColeccion(Long id, List<NombreFuenteInputDTO> fuentesInputDTO) {
-    Coleccion coleccion = coleccionRepository.buscarColeccion(id);
-    if(coleccion == null) {
-      throw new NotFoundException("No se encontro la coleccion");
-    }
+    Coleccion coleccion = this.findColecccionAux(id);
 
     List<Fuente> fuentesColeccion = new ArrayList<>();
     fuentesInputDTO.forEach(fuente -> {
@@ -198,37 +182,39 @@ public class ColeccionService implements IColeccionService {
     coleccion.getFuentes().removeAll(fuentesColeccion);
     coleccion.recalcularHechos();
 
-    this.coleccionRepository.guardarColeccion(coleccion);
+    this.coleccionRepository.save(coleccion);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
   @Override
   public ColeccionOutputDTO agregarConsensoAColeccion(Long id, Consenso consenso) {
-    Coleccion coleccion = coleccionRepository.buscarColeccion(id);
-    if(coleccion == null) {
-      throw new NotFoundException("No se encontro la coleccion");
-    }
-
+    Coleccion coleccion = this.findColecccionAux(id);
     coleccion.agregarConsenso(consenso);
 
-    this.coleccionRepository.guardarColeccion(coleccion);
+    this.coleccionRepository.save(coleccion);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
   @Override
   public ColeccionOutputDTO actualizarColeccion(Long id, ColeccionInputDTO coleccionInputDTO) {
-    Coleccion coleccion = coleccionRepository.buscarColeccion(id);
-    if(coleccion == null) {
-      throw new NotFoundException("No se encontro la coleccion");
-    }
+    Coleccion coleccion = this.findColecccionAux(id);
+
     this.actualizarDatosColeccion(coleccion, coleccionInputDTO);
-    this.coleccionRepository.guardarColeccion(coleccion);
+    this.coleccionRepository.save(coleccion);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
   @Override
   public void eliminarColeccion(Long id) {
-      coleccionRepository.eliminarColeccion(id);
+      coleccionRepository.deleteById(id);
+  }
+
+  @Override
+  public void refrescarColecciones(){
+    List<Hecho> nuevosHechos = this.fuenteService.buscarNuevosHechos(this.ultimaFechaRefresco);
+    List<Hecho> hechos = this.hechoService.guardarHechos(nuevosHechos);
+    this.incorporarHechos(hechos);
+    this.ultimaFechaRefresco = LocalDateTime.now();
   }
 
   // ---------------------------------------------------- Privados ----------------------------------------------------
@@ -266,11 +252,36 @@ public class ColeccionService implements IColeccionService {
       }
   }
 
-  @Override
-  public void refrescarColecciones(){
-    List<Hecho> nuevosHechos = this.fuenteService.buscarNuevosHechos(this.ultimaFechaRefresco);
-    List<Hecho> hechos = this.hechoService.guardarHechos(nuevosHechos);
-    this.incorporarHechos(hechos);
-    this.ultimaFechaRefresco = LocalDateTime.now();
+  private Coleccion findColecccionAux(Long id) {
+    Optional<Coleccion> coleccion = this.coleccionRepository.findById(id);
+    if (coleccion.isPresent()) {
+      return coleccion.get();
+    }
+    else {
+      throw new NotFoundException("Coleccion no encontrada");
+    }
+  }
+
+  private Boolean guardarColecciones(List<Coleccion> colecciones) {
+    List<Coleccion> aux = this.coleccionRepository.saveAll(colecciones);
+    return aux.size() == colecciones.size();
+  }
+
+  private Boolean deleteHechoFromColeccion(Hecho hecho) {
+    List<Hecho> hechos = new ArrayList<>();
+    hechos.add(hecho);
+    List<Coleccion> colecciones = this.coleccionRepository.findColeccionsByHechos(hechos); // POSIBLE CACA
+
+    AtomicBoolean resultado = new AtomicBoolean(false);
+
+    colecciones.forEach(coleccion -> {
+      List<Hecho> aux = coleccion.getHechos();
+      boolean borrado = aux.remove(hecho);
+      resultado.set(resultado.get() || borrado); // true si al menos uno fue eliminado
+      coleccion.setHechos(aux);
+      coleccionRepository.save(coleccion);
+    });
+
+    return resultado.get();
   }
 }
