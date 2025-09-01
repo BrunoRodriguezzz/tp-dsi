@@ -5,10 +5,12 @@ import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Archivo;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.FiltroEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 
-public interface IHechoRepository extends JpaRepository<HechoEstatica, Long> {
+public interface IHechoRepository extends JpaRepository<HechoEstatica, Long>, JpaSpecificationExecutor<HechoEstatica> {
+    List<HechoEstatica> findByIdArchivo(Long id);
 //    List<HechoEstatica> getAll();
 //    HechoEstatica getById(Long id);
 //    HechoEstatica save(HechoEstatica hechoEstatica);

@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.fuenteEstatica.models.entities;
+package ar.edu.utn.frba.dds.fuenteEstatica.models.enums;
 
 public enum Origen {
     MANUAL,
