@@ -1,22 +1,53 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.entities;
 
+import ar.edu.utn.frba.dds.fuenteEstatica.converters.tipoArchivoConverter;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.impl.ArchivoCSV;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.enums.TipoArchivoEnum;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import reactor.core.publisher.Flux;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "archivo")
 public class Archivo {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String nombre;
+    @Column(nullable = false)
     private String rutaArchivo;
-    // TODO: me llevo la fuenteEstatica del Dominio?? porque esa interfaz Fuente en realidad sería el tipo de Archivo de Fuente Estática
+
+    @Transient
     private TipoArchivo tipoArchivo;
+
+    @Column(nullable = false)
+    @Convert(converter = tipoArchivoConverter.class)
+    private TipoArchivoEnum tipoArchivoEnum;
 
     public Flux<HechoEstatica> importarHechos(){
         return tipoArchivo.importarHechos(rutaArchivo).map(h -> {
             h.setIdArchivo(this.id);
             return h;
         });
+    }
+
+    @PostLoad
+    private void contruirTipoArchivo() {
+        switch (this.tipoArchivoEnum) {
+            case archivoCSV -> {
+                ArchivoCSV tipo = new ArchivoCSV();
+                this.tipoArchivo = tipo;
+            }
+            default -> {}
+        }
     }
 }

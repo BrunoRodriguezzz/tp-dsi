@@ -35,6 +35,6 @@ public class ArchivoService implements IArchivoService {
 
   @Override
   public List<Archivo> obtenerArchivos() {
-    return this.archivoRepository.getAll();
+    return this.archivoRepository.findAll();
   }
 }
