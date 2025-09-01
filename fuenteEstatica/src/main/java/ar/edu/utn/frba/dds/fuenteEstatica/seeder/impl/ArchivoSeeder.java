@@ -27,11 +27,11 @@ public class ArchivoSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        Archivo archivo = new Archivo();
-//        archivo.setNombre(this.nombreArchivo);
-//        archivo.setRutaArchivo(this.rutaArchivo);
-//        archivo.setTipoArchivoEnum(TipoArchivoEnum.archivoCSV);
-//
-//        this.archivoService.guardarArchivo(archivo);
+        Archivo archivo = new Archivo();
+        archivo.setNombre(this.nombreArchivo);
+        archivo.setRutaArchivo(this.rutaArchivo);
+        archivo.setTipoArchivoEnum(TipoArchivoEnum.archivoCSV);
+
+        this.archivoService.guardarArchivo(archivo);
     }
 }
