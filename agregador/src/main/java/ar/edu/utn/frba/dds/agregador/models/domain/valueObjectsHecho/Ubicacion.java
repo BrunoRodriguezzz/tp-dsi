@@ -1,11 +1,25 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.UbicacionInvalidaException;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
+@NoArgsConstructor
+@Entity
+@Table(name = "ubicacion")
 public class Ubicacion {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
     private String latitud;
+
+    @Column(nullable = false)
     private String longitud;
 
     public Ubicacion(String latitud, String longitud) throws UbicacionInvalidaException {

@@ -1,17 +1,32 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.usuarios;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.FechaInvalidaException;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.Period;
 
 @Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "contribuyente")
 public class Contribuyente {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String nombre;
+
+    @Column
     private String apellido;
+
+    @Column
     private LocalDate fechaNacimiento;
 
     public Contribuyente(String nombre, String apellido, LocalDate fechaNacimiento) throws FechaInvalidaException {
