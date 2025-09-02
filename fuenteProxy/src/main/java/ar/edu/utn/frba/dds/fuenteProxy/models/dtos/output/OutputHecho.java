@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output;
 
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Origen;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.enums.Origen;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Ubicacion;
 import java.time.LocalDate;
 import java.util.List;
@@ -12,7 +12,7 @@ public class OutputHecho {
     private String titulo;
     private String descripcion;
     private String categoria;
-    private Ubicacion ubicacion;
+    private UbicacionDTO ubicacion;
     private LocalDate fechaAcontecimiento;
     private String fechaCarga;
     private ContribuyenteDTO contribuyente;

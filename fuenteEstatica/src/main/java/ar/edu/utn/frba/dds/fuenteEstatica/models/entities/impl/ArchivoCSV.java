@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.entities.impl;
 
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
-import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Origen;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.enums.Origen;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.TipoArchivo;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Ubicacion;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.UbicacionInvalidaException;
@@ -63,6 +63,7 @@ public class ArchivoCSV implements TipoArchivo {
                     hecho.setFechaCreacion(LocalDateTime.now());
                     hecho.setFechaModificacion(LocalDateTime.now());
                     hecho.setOrigen(Origen.DATASET);
+                    hecho.setEliminado(false);
                     return hecho;
                 });
     }

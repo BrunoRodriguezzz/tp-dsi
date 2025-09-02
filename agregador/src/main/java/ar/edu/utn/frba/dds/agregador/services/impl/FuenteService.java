@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.FuenteOutputDTO;
@@ -9,6 +10,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,7 @@ public class FuenteService implements IFuenteService {
   private IFuenteRepository fuenteRepository;
 
   public List<Hecho> buscarHechos() {
-    List<Fuente> fuentes = this.fuenteRepository.buscarFuentes();
+    List<Fuente> fuentes = this.fuenteRepository.findAll();
     List<Hecho> todosLosHechos = fuentes.stream()
         .map(Fuente::importarHechos)
         .flatMap(List::stream)
@@ -28,7 +30,7 @@ public class FuenteService implements IFuenteService {
   }
 
   public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
-    List<Fuente> fuentes = this.fuenteRepository.buscarFuentes();
+    List<Fuente> fuentes = this.fuenteRepository.findAll();
     List<Hecho> nuevosHechos = fuentes
         .stream()
         .map(f -> f.buscarNuevosHechos(ultimaFechaRefresco))
@@ -44,14 +46,14 @@ public class FuenteService implements IFuenteService {
   @Override
   public List<FuenteOutputDTO> buscarFuentesOutput() {
     return this.fuenteRepository
-            .buscarFuentes()
+            .findAll()
             .stream()
             .map(FuenteOutputDTO::toOutputDTO)
             .collect(Collectors.toList());
   }
 
   public List<Hecho> buscarHechosFuente(TipoFuente tipoFuente){
-    List<Fuente> fuentes = this.fuenteRepository.buscarFuentes();
+    List<Fuente> fuentes = this.fuenteRepository.findAll();
     List<Fuente> fuentesFiltradas = fuentes.stream().filter(f-> f.getTipoFuente().equals(tipoFuente)).toList();
     List<Hecho> hechos = fuentesFiltradas.stream()
         .map(Fuente::importarHechos)
@@ -62,30 +64,40 @@ public class FuenteService implements IFuenteService {
 
   @Override
   public List<Hecho> buscarHechosFuente(String nombre) {
-    Fuente fuente = this.fuenteRepository.buscarFuente(nombre);
+    Fuente fuente = this.fuenteRepository.findByNombre(nombre);
     List<Hecho> hechosFuente = fuente.importarHechos();
     return hechosFuente;
   }
 
   @Override
   public Fuente buscarFuente(Long id) {
-    return this.fuenteRepository.buscarFuente(id);
+    return this.buscarPorID(id);
   }
 
   @Override
   public Fuente buscarFuente(String nombre) {
-    return this.fuenteRepository.buscarFuente(nombre);
+    return this.fuenteRepository.findByNombre(nombre);
   }
 
   @Override
   public List<Fuente> buscarFuentes() {
-    return this.fuenteRepository.buscarFuentes();
+    return this.fuenteRepository.findAll();
   }
 
   @Override
   public Fuente incorporarFuente(FuenteInputDTO fuenteInputDTO) {
     Fuente fuente = FuenteInputDTO.DTOToFuente(fuenteInputDTO);
-    return this.fuenteRepository.guardarFuente(fuente);
+    return this.fuenteRepository.save(fuente);
+  }
+
+  private Fuente buscarPorID(Long id){
+    Optional<Fuente> fuenteOptional = this.fuenteRepository.findById(id);
+    if(fuenteOptional.isPresent()){
+      return fuenteOptional.get();
+    }
+    else {
+      throw new NotFoundException("Fuente no encontrada.");
+    }
   }
 }
 

@@ -11,24 +11,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
-public class ColeccionRepositoryMemory implements IColeccionRepository {
-    private final Map<Long, Coleccion> colecciones = new HashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
-
-    @Override
-    public List<Coleccion> getAll() {
-        return new ArrayList<>(colecciones.values());
-    }
-
-    @Override
-    public Coleccion getById(Long id) {
-        return colecciones.get(id);
-    }
-
-    @Override
-    public void guardarColeccion(Coleccion coleccion) {
-        coleccion.setId(idGenerator.getAndIncrement());
-        colecciones.put(coleccion.getId(), coleccion);
-    }
-}
+//@Repository
+//public class ColeccionRepositoryMemory implements IColeccionRepository {
+//    private final Map<Long, Coleccion> colecciones = new HashMap<>();
+//    private final AtomicLong idGenerator = new AtomicLong(1);
+//
+//    @Override
+//    public List<Coleccion> getAll() {
+//        return new ArrayList<>(colecciones.values());
+//    }
+//
+//    @Override
+//    public Coleccion getById(Long id) {
+//        return colecciones.get(id);
+//    }
+//
+//    @Override
+//    public void guardarColeccion(Coleccion coleccion) {
+//        coleccion.setId(idGenerator.getAndIncrement());
+//        colecciones.put(coleccion.getId(), coleccion);
+//    }
+//}

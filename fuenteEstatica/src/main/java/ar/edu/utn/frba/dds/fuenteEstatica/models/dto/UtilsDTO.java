@@ -4,8 +4,10 @@ import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.input.InputHechoDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.ArchivoOutputAgregadorDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.ArchivoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.HechoOutputDTO;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.UbicacionDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Archivo;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
+import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Ubicacion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +37,7 @@ public class UtilsDTO {
         dto.setTitulo(hecho.getTitulo());
         dto.setDescripcion(hecho.getDescripcion());
         dto.setCategoria(hecho.getCategoria());
-        dto.setUbicacion(hecho.getUbicacion());
+        dto.setUbicacion(UtilsDTO.ubicacionToDto(hecho.getUbicacion()));
         dto.setOrigen(hecho.getOrigen());
         dto.setContribuyente(null);
         dto.setFuente(null);
@@ -49,6 +51,13 @@ public class UtilsDTO {
 //            dto.setCreated_at(hecho.getFechaCreacion().toString());
 //        if (hecho.getFechaModificacion() != null)
 //            dto.setUpdated_at(hecho.getFechaModificacion().toString());
+        return dto;
+    }
+
+    public static UbicacionDTO ubicacionToDto(Ubicacion ubicacion) {
+        UbicacionDTO dto = new UbicacionDTO();
+        dto.setLatitud(ubicacion.getLatitud());
+        dto.setLongitud(ubicacion.getLongitud());
         return dto;
     }
 

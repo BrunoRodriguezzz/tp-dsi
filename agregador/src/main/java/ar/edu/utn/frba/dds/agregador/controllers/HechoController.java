@@ -30,9 +30,6 @@ public class HechoController {
   @Autowired
   private IAgregadorService agregadorService;
 
-  @Autowired
-  private ISeederService seederService;
-
   @GetMapping()
   public ResponseEntity buscarHechos(
       @RequestParam(name = "categoria", required = false) String categoria,
