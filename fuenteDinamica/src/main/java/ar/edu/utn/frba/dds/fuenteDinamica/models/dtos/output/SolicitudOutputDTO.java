@@ -13,16 +13,16 @@ import java.util.Optional;
 @Getter
 @Builder
 public class SolicitudOutputDTO {
-    private Long                        idHecho;
-    private Contribuyente               contribuyente;
-    private String                      titulo;
-    private String                      descripcion;
-    private String                      categoria;
-    private List<ContenidoMultimedia>   contenidoMultimedia;
-    private Ubicacion                   ubicacion;
-    private LocalDate                   fechaAcontecimiento;
-    private List<Etiqueta>              etiquetas;
-    private String                      sugerenciaDeCambio;
+    private Long          idHecho;
+    private Contribuyente contribuyente;
+    private String        titulo;
+    private String        descripcion;
+    private String        categoria;
+    private List<String>  contenidoMultimedia;
+    private Ubicacion     ubicacion;
+    private LocalDate     fechaAcontecimiento;
+    private List<String>  etiquetas;
+    private String        sugerenciaDeCambio;
 
     public static SolicitudOutputDTO convertir(Hecho hecho){
         return SolicitudOutputDTO
@@ -31,11 +31,11 @@ public class SolicitudOutputDTO {
                 .contribuyente(hecho.getContribuyente())
                 .titulo(hecho.getTitulo())
                 .descripcion(hecho.getDescripcion())
-                .categoria(hecho.getCategoria())
-                .contenidoMultimedia(hecho.getContenidoMultimedia())
+                .categoria(hecho.getCategoria().getNombre())
+                .contenidoMultimedia(hecho.getContenidoMultimedia().stream().map(ContenidoMultimediaDTO::convertir).toList())
                 .ubicacion(hecho.getUbicacion())
                 .fechaAcontecimiento(hecho.getFechaAcontecimiento())
-                .etiquetas(hecho.getEtiquetas())
+                .etiquetas(hecho.getEtiquetas().stream().map(EtiquetaOutputDTO::convertir).toList())
                 .sugerenciaDeCambio(hecho.getSugerenciaDeCambio())
                 .build();
     }

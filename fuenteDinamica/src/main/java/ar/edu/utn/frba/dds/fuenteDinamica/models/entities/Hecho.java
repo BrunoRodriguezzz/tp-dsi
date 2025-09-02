@@ -30,8 +30,9 @@ public class Hecho {
     @Column(name = "descripcion", nullable = false, columnDefinition = "TEXT")
     private String descripcion;
 
-    @Column(name = "categoria", columnDefinition = "VARCHAR(50)")
-    private String categoria;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "categoria_id", referencedColumnName = "id")
+    private Categoria categoria;
 
     @OneToMany(mappedBy = "hecho")
     private List<ContenidoMultimedia> contenidoMultimedia;

@@ -13,14 +13,14 @@ import java.util.List;
 @Getter
 public class HechoInputDTO {
 
-    private String                    nombreUsuario;
-    private String                    apellidoUsuario;
-    private LocalDate                 fechaNacimientoUsuario;
-    private String                    titulo;
-    private String                    descripcion;
-    private String                    categoria;
-    private List<String>              contenidoMultimedia;
-    private String                    latitud;
-    private String                    longitud;
-    private LocalDate                 fechaAcontecimiento;
+    private String       nombreUsuario;
+    private String       apellidoUsuario;
+    private LocalDate    fechaNacimientoUsuario;
+    private String       titulo;
+    private String       descripcion;
+    private String       categoria;
+    private List<String> contenidoMultimedia;
+    private String       latitud;
+    private String       longitud;
+    private LocalDate    fechaAcontecimiento;
 }

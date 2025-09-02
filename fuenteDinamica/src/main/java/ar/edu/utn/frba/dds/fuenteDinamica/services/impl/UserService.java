@@ -49,11 +49,13 @@ public class UserService implements IUserService {
                     .map(this::convertirMultimedia)
                     .toList();
 
+            Categoria categoria = this.convertirCategoria(hechoInputDTO.getCategoria());
+
             Hecho hecho = Hecho
                     .builder()
                     .titulo(hechoInputDTO.getTitulo())
                     .descripcion(hechoInputDTO.getDescripcion())
-                    .categoria(hechoInputDTO.getCategoria())
+                    .categoria(categoria)
                     .contenidoMultimedia(contenidoMultimedia)
                     .ubicacion(ubicacion)
                     .fechaAcontecimiento(hechoInputDTO.getFechaAcontecimiento())
@@ -77,15 +79,24 @@ public class UserService implements IUserService {
 
         List<Hecho> hechos = this.dinamicaRepository.buscarTodos();
 
-        Hecho hechoOriginal = hechos.stream()
+        Hecho hechoOriginal = hechos
+                .stream()
                 .filter(hecho -> hecho.getId().equals(hechoModificado.getId()))
                 .findFirst()
                 .orElse(null);
 
+        Categoria categoria = this.convertirCategoria(hechoModificado.getCategoria());
+
+        List<ContenidoMultimedia> contenido = hechoModificado
+                .getContenidoMultimedia()
+                .stream()
+                .map(this::convertirMultimedia)
+                .toList();
+
         hechoOriginal.setTitulo(hechoModificado.getTitulo());
         hechoOriginal.setDescripcion(hechoModificado.getDescripcion());
-        hechoOriginal.setCategoria(hechoModificado.getCategoria());
-        hechoOriginal.setContenidoMultimedia(hechoModificado.getContenidoMultimedia());
+        hechoOriginal.setCategoria(categoria);
+        hechoOriginal.setContenidoMultimedia(contenido);
         hechoOriginal.setFechaModificacion(LocalDateTime.now());
 
         Ubicacion ubicacion = Ubicacion
@@ -201,6 +212,11 @@ public class UserService implements IUserService {
     }
 
     private ContenidoMultimedia convertirMultimedia(String url){
+
         return ContenidoMultimedia.builder().url(url).build();
+    }
+
+    private Categoria convertirCategoria(String categoria){
+        return Categoria.builder().nombre(categoria).build();
     }
 }

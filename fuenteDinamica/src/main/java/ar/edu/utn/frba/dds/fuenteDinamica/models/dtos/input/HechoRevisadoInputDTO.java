@@ -14,10 +14,10 @@ import java.util.List;
 
 public class HechoRevisadoInputDTO {
 
-    private Long            idAdministrador;
-    private Long            id;
-    private List<Etiqueta>  etiquetas;
-    private EstadoHecho     estadoHecho;
-    private String          sugerenciaDeCambio;
+    private Long         idAdministrador;
+    private Long         id;
+    private List<String> etiquetas;
+    private EstadoHecho  estadoHecho;
+    private String       sugerenciaDeCambio;
 
 }

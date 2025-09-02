@@ -12,18 +12,18 @@ import java.util.List;
 @Getter
 @Builder
 public class HechoOutputDTO {
-    private Long                        id;
-    private Contribuyente               contribuyente;
-    private String                      titulo;
-    private String                      descripcion;
-    private String                      categoria;
-    private List<ContenidoMultimedia>   contenidoMultimedia;
-    private Ubicacion                   ubicacion;
-    private LocalDate                   fechaAcontecimiento;
-    private LocalDate                   fechaCarga;
-    private List<Etiqueta>              etiquetas;
-    private String                      origen;
-    private String                      fuente;
+    private Long          id;
+    private Contribuyente contribuyente;
+    private String        titulo;
+    private String        descripcion;
+    private String        categoria;
+    private List<String>  contenidoMultimedia;
+    private Ubicacion     ubicacion;
+    private LocalDate     fechaAcontecimiento;
+    private LocalDate     fechaCarga;
+    private List<String>  etiquetas;
+    private String        origen;
+    private String        fuente;
 
     public static HechoOutputDTO convertir(Hecho hecho){
         return HechoOutputDTO
@@ -32,11 +32,11 @@ public class HechoOutputDTO {
                 .contribuyente(hecho.getContribuyente())
                 .titulo(hecho.getTitulo())
                 .descripcion(hecho.getDescripcion())
-                .categoria(hecho.getCategoria())
-                .contenidoMultimedia(hecho.getContenidoMultimedia())
+                .categoria(hecho.getCategoria().getNombre())
+                .contenidoMultimedia(hecho.getContenidoMultimedia().stream().map(ContenidoMultimediaDTO::convertir).toList())
                 .ubicacion(hecho.getUbicacion())
                 .fechaAcontecimiento(hecho.getFechaAcontecimiento())
-                .etiquetas(hecho.getEtiquetas())
+                .etiquetas(hecho.getEtiquetas().stream().map(EtiquetaOutputDTO::convertir).toList())
                 .origen(hecho.getOrigen())
                 .fuente(hecho.getFuente())
                 .fechaCarga(hecho.getFechaGuardado().toLocalDate())

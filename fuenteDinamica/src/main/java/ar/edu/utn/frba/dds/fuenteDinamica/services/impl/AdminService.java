@@ -4,11 +4,14 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoEliminarInputDT
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Etiqueta;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IAdminService;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.List;
 
 @Service
 public class AdminService implements IAdminService {
@@ -29,7 +32,13 @@ public class AdminService implements IAdminService {
 
         Hecho hecho = this.dinamicaRepository.buscarPorID(hechoRevisado.getId());
 
-        hecho.setEtiquetas(hechoRevisado.getEtiquetas());
+        List<Etiqueta> etiquetas = hechoRevisado
+                .getEtiquetas()
+                .stream()
+                .map(this::convertirEtiqueta)
+                .toList();
+
+        hecho.setEtiquetas(etiquetas);
         hecho.setEstadoHecho(hechoRevisado.getEstadoHecho());
         hecho.setSugerenciaDeCambio(hechoRevisado.getSugerenciaDeCambio());
 
@@ -83,5 +92,9 @@ public class AdminService implements IAdminService {
                 && hechoA.getFechaAcontecimiento().equals(hechoB.getFechaAcontecimiento())
                 && hechoA.getUbicacion().getLatitud().equals(hechoB.getUbicacion().getLatitud())
                 && hechoA.getUbicacion().getLongitud().equals(hechoB.getUbicacion().getLongitud());
+    }
+
+    private Etiqueta convertirEtiqueta(String etiqueta){
+        return Etiqueta.builder().titulo(etiqueta).build();
     }
 }
