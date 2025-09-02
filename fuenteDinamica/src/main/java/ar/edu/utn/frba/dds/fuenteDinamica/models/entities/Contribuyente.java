@@ -26,7 +26,4 @@ public class Contribuyente {
 
     @Column(name = "fecha_de_nacimiento")
     private LocalDate fechaNacimiento;
-
-    @OneToMany(mappedBy = "contribuyente")
-    private List<Hecho> hechos;
 }

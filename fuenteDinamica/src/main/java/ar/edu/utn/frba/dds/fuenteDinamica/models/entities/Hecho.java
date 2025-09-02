@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.entities;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.converters.estadoConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,7 +35,8 @@ public class Hecho {
     @JoinColumn(name = "categoria_id", referencedColumnName = "id")
     private Categoria categoria;
 
-    @OneToMany(mappedBy = "hecho")
+    @OneToMany
+    @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     private List<ContenidoMultimedia> contenidoMultimedia;
 
     @OneToOne(cascade = CascadeType.PERSIST)
@@ -44,7 +46,12 @@ public class Hecho {
     @Column(name = "fecha_acontecimiento",nullable = false)
     private LocalDate fechaAcontecimiento;
 
-    @OneToMany(mappedBy = "hecho")
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "etiquetas_x_hecho",
+            joinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "etiqueta_id", referencedColumnName = "id")
+    )
     private List<Etiqueta> etiquetas;
 
     @Column(name = "fecha_guardado")
@@ -53,7 +60,8 @@ public class Hecho {
     @Column(name = "fecha_de_modicacion")
     private LocalDateTime fechaModificacion;
 
-    @Enumerated(EnumType.STRING)
+    @Column
+    @Convert(converter = estadoConverter.class)
     private EstadoHecho estadoHecho;
 
     @Column(name = "sugerencia_de_cambio")

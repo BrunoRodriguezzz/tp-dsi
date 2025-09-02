@@ -21,7 +21,6 @@ public class SolicitudOutputDTO {
     private List<String>  contenidoMultimedia;
     private Ubicacion     ubicacion;
     private LocalDate     fechaAcontecimiento;
-    private List<String>  etiquetas;
     private String        sugerenciaDeCambio;
 
     public static SolicitudOutputDTO convertir(Hecho hecho){
@@ -35,7 +34,6 @@ public class SolicitudOutputDTO {
                 .contenidoMultimedia(hecho.getContenidoMultimedia().stream().map(ContenidoMultimediaDTO::convertir).toList())
                 .ubicacion(hecho.getUbicacion())
                 .fechaAcontecimiento(hecho.getFechaAcontecimiento())
-                .etiquetas(hecho.getEtiquetas().stream().map(EtiquetaOutputDTO::convertir).toList())
                 .sugerenciaDeCambio(hecho.getSugerenciaDeCambio())
                 .build();
     }

@@ -18,8 +18,4 @@ public class Etiqueta {
 
     @Column(name = "titulo")
     private String titulo;
-
-    @ManyToOne
-    @JoinColumn(name = "hecho_id", referencedColumnName = "id")
-    private Hecho hecho;
 }

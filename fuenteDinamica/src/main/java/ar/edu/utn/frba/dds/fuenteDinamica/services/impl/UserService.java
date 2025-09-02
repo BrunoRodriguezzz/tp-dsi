@@ -58,8 +58,12 @@ public class UserService implements IUserService {
                     .categoria(categoria)
                     .contenidoMultimedia(contenidoMultimedia)
                     .ubicacion(ubicacion)
+                    .fechaGuardado(LocalDateTime.now())
+                    .estaEliminado(false)
+                    .enviado(false)
                     .fechaAcontecimiento(hechoInputDTO.getFechaAcontecimiento())
                     .contribuyente(usuario)
+                    .estadoHecho(EstadoHecho.PENDIENTE_DE_REVISION)
                     .origen("CONTRIBUYENTE")
                     .fuente("Provistos por contribuyentes")
                     .build();

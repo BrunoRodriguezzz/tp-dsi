@@ -18,8 +18,4 @@ public class ContenidoMultimedia {
 
     @Column(name = "url")
     private String url;
-
-    @ManyToOne
-    @JoinColumn(name = "hecho_id", referencedColumnName = "id")
-    private Hecho hecho;
 }

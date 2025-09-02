@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminService implements IAdminService {
@@ -36,7 +37,7 @@ public class AdminService implements IAdminService {
                 .getEtiquetas()
                 .stream()
                 .map(this::convertirEtiqueta)
-                .toList();
+                .collect(Collectors.toList());
 
         hecho.setEtiquetas(etiquetas);
         hecho.setEstadoHecho(hechoRevisado.getEstadoHecho());
@@ -54,13 +55,9 @@ public class AdminService implements IAdminService {
 
         Hecho hechoOriginal = this.dinamicaRepository.buscarPorID(id);
 
-        if(this.sonIguales(hechoAEliminar,hechoOriginal)){
+        hechoOriginal.setEstaEliminado(true);
 
-            Hecho hechoAGuardar = this.dinamicaRepository.buscarPorID(id);
-            hechoAGuardar.setEstaEliminado(true);
-
-            this.dinamicaRepository.guardar(hechoOriginal);
-        }
+        this.dinamicaRepository.guardar(hechoOriginal);
     }
 
     private void enviarHecho(Hecho hecho){
