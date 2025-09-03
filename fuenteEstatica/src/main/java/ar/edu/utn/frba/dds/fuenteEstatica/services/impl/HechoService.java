@@ -55,12 +55,13 @@ public class HechoService implements IHechoService {
 
     @Override
     public ArchivoOutputDTO getById(Long id) {
-        HechoEstatica hecho = this.hechoRepository.getById(id);
+        // HechoEstatica hecho = this.hechoRepository.getById(id);
+        HechoEstatica hecho = this.hechoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundError("Hecho NO encontrado con ID: " + id));
         List<HechoEstatica> hechos = new ArrayList<>();
         hechos.add(hecho);
-        ArchivoOutputDTO outputArchivo = UtilsDTO.toOutputArchivo(this.archivoRepository.getById(hecho.getIdArchivo()), hechos);
 
-        return outputArchivo;
+        return UtilsDTO.toOutputArchivo(this.archivoRepository.getById(hecho.getIdArchivo()), hechos);
         //return UtilsDTO.hechoToOutputDTO(this.hechoRepository.getById(id));
     }
 

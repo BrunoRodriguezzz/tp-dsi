@@ -1,0 +1,42 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+!define primary_key(x) <b><color:#b8861b><&key></color> x</b>
+!define foreign_key(x) <color:#aaaaaa><&key></color> x
+
+    'TODO: Un hecho puede estar en distintos archivos (como que duplicados)? Y si o si un hecho debe pertenecer a un archivo?
+entity Archivo {
+  primary_key(id : BIGINT)
+  --
+  nombre : VARCHAR(255)
+  ruta_archivo : VARCHAR(255)
+  tipo_archivo : VARCHAR(255)
+}
+
+entity Ubicacion {
+  primary_key(id : BIGINT)
+  --
+  latitud : VARCHAR(255)
+  longitud : VARCHAR(255)
+}
+
+entity Hecho {
+  primary_key(id : BIGINT)
+  --
+  foreign_key(id_archivo : BIGINT)
+  titulo : VARCHAR(255)
+  descripcion : TEXT
+  categoria : VARCHAR(255)
+  foreign_key(ubicacion_id : BIGINT)
+  fecha_hecho : DATE
+  fecha_creacion : DATETIME
+  fecha_modificacion : DATETIME
+  eliminado : BOOLEAN
+  origen : ENUM(MANUAL, DATASET, CONTRIBUYENTE, PROXY)
+}
+
+'Relaciones
+Archivo ||--o{ Hecho
+Ubicacion ||--o{ Hecho
+
+@enduml
