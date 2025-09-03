@@ -21,6 +21,7 @@ public class HechoEstatica {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // Nuestro ID
 
+    // TODO: hace falta una FK acá? o no es necesario?
     @Column(nullable = false)
     private Long idArchivo; // Es el ID de la fuente que es propietaria del hecho
     @Column(nullable = false)
@@ -31,7 +32,7 @@ public class HechoEstatica {
     private String categoria;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
+    @JoinColumn(name = "ubicacion_id", referencedColumnName = "id")
     private Ubicacion ubicacion;
 
     @Column(nullable = false)
@@ -42,6 +43,7 @@ public class HechoEstatica {
     private LocalDateTime fechaModificacion;
     @Column(nullable = false)
     private Boolean eliminado;
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Origen origen;
 
