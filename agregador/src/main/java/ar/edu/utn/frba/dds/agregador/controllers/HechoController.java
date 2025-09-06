@@ -58,6 +58,15 @@ public class HechoController {
     return ResponseEntity.status(HttpStatus.OK).body(hechos);
   }
 
+  @GetMapping("/independientes") // Los que no pertenecen a una colección
+  public ResponseEntity buscarHechosIndependientes() {
+    List<HechoOutputDTO> hechos = this.hechoService.buscarHechosIndependientes();
+    if(hechos == null) {
+      return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(hechos);
+  }
+
   // Incorpora nuevos hechos que le envíen las fuentes(push based)
   @PostMapping
   public ResponseEntity incorporarHecho(@RequestBody HechoInputDTO hecho) {
