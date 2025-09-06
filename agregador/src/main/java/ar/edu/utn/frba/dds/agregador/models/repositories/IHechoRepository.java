@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface IHechoRepository extends JpaRepository<Hecho, Long> {
     List<Hecho> findByFuente(Fuente fuente);
+
+    Hecho findByFuente_IdAndIdInternoFuente(Long id, Long idInternoFuente);
 //  public Boolean inicializarHechos(List<Hecho> hechos);
 //  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente);
 }

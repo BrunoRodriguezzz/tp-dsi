@@ -14,7 +14,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ContenidoMu
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Etiqueta;
-import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Ubicacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.Ubicacion;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 
 import java.time.LocalDate;
@@ -47,8 +47,7 @@ public class Hecho {
     @JoinColumn(referencedColumnName = "id")
     private Categoria categoria;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
+    @Embedded
     private Ubicacion ubicacion;
 
     @ManyToMany(fetch = FetchType.LAZY)

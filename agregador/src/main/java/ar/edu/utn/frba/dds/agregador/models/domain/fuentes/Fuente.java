@@ -2,16 +2,17 @@ package ar.edu.utn.frba.dds.agregador.models.domain.fuentes;
 
 import ar.edu.utn.frba.dds.agregador.converters.tipoFuenteConverter;
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapUbicacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl.*;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpC;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpH;
-import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl.AdapImpC;
-import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl.AdapImpHDinamico;
-import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl.AdapImpHEstatico;
-import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl.AdapImpHProxy;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.Pais;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.Ubicacion;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,31 +49,35 @@ public class Fuente {
   @Transient
   private IAdapImpC iAdapImpC;
 
+  @Transient
+  private IAdapUbicacion iAdapUbicacion;
+
   // TODO: GRITA PATRON FACTORY
   public Fuente(String nombre, String path, TipoFuente tipoFuente, Long idInternoFuente) {
     this.nombre = nombre;
     this.path = path;
     this.tipoFuente = tipoFuente;
     this.idInternoFuente = idInternoFuente;
+    this.iAdapUbicacion = new AdaptUbicacionGobierno();
     // Dependiendo el tipo de fuente se configura el Adapter y otras cuestiones particulares
     this.inicializar();
   }
 
   public List<Hecho> importarHechos() {
     List<Hecho> hechos = iAdapImpH.importarHechos(this.webClient, this.idInternoFuente);
-    hechos.stream().forEach(h -> h.setFuente(this));
+    hechos.forEach(this::verificarHecho);
     return hechos;
   }
 
   public List<Hecho> importarHechosMismoTitulo(Hecho hecho) {
     List<Hecho> hechosImportados = iAdapImpH.importarHechosMismoTitulo(this.webClient, this.idInternoFuente, hecho);
-    hechosImportados.stream().forEach(h -> h.setFuente(this));
+    hechosImportados.forEach(this::verificarHecho);
     return hechosImportados;
   }
 
   public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
     List<Hecho> hechos = iAdapImpH.buscarNuevosHechos(ultimaFechaRefresco, this.webClient, this.idInternoFuente);
-    hechos.stream().forEach(h -> h.setFuente(this));
+    hechos.forEach(this::verificarHecho);
     return hechos;
   }
 
@@ -102,6 +107,7 @@ public class Fuente {
 
   @PostLoad
   private void inicializar() {
+    this.iAdapUbicacion = new AdaptUbicacionGobierno();
     switch(this.tipoFuente) {
       case DINAMICA -> {
         this.webClient = WebClient.builder()
@@ -125,5 +131,19 @@ public class Fuente {
         this.iAdapImpC = AdapImpC.getInstance();
       }
     }
+  }
+
+  private void verificarHecho(Hecho h) {
+    h.setFuente(this);
+    this.cargarUbicacion(h);
+  }
+
+  private void cargarUbicacion(Hecho hecho) {
+    if (hecho.getUbicacion().faltanDatos()) {
+      Ubicacion ubiAnterior = hecho.getUbicacion();
+      Ubicacion ubiCompleta = this.iAdapUbicacion.buscarUbicacion(ubiAnterior.getLatitud(), ubiAnterior.getLongitud());
+      hecho.setUbicacion(ubiCompleta);
+    }
+    hecho.getUbicacion().setPais(Pais.ARGENTINA);
   }
 }

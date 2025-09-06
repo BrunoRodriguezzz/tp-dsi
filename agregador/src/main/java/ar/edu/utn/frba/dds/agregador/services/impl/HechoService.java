@@ -85,6 +85,14 @@ public class HechoService implements IHechoService {
 
   @Override
   public List<Hecho> guardarHechos(List<Hecho> hechos){
+    hechos.forEach(h -> {
+      if(h.getId() == null) {
+        Hecho hechoOpcional = this.hechoRepository.findByFuente_IdAndIdInternoFuente(h.getFuente().getId(), h.getIdInternoFuente());
+        if (hechoOpcional != null) {
+          h.setId(hechoOpcional.getId());
+        }
+      }
+    });
     List<Hecho> hechosGuardados = this.hechoRepository.saveAll(hechos);
     return hechosGuardados;
   }
