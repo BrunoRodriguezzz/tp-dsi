@@ -19,6 +19,9 @@ public class Coleccion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private Boolean activo; // baja logica
+
     @Column(nullable = false)
     private String titulo;
     @Column

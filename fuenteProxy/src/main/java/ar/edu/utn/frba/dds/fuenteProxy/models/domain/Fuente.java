@@ -27,6 +27,9 @@ public class Fuente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private Boolean activo; // baja logica
+
     @Transient
     private TipoFuente tipoFuente;
 
