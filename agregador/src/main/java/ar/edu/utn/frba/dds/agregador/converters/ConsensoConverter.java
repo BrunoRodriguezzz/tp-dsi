@@ -5,7 +5,7 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
-public class consensoConverter implements AttributeConverter<Consenso, String> {
+public class ConsensoConverter implements AttributeConverter<Consenso, String> {
     @Override
     public String convertToDatabaseColumn(Consenso consenso) {
         if (consenso == null) return null;

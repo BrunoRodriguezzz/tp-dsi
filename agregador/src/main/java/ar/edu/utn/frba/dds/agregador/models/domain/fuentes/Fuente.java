@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.fuentes;
 
-import ar.edu.utn.frba.dds.agregador.converters.tipoFuenteConverter;
+import ar.edu.utn.frba.dds.agregador.converters.TipoFuenteConverter;
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapUbicacion;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl.*;
@@ -40,7 +40,7 @@ public class Fuente {
   private WebClient webClient;
 
   @Column(nullable = false)
-  @Convert(converter = tipoFuenteConverter.class)
+  @Convert(converter = TipoFuenteConverter.class)
   private TipoFuente tipoFuente;
 
   @Transient

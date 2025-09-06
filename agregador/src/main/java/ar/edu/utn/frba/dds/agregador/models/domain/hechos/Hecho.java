@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.hechos;
 
-import ar.edu.utn.frba.dds.agregador.converters.consensoConverter;
-import ar.edu.utn.frba.dds.agregador.converters.origenConverter;
+import ar.edu.utn.frba.dds.agregador.converters.ConsensoConverter;
+import ar.edu.utn.frba.dds.agregador.converters.OrigenConverter;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.DescripcionInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.FechaInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.TituloInvalidoException;
@@ -65,7 +65,7 @@ public class Hecho {
     private LocalDate fechaCarga;
 
     @Column()
-    @Convert(converter = origenConverter.class)
+    @Convert(converter = OrigenConverter.class)
     private Origen origen;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -78,7 +78,7 @@ public class Hecho {
             joinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     )
     @Column(name = "consenso")
-    @Convert(converter = consensoConverter.class)
+    @Convert(converter = ConsensoConverter.class)
     private List<Consenso> consensos;
 
     @Column(name = "esta_eliminado")
