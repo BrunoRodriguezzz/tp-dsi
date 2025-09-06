@@ -2,6 +2,8 @@ package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.SolicitudEliminacion;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IImportadorService;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -55,5 +57,10 @@ public class ImportadorService implements IImportadorService {
             throw new RuntimeException("Error al importar colecciones: " + e.getMessage());
         }*/
         return GeneradorDatosPrueba.generarColecciones();
+    }
+
+    @Override
+    public List<SolicitudEliminacionInputDTO> importarSolicitudes() {
+        return GeneradorDatosPrueba.generarSolicitudesInputDTO();
     }
 }

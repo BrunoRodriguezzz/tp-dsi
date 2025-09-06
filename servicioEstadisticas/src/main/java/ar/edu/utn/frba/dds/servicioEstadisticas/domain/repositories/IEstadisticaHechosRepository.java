@@ -26,9 +26,10 @@ public interface IEstadisticaHechosRepository extends JpaRepository<EstadisticaH
      */
     @Query("SELECT e.provincia " +
             "FROM EstadisticaHechos e " +
+            "JOIN e.hechos h " +
             "WHERE e.coleccion.id = :idColeccion " +
             "GROUP BY e.provincia " +
-            "ORDER BY SUM(e.cantidad_hechos) DESC " +
+            "ORDER BY COUNT(DISTINCT h.id) DESC " +
             "LIMIT 1")
     Provincia findProvinciaConMasHechosPorColeccion(@Param("idColeccion") Long idColeccion);
 
@@ -37,8 +38,9 @@ public interface IEstadisticaHechosRepository extends JpaRepository<EstadisticaH
      */
     @Query("SELECT e.categoria " +
             "FROM EstadisticaHechos e " +
+            "JOIN e.hechos h " +
             "GROUP BY e.categoria " +
-            "ORDER BY SUM(e.cantidad_hechos) DESC " +
+            "ORDER BY COUNT(DISTINCT h.id) DESC " +
             "LIMIT 1")
     Categoria findCategoriaConMasHechos();
 
@@ -47,9 +49,10 @@ public interface IEstadisticaHechosRepository extends JpaRepository<EstadisticaH
      */
     @Query("SELECT e.provincia " +
             "FROM EstadisticaHechos e " +
+            "JOIN e.hechos h " +
             "WHERE e.categoria.id = :idCategoria " +
             "GROUP BY e.provincia " +
-            "ORDER BY SUM(e.cantidad_hechos) DESC " +
+            "ORDER BY COUNT(DISTINCT h.id) DESC " +
             "LIMIT 1")
     Provincia findProvinciaConMasHechosPorCategoria(@Param("idCategoria") Long idCategoria);
 
@@ -58,9 +61,10 @@ public interface IEstadisticaHechosRepository extends JpaRepository<EstadisticaH
      */
     @Query("SELECT e.hora " +
             "FROM EstadisticaHechos e " +
+            "JOIN e.hechos h " +
             "WHERE e.categoria.id = :idCategoria " +
             "GROUP BY e.hora " +
-            "ORDER BY SUM(e.cantidad_hechos) DESC " +
+            "ORDER BY COUNT(DISTINCT h.id) DESC " +
             "LIMIT 1")
     HoraDelDia findHoraConMasHechosPorCategoria(@Param("idCategoria") Long idCategoria);
 }

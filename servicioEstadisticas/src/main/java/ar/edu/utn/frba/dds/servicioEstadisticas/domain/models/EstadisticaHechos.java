@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -29,5 +31,11 @@ public class EstadisticaHechos {
     @Enumerated(EnumType.STRING)
     HoraDelDia hora;
 
-    Integer cantidad_hechos;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "hechos_x_estadistica",
+            joinColumns = @JoinColumn(name = "estadistica_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id")
+    )
+    List<Hecho> hechos;
 }

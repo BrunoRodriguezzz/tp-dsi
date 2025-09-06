@@ -12,7 +12,7 @@ public interface IEstadisticaService {
     Categoria categoriaConMasHechos();
     Provincia provinciaConMasHechosSegunCategoria(Long idCategoria);
     LocalTime horaConMasHechosSegunCategoria(Long idCategoria);
-    Integer cantSolicitudesSpam();
+    Long cantSolicitudesSpam();
     List<EstadisticaHechos> calcularEstadisticas();
     EstadisticaHechos crearEstadistica(EstadisticaHechos estadistica);
 }

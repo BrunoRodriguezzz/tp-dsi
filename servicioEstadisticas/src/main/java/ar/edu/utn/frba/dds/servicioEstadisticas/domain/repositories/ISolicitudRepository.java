@@ -1,12 +1,13 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Categoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Solicitud;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.SolicitudEliminacion;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.EstadoSolicitudEliminacion;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface ISolicitudRepository extends JpaRepository<Solicitud, Long> {
+public interface ISolicitudRepository extends JpaRepository<SolicitudEliminacion, Long> {
+
+    Long countByEstado(EstadoSolicitudEliminacion estado);
 }

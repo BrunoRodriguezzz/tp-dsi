@@ -10,7 +10,6 @@ import java.util.Objects;
 @Table(name = "coleccion", uniqueConstraints = @UniqueConstraint(columnNames = "coleccion_detalle"))
 public class Coleccion {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @Column(name = "coleccion_detalle", unique = true, nullable = false, columnDefinition = "VARCHAR(100)")

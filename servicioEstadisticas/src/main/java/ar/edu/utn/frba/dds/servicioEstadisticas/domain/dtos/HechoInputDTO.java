@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Categoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Hecho;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -24,5 +25,9 @@ public class HechoInputDTO {
     Categoria categoria = new Categoria();
     categoria.setDetalle(this.categoria);
     return categoria;
+  }
+
+  public Hecho convertirAHecho() {
+    return new Hecho(this.id);
   }
 }

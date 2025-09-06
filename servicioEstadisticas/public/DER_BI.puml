@@ -1,35 +1,48 @@
 @startuml
 
-entity estadistica_hechos <<fact_table>> {
+entity estadistica_hechos {
     id INTEGER(11) <<PK>>
     coleccion_id VARCHAR(100)  <<FK>>
     provincia VARCHAR(100)
     categoria_id VARCHAR(100) <<FK>>
     hora TIME
     --
-    cantidad_hechos BIGINT
+    hechos INTEGER(11) <<FK>>
 }
 
-entity coleccion <<dimension>> {
+entity hechos_x_estadistica {
+    estadistica_id INTEGER(11) <<PK,FK>>
+    hecho_id INTEGER(11) <<PK,FK>>
+    --
+}
+
+entity coleccion {
     id INTEGER(11) <<FK>>
     --
     coleccion_detalle VARCHAR(100)
 }
 
-entity categoria <<dimension>> {
+entity categoria {
     id INTEGER(11) <<FK>>
     --
     categoria_detalle VARCHAR(100)
 }
 
-entity solicitud<<fact_table>> {
-    id INTEGER(11)  <<FK>>
+entity solicitud_eliminacion {
+    id INTEGER(11)  <<PK>>
     --
-    solicitud_spam BOOLEAN <<FK>>
+    estado VARCHAR(50) <<FK>>
+}
+
+entity hecho {
+    id INTEGER(11) <<PK>>
+    --
 }
 
 estadistica_hechos }o--|| coleccion
 estadistica_hechos }o--|| categoria
-
+estadistica_hechos }o--|| hechos_x_estadistica
+hecho }o--|| hechos_x_estadistica
+solicitud_eliminacion |o--|| hecho
 
 @enduml

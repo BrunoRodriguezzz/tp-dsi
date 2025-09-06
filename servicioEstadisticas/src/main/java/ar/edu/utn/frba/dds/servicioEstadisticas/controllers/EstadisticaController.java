@@ -73,7 +73,7 @@ public class EstadisticaController {
     // ¿Cuántas solicitudes de eliminación son spam?
     @GetMapping("/solicitudes/cantSpam")
     public ResponseEntity cantSolicitudesSpam() {
-        Integer cant = this.estadisticaService.cantSolicitudesSpam();
+        Long cant = this.estadisticaService.cantSolicitudesSpam();
         if(cant == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
@@ -82,12 +82,6 @@ public class EstadisticaController {
 
     @PostMapping()
     public ResponseEntity calcularEstadisticas() {
-        Categoria cat1 = new Categoria();
-        cat1.setDetalle("Historico");
-        Categoria cat2 = new Categoria();
-        cat2.setDetalle("Historico");
-        System.out.println("¿Iguales? " + cat1.equals(cat2)); // Debe ser true
-
         List<EstadisticaHechos> estadisticas = this.estadisticaService.calcularEstadisticas();
         return ResponseEntity.status(HttpStatus.CREATED).body(estadisticas);
     }
@@ -109,29 +103,5 @@ public class EstadisticaController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.status(HttpStatus.OK).body(colecciones);
-    }
-
-
-    @PostMapping("/test/unaSola")
-    public ResponseEntity crearUnaEstadistica() {
-        Coleccion coleccion = new Coleccion();
-        coleccion.setDetalle("Una coleccion");
-
-        Categoria categoria = new Categoria();
-        categoria.setDetalle("Una categoria");
-
-        HoraDelDia hora = HoraDelDia.H12;
-        Provincia provincia = Provincia.CIUDAD_AUTONOMA_DE_BUENOS_AIRES;
-
-        EstadisticaHechos estadistica = new EstadisticaHechos();
-
-        estadistica.setHora(hora);
-        estadistica.setCategoria(categoria);
-        estadistica.setProvincia(provincia);
-        estadistica.setColeccion(coleccion);
-        estadistica.setCantidad_hechos(25);
-
-        EstadisticaHechos estadisticaCreada = this.estadisticaService.crearEstadistica(estadistica);
-        return ResponseEntity.status(HttpStatus.CREATED).body(estadisticaCreada);
     }
 }
