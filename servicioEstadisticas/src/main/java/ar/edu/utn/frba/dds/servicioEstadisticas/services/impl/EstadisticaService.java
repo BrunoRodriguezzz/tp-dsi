@@ -98,10 +98,19 @@ public class EstadisticaService implements IEstadisticaService {
             estadisticas.add(estadisticaGuardada);
         });
 
+<<<<<<< HEAD
         this.guardarSolicitudes(solicitudes);
 
         // Limpiar caché al final
         this.cacheHechos.clear();
+=======
+        try {
+            EscritorCSV.persistirEstadisticasEnCSV(estadisticas, "estadisticas");
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+>>>>>>> e186f380080207dbbe4c9c79ca87cc6e72cd9ae1
 
         return estadisticas;
     }
@@ -121,9 +130,13 @@ public class EstadisticaService implements IEstadisticaService {
                         Hecho hecho = this.findOrCreateHechoFromDTO(hechoDTO);
 
                         ClaveEstadistica clave = new ClaveEstadistica(coleccion, provincia, categoria, horaDelDia);
+<<<<<<< HEAD
 
                         // Crear lista si no existe, luego agregar el hecho
                         mapaEstadisticas.computeIfAbsent(clave, k -> new ArrayList<>()).add(hecho);
+=======
+                        mapaEstadisticas.merge(clave, 1, Integer::sum);
+>>>>>>> e186f380080207dbbe4c9c79ca87cc6e72cd9ae1
                     }
                 }
             }
