@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.domain;
 
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.Fuente;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

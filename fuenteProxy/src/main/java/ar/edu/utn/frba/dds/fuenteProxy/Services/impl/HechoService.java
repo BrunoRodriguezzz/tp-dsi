@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.fuenteProxy.Services.impl;
 
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IHechoService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.FiltroProxy;
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
@@ -135,24 +135,23 @@ public class HechoService implements IHechoService {
     @Override
     public void delete(Long id) {
         if (id != null && id >= 1) {
-            Optional<HechoProxy> hecho = hechoRepository.findById(id); // no se si va a romper lo del optional
-            HechoProxy hechoAux;
-            if (hecho.isPresent()) {
-                hechoAux = hecho.get();
-            }
-            else {
-                throw new NotFoundError("Hecho no encontrada con ID: " + id);
-            }
-            hechoRepository.delete(hechoAux);
-        }else {
+            hechoRepository.findById(id)
+                    .ifPresentOrElse(hechoProxy -> {
+                        hechoProxy.setEliminado(true);
+                        hechoRepository.save(hechoProxy);
+                    }, () -> {
+                        throw new RuntimeException("No se puede eliminar el hecho");
+                    });
+        } else {
             throw new ValidationError("ID invalido");
         }
-
     }
 
     @Override
     public void guardarHecho(InputHecho hechoDTO) { //TODO Validador
-        HechoProxy hecho = UtilsDTO.toHechoProxy(hechoDTO);
-        hechoRepository.save(hecho);
+        HechoProxy hechoAGuardar = UtilsDTO.toHechoProxy(hechoDTO);
+        hechoRepository.findByIdFuenteAndIdExterno(hechoAGuardar.getIdFuente(), hechoAGuardar.getIdExterno()).stream().findFirst()
+                        .ifPresent(h -> hechoAGuardar.setId(h.getId()));
+        hechoRepository.save(hechoAGuardar);
     }
 }

@@ -21,9 +21,6 @@ public class HechoProxy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // Nuestro ID
 
-    @Column
-    private Boolean activo; // baja logica
-
     @Column(nullable = false)
     private Long idExterno; // Es el ID que nos da el propietario del Hecho
 

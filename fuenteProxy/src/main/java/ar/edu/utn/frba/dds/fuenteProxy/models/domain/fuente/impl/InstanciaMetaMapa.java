@@ -1,6 +1,6 @@
-package ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl;
+package ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.impl;
 
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.TipoFuente;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.TipoFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.SolicitudEliminacionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputColeccionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;

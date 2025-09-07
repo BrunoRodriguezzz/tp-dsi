@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.dtos;
 
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Coleccion;
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Ubicacion;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputColeccionDTO;

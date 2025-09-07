@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output;
 
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
 import lombok.Getter;
 import lombok.Setter;
