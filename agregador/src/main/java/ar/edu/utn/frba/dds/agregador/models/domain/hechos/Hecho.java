@@ -51,7 +51,7 @@ public class Hecho {
     @JoinColumn(referencedColumnName = "id")
     private Ubicacion ubicacion;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "etiquetas_x_hecho",
             joinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id"),

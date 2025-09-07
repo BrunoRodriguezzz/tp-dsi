@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements IUserService {
@@ -95,7 +97,7 @@ public class UserService implements IUserService {
                 .getContenidoMultimedia()
                 .stream()
                 .map(this::convertirMultimedia)
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
 
         hechoOriginal.setTitulo(hechoModificado.getTitulo());
         hechoOriginal.setDescripcion(hechoModificado.getDescripcion());

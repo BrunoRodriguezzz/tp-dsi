@@ -63,32 +63,19 @@ public class AdminService implements IAdminService {
     private void enviarHecho(Hecho hecho){
         HechoOutputDTO hechoParaEnviar = HechoOutputDTO.convertir(hecho);
 
-        Hecho hechoAntiguo = this.dinamicaRepository.buscarPorID(hecho.getId());
-
-        hechoAntiguo.setEnviado(true);
-
-        this.dinamicaRepository.guardar(hecho);
-
         this.webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/hechos").build())
                 .bodyValue(hechoParaEnviar)
                 .retrieve()
                 .toBodilessEntity()
+                .doOnSuccess(response -> {
+                    hecho.setEnviado(true);
+                    this.dinamicaRepository.guardar(hecho);
+                })
+                .doOnError(error -> {
+                    System.err.println("Fallo el envio del Hecho");
+                })
                 .subscribe();
-    }
-
-    private Boolean sonIguales(HechoEliminarInputDTO hechoA, Hecho hechoB){
-
-        return hechoA.getContribuyente().getNombre().equals(hechoB.getContribuyente().getNombre())
-                && hechoA.getContribuyente().getApellido().equals(hechoB.getContribuyente().getApellido())
-                && hechoA.getContribuyente().getFechaNacimiento().equals(hechoB.getContribuyente().getFechaNacimiento())
-                && hechoA.getId().equals(hechoB.getId())
-                && hechoA.getCategoria().equals(hechoB.getCategoria())
-                && hechoA.getTitulo().equals(hechoB.getTitulo())
-                && hechoA.getDescripcion().equals(hechoB.getDescripcion())
-                && hechoA.getFechaAcontecimiento().equals(hechoB.getFechaAcontecimiento())
-                && hechoA.getUbicacion().getLatitud().equals(hechoB.getUbicacion().getLatitud())
-                && hechoA.getUbicacion().getLongitud().equals(hechoB.getUbicacion().getLongitud());
     }
 
     private Etiqueta convertirEtiqueta(String etiqueta){
