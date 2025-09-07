@@ -1,13 +1,16 @@
+
 package ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
-import java.time.LocalDateTime;
-import java.util.List;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import java.time.LocalDateTime;
 
 public interface IAdapImpH {
-    public List<Hecho> importarHechos(WebClient webClient, Long idInternoFuente);
-    public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient, Long idInternoFuente);
-    public void eliminarHecho(Hecho hecho, WebClient webClient, Long idInternoFuente);
-    public List<Hecho> importarHechosMismoTitulo(WebClient webClient, Long idInternoFuente, Hecho hechos);
+    Flux<Hecho> importarHechos(WebClient webClient, Fuente fuente);
+    Flux<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient, Fuente fuente);
+    Mono<Void> eliminarHecho(Hecho hecho, WebClient webClient, Fuente fuente);
+    Flux<Hecho> importarHechosMismoTitulo(WebClient webClient, Fuente fuente, Hecho hechos);
 }

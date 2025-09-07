@@ -157,7 +157,7 @@ public class ColeccionService implements IColeccionService {
     }
 
     coleccion.agregarFuente(fuente);
-    List<Hecho> hechos = fuente.importarHechos();
+    List<Hecho> hechos = this.fuenteService.buscarHechosFuente(fuenteInputDTO.getNombre());
     hechoService.guardarHechos(hechos);
     coleccion.cargarHechos(hechos);
 
