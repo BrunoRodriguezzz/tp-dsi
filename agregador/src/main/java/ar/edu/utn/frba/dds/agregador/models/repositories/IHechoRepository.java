@@ -6,9 +6,12 @@ import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IHechoRepository extends JpaRepository<Hecho, Long> {
     List<Hecho> findByFuente(Fuente fuente);
+
+    Optional<Hecho> findByFuente_IdAndIdInternoFuente(Long id, Long idInternoFuente);
 //  public Boolean inicializarHechos(List<Hecho> hechos);
 //  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente);
 }

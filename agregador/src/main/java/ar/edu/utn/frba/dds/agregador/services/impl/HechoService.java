@@ -5,14 +5,19 @@ import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consensuador;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
+import ar.edu.utn.frba.dds.agregador.models.repositories.ICategoriaRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
+import jakarta.persistence.Id;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +27,12 @@ import org.springframework.stereotype.Service;
 public class HechoService implements IHechoService {
   @Autowired
   private IHechoRepository hechoRepository;
-
   private IFuenteService fuenteService;
+  private ICategoriaRepository categoriaRepository;
 
-  public HechoService(IFuenteService fuenteService) {
+  public HechoService(IFuenteService fuenteService, ICategoriaRepository categoriaRepository) {
     this.fuenteService = fuenteService;
+    this.categoriaRepository = categoriaRepository;
   }
 
   @Override
@@ -48,6 +54,11 @@ public class HechoService implements IHechoService {
     List<HechoOutputDTO> hechosDTO = HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
 
     return hechosDTO;
+  }
+
+  @Override
+  public List<HechoOutputDTO> buscarHechosIndependientes() {
+    return null;
   }
 
 
@@ -84,10 +95,46 @@ public class HechoService implements IHechoService {
   }
 
   @Override
-  public List<Hecho> guardarHechos(List<Hecho> hechos){
-    List<Hecho> hechosGuardados = this.hechoRepository.saveAll(hechos);
-    return hechosGuardados;
+  public List<Hecho> guardarHechos(List<Hecho> hechos) {
+    Map<String, Categoria> cacheCategorias = new HashMap<>();
+
+    hechos.forEach(h -> {
+      // Resolver la Fuente desde el repositorio
+      if (h.getFuente() != null && h.getFuente().getId() != null) {
+        Fuente fuenteManaged = fuenteService.findById(h.getFuente().getId());
+        if (fuenteManaged == null) {
+          throw new RuntimeException("Fuente no encontrada: " + h.getFuente().getId());
+        }
+        h.setFuente(fuenteManaged);
+      }
+
+      if (h.getId() == null) {
+        // Buscar hecho existente
+        hechoRepository.findByFuente_IdAndIdInternoFuente(h.getFuente().getId(), h.getIdInternoFuente())
+            .ifPresent(hechoExistente -> {
+              h.setId(hechoExistente.getId());
+
+              if (h.getCategoria().getId() == null) {
+                h.getCategoria().setId(hechoExistente.getCategoria().getId());
+              }
+            });
+
+        // Resolver categoría por título con cache
+        if (h.getCategoria() != null && h.getCategoria().getId() == null) {
+          String titulo = h.getCategoria().getTitulo();
+
+          Categoria categoria = cacheCategorias.computeIfAbsent(titulo, t ->
+              categoriaRepository.findByTitulo(t).orElseGet(() -> h.getCategoria())
+          );
+
+          h.setCategoria(categoria);
+        }
+      }
+    });
+
+    return this.hechoRepository.saveAll(hechos);
   }
+
 
   @Override
   public void consensuarHechos() {

@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho;
+package ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.UbicacionInvalidaException;
 import jakarta.persistence.*;
@@ -9,18 +9,22 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@Table(name = "ubicacion")
+@Embeddable
 public class Ubicacion {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(nullable = false)
     private String latitud;
 
     @Column(nullable = false)
     private String longitud;
+
+    @Enumerated(EnumType.STRING)
+    private Pais Pais;
+
+    @Enumerated(EnumType.STRING)
+    private Provincia Provincia;
+
+    @Column
+    private String municipio;
 
     public Ubicacion(String latitud, String longitud) throws UbicacionInvalidaException {
         if(this.latitudInvalida(latitud)){
@@ -47,5 +51,11 @@ public class Ubicacion {
 
     public boolean longitudInvalida(String longitud){
         return (Double.parseDouble(longitud) < -180) || (Double.parseDouble(longitud) > 180);
+    }
+
+    public boolean faltanDatos() {
+        return (this.getProvincia() == null) ||
+                (this.getPais() == null) ||
+                (this.getMunicipio() == null || this.getMunicipio().isEmpty());
     }
 }

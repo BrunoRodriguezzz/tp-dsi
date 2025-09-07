@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 public class FiltroEstatica {
     private Long archivoId;
     private Long idHecho;
-    private String fecha;
+    private String fecha; // TODO: No funciona :
     private LocalDateTime date; // primero como String
 
     public void validate() {

@@ -15,7 +15,7 @@
 //import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.UbicacionInvalidaException;
 //import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 //import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
-//import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Ubicacion;
+//import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.Ubicacion;
 //import org.junit.jupiter.api.Assertions;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.DisplayName;

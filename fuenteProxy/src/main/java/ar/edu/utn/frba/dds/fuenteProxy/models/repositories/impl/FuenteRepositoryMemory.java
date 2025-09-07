@@ -1,16 +1,5 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.repositories.impl;
 
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
-import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
-
 //@Repository
 //public class FuenteRepositoryMemory implements IFuenteRepository {
 //    private final Map<Long, Fuente> fuentes = new HashMap<>();

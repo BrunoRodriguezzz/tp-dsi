@@ -1,10 +1,10 @@
-package ar.edu.utn.frba.dds.fuenteProxy.models.domain;
+package ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente;
 
 import ar.edu.utn.frba.dds.fuenteProxy.converters.tipoFuenteConverter;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.enums.Origen;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.enums.TipoFuenteEnum;
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl.APICatedra;
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl.InstanciaMetaMapa;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.impl.APICatedra;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.impl.InstanciaMetaMapa;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputColeccionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 
@@ -27,7 +27,11 @@ public class Fuente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private Boolean activo; // baja logica
+
     @Transient
+    @ManyToOne(cascade = CascadeType.ALL)
     private TipoFuente tipoFuente;
 
     @Column(nullable = false)

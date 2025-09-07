@@ -22,10 +22,11 @@ public class FuenteController {
   private IFuenteService fuenteService;
 
   @PostMapping
-  public ResponseEntity<Fuente> incorporarFuente(@RequestBody FuenteInputDTO fuente) {
+  public ResponseEntity<FuenteOutputDTO> incorporarFuente(@RequestBody FuenteInputDTO fuente) {
     ValidadorInput.validarFuenteInputDTO(fuente);
     Fuente fuenteIncorporada = this.fuenteService.incorporarFuente(fuente);
-    return ResponseEntity.status(HttpStatus.OK).body(fuenteIncorporada);
+    FuenteOutputDTO fuenteOutputDTO = FuenteOutputDTO.toOutputDTO(fuenteIncorporada);
+    return ResponseEntity.status(HttpStatus.OK).body(fuenteOutputDTO);
   }
 
   @GetMapping

@@ -1,84 +1,105 @@
+
 package ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpH;
-import ar.edu.utn.frba.dds.agregador.models.dtos.external.FuenteResponseDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.time.Duration;
 import java.util.List;
 import lombok.Getter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 public class AdapImpHProxy implements IAdapImpH {
-  // Clase Singleton
-  @Getter // Método público para obtener las instancia
-  private static final AdapImpHProxy instance = new AdapImpHProxy(); // Creacion de la instancia clase única
-  private AdapImpHProxy() {} // Constructor privado para evitar instanciación externa
+
+  @Getter
+  private static final AdapImpHProxy instance = new AdapImpHProxy();
+
+  private AdapImpHProxy() {}
 
   @Override
-  public List<Hecho> importarHechos(WebClient webClient, Long idInternoFuente) {
-    try {
-      List<FuenteResponseDTO> respuesta = webClient.get()
-          .uri(uriBuilder -> uriBuilder
-              .path("/hechos/filtered")
-              .queryParam("fuenteId", idInternoFuente)
-              .build())
-          .retrieve()
-          .bodyToMono(new ParameterizedTypeReference<List<FuenteResponseDTO>>() {})
-          .onErrorMap(error -> {
-            System.err.println("ERROR al hacer request: " + error.getClass().getSimpleName() + " - " + error.getMessage());
-            error.printStackTrace(); // esto te da todo el detalle
-            return new RuntimeException("Error al consumir el servicio de hechos", error);
-          })
-          .block();
-
-      if (respuesta == null) {
-        return Collections.emptyList();
-      }
-
-      return FuenteResponseDTO.servicioResponseToHechos(respuesta);
-    } catch (Exception e) {
-      System.err.println("Excepción inesperada: " + e.getMessage());
-      e.printStackTrace();
-      return Collections.emptyList();
-    }
+  public Flux<Hecho> importarHechos(WebClient webClient, Fuente fuente) {
+    return webClient.get()
+        .uri(uriBuilder -> uriBuilder
+            .path("/hechos")
+            .build())
+        .retrieve()
+        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
+        .flatMapMany(dtos -> Flux.fromIterable(HechoInputDTO.mapDTOToHechos(dtos)))
+        .retryWhen(Retry.backoff(3, Duration.ofSeconds(2))
+            .maxBackoff(Duration.ofSeconds(20)))
+        .onErrorResume(error -> {
+          System.err.println("Error importando hechos de fuente proxy " + fuente.getIdInternoFuente() + ": " + error.getMessage());
+          return Flux.empty();
+        });
   }
 
   @Override
-  public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient, Long idInternoFuente) {
-    List<FuenteResponseDTO> respuesta = webClient.get()
+  public Flux<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco,
+                                        WebClient webClient,
+                                        Fuente fuente) {
+    return webClient.get()
         .uri(uriBuilder -> uriBuilder
-            .path("/hechos/filtered")
-            .queryParam("fuenteId", idInternoFuente)
+            .path("/hechos")
             .queryParam("dateTimeGT", ultimaFechaRefresco.toString())
             .build())
         .retrieve()
-        .bodyToMono(new ParameterizedTypeReference<List<FuenteResponseDTO>>() {})
-        .block();
-    List<Hecho> respuestaFinal = new ArrayList<>();
-    respuesta.stream().map(response -> {
-      List<Hecho> hechos = FuenteResponseDTO.servicioResponseToHechos(respuesta);
-      respuestaFinal.addAll(hechos);
-      return hechos;
-    }).toList(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
-    return respuestaFinal;
+        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
+        .flatMapMany(dtos -> Flux.fromIterable(HechoInputDTO.mapDTOToHechos(dtos)))
+        .retryWhen(Retry.backoff(3, Duration.ofSeconds(2))
+            .maxBackoff(Duration.ofSeconds(20)))
+        .onErrorResume(error -> {
+          System.err.println("Error buscando nuevos hechos de fuente proxy " + fuente.getIdInternoFuente() + ": " + error.getMessage());
+          return Flux.empty();
+        });
   }
 
   @Override
-  public void eliminarHecho(Hecho hecho, WebClient webClient, Long idInternoFuente) {
-    webClient.delete()
+  public Mono<Void> eliminarHecho(Hecho hecho, WebClient webClient, Fuente fuente) {
+    return webClient.patch()
         .uri(uriBuilder -> uriBuilder
-            .path("/hechos/{id}")
+            .path("/eliminacion/{id}")
             .build(hecho.getIdInternoFuente()))
+        .bodyValue(HechoOutputDTO.HechoToDTO(hecho))
         .retrieve()
         .toBodilessEntity()
-        .block();
+        .then()
+        .retryWhen(Retry.backoff(2, Duration.ofSeconds(2)))
+        .onErrorResume(error -> {
+          System.err.println("Error eliminando hecho de fuente proxy " + fuente.getIdInternoFuente() + ": " + error.getMessage());
+          return Mono.empty();
+        });
   }
 
   @Override
-  public List<Hecho> importarHechosMismoTitulo(WebClient webClient, Long idInternoFuente, Hecho hechos) {
-    return null; //TODO
+  public Flux<Hecho> importarHechosMismoTitulo(WebClient webClient,
+                                               Fuente fuente,
+                                               Hecho hechos) {
+    return webClient.get()
+        .uri(uriBuilder -> uriBuilder
+            .path("/hechos")
+            .queryParam("titulo", hechos.getTitulo())
+            .build())
+        .retrieve()
+        .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
+        .flatMapMany(dtos -> Flux.fromIterable(HechoInputDTO.mapDTOToHechos(dtos)))
+        .retryWhen(Retry.backoff(3, Duration.ofSeconds(2))
+            .maxBackoff(Duration.ofSeconds(20)))
+        .onErrorResume(error -> {
+          System.err.println("Error importando hechos mismo título de fuente proxy " + fuente.getIdInternoFuente() + ": " + error.getMessage());
+          return Flux.empty();
+        });
+  }
+
+  public Flux<Hecho> importarHechosConPaciencia(WebClient webClient, Fuente fuente) {
+    return importarHechos(webClient, fuente)
+        .retryWhen(Retry.backoff(5, Duration.ofSeconds(5))
+            .maxBackoff(Duration.ofSeconds(30))); // Más reintentos
   }
 }

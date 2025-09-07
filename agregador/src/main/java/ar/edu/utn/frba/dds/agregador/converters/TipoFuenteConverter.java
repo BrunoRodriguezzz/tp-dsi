@@ -5,7 +5,7 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
-public class tipoFuenteConverter implements AttributeConverter<TipoFuente, String> {
+public class TipoFuenteConverter implements AttributeConverter<TipoFuente, String> {
     @Override
     public String convertToDatabaseColumn(TipoFuente attribute) {
         if (attribute == null) {return null;}

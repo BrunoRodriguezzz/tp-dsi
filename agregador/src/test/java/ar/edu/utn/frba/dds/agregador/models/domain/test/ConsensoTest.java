@@ -11,7 +11,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
-import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Ubicacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.Ubicacion;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

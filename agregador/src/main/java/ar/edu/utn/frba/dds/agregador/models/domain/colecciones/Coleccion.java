@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.colecciones;
 
-import ar.edu.utn.frba.dds.agregador.converters.origenConverter;
+import ar.edu.utn.frba.dds.agregador.converters.OrigenConverter;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
@@ -51,7 +51,7 @@ public class Coleccion {
             joinColumns = @JoinColumn(name = "coleccion_id", referencedColumnName = "id")
     )
     @Column(name = "consenso")
-    @Convert(converter = origenConverter.class)
+    @Convert(converter = OrigenConverter.class)
     private List<Consenso> consensos;
 
     @ManyToMany(fetch = FetchType.LAZY)

@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteProxy.Services.impl;
 
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IFuenteService;
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputFuenteDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuenteAgregador;
@@ -23,14 +23,22 @@ public class FuenteService implements IFuenteService {
   @Override
   public void guardarFuenteInput(InputFuenteDTO inputFuenteDTO) {
     Fuente fuente = UtilsDTO.toFuente(inputFuenteDTO);
+    if (fuente == null) {
+      throw new RuntimeException("Fuente no encontrada");
+    }
+    if (fuente.getNombre() == null || fuente.getNombre().isEmpty()) {
+      throw new RuntimeException("Nombre de fuente inválido");
+    }
     this.guardarFuente(fuente);
   }
 
   @Override
   public void guardarFuente(Fuente fuente) {
+    this.fuenteRepository.findByNombre(fuente.getNombre()).stream()
+            .findFirst()
+            .ifPresent(f -> fuente.setId(f.getId()));
     this.fuenteRepository.save(fuente); // Estoy agregando una fuente --> Tengo que avisarle al Agregador de esta nueva fuente
     OutputFuenteAgregador fuenteOutputDTO = UtilsDTO.toOutputFuenteAgregador(fuente);
-    // TODO: Buscar una implementación más linda
     this.webClient.post()
         .uri(uriBuilder -> uriBuilder.path("/fuentes").build())
         .bodyValue(fuenteOutputDTO)

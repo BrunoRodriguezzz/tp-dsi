@@ -1,6 +1,6 @@
-package ar.edu.utn.frba.dds.fuenteProxy.models.domain.impl;
+package ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.impl;
 
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.TipoFuente;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.TipoFuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputColeccionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputHecho;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.PaginaHechoDTO;
@@ -8,11 +8,9 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.SolicitudEliminacionDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.autentificadores.RequestLogin;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.autentificadores.ResponseLogin;
 import jakarta.annotation.PostConstruct;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
