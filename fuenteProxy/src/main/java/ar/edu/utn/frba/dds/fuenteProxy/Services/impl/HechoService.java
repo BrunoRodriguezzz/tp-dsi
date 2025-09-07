@@ -152,6 +152,15 @@ public class HechoService implements IHechoService {
         HechoProxy hechoAGuardar = UtilsDTO.toHechoProxy(hechoDTO);
         hechoRepository.findByIdFuenteAndIdExterno(hechoAGuardar.getIdFuente(), hechoAGuardar.getIdExterno()).stream().findFirst()
                         .ifPresent(h -> hechoAGuardar.setId(h.getId()));
+        Optional<Fuente> fuente = fuenteRepository.findById(hechoAGuardar.getIdFuente());
+        String nombreFuente;
+        if (fuente.isPresent()) {
+            nombreFuente = fuente.get().getNombre();
+        }
+        else {
+            throw new NotFoundError("Fuente no encontrada con ID: " + hechoAGuardar.getIdFuente());
+        }
+        hechoAGuardar.setNombreFuente(nombreFuente);
         hechoRepository.save(hechoAGuardar);
     }
 }
