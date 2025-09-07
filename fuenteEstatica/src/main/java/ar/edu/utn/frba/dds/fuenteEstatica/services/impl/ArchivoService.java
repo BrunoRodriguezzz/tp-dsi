@@ -23,7 +23,11 @@ public class ArchivoService implements IArchivoService {
 
   @Override
   public void guardarArchivo(Archivo archivo) {
-    this.archivoRepository.save(archivo); // --> Tengo un nuevo archivo --> Le aviso al agregador
+    archivoRepository.findByNombre(archivo.getNombre())
+            .stream()
+            .findFirst()
+            .ifPresent(a -> archivo.setId(a.getId()));
+    archivoRepository.save(archivo);
     ArchivoOutputAgregadorDTO outputAgregadorDTO = UtilsDTO.toOutputArchivoAgregador(archivo);
     this.webClient.post()
         .uri(uriBuilder -> uriBuilder.path("/fuentes").build())
