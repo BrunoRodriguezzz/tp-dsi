@@ -23,14 +23,6 @@ import java.util.List;
 
 @Service
 public class FuenteService implements IFuenteService {
-  private IHechoService hechoService;
-  private IColeccionService coleccionService;
-
-  public FuenteService(IHechoService hechoService, IColeccionService coleccionService) {
-    this.hechoService = hechoService;
-    this.coleccionService = coleccionService;
-  }
-
   @Autowired
   private IFuenteRepository fuenteRepository;
 
@@ -89,14 +81,6 @@ public class FuenteService implements IFuenteService {
         })
         .subscribeOn(Schedulers.boundedElastic())
         .block();
-    List<Hecho> hechos;
-    if(fuenteIncorporada.getNombre() != null){
-      hechos = buscarHechosFuenteStream(fuenteIncorporada.getNombre()).collectList().block();
-      this.hechoService.guardarHechos(hechos);
-      this.coleccionService.incorporarHechos(hechos);
-    }
-    else
-      throw new RuntimeException("Se incorporó una fuente sin nombre, no fue posible obtener sus hechos");
     return fuenteIncorporada;
   }
 
