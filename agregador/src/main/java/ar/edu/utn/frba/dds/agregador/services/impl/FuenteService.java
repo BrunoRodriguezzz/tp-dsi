@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.FuenteOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
+import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,9 +24,11 @@ import java.util.List;
 @Service
 public class FuenteService implements IFuenteService {
   private IHechoService hechoService;
+  private IColeccionService coleccionService;
 
-  public FuenteService(IHechoService hechoService) {
+  public FuenteService(IHechoService hechoService, IColeccionService coleccionService) {
     this.hechoService = hechoService;
+    this.coleccionService = coleccionService;
   }
 
   @Autowired
@@ -90,6 +93,7 @@ public class FuenteService implements IFuenteService {
     if(fuenteIncorporada.getNombre() != null){
       hechos = buscarHechosFuenteStream(fuenteIncorporada.getNombre()).collectList().block();
       this.hechoService.guardarHechos(hechos);
+      this.coleccionService.incorporarHechos(hechos);
     }
     else
       throw new RuntimeException("Se incorporó una fuente sin nombre, no fue posible obtener sus hechos");
