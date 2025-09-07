@@ -32,7 +32,7 @@ public class UserService implements IUserService {
 
     @Override
     public SolicitudOutputDTO crear(HechoInputDTO hechoInputDTO) {
-            Contribuyente usuario = Contribuyente
+            Usuario usuario = Usuario
                     .builder()
                     .nombre(hechoInputDTO.getNombreUsuario())
                     .apellido(hechoInputDTO.getApellidoUsuario())
@@ -64,18 +64,38 @@ public class UserService implements IUserService {
                     .estaEliminado(false)
                     .enviado(false)
                     .fechaAcontecimiento(hechoInputDTO.getFechaAcontecimiento())
-                    .contribuyente(usuario)
                     .estadoHecho(EstadoHecho.PENDIENTE_DE_REVISION)
                     .origen("CONTRIBUYENTE")
                     .fuente("Provistos por contribuyentes")
                     .build();
 
-            this.dinamicaRepository.guardar(hecho);
 
             // Guardo el contribuyente, solo si indico su nombre
             if(usuario.getNombre() != "" && usuario.getApellido() != ""){
-                this.contribuyentesRepository.save(usuario);
+                if(!this.comprobarUsuarioRegistrado(usuario)) {
+                    Contribuyente nuevoContribuyente = Contribuyente.builder()
+                            .nombre(usuario.getNombre())
+                            .apellido(usuario.getApellido())
+                            .fechaNacimiento(usuario.getFechaNacimiento())
+                            .build();
+
+                    hecho.setContribuyente(nuevoContribuyente);
+
+                    this.contribuyentesRepository.save(nuevoContribuyente);
+                }else{
+                    List<Contribuyente> contribuyentes = this.contribuyentesRepository.findAll();
+
+                    Contribuyente contribuyenteRegistrado = contribuyentes
+                            .stream()
+                            .filter(contribuyente -> this.comprobarUsuarioRegistrado(usuario))
+                            .findFirst()
+                            .orElse(null);
+
+                    hecho.setContribuyente(contribuyenteRegistrado);
+                }
             }
+
+            this.dinamicaRepository.guardar(hecho);
 
             return SolicitudOutputDTO.convertir(hecho);
     }
@@ -126,7 +146,7 @@ public class UserService implements IUserService {
     @Override
     public Boolean verificarUsuarioRegistrado(HechoModificadoInputDTO hechoParaActualizar){
 
-        Contribuyente usuario = Contribuyente
+        Usuario usuario = Usuario
                 .builder()
                 .nombre(hechoParaActualizar.getNombreUsuario())
                 .apellido(hechoParaActualizar.getApellidoUsuario())
@@ -200,7 +220,7 @@ public class UserService implements IUserService {
         return diferencia <= 7;
     }
 
-    private Boolean comprobarUsuarioRegistrado(Contribuyente contribuyente){
+    private Boolean comprobarUsuarioRegistrado(Usuario contribuyente){
 
         List<Contribuyente> contribuyentes = this.contribuyentesRepository.findAll();
 

@@ -79,6 +79,9 @@ public class AdminService implements IAdminService {
     }
 
     private Etiqueta convertirEtiqueta(String etiqueta){
-        return Etiqueta.builder().titulo(etiqueta).build();
+        return Etiqueta
+                .builder()
+                .titulo(etiqueta)
+                .build();
     }
 }
