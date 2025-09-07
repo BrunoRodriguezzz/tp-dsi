@@ -21,8 +21,8 @@ public class FuenteSeeder implements CommandLineRunner {
     }
 
     public void run(String... args) {
-//         Fuente fuenteAPICatedra = new Fuente(TipoFuenteEnum.APICATEDRA, "Desastres Naturales", "https://api-ddsi.disilab.ar/public");
-//        fuenteService.guardarFuente(fuenteAPICatedra);
+         Fuente fuenteAPICatedra = new Fuente(TipoFuenteEnum.APICATEDRA, "Desastres Naturales", "https://api-ddsi.disilab.ar/public");
+         fuenteService.guardarFuente(fuenteAPICatedra);
 
 //        //TODO: No tenemos ruta de otra instancia por ahora
 //        InstanciaMetaMapa nuestraInstancia = new InstanciaMetaMapa("http://localhost:8082");

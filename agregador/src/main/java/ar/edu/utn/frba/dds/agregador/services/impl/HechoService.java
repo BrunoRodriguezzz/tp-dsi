@@ -5,9 +5,11 @@ import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consensuador;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
+import ar.edu.utn.frba.dds.agregador.models.repositories.ICategoriaRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
@@ -22,11 +24,12 @@ import org.springframework.stereotype.Service;
 public class HechoService implements IHechoService {
   @Autowired
   private IHechoRepository hechoRepository;
-
   private IFuenteService fuenteService;
+  private ICategoriaRepository categoriaRepository;
 
-  public HechoService(IFuenteService fuenteService) {
+  public HechoService(IFuenteService fuenteService, ICategoriaRepository categoriaRepository) {
     this.fuenteService = fuenteService;
+    this.categoriaRepository = categoriaRepository;
   }
 
   @Override
@@ -86,13 +89,27 @@ public class HechoService implements IHechoService {
   @Override
   public List<Hecho> guardarHechos(List<Hecho> hechos){
     hechos.forEach(h -> {
-      if(h.getId() == null) {
-        Hecho hechoOpcional = this.hechoRepository.findByFuente_IdAndIdInternoFuente(h.getFuente().getId(), h.getIdInternoFuente());
-        if (hechoOpcional != null) {
-          h.setId(hechoOpcional.getId());
+      if (h.getId() == null) {
+        // Buscar hecho existente por fuente + idInternoFuente
+        hechoRepository.findByFuente_IdAndIdInternoFuente(h.getFuente().getId(), h.getIdInternoFuente())
+                .ifPresent(hechoExistente -> {
+                  // Reutilizar ID
+                  h.setId(hechoExistente.getId());
+
+                  // Reutilizar categoría
+                  if (h.getCategoria().getId() == null) {
+                    h.getCategoria().setId(hechoExistente.getCategoria().getId());
+                  }
+                });
+
+        // Si no encontré el hecho, al menos resuelvo la categoría por título
+        if (h.getCategoria().getId() == null) {
+          categoriaRepository.findByTitulo(h.getCategoria().getTitulo())
+                  .ifPresent(categoriaExistente -> h.getCategoria().setId(categoriaExistente.getId()));
         }
       }
     });
+
     List<Hecho> hechosGuardados = this.hechoRepository.saveAll(hechos);
     return hechosGuardados;
   }

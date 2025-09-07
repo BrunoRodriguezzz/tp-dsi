@@ -87,6 +87,10 @@ public class FuenteService implements IFuenteService {
   @Override
   public Fuente incorporarFuente(FuenteInputDTO fuenteInputDTO) {
     Fuente fuente = FuenteInputDTO.DTOToFuente(fuenteInputDTO);
+    Fuente existente = this.fuenteRepository.findByIdInternoFuenteAndTipoFuente(fuente.getIdInternoFuente(), fuente.getTipoFuente());
+    if (existente != null) {
+      return existente;
+    }
     return this.fuenteRepository.save(fuente);
   }
 
