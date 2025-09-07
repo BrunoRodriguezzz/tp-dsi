@@ -14,6 +14,7 @@ import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
+import jakarta.persistence.Id;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +52,11 @@ public class HechoService implements IHechoService {
     List<HechoOutputDTO> hechosDTO = HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
 
     return hechosDTO;
+  }
+
+  @Override
+  public List<HechoOutputDTO> buscarHechosIndependientes() {
+    return null;
   }
 
 

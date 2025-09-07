@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpC;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpH;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,6 +37,8 @@ public class Fuente {
   private String nombre;
   @Column(nullable = false)
   private String path;
+
+  @JsonIgnore
   @Transient
   private WebClient webClient;
 
@@ -43,12 +46,15 @@ public class Fuente {
   @Convert(converter = TipoFuenteConverter.class)
   private TipoFuente tipoFuente;
 
+  @JsonIgnore
   @Transient
   private IAdapImpH iAdapImpH; // TODO
 
+  @JsonIgnore
   @Transient
   private IAdapImpC iAdapImpC;
 
+  @JsonIgnore
   @Transient
   private IAdapUbicacion iAdapUbicacion;
 
