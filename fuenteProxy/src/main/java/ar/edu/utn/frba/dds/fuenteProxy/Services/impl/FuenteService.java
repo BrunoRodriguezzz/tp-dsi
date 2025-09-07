@@ -37,7 +37,6 @@ public class FuenteService implements IFuenteService {
     this.fuenteRepository.findByNombre(fuente.getNombre()).stream()
             .findFirst()
             .ifPresent(f -> fuente.setId(f.getId()));
-    fuente.setActivo(true);
     this.fuenteRepository.save(fuente); // Estoy agregando una fuente --> Tengo que avisarle al Agregador de esta nueva fuente
     OutputFuenteAgregador fuenteOutputDTO = UtilsDTO.toOutputFuenteAgregador(fuente);
     this.webClient.post()
