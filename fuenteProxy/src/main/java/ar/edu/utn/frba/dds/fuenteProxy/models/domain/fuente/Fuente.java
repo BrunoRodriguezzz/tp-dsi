@@ -31,6 +31,7 @@ public class Fuente {
     private Boolean activo; // baja logica
 
     @Transient
+    @ManyToOne(cascade = CascadeType.ALL)
     private TipoFuente tipoFuente;
 
     @Column(nullable = false)

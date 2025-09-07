@@ -17,4 +17,5 @@ public interface IHechoService {
   public List<Hecho> guardarHechos(List<Hecho> hechos);
   public void consensuarHechos();
   public List<HechoOutputDTO> buscarHechosIndependientes();
+  public List<HechoOutputDTO> buscarHechosSinColeccion();
 }

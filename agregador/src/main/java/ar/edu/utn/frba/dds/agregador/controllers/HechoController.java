@@ -67,6 +67,15 @@ public class HechoController {
     return ResponseEntity.status(HttpStatus.OK).body(hechos);
   }
 
+  @GetMapping("/sinColecion")
+  public ResponseEntity buscarHechosSinColeccion() {
+    List<HechoOutputDTO> hechos = this.hechoService.buscarHechosSinColeccion();
+    if(hechos == null) {
+      return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(hechos);
+  }
+
   // Incorpora nuevos hechos que le envíen las fuentes(push based)
   @PostMapping
   public ResponseEntity incorporarHecho(@RequestBody HechoInputDTO hecho) {

@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
+import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consensuador;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
@@ -8,17 +9,19 @@ import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.ICategoriaRepository;
+import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
+import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import jakarta.persistence.Id;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,7 @@ public class HechoService implements IHechoService {
   private IHechoRepository hechoRepository;
   private IFuenteService fuenteService;
   private ICategoriaRepository categoriaRepository;
+  private IColeccionService coleccionService;
 
   public HechoService(IFuenteService fuenteService, ICategoriaRepository categoriaRepository) {
     this.fuenteService = fuenteService;
@@ -61,6 +65,23 @@ public class HechoService implements IHechoService {
     return null;
   }
 
+  @Override
+  public List<HechoOutputDTO> buscarHechosSinColeccion() {
+    List<Hecho> hechosTotales = this.fuenteService.buscarHechos();
+    List<Long> idsColecciones = this.coleccionService.buscarColecciones().stream()
+            .map(ColeccionOutputDTO::getId)
+            .toList();
+    List<HechoOutputDTO> hechosDeColeccion = idsColecciones.stream()
+            .flatMap(id -> coleccionService.buscarHechosColeccion(id, null).stream())
+            .toList();
+    Set<Long> idsHechosDeColeccion = hechosDeColeccion.stream()
+            .map(HechoOutputDTO::getId)
+            .collect(Collectors.toSet());
+    List<Hecho> hechosResultantes = hechosTotales.stream()
+            .filter(hecho -> !idsHechosDeColeccion.contains(hecho.getId()))
+            .toList();
+    return HechoOutputDTO.mapHechoToDTO(hechosResultantes);
+  }
 
   @Override
   public Hecho incorporarHecho(HechoInputDTO hechoDTO) {
