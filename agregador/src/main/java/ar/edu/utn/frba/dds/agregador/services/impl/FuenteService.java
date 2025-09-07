@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.FuenteOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
+import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,11 @@ import java.util.List;
 
 @Service
 public class FuenteService implements IFuenteService {
+  private IHechoService hechoService;
+
+  public FuenteService(IHechoService hechoService) {
+    this.hechoService = hechoService;
+  }
 
   @Autowired
   private IFuenteRepository fuenteRepository;
@@ -74,12 +80,20 @@ public class FuenteService implements IFuenteService {
 
   @Override
   public Fuente incorporarFuente(FuenteInputDTO fuenteInputDTO) {
-    return Mono.fromCallable(() -> {
+    Fuente fuenteIncorporada = Mono.fromCallable(() -> {
           Fuente fuente = FuenteInputDTO.DTOToFuente(fuenteInputDTO);
           return fuenteRepository.save(fuente);
         })
         .subscribeOn(Schedulers.boundedElastic())
-        .block(); 
+        .block();
+    List<Hecho> hechos;
+    if(fuenteIncorporada.getNombre() != null){
+      hechos = buscarHechosFuenteStream(fuenteIncorporada.getNombre()).collectList().block();
+      this.hechoService.guardarHechos(hechos);
+    }
+    else
+      throw new RuntimeException("Se incorporó una fuente sin nombre, no fue posible obtener sus hechos");
+    return fuenteIncorporada;
   }
 
   @Override

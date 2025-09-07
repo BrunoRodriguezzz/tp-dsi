@@ -6,6 +6,8 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.FuenteOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import java.util.List;
+
+import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
