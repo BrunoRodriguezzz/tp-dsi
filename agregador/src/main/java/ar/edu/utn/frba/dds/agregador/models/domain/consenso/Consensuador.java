@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import reactor.core.publisher.Flux;
 
 public class Consensuador {
   private List<IStratConsenso> stratConsensos;
@@ -38,13 +39,11 @@ public class Consensuador {
     return hechosConsensuados;
   }
 
-  private List<Hecho> pedirHechosRepetidos (List<Fuente> fuentes, Hecho hecho) {
-    List<Hecho> hechosRepetidos = fuentes
-        .stream().map(f -> {
-          return f.importarHechosMismoTitulo(hecho);
-        })
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
-    return hechosRepetidos;
+  private List<Hecho> pedirHechosRepetidos(List<Fuente> fuentes, Hecho hecho) {
+    return Flux.fromIterable(fuentes)
+        .flatMap(fuente -> fuente.importarHechosMismoTitulo(hecho)) // Flux<Hecho>
+        .collectList() // Mono<List<Hecho>>
+        .block(); // List<Hecho>
   }
+
 }

@@ -1,36 +1,49 @@
+
 package ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.impl;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpH;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import java.time.LocalDateTime;
+import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 public class AdapImpHDinamico implements IAdapImpH {
-  // Clase Singleton
-  @Getter // Método público para obtener las instancia
-  private static final AdapImpHDinamico instance = new AdapImpHDinamico(); // Creacion de la instancia clase única
-  private AdapImpHDinamico() {} // Constructor privado para evitar instanciación externa
+
+  @Getter
+  private static final AdapImpHDinamico instance = new AdapImpHDinamico();
+
+  private AdapImpHDinamico() {}
 
   @Override
-  public List<Hecho> importarHechos(WebClient webClient, Long idInternoFuente) {
-    List<Hecho> hechos = webClient.get()
+  public Flux<Hecho> importarHechos(WebClient webClient, Fuente fuente) {
+    return webClient.get()
         .uri(uriBuilder -> uriBuilder
-            .path("/hechos") // TODO: Corregir menos harcodeado
+            .path("/hechos")
             .build())
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
-        .map(HechoInputDTO::mapDTOToHechos).block();
-    return hechos;
+        .flatMapMany(dtos -> Flux.fromIterable(HechoInputDTO.mapDTOToHechos(dtos)))
+        .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
+            .maxBackoff(Duration.ofSeconds(10)))
+        .onErrorResume(error -> {
+          System.err.println("Error importando hechos de fuente dinámica " + fuente.getIdInternoFuente() + ": " + error.getMessage());
+          return Flux.empty();
+        });
   }
 
   @Override
-  public List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient, Long idInternoFuente) {
+  public Flux<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco,
+                                        WebClient webClient,
+                                        Fuente fuente) {
     return webClient.get()
         .uri(uriBuilder -> uriBuilder
             .path("/hechos")
@@ -38,37 +51,47 @@ public class AdapImpHDinamico implements IAdapImpH {
             .build())
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
-        .map(HechoInputDTO::mapDTOToHechos).block(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>
+        .flatMapMany(dtos -> Flux.fromIterable(HechoInputDTO.mapDTOToHechos(dtos)))
+        .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
+            .maxBackoff(Duration.ofSeconds(10)))
+        .onErrorResume(error -> {
+          System.err.println("Error buscando nuevos hechos de fuente dinámica " + fuente.getIdInternoFuente() + ": " + error.getMessage());
+          return Flux.empty();
+        });
   }
 
   @Override
-  public void eliminarHecho(Hecho hecho, WebClient webClient, Long idInternoFuente) {
-    webClient.patch()
+  public Mono<Void> eliminarHecho(Hecho hecho, WebClient webClient, Fuente fuente) {
+    return webClient.patch()
         .uri(uriBuilder -> uriBuilder
             .path("/eliminacion/{id}")
             .build(hecho.getIdInternoFuente()))
         .bodyValue(HechoOutputDTO.HechoToDTO(hecho))
         .retrieve()
         .toBodilessEntity()
-        .block();
+        .then()
+        .retryWhen(Retry.backoff(2, Duration.ofSeconds(1)))
+        .onErrorResume(error -> {
+          System.err.println("Error eliminando hecho de fuente dinámica " + fuente.getIdInternoFuente() + ": " + error.getMessage());
+          return Mono.empty();
+        });
   }
 
   @Override
-  public List<Hecho> importarHechosMismoTitulo(WebClient webClient, Long idInternoFuente, Hecho hecho) {
-    List<Hecho> hechosDevueltos = webClient.get()
+  public Flux<Hecho> importarHechosMismoTitulo(WebClient webClient, Fuente fuente, Hecho hechos) {
+    return webClient.get()
         .uri(uriBuilder -> uriBuilder
             .path("/hechos")
-            .queryParam("titulo",hecho.getTitulo())
+            .queryParam("titulo", hechos.getTitulo())
             .build())
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
-        .map(HechoInputDTO::mapDTOToHechos).block();
-    return hechosDevueltos;
-  }
-
-  private List<Hecho> servicioResponseToHechos(List<HechoInputDTO> hechosDTO, Long idInternoFuente) {
-    return hechosDTO
-        .stream()
-        .map(HechoInputDTO::DTOToHecho).collect(Collectors.toList());
+        .flatMapMany(dtos -> Flux.fromIterable(HechoInputDTO.mapDTOToHechos(dtos)))
+        .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
+            .maxBackoff(Duration.ofSeconds(10)))
+        .onErrorResume(error -> {
+          System.err.println("Error importando hechos mismo título de fuente dinámica " + fuente.getIdInternoFuente() + ": " + error.getMessage());
+          return Flux.empty();
+        });
   }
 }

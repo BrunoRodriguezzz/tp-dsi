@@ -15,7 +15,9 @@ import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import jakarta.persistence.Id;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,32 +95,46 @@ public class HechoService implements IHechoService {
   }
 
   @Override
-  public List<Hecho> guardarHechos(List<Hecho> hechos){
+  public List<Hecho> guardarHechos(List<Hecho> hechos) {
+    Map<String, Categoria> cacheCategorias = new HashMap<>();
+
     hechos.forEach(h -> {
+      // Resolver la Fuente desde el repositorio
+      if (h.getFuente() != null && h.getFuente().getId() != null) {
+        Fuente fuenteManaged = fuenteService.findById(h.getFuente().getId());
+        if (fuenteManaged == null) {
+          throw new RuntimeException("Fuente no encontrada: " + h.getFuente().getId());
+        }
+        h.setFuente(fuenteManaged);
+      }
+
       if (h.getId() == null) {
-        // Buscar hecho existente por fuente + idInternoFuente
+        // Buscar hecho existente
         hechoRepository.findByFuente_IdAndIdInternoFuente(h.getFuente().getId(), h.getIdInternoFuente())
-                .ifPresent(hechoExistente -> {
-                  // Reutilizar ID
-                  h.setId(hechoExistente.getId());
+            .ifPresent(hechoExistente -> {
+              h.setId(hechoExistente.getId());
 
-                  // Reutilizar categoría
-                  if (h.getCategoria().getId() == null) {
-                    h.getCategoria().setId(hechoExistente.getCategoria().getId());
-                  }
-                });
+              if (h.getCategoria().getId() == null) {
+                h.getCategoria().setId(hechoExistente.getCategoria().getId());
+              }
+            });
 
-        // Si no encontré el hecho, al menos resuelvo la categoría por título
-        if (h.getCategoria().getId() == null) {
-          categoriaRepository.findByTitulo(h.getCategoria().getTitulo())
-                  .ifPresent(categoriaExistente -> h.getCategoria().setId(categoriaExistente.getId()));
+        // Resolver categoría por título con cache
+        if (h.getCategoria() != null && h.getCategoria().getId() == null) {
+          String titulo = h.getCategoria().getTitulo();
+
+          Categoria categoria = cacheCategorias.computeIfAbsent(titulo, t ->
+              categoriaRepository.findByTitulo(t).orElseGet(() -> h.getCategoria())
+          );
+
+          h.setCategoria(categoria);
         }
       }
     });
 
-    List<Hecho> hechosGuardados = this.hechoRepository.saveAll(hechos);
-    return hechosGuardados;
+    return this.hechoRepository.saveAll(hechos);
   }
+
 
   @Override
   public void consensuarHechos() {
