@@ -150,8 +150,10 @@ public class HechoService implements IHechoService {
     @Override
     public void guardarHecho(InputHecho hechoDTO) { //TODO Validador
         HechoProxy hechoAGuardar = UtilsDTO.toHechoProxy(hechoDTO);
-        hechoRepository.findByIdFuenteAndIdExterno(hechoAGuardar.getIdFuente(), hechoAGuardar.getIdExterno()).stream().findFirst()
-                        .ifPresent(h -> hechoAGuardar.setId(h.getId()));
+        hechoRepository.findByIdFuenteAndIdExterno(hechoAGuardar.getIdFuente(), hechoAGuardar.getIdExterno())
+                .stream()
+                .findFirst()
+                .ifPresent(h -> hechoAGuardar.setId(h.getId()));
         hechoRepository.save(hechoAGuardar);
     }
 }

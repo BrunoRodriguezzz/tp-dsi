@@ -56,9 +56,6 @@ public class HechoProxy {
     @Column(nullable = false)
     private Origen origen;
 
-    @Column
-    private String nombreFuente;
-
     public HechoProxy(Long id, String titulo) {
         this.id = null;
         this.idExterno = id;
