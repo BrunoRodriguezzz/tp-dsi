@@ -51,10 +51,18 @@ public class FuenteService implements IFuenteService {
   public List<Hecho> buscarHechosFuente(String nombre) {
     return buscarHechosFuenteStream(nombre)
         .collectList()
-        .block(); 
+        .block();
   }
 
-  @Override
+    @Override
+    public List<Hecho> buscarHechosProxy() {
+        return this.fuenteRepository.findByTipoFuente(TipoFuente.PROXY)
+                .stream()
+                .map(f -> f.importarHechos().blockLast())
+                .toList();
+    }
+
+    @Override
   public Fuente buscarFuente(String nombre) {
     return Mono.fromCallable(() -> fuenteRepository.findByNombre(nombre))
         .subscribeOn(Schedulers.boundedElastic())

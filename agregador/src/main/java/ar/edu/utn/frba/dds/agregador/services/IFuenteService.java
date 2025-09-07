@@ -16,6 +16,7 @@ public interface IFuenteService {
   List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco);
   List<Hecho> buscarHechosFuente(TipoFuente tipoFuente);
   List<Hecho> buscarHechosFuente(String nombre);
+  List<Hecho> buscarHechosProxy();
   Fuente findById(Long id);
   Fuente buscarFuente(String nombre);
   List<Fuente> buscarFuentes();
@@ -28,4 +29,6 @@ public interface IFuenteService {
   Flux<Hecho> buscarNuevosHechosStream(LocalDateTime ultimaFechaRefresco);
   Flux<Hecho> buscarHechosFuenteStream(TipoFuente tipoFuente);
   Flux<Hecho> buscarHechosFuenteStream(String nombre);
+
+
 }

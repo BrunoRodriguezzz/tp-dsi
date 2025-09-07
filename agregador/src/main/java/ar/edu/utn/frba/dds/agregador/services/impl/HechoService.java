@@ -37,23 +37,38 @@ public class HechoService implements IHechoService {
 
   @Override
   public List<HechoOutputDTO> buscarHechos(QueryParamsFiltro params) {
-    List<Hecho> hechos = this.fuenteService.buscarHechos();
-    hechos = this.guardarHechos(hechos);
-
+    List<Hecho> hechos = this.hechoRepository.findAll();
+    List<Hecho> hechosProxy = this.fuenteService.buscarHechosProxy();
+    // Asumo que llegan con la ubicación: Cuando se traen se pone la ubi.
+    hechos.addAll(hechosProxy);
     List<Filtro> filtrosBusqueda = params.instanciarFiltros();
     List<Hecho> hechosFiltrados;
-
     if(!filtrosBusqueda.isEmpty()) {
       hechosFiltrados = hechos
-          .stream()
-          .filter(h -> filtrosBusqueda.stream().allMatch(f -> f.coincide(h)))
-          .toList();
+              .stream()
+              .filter(h -> filtrosBusqueda.stream().allMatch(f -> f.coincide(h)))
+              .toList();
     }
     else hechosFiltrados = hechos;
+    return HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
 
-    List<HechoOutputDTO> hechosDTO = HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
-
-    return hechosDTO;
+//    List<Hecho> hechos = this.fuenteService.buscarHechos();
+//    hechos = this.guardarHechos(hechos);
+//
+//    List<Filtro> filtrosBusqueda = params.instanciarFiltros();
+//    List<Hecho> hechosFiltrados;
+//
+//    if(!filtrosBusqueda.isEmpty()) {
+//      hechosFiltrados = hechos
+//          .stream()
+//          .filter(h -> filtrosBusqueda.stream().allMatch(f -> f.coincide(h)))
+//          .toList();
+//    }
+//    else hechosFiltrados = hechos;
+//
+//    List<HechoOutputDTO> hechosDTO = HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
+//
+//    return hechosDTO;
   }
 
   @Override
