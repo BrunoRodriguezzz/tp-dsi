@@ -1,6 +1,6 @@
 @startuml
 
-entity estadistica_hechos {
+entity estadistica_combinacion {
     id INTEGER(11) <<PK>>
     coleccion_id VARCHAR(100)  <<FK>>
     provincia VARCHAR(100)
@@ -31,6 +31,7 @@ entity categoria {
 entity solicitud_eliminacion {
     id INTEGER(11)  <<PK>>
     --
+    hecho INTEGER(11)
     estado VARCHAR(50) <<FK>>
 }
 
@@ -39,10 +40,56 @@ entity hecho {
     --
 }
 
-estadistica_hechos }o--|| coleccion
-estadistica_hechos }o--|| categoria
-estadistica_hechos }o--|| hechos_x_estadistica
+'TRAZABILIDAD
+
+entity estadistica_provincia_x_coleccion <<trazabilidad>> {
+    id INTEGER (11) <<PK>>
+    fecha TIMESTAMP <<PK>>
+    coleccion_id INTEGER(11) <<PK,FK>>
+    --
+    provincia_mas_hechos VARCHAR(100)  <<PK,FK>>
+}
+
+entity estadistica_categoria <<trazabilidad>> {
+    id INTEGER (11) <<PK>>
+    fecha TIMESTAMP <<PK>>
+    --
+    categoria_mas_hechos VARCHAR(100) <<FK>>
+}
+
+entity estadistica_provincia_x_categoria <<trazabilidad>> {
+    id INTEGER (11) <<PK>>
+    fecha TIMESTAMP <<PK>>
+    categoria_id INTEGER(11) <<PK,FK>>
+    --
+    provincia_mas_hechos VARCHAR(100)  <<PK,FK>>
+}
+
+entity estadistica_hora_x_categoria <<trazabilidad>> {
+    id INTEGER (11) <<PK>>
+    fecha TIMESTAMP <<PK>>
+    categoria_id INTEGER(11) <<PK,FK>>
+    --
+    hora_mas_hechos TIME
+}
+
+entity estadistica_solicitudes <<trazabilidad>> {
+    id INTEGER (11) <<PK>>
+    fecha TIMESTAMP <<PK>>
+    --
+    solicitudes_spam BIGINT
+}
+
+estadistica_combinacion }o--|| coleccion
+estadistica_combinacion }o--|| categoria
+estadistica_combinacion }o--|| hechos_x_estadistica
 hecho }o--|| hechos_x_estadistica
 solicitud_eliminacion |o--|| hecho
 
+'TRAZABILIDAD
+estadistica_provincia_x_coleccion }o--|| coleccion
+estadistica_categoria }o--|| categoria
+estadistica_provincia_x_categoria }o--|| categoria
+estadistica_hora_x_categoria }o--|| categoria
+estadistica_solicitudes }o--|| solicitud_eliminacion
 @enduml

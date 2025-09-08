@@ -4,9 +4,15 @@ import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.*;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaCategoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaHoraXCategoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaSolicitudes;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.*;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticaService;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IImportadorService;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +37,7 @@ public class EstadisticaService implements IEstadisticaService {
     }
 
     @Autowired
-    private IEstadisticaHechosRepository estadisticaRepository;
+    private IEstadisticaCombinacionRepository estadisticaRepository;
 
     @Autowired
     private ICategoriaRepository categoriaRepository;
@@ -45,39 +51,71 @@ public class EstadisticaService implements IEstadisticaService {
     @Autowired
     private IHechoRepository hechoRepository;
 
+    @Autowired
+    private IEstadisticaHoraXCategoriaRepository estadisticaHoraXCategoriaRepository;
+
+    @Autowired
+    private IEstadisticaCategoriaRepository estadisticaCategoriaRepository;
+
+    @Autowired
+    private IEstadisticaProvinciaXCategoriaRepository estadisticaProvinciaXCategoriaRepository;
+
+    @Autowired
+    private IEstadisticaProvinciaXColeccionRepository estadisticaProvinciaXColeccionRepository;
+
+    @Autowired
+    private IEstadisticaSolicitudesRepository estadisticaSolicitudesRepository;
+
     @Override
     public Provincia provinciaConMasHechosDeUnaColeccion(Long idColeccion) {
-        return estadisticaRepository.findProvinciaConMasHechosPorColeccion(idColeccion);
+        Coleccion coleccion = this.coleccionRepository.findById(idColeccion).orElse(null);
+        Provincia provincia = estadisticaRepository.findProvinciaConMasHechosPorColeccion(idColeccion);
+        EstadisticaProvinciaXColeccion estadististica = new EstadisticaProvinciaXColeccion(
+            provincia,
+            LocalDateTime.now(),
+            coleccion
+        );
+        this.estadisticaProvinciaXColeccionRepository.save(estadististica);
+        return provincia;
     }
 
     @Override
     public Categoria categoriaConMasHechos() {
-        return estadisticaRepository.findCategoriaConMasHechos();
+        Categoria categoria = estadisticaRepository.findCategoriaConMasHechos();
+        this.estadisticaCategoriaRepository.save(new EstadisticaCategoria(categoria, LocalDateTime.now()));
+        return categoria;
     }
 
     @Override
     public Provincia provinciaConMasHechosSegunCategoria(Long idCategoria) {
-        return estadisticaRepository.findProvinciaConMasHechosPorCategoria(idCategoria);
+        Provincia provincia = estadisticaRepository.findProvinciaConMasHechosPorCategoria(idCategoria);
+        Categoria categoria = categoriaRepository.findById(idCategoria).orElse(null);
+        this.estadisticaProvinciaXCategoriaRepository.save(new EstadisticaProvinciaXCategoria(categoria, LocalDateTime.now(), provincia));
+        return provincia;
     }
 
     @Override
     public LocalTime horaConMasHechosSegunCategoria(Long idCategoria) {
         HoraDelDia horaDelDia = estadisticaRepository.findHoraConMasHechosPorCategoria(idCategoria);
+        Categoria categoria = categoriaRepository.findById(idCategoria).orElse(null);
+        this.estadisticaHoraXCategoriaRepository.save(new EstadisticaHoraXCategoria(categoria, LocalDateTime.now(), horaDelDia));
         return horaDelDia != null ? horaDelDia.getHora() : null;
     }
 
     @Override
     public Long cantSolicitudesSpam() {
-        return this.solicitudRepository.countByEstado(EstadoSolicitudEliminacion.SPAM);
+        Long cantSpam = this.solicitudRepository.countByEstado(EstadoSolicitudEliminacion.SPAM);
+        this.estadisticaSolicitudesRepository.save(new EstadisticaSolicitudes(LocalDateTime.now(), cantSpam.intValue()));
+        return cantSpam;
     }
 
     @Override
     @Transactional
-    public List<EstadisticaHechos> calcularEstadisticas() {
+    public List<EstadisticaCombinacion> calcularEstadisticas() {
         // Limpiar caché al inicio de cada cálculo
         this.cacheHechos.clear();
 
-        List<EstadisticaHechos> estadisticas = new ArrayList<>();
+        List<EstadisticaCombinacion> estadisticas = new ArrayList<>();
 
         List<ColeccionInputDTO> colecciones = this.importadorService.importarColecciones();
         List<HechoInputDTO> hechos = this.importadorService.importarHechos();
@@ -86,15 +124,14 @@ public class EstadisticaService implements IEstadisticaService {
         HashMap<ClaveEstadistica, List<Hecho>> mapa = this.generarMapa(colecciones, hechos);
 
         mapa.forEach((claveEstadistica, hechosXEstadistica) -> {
-            EstadisticaHechos estadistica = new EstadisticaHechos();
-
+            EstadisticaCombinacion estadistica = new EstadisticaCombinacion();
             estadistica.setColeccion(claveEstadistica.getColeccion());
             estadistica.setProvincia(claveEstadistica.getProvincia());
             estadistica.setCategoria(claveEstadistica.getCategoria());
             estadistica.setHora(claveEstadistica.getHoraDelDia());
             estadistica.setHechos(hechosXEstadistica);
 
-            EstadisticaHechos estadisticaGuardada = this.crearEstadistica(estadistica);
+            EstadisticaCombinacion estadisticaGuardada = this.crearEstadistica(estadistica);
             estadisticas.add(estadisticaGuardada);
         });
 
@@ -102,7 +139,7 @@ public class EstadisticaService implements IEstadisticaService {
 
         // Limpiar caché al final
         this.cacheHechos.clear();
-
+        this.persistirTrazabilidad();
         return estadisticas;
     }
 
@@ -149,7 +186,7 @@ public class EstadisticaService implements IEstadisticaService {
 
     @Override
     @Transactional
-    public EstadisticaHechos crearEstadistica(EstadisticaHechos estadistica) {
+    public EstadisticaCombinacion crearEstadistica(EstadisticaCombinacion estadistica) {
         Categoria categoriaGuardada = this.findOrCreate(estadistica.getCategoria());
         Coleccion coleccionGuardada = this.findOrCreate(estadistica.getColeccion());
 
@@ -158,7 +195,7 @@ public class EstadisticaService implements IEstadisticaService {
         estadistica.setCategoria(categoriaGuardada);
         estadistica.setColeccion(coleccionGuardada);
 
-        EstadisticaHechos estadisticaGuardada = this.estadisticaRepository
+        EstadisticaCombinacion estadisticaGuardada = this.estadisticaRepository
                 .findByAllFieldsExceptId(estadistica)
                 .orElse(estadistica);
 
@@ -271,5 +308,17 @@ public class EstadisticaService implements IEstadisticaService {
 
     private SolicitudEliminacion findOrCreate(SolicitudEliminacion solicitud) {
         return solicitudRepository.save(solicitud);
+    }
+
+    private void persistirTrazabilidad() {
+        this.coleccionRepository.findAll().forEach(coleccion -> {
+            this.provinciaConMasHechosDeUnaColeccion(coleccion.getId());
+        });
+        this.categoriaConMasHechos();
+        this.categoriaRepository.findAll().forEach(categoria -> {
+            this.provinciaConMasHechosSegunCategoria(categoria.getId());
+            this.horaConMasHechosSegunCategoria(categoria.getId());
+        });
+        this.cantSolicitudesSpam();
     }
 }

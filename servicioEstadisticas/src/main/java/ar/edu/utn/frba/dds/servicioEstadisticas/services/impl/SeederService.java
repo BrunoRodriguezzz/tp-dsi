@@ -2,7 +2,7 @@ package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.ICategoriaRepository;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.IColeccionRepository;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.IEstadisticaHechosRepository;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.IEstadisticaCombinacionRepository;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.ISolicitudRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SeederService implements ApplicationRunner {
   @Autowired
-  private IEstadisticaHechosRepository estadisticaHechosRepository;
+  private IEstadisticaCombinacionRepository estadisticaHechosRepository;
 
   @Autowired
   private ICategoriaRepository categoriaRepository;

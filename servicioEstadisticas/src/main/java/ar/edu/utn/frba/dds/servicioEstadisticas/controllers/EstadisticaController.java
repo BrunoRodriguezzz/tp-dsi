@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -82,7 +81,7 @@ public class EstadisticaController {
 
     @PostMapping()
     public ResponseEntity calcularEstadisticas() {
-        List<EstadisticaHechos> estadisticas = this.estadisticaService.calcularEstadisticas();
+        List<EstadisticaCombinacion> estadisticas = this.estadisticaService.calcularEstadisticas();
         return ResponseEntity.status(HttpStatus.CREATED).body(estadisticas);
     }
 
