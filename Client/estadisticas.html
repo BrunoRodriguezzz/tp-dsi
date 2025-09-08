@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas y Análisis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/estadisticas.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid px-4 py-4">
+        <div class="mb-4">
+            <h1>Estadísticas y Análisis</h1>
+            <p>Dashboards interactivos para analizar patrones y tendencias en los datos de MetaMapa</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-3">
+                <div class="card stats-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="icon-wrapper bg-primary bg-opacity-10 me-3">
+                            <i class="bi bi-graph-up-arrow text-primary fs-4"></i>
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <p class="card-text small text-muted mb-1">Total Hechos</p>
+                            <h5 class="card-title mb-0 fw-bold">1,456</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="card stats-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="icon-wrapper bg-success bg-opacity-10 me-3">
+                            <i class="bi bi-pie-chart-fill text-success fs-4"></i>
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <p class="card-text small text-muted mb-1">Colecciones</p>
+                            <h5 class="card-title mb-0 fw-bold">89</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="card stats-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="icon-wrapper bg-danger bg-opacity-10 me-3">
+                            <i class="bi bi-exclamation-triangle text-danger fs-4"></i>
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <p class="card-text small text-muted mb-1">Solicitudes Spam</p>
+                            <h5 class="card-title mb-0 fw-bold">145</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-3">
+                <div class="card stats-card h-100">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="icon-wrapper bg-warning bg-opacity-10 me-3">
+                            <i class="bi bi-bullseye text-warning fs-4"></i>
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <p class="card-text small text-muted mb-1">Categoría Top</p>
+                            <h6 class="card-title mb-0 fw-bold">Infraestructura</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="modern-tabs-wrapper">
+            <ul class="nav nav-tabs modern-tabs" id="statisticsTabs">
+                <li class="nav-item flex-fill">
+                    <button class="nav-link active w-100" data-bs-toggle="tab" data-bs-target="#coleccion-provincia">
+                        <i class="bi bi-geo-alt me-2"></i>
+                        <span class="d-none d-sm-inline">Colección por Provincia</span>
+                        <span class="d-sm-none">Col/Prov</span>
+                    </button>
+                </li>
+                <li class="nav-item flex-fill">
+                    <button class="nav-link w-100" data-bs-toggle="tab" data-bs-target="#categoria-general">
+                        <i class="bi bi-bar-chart me-2"></i>
+                        <span class="d-none d-sm-inline">Categorías</span>
+                        <span class="d-sm-none">Cat</span>
+                    </button>
+                </li>
+                <li class="nav-item flex-fill">
+                    <button class="nav-link w-100" data-bs-toggle="tab" data-bs-target="#categoria-provincia">
+                        <i class="bi bi-geo-alt me-2"></i>
+                        <span class="d-none d-sm-inline">Cat por Provincia</span>
+                        <span class="d-sm-none">Cat/Prov</span>
+                    </button>
+                </li>
+                <li class="nav-item flex-fill">
+                    <button class="nav-link w-100" data-bs-toggle="tab" data-bs-target="#categoria-hora">
+                        <i class="bi bi-clock me-2"></i>
+                        <span class="d-none d-sm-inline">Cat por Hora</span>
+                        <span class="d-sm-none">Cat/Hora</span>
+                    </button>
+                </li>
+                <li class="nav-item flex-fill">
+                    <button class="nav-link w-100" data-bs-toggle="tab" data-bs-target="#solicitudes-spam">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <span class="d-none d-sm-inline">Solicitudes</span>
+                        <span class="d-sm-none">Spam</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <!-- Content -->
+<!--
+        <div class="tab-content bg-white rounded p-4 shadow-sm">
+            <div class="tab-pane fade show active" id="coleccion-provincia">
+                <h4><i class="bi bi-geo-alt text-primary me-2"></i>Colección por Provincia</h4>
+                <p>Contenido de colección por provincia...</p>
+            </div>
+            <div class="tab-pane fade" id="categoria-general">
+                <h4><i class="bi bi-bar-chart text-success me-2"></i>Categorías Generales</h4>
+                <p>Contenido de categorías generales...</p>
+            </div>
+            <div class="tab-pane fade" id="categoria-provincia">
+                <h4><i class="bi bi-geo-alt text-info me-2"></i>Categorías por Provincia</h4>
+                <p>Contenido de categorías por provincia...</p>
+            </div>
+            <div class="tab-pane fade" id="categoria-hora">
+                <h4><i class="bi bi-clock text-warning me-2"></i>Categorías por Hora</h4>
+                <p>Contenido de categorías por hora...</p>
+            </div>
+            <div class="tab-pane fade" id="solicitudes-spam">
+                <h4><i class="bi bi-exclamation-triangle text-danger me-2"></i>Solicitudes y Spam</h4>
+                <p>Contenido de solicitudes y spam...</p>
+            </div>
+        </div>
+-->
+        <!-- Tab Content -->
+        <div class="tab-content mt-4" id="statisticsTabContent">
+
+            <!-- Tab 1: Colección por Provincia -->
+            <div class="tab-pane fade show active" id="coleccion-provincia" role="tabpanel">
+                <div class="card">
+                    <div
+                        class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
+                        <h5 class="card-title mb-3 mb-sm-0 d-flex align-items-center">
+                            <i class="bi bi-geo-alt me-2"></i>
+                            Distribución de Hechos por Provincia
+                        </h5>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                id="coleccionDropdown" data-bs-toggle="dropdown">
+                                <span id="selectedColeccion">Infraestructura Urbana</span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="coleccionDropdown">
+                                <li><a class="dropdown-item" href="#"
+                                        onclick="selectColeccion('Infraestructura Urbana')">Infraestructura Urbana</a>
+                                </li>
+                                <li><a class="dropdown-item" href="#"
+                                        onclick="selectColeccion('Seguridad Ciudadana')">Seguridad Ciudadana</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="selectColeccion('Medio Ambiente')">Medio
+                                        Ambiente</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="selectColeccion('Salud Pública')">Salud
+                                        Pública</a></li>
+                                <li><a class="dropdown-item" href="#"
+                                        onclick="selectColeccion('Educación')">Educación</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="provinciaChart"></canvas>
+                        </div>
+                        <div class="result-box bg-primary bg-opacity-10">
+                            <p class="text-primary mb-0">
+                                <strong>Resultado:</strong> En la colección "<span id="resultColeccion">Infraestructura
+                                    Urbana</span>",
+                                la mayor cantidad de hechos se concentra en <strong>Buenos Aires</strong> con 245 hechos
+                                reportados.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Categorías General -->
+            <div class="tab-pane fade" id="categoria-general" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title d-flex align-items-center mb-0">
+                            <i class="bi bi-bar-chart me-2"></i>
+                            Hechos por Categoría
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="chart-container">
+                                    <canvas id="categoriaChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <h6 class="fw-bold mb-3">Ranking de Categorías</h6>
+                                <div
+                                    class="d-flex justify-content-between align-items-center p-3 bg-light rounded mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle me-3"
+                                            style="width: 16px; height: 16px; background-color: #3B82F6;"></div>
+                                        <span class="fw-medium">Infraestructura</span>
+                                    </div>
+                                    <span class="badge bg-primary">342 hechos</span>
+                                </div>
+                                <div
+                                    class="d-flex justify-content-between align-items-center p-3 bg-light rounded mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle me-3"
+                                            style="width: 16px; height: 16px; background-color: #EF4444;"></div>
+                                        <span class="fw-medium">Seguridad</span>
+                                    </div>
+                                    <span class="badge bg-danger">298 hechos</span>
+                                </div>
+                                <div
+                                    class="d-flex justify-content-between align-items-center p-3 bg-light rounded mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle me-3"
+                                            style="width: 16px; height: 16px; background-color: #10B981;"></div>
+                                        <span class="fw-medium">Medio Ambiente</span>
+                                    </div>
+                                    <span class="badge bg-success">234 hechos</span>
+                                </div>
+                                <div
+                                    class="d-flex justify-content-between align-items-center p-3 bg-light rounded mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle me-3"
+                                            style="width: 16px; height: 16px; background-color: #F59E0B;"></div>
+                                        <span class="fw-medium">Salud</span>
+                                    </div>
+                                    <span class="badge bg-warning">189 hechos</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle me-3"
+                                            style="width: 16px; height: 16px; background-color: #8B5CF6;"></div>
+                                        <span class="fw-medium">Transporte</span>
+                                    </div>
+                                    <span class="badge bg-info">156 hechos</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-box bg-success bg-opacity-10">
+                            <p class="text-success mb-0">
+                                <strong>Resultado:</strong> La categoría con mayor cantidad de hechos reportados es
+                                <strong>Infraestructura</strong> con 342 hechos, seguida por Seguridad con 298 hechos.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Categoría por Provincia -->
+            <div class="tab-pane fade" id="categoria-provincia" role="tabpanel">
+                <div class="card">
+                    <div
+                        class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
+                        <h5 class="card-title mb-3 mb-sm-0 d-flex align-items-center">
+                            <i class="bi bi-geo-alt me-2"></i>
+                            Hechos por Provincia - Categoría Específica
+                        </h5>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                id="categoriaProvinciaDropdown" data-bs-toggle="dropdown">
+                                <span id="selectedCategoriaP">Infraestructura</span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="categoriaProvinciaDropdown">
+                                <li><a class="dropdown-item" href="#"
+                                        onclick="selectCategoriaP('Infraestructura')">Infraestructura</a></li>
+                                <li><a class="dropdown-item" href="#"
+                                        onclick="selectCategoriaP('Seguridad')">Seguridad</a>
+                                </li>
+                                <li><a class="dropdown-item" href="#" onclick="selectCategoriaP('Medio Ambiente')">Medio
+                                        Ambiente</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="selectCategoriaP('Salud')">Salud</a></li>
+                                <li><a class="dropdown-item" href="#"
+                                        onclick="selectCategoriaP('Transporte')">Transporte</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="categoriaProvinciaChart"></canvas>
+                        </div>
+                        <div class="result-box bg-success bg-opacity-10">
+                            <p class="text-success mb-0">
+                                <strong>Resultado:</strong> Para la categoría "<span
+                                    id="resultCategoriaP">Infraestructura</span>",
+                                la provincia con mayor cantidad de hechos es <strong>Buenos Aires</strong> con 89 hechos
+                                reportados.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Categoría por Hora -->
+            <div class="tab-pane fade" id="categoria-hora" role="tabpanel">
+                <div class="card">
+                    <div
+                        class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
+                        <h5 class="card-title mb-3 mb-sm-0 d-flex align-items-center">
+                            <i class="bi bi-clock me-2"></i>
+                            Distribución Horaria de Hechos
+                        </h5>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                id="categoriaHoraDropdown" data-bs-toggle="dropdown">
+                                <span id="selectedCategoriaH">Infraestructura</span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="categoriaHoraDropdown">
+                                <li><a class="dropdown-item" href="#"
+                                        onclick="selectCategoriaH('Infraestructura')">Infraestructura</a></li>
+                                <li><a class="dropdown-item" href="#"
+                                        onclick="selectCategoriaH('Seguridad')">Seguridad</a>
+                                </li>
+                                <li><a class="dropdown-item" href="#" onclick="selectCategoriaH('Medio Ambiente')">Medio
+                                        Ambiente</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="selectCategoriaH('Salud')">Salud</a></li>
+                                <li><a class="dropdown-item" href="#"
+                                        onclick="selectCategoriaH('Transporte')">Transporte</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="horaChart"></canvas>
+                        </div>
+                        <div class="result-box bg-warning bg-opacity-10">
+                            <p class="text-warning-emphasis mb-0">
+                                <strong>Resultado:</strong> Los hechos de la categoría "<span
+                                    id="resultCategoriaH">Infraestructura</span>"
+                                ocurren con mayor frecuencia a las <strong>18:00 horas</strong> con 134 reportes,
+                                seguido
+                                por las 16:00 horas con 92 reportes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 5: Solicitudes Spam -->
+            <div class="tab-pane fade" id="solicitudes-spam" role="tabpanel">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title d-flex align-items-center mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Análisis de Solicitudes de Eliminación
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="chart-container">
+                                    <canvas id="spamChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <h6 class="fw-bold mb-3">Clasificación de Solicitudes</h6>
+                                <div
+                                    class="d-flex justify-content-between align-items-center p-3 bg-light rounded mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle me-3"
+                                            style="width: 24px; height: 24px; background-color: #EF4444;"></div>
+                                        <span class="fw-medium">Spam</span>
+                                    </div>
+                                    <span class="badge bg-danger">145 solicitudes</span>
+                                </div>
+                                <div
+                                    class="d-flex justify-content-between align-items-center p-3 bg-light rounded mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle me-3"
+                                            style="width: 24px; height: 24px; background-color: #10B981;"></div>
+                                        <span class="fw-medium">No Spam</span>
+                                    </div>
+                                    <span class="badge bg-success">255 solicitudes</span>
+                                </div>
+                                <div class="p-3 bg-secondary bg-opacity-10 rounded">
+                                    <h6 class="fw-bold mb-2">Resumen Total</h6>
+                                    <p class="small mb-1">Total de solicitudes procesadas: <strong>400</strong></p>
+                                    <p class="small mb-0">Porcentaje de spam: <strong>36.3%</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-box bg-danger bg-opacity-10">
+                            <p class="text-danger mb-0">
+                                <strong>Resultado:</strong> De un total de 400 solicitudes de eliminación,
+                                <strong>145 solicitudes (36.3%)</strong> corresponden a spam, mientras que 255
+                                solicitudes
+                                (63.7%)
+                                son reportes legítimos que requieren revisión.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // Variables para almacenar las instancias de los gráficos
+        let provinciaChart, categoriaChart, categoriaProvinciaChart, horaChart, spamChart;
+
+        // Datos de ejemplo
+        const hechosPorProvinciaData = {
+            labels: ["Buenos Aires", "Córdoba", "Santa Fe", "Mendoza", "Tucumán", "Entre Ríos", "Salta", "Chaco"],
+            datasets: [{
+                label: 'Hechos',
+                data: [245, 156, 134, 89, 67, 45, 34, 28],
+                backgroundColor: '#3B82F6',
+                borderColor: '#2563EB',
+                borderWidth: 1
+            }]
+        };
+
+        const hechosPorCategoriaData = {
+            labels: ["Infraestructura", "Seguridad", "Medio Ambiente", "Salud", "Transporte", "Servicios Públicos", "Educación", "Cultura"],
+            datasets: [{
+                data: [342, 298, 234, 189, 156, 134, 98, 67],
+                backgroundColor: ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#06B6D4', '#84CC16', '#F97316'],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        };
+
+        const hechosPorProvinciaYCategoriaData = {
+            labels: ["Buenos Aires", "Córdoba", "Santa Fe", "Mendoza", "Tucumán", "Entre Ríos", "Salta", "Chaco"],
+            datasets: [{
+                label: 'Hechos',
+                data: [89, 67, 45, 34, 28, 23, 19, 15],
+                backgroundColor: '#10B981',
+                borderColor: '#059669',
+                borderWidth: 1
+            }]
+        };
+
+        const hechosPorHoraData = {
+            labels: ["00:00", "02:00", "04:00", "06:00", "08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"],
+            datasets: [{
+                label: 'Hechos',
+                data: [12, 8, 5, 15, 45, 67, 89, 78, 92, 134, 98, 56],
+                borderColor: '#8B5CF6',
+                backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#8B5CF6',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5
+            }]
+        };
+
+        const solicitudesEliminacionData = {
+            labels: ["Spam", "No Spam"],
+            datasets: [{
+                data: [145, 255],
+                backgroundColor: ['#EF4444', '#10B981'],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        };
+
+        // Función para inicializar todos los gráficos
+        function initCharts() {
+            // Gráfico de Provincia
+            const ctxProvincia = document.getElementById('provinciaChart').getContext('2d');
+            provinciaChart = new Chart(ctxProvincia, {
+                type: 'bar',
+                data: hechosPorProvinciaData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Gráfico de Spam (Doughnut)
+            const ctxSpam = document.getElementById('spamChart').getContext('2d');
+            spamChart = new Chart(ctxSpam, {
+                type: 'doughnut',
+                data: solicitudesEliminacionData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Funciones para manejar los selectores (dropdowns)
+        function selectColeccion(coleccion) {
+            document.getElementById('selectedColeccion').textContent = coleccion;
+            document.getElementById('resultColeccion').textContent = coleccion;
+        }
+
+        function selectCategoriaP(categoria) {
+            document.getElementById('selectedCategoriaP').textContent = categoria;
+            document.getElementById('resultCategoriaP').textContent = categoria;
+        }
+
+        function selectCategoriaH(categoria) {
+            document.getElementById('selectedCategoriaH').textContent = categoria;
+            document.getElementById('resultCategoriaH').textContent = categoria;
+        }
+
+        // Función que se ejecuta cuando se cambian las pestañas
+        document.addEventListener('DOMContentLoaded', function () {
+            // Inicializar gráficos después de que se cargue la página
+            initCharts();
+
+            // Añadir event listeners para redimensionar gráficos cuando cambian las pestañas
+            const tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');
+            tabButtons.forEach(button => {
+                button.addEventListener('shown.bs.tab', function () {
+                    // Redimensionar todos los gráficos cuando se muestra una pestaña
+                    setTimeout(() => {
+                        if (provinciaChart) provinciaChart.resize();
+                        if (categoriaChart) categoriaChart.resize();
+                        if (categoriaProvinciaChart) categoriaProvinciaChart.resize();
+                        if (horaChart) horaChart.resize();
+                        if (spamChart) spamChart.resize();
+                    }, 100);
+                });
+            });
+        });
+
+        // Redimensionar gráficos cuando cambia el tamaño de la ventana
+        window.addEventListener('resize', function () {
+            setTimeout(() => {
+                if (provinciaChart) provinciaChart.resize();
+                if (categoriaChart) categoriaChart.resize();
+                if (categoriaProvinciaChart) categoriaProvinciaChart.resize();
+                if (horaChart) horaChart.resize();
+                if (spamChart) spamChart.resize();
+            }, 100);
+        });
+    </script>
+</body>
+
+</html>
