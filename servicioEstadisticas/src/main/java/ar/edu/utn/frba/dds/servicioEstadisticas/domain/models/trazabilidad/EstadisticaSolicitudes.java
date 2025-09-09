@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Categoria;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

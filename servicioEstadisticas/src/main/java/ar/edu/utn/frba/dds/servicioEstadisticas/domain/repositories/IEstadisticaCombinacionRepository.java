@@ -1,9 +1,9 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Categoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.EstadisticaCombinacion;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.HoraDelDia;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Provincia;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.utils.EstadisticaCombinacion;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.HoraDelDia;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

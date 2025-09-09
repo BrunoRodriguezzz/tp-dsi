@@ -7,8 +7,7 @@ import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ResolucionSolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.UbicacionInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Provincia;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.SolicitudEliminacion;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

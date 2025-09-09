@@ -1,8 +1,8 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.services;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Categoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.EstadisticaCombinacion;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Provincia;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.utils.EstadisticaCombinacion;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -15,4 +15,5 @@ public interface IEstadisticaService {
     Long cantSolicitudesSpam();
     List<EstadisticaCombinacion> calcularEstadisticas();
     EstadisticaCombinacion crearEstadistica(EstadisticaCombinacion estadistica);
+    void persistirEnCSV();
 }

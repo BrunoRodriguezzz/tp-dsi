@@ -4,14 +4,29 @@ import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.*;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Coleccion;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.HoraDelDia;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaHoraXCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaSolicitudes;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.utils.ClaveEstadistica;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.utils.EstadisticaCombinacion;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.*;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad.IEstadisticaCategoriaRepository;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad.IEstadisticaHoraXCategoriaRepository;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad.IEstadisticaProvinciaXCategoriaRepository;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad.IEstadisticaProvinciaXColeccionRepository;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad.IEstadisticaSolicitudesRepository;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticaService;
+import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticasCsvService;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IImportadorService;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,12 +43,14 @@ import java.util.stream.Collectors;
 @Service
 public class EstadisticaService implements IEstadisticaService {
     private IImportadorService importadorService;
+    private IEstadisticasCsvService estadisticasCsvService;
 
     // Caché para evitar duplicar hechos durante una misma ejecución
     private Map<Long, Hecho> cacheHechos = new HashMap<>();
 
-    public EstadisticaService(IImportadorService importadorService) {
+    public EstadisticaService(IImportadorService importadorService, IEstadisticasCsvService estadisticasCsvService) {
         this.importadorService = importadorService;
+        this.estadisticasCsvService = estadisticasCsvService;
     }
 
     @Autowired
@@ -66,6 +83,7 @@ public class EstadisticaService implements IEstadisticaService {
     @Autowired
     private IEstadisticaSolicitudesRepository estadisticaSolicitudesRepository;
 
+    // Estadisticas Principales
     @Override
     public Provincia provinciaConMasHechosDeUnaColeccion(Long idColeccion) {
         Coleccion coleccion = this.coleccionRepository.findById(idColeccion).orElse(null);
@@ -113,6 +131,7 @@ public class EstadisticaService implements IEstadisticaService {
     @Transactional
     public List<EstadisticaCombinacion> calcularEstadisticas() {
         // Limpiar caché al inicio de cada cálculo
+        this.limpiarDatosAnteriores();
         this.cacheHechos.clear();
 
         List<EstadisticaCombinacion> estadisticas = new ArrayList<>();
@@ -141,6 +160,11 @@ public class EstadisticaService implements IEstadisticaService {
         this.cacheHechos.clear();
         this.persistirTrazabilidad();
         return estadisticas;
+    }
+
+    @Override
+    public void persistirEnCSV(){
+        this.exportarCSV();
     }
 
     public HashMap<ClaveEstadistica, List<Hecho>> generarMapa(List<ColeccionInputDTO> colecciones, List<HechoInputDTO> hechos) {
@@ -182,6 +206,10 @@ public class EstadisticaService implements IEstadisticaService {
         }
 
         return mapaEstadisticas;
+    }
+
+    private void limpiarDatosAnteriores() {
+        this.estadisticaRepository.deleteAll();
     }
 
     @Override
@@ -320,5 +348,33 @@ public class EstadisticaService implements IEstadisticaService {
             this.horaConMasHechosSegunCategoria(categoria.getId());
         });
         this.cantSolicitudesSpam();
+    }
+
+    private void exportarCSV() {
+        List<EstadisticaCategoria> estadisticasCategorias = this.estadisticaCategoriaRepository.findAll();
+        List<EstadisticaHoraXCategoria> estadisticasHoraXCategoria = this.estadisticaHoraXCategoriaRepository.findAll();
+        List<EstadisticaProvinciaXCategoria> estadisticasProvinciaXCategoria = this.estadisticaProvinciaXCategoriaRepository.findAll();
+        List<EstadisticaProvinciaXColeccion> estadisticasProvinciaXColeccion = this.estadisticaProvinciaXColeccionRepository.findAll();
+        List<EstadisticaSolicitudes> estadisticasSolicitudes = this.estadisticaSolicitudesRepository.findAll();
+
+        Path directorioActual = Paths.get("").toAbsolutePath();
+        Path directorioPublic = directorioActual.resolve("public").resolve("estadisticas");
+
+        try {
+            if (!Files.exists(directorioPublic)) {
+                Files.createDirectories(directorioPublic);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        this.estadisticasCsvService.exportarEstadisticas(
+            estadisticasCategorias,
+            estadisticasHoraXCategoria,
+            estadisticasProvinciaXCategoria,
+            estadisticasProvinciaXColeccion,
+            estadisticasSolicitudes,
+            directorioPublic.toString()
+        );
     }
 }

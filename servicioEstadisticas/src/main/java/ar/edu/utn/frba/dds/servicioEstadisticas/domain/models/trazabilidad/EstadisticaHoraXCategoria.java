@@ -1,8 +1,7 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Categoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.HoraDelDia;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Provincia;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.HoraDelDia;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,7 +36,7 @@ public class EstadisticaHoraXCategoria {
   @Column(name = "hora_mas_hechos", nullable = false, columnDefinition = "TIMESTAMP")
   LocalDateTime fecha;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "categoria_id")
   Categoria categoria;
 

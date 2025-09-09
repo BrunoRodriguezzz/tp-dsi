@@ -1,10 +1,9 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Categoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Hecho;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data

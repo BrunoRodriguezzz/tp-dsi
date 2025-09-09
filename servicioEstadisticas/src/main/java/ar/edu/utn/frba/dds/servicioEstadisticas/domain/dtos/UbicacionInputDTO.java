@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Provincia;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
 import lombok.Data;
 
 @Data

@@ -1,6 +1,5 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories;
+package ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
 import org.springframework.data.jpa.repository.JpaRepository;
 

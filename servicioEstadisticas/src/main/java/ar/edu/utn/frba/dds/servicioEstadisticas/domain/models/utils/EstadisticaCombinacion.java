@@ -1,5 +1,10 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models;
+package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.utils;
 
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Hecho;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Coleccion;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.HoraDelDia;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,14 +22,14 @@ public class EstadisticaCombinacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "coleccion_id")
     Coleccion coleccion;
 
     @Enumerated(EnumType.STRING)
     Provincia provincia;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "categoria_id")
     Categoria categoria;
 

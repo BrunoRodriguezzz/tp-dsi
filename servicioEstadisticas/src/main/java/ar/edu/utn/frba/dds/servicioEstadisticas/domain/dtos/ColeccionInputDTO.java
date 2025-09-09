@@ -1,11 +1,9 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Coleccion;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Coleccion;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 public class ColeccionInputDTO {

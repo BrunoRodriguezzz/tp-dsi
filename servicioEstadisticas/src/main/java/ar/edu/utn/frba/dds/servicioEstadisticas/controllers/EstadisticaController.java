@@ -2,7 +2,9 @@ package ar.edu.utn.frba.dds.servicioEstadisticas.controllers;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.*;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.utils.EstadisticaCombinacion;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticaService;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IImportadorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +86,13 @@ public class EstadisticaController {
         List<EstadisticaCombinacion> estadisticas = this.estadisticaService.calcularEstadisticas();
         return ResponseEntity.status(HttpStatus.CREATED).body(estadisticas);
     }
+
+    @PostMapping("/csv")
+    public ResponseEntity persistirCSV() {
+        this.estadisticaService.persistirEnCSV();
+        return ResponseEntity.status(HttpStatus.CREATED).body("Persistido");
+    }
+
 
     // ---------------------------------- TEST ------------------------------------
     @GetMapping("/hechos")

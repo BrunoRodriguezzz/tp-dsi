@@ -1,6 +1,5 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories;
+package ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaHoraXCategoria;
 import org.springframework.data.jpa.repository.JpaRepository;
 
