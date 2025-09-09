@@ -59,7 +59,7 @@ public class FuenteService implements IFuenteService {
 
         return this.fuenteRepository.findByTipoFuente(TipoFuente.PROXY)
                 .stream()
-                .map(f -> f.importarHechos().blockLast())
+                .flatMap(f -> f.importarHechos().collectList().block().stream())
                 .toList();
     }
 
