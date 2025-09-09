@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadísticas y Análisis</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="css/styles.css">
@@ -86,38 +87,46 @@
         </div>
 
         <!-- Tabs -->
-        <div class="modern-tabs-wrapper">
-            <ul class="nav nav-tabs modern-tabs" id="statisticsTabs">
-                <li class="nav-item flex-fill">
-                    <button class="nav-link active w-100" data-bs-toggle="tab" data-bs-target="#coleccion-provincia">
+        <div class="stats-tabs-wrapper">
+            <ul class="nav nav-tabs stats-tabs" id="statisticsTabs" role="tablist">
+                <li class="nav-item flex-fill" role="presentation">
+                    <button class="nav-link active w-100" type="button" data-bs-toggle="tab"
+                        data-bs-target="#coleccion-provincia" role="tab" aria-controls="coleccion-provincia"
+                        aria-selected="true">
                         <i class="bi bi-geo-alt me-2"></i>
                         <span class="d-none d-sm-inline">Colección por Provincia</span>
                         <span class="d-sm-none">Col/Prov</span>
                     </button>
                 </li>
-                <li class="nav-item flex-fill">
-                    <button class="nav-link w-100" data-bs-toggle="tab" data-bs-target="#categoria-general">
+                <li class="nav-item flex-fill" role="presentation">
+                    <button class="nav-link w-100" type="button" data-bs-toggle="tab"
+                        data-bs-target="#categoria-general" role="tab" aria-controls="categoria-general"
+                        aria-selected="false">
                         <i class="bi bi-bar-chart me-2"></i>
                         <span class="d-none d-sm-inline">Categorías</span>
                         <span class="d-sm-none">Cat</span>
                     </button>
                 </li>
-                <li class="nav-item flex-fill">
-                    <button class="nav-link w-100" data-bs-toggle="tab" data-bs-target="#categoria-provincia">
+                <li class="nav-item flex-fill" role="presentation">
+                    <button class="nav-link w-100" type="button" data-bs-toggle="tab"
+                        data-bs-target="#categoria-provincia" role="tab" aria-controls="categoria-provincia"
+                        aria-selected="false">
                         <i class="bi bi-geo-alt me-2"></i>
                         <span class="d-none d-sm-inline">Cat por Provincia</span>
                         <span class="d-sm-none">Cat/Prov</span>
                     </button>
                 </li>
-                <li class="nav-item flex-fill">
-                    <button class="nav-link w-100" data-bs-toggle="tab" data-bs-target="#categoria-hora">
+                <li class="nav-item flex-fill" role="presentation">
+                    <button class="nav-link w-100" type="button" data-bs-toggle="tab" data-bs-target="#categoria-hora"
+                        role="tab" aria-controls="categoria-hora" aria-selected="false">
                         <i class="bi bi-clock me-2"></i>
                         <span class="d-none d-sm-inline">Cat por Hora</span>
                         <span class="d-sm-none">Cat/Hora</span>
                     </button>
                 </li>
-                <li class="nav-item flex-fill">
-                    <button class="nav-link w-100" data-bs-toggle="tab" data-bs-target="#solicitudes-spam">
+                <li class="nav-item flex-fill" role="presentation">
+                    <button class="nav-link w-100" type="button" data-bs-toggle="tab" data-bs-target="#solicitudes-spam"
+                        role="tab" aria-controls="solicitudes-spam" aria-selected="false">
                         <i class="bi bi-exclamation-triangle me-2"></i>
                         <span class="d-none d-sm-inline">Solicitudes</span>
                         <span class="d-sm-none">Spam</span>
@@ -125,31 +134,6 @@
                 </li>
             </ul>
         </div>
-        <!-- Content -->
-<!--
-        <div class="tab-content bg-white rounded p-4 shadow-sm">
-            <div class="tab-pane fade show active" id="coleccion-provincia">
-                <h4><i class="bi bi-geo-alt text-primary me-2"></i>Colección por Provincia</h4>
-                <p>Contenido de colección por provincia...</p>
-            </div>
-            <div class="tab-pane fade" id="categoria-general">
-                <h4><i class="bi bi-bar-chart text-success me-2"></i>Categorías Generales</h4>
-                <p>Contenido de categorías generales...</p>
-            </div>
-            <div class="tab-pane fade" id="categoria-provincia">
-                <h4><i class="bi bi-geo-alt text-info me-2"></i>Categorías por Provincia</h4>
-                <p>Contenido de categorías por provincia...</p>
-            </div>
-            <div class="tab-pane fade" id="categoria-hora">
-                <h4><i class="bi bi-clock text-warning me-2"></i>Categorías por Hora</h4>
-                <p>Contenido de categorías por hora...</p>
-            </div>
-            <div class="tab-pane fade" id="solicitudes-spam">
-                <h4><i class="bi bi-exclamation-triangle text-danger me-2"></i>Solicitudes y Spam</h4>
-                <p>Contenido de solicitudes y spam...</p>
-            </div>
-        </div>
--->
         <!-- Tab Content -->
         <div class="tab-content mt-4" id="statisticsTabContent">
 
@@ -162,23 +146,45 @@
                             <i class="bi bi-geo-alt me-2"></i>
                             Distribución de Hechos por Provincia
                         </h5>
+                        <!-- DROPDOWN -->
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                id="coleccionDropdown" data-bs-toggle="dropdown">
-                                <span id="selectedColeccion">Infraestructura Urbana</span>
+                                id="coleccionDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                                aria-haspopup="true">
+                                <!-- Acá va el valor del elemento seleccionado por JS -->
+                                <span id="selectedColeccion"></span>
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="coleccionDropdown">
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="selectColeccion('Infraestructura Urbana')">Infraestructura Urbana</a>
+                            <!-- DROPDOWN MENU -->
+                            <ul class="dropdown-menu" aria-labelledby="coleccionDropdown" role="menu">
+                                <li>
+                                    <button class="dropdown-item" type="button" data-coleccion="Infraestructura Urbana"
+                                        role="menuitem" aria-current="true">
+                                        Infraestructura Urbana
+                                    </button>
                                 </li>
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="selectColeccion('Seguridad Ciudadana')">Seguridad Ciudadana</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="selectColeccion('Medio Ambiente')">Medio
-                                        Ambiente</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="selectColeccion('Salud Pública')">Salud
-                                        Pública</a></li>
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="selectColeccion('Educación')">Educación</a>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-coleccion="Seguridad Ciudadana"
+                                        role="menuitem">
+                                        Seguridad Ciudadana
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-coleccion="Medio Ambiente"
+                                        role="menuitem">
+                                        Medio Ambiente
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-coleccion="Salud Pública"
+                                        role="menuitem">
+                                        Salud Pública
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-coleccion="Educación"
+                                        role="menuitem">
+                                        Educación
+                                    </button>
                                 </li>
                             </ul>
                         </div>
@@ -189,10 +195,10 @@
                         </div>
                         <div class="result-box bg-primary bg-opacity-10">
                             <p class="text-primary mb-0">
-                                <strong>Resultado:</strong> En la colección "<span id="resultColeccion">Infraestructura
-                                    Urbana</span>",
-                                la mayor cantidad de hechos se concentra en <strong>Buenos Aires</strong> con 245 hechos
-                                reportados.
+                                <!-- Se actualizan con JS-->
+                                <strong>Resultado:</strong> En la colección "<span id="resultColeccion"></span>",
+                                la mayor cantidad de hechos se concentra en <strong id="resultProvincia"></strong>
+                                con <strong id="resultCantidad"></strong> hechos reportados.
                             </p>
                         </div>
                     </div>
@@ -202,8 +208,8 @@
             <!-- Tab 2: Categorías General -->
             <div class="tab-pane fade" id="categoria-general" role="tabpanel">
                 <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title d-flex align-items-center mb-0">
+                    <div class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
+                        <h5 class="card-title mb-3 mb-sm-0 d-flex align-items-center">
                             <i class="bi bi-bar-chart me-2"></i>
                             Hechos por Categoría
                         </h5>
@@ -266,7 +272,8 @@
                         <div class="result-box bg-success bg-opacity-10">
                             <p class="text-success mb-0">
                                 <strong>Resultado:</strong> La categoría con mayor cantidad de hechos reportados es
-                                <strong>Infraestructura</strong> con 342 hechos, seguida por Seguridad con 298 hechos.
+                                <strong>Infraestructura</strong> con 342 hechos, seguida por Seguridad con 298
+                                hechos.
                             </p>
                         </div>
                     </div>
@@ -295,7 +302,8 @@
                                 </li>
                                 <li><a class="dropdown-item" href="#" onclick="selectCategoriaP('Medio Ambiente')">Medio
                                         Ambiente</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="selectCategoriaP('Salud')">Salud</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="selectCategoriaP('Salud')">Salud</a>
+                                </li>
                                 <li><a class="dropdown-item" href="#"
                                         onclick="selectCategoriaP('Transporte')">Transporte</a></li>
                             </ul>
@@ -309,7 +317,8 @@
                             <p class="text-success mb-0">
                                 <strong>Resultado:</strong> Para la categoría "<span
                                     id="resultCategoriaP">Infraestructura</span>",
-                                la provincia con mayor cantidad de hechos es <strong>Buenos Aires</strong> con 89 hechos
+                                la provincia con mayor cantidad de hechos es <strong>Buenos Aires</strong> con 89
+                                hechos
                                 reportados.
                             </p>
                         </div>
@@ -339,7 +348,8 @@
                                 </li>
                                 <li><a class="dropdown-item" href="#" onclick="selectCategoriaH('Medio Ambiente')">Medio
                                         Ambiente</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="selectCategoriaH('Salud')">Salud</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="selectCategoriaH('Salud')">Salud</a>
+                                </li>
                                 <li><a class="dropdown-item" href="#"
                                         onclick="selectCategoriaH('Transporte')">Transporte</a></li>
                             </ul>
@@ -421,173 +431,8 @@
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-
-    <script>
-        // Variables para almacenar las instancias de los gráficos
-        let provinciaChart, categoriaChart, categoriaProvinciaChart, horaChart, spamChart;
-
-        // Datos de ejemplo
-        const hechosPorProvinciaData = {
-            labels: ["Buenos Aires", "Córdoba", "Santa Fe", "Mendoza", "Tucumán", "Entre Ríos", "Salta", "Chaco"],
-            datasets: [{
-                label: 'Hechos',
-                data: [245, 156, 134, 89, 67, 45, 34, 28],
-                backgroundColor: '#3B82F6',
-                borderColor: '#2563EB',
-                borderWidth: 1
-            }]
-        };
-
-        const hechosPorCategoriaData = {
-            labels: ["Infraestructura", "Seguridad", "Medio Ambiente", "Salud", "Transporte", "Servicios Públicos", "Educación", "Cultura"],
-            datasets: [{
-                data: [342, 298, 234, 189, 156, 134, 98, 67],
-                backgroundColor: ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#06B6D4', '#84CC16', '#F97316'],
-                borderWidth: 2,
-                borderColor: '#fff'
-            }]
-        };
-
-        const hechosPorProvinciaYCategoriaData = {
-            labels: ["Buenos Aires", "Córdoba", "Santa Fe", "Mendoza", "Tucumán", "Entre Ríos", "Salta", "Chaco"],
-            datasets: [{
-                label: 'Hechos',
-                data: [89, 67, 45, 34, 28, 23, 19, 15],
-                backgroundColor: '#10B981',
-                borderColor: '#059669',
-                borderWidth: 1
-            }]
-        };
-
-        const hechosPorHoraData = {
-            labels: ["00:00", "02:00", "04:00", "06:00", "08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"],
-            datasets: [{
-                label: 'Hechos',
-                data: [12, 8, 5, 15, 45, 67, 89, 78, 92, 134, 98, 56],
-                borderColor: '#8B5CF6',
-                backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                tension: 0.4,
-                fill: true,
-                pointBackgroundColor: '#8B5CF6',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                pointRadius: 5
-            }]
-        };
-
-        const solicitudesEliminacionData = {
-            labels: ["Spam", "No Spam"],
-            datasets: [{
-                data: [145, 255],
-                backgroundColor: ['#EF4444', '#10B981'],
-                borderWidth: 2,
-                borderColor: '#fff'
-            }]
-        };
-
-        // Función para inicializar todos los gráficos
-        function initCharts() {
-            // Gráfico de Provincia
-            const ctxProvincia = document.getElementById('provinciaChart').getContext('2d');
-            provinciaChart = new Chart(ctxProvincia, {
-                type: 'bar',
-                data: hechosPorProvinciaData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0,0,0,0.1)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Gráfico de Spam (Doughnut)
-            const ctxSpam = document.getElementById('spamChart').getContext('2d');
-            spamChart = new Chart(ctxSpam, {
-                type: 'doughnut',
-                data: solicitudesEliminacionData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 20,
-                                usePointStyle: true
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Funciones para manejar los selectores (dropdowns)
-        function selectColeccion(coleccion) {
-            document.getElementById('selectedColeccion').textContent = coleccion;
-            document.getElementById('resultColeccion').textContent = coleccion;
-        }
-
-        function selectCategoriaP(categoria) {
-            document.getElementById('selectedCategoriaP').textContent = categoria;
-            document.getElementById('resultCategoriaP').textContent = categoria;
-        }
-
-        function selectCategoriaH(categoria) {
-            document.getElementById('selectedCategoriaH').textContent = categoria;
-            document.getElementById('resultCategoriaH').textContent = categoria;
-        }
-
-        // Función que se ejecuta cuando se cambian las pestañas
-        document.addEventListener('DOMContentLoaded', function () {
-            // Inicializar gráficos después de que se cargue la página
-            initCharts();
-
-            // Añadir event listeners para redimensionar gráficos cuando cambian las pestañas
-            const tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');
-            tabButtons.forEach(button => {
-                button.addEventListener('shown.bs.tab', function () {
-                    // Redimensionar todos los gráficos cuando se muestra una pestaña
-                    setTimeout(() => {
-                        if (provinciaChart) provinciaChart.resize();
-                        if (categoriaChart) categoriaChart.resize();
-                        if (categoriaProvinciaChart) categoriaProvinciaChart.resize();
-                        if (horaChart) horaChart.resize();
-                        if (spamChart) spamChart.resize();
-                    }, 100);
-                });
-            });
-        });
-
-        // Redimensionar gráficos cuando cambia el tamaño de la ventana
-        window.addEventListener('resize', function () {
-            setTimeout(() => {
-                if (provinciaChart) provinciaChart.resize();
-                if (categoriaChart) categoriaChart.resize();
-                if (categoriaProvinciaChart) categoriaProvinciaChart.resize();
-                if (horaChart) horaChart.resize();
-                if (spamChart) spamChart.resize();
-            }, 100);
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/estadisticas.js"></script>
 </body>
 
 </html>
