@@ -31,6 +31,7 @@ public class ArchivoSeeder implements CommandLineRunner {
         archivo.setNombre(this.nombreArchivo);
         archivo.setRutaArchivo(this.rutaArchivo);
         archivo.setTipoArchivoEnum(TipoArchivoEnum.archivoCSV);
+        archivo.setTipoArchivo(new ArchivoCSV());
 
         this.archivoService.guardarArchivo(archivo);
     }

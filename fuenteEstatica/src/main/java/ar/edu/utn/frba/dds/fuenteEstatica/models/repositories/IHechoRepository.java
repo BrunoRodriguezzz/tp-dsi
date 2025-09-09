@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface IHechoRepository extends JpaRepository<HechoEstatica, Long>, JpaSpecificationExecutor<HechoEstatica> {
     List<HechoEstatica> findByIdArchivo(Long id);
+
+    List<HechoEstatica> findByTitulo(String titulo);
 //    List<HechoEstatica> getAll();
 //    HechoEstatica getById(Long id);
 //    HechoEstatica save(HechoEstatica hechoEstatica);

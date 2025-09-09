@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteProxy.Services.impl;
 
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IFuenteService;
+import ar.edu.utn.frba.dds.fuenteProxy.Services.IHechoService;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputFuenteDTO;
@@ -14,6 +15,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class FuenteService implements IFuenteService {
   @Autowired
   private IFuenteRepository fuenteRepository;
+  @Autowired
+  private IHechoService hechoService;
 
   private final WebClient webClient = WebClient
       .builder()
@@ -38,6 +41,9 @@ public class FuenteService implements IFuenteService {
             .findFirst()
             .ifPresent(f -> fuente.setId(f.getId()));
     this.fuenteRepository.save(fuente); // Estoy agregando una fuente --> Tengo que avisarle al Agregador de esta nueva fuente
+    fuente.getAllHechos()
+            .doOnNext(hechoService::guardarHecho)
+            .blockLast(); // Para que espere a que termine
     OutputFuenteAgregador fuenteOutputDTO = UtilsDTO.toOutputFuenteAgregador(fuente);
     this.webClient.post()
         .uri(uriBuilder -> uriBuilder.path("/fuentes").build())

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,13 +56,13 @@ public class HechoService implements IHechoService {
 
     @Override
     public ArchivoOutputDTO getById(Long id) {
-        HechoEstatica hecho = this.hechoRepository.getById(id);
-        List<HechoEstatica> hechos = new ArrayList<>();
-        hechos.add(hecho);
-        ArchivoOutputDTO outputArchivo = UtilsDTO.toOutputArchivo(this.archivoRepository.getById(hecho.getIdArchivo()), hechos);
-
-        return outputArchivo;
-        //return UtilsDTO.hechoToOutputDTO(this.hechoRepository.getById(id));
+        AtomicReference<ArchivoOutputDTO> rta = new AtomicReference<>();
+        this.hechoRepository.findById(id).ifPresentOrElse(hechoEstatica -> {
+            List<HechoEstatica> hechos = new ArrayList<>();
+            hechos.add(hechoEstatica);
+            archivoRepository.findById(hechoEstatica.getId()).ifPresent(a -> rta.set(UtilsDTO.toOutputArchivo(a, hechos)));
+        }, () -> {throw new NotFoundError("Hecho no encontrado");});
+        return rta.get();
     }
 
     @Override
@@ -95,45 +96,24 @@ public class HechoService implements IHechoService {
 
     @Override
     public void save(HechoEstatica hecho) {
+        this.hechoRepository.findByTitulo(hecho.getTitulo())
+                .stream()
+                .findFirst()
+                .ifPresent(h -> hecho.setId(h.getId()));
         this.hechoRepository.save(hecho);
     }
 
     @Override
     public void deleteHecho(Long id) {
         if (id != null && id >= 1) {
-            Optional<HechoEstatica> hecho = hechoRepository.findById(id); // no se si va a romper lo del optional
-            HechoEstatica hechoAux;
-            if (hecho.isPresent()) {
-                hechoAux = hecho.get();
-            }
-            else {
-                throw new NotFoundError("Hecho no encontrada con ID: " + id);
-            }
-            hechoRepository.delete(hechoAux);
+            hechoRepository.findById(id).ifPresentOrElse(h -> {
+                h.setEliminado(true);
+                hechoRepository.save(h);
+            }, () -> {throw new NotFoundError("Hecho no encontrado");});
         }else {
             throw new ValidationError("ID invalido");
         }
     }
-
-//    @Override
-//    public List<ArchivoOutputDTO> getByTitleAndIdFuente(String title, Long idFuente) {
-//        List<HechoEstatica> hechos = this.hechoRepository.getByName(title);
-//        List<HechoEstatica> hechosFiltrados = hechos.stream()
-//            .filter(h -> h.getIdArchivo().equals(idFuente))
-//            .toList();
-//        List<ArchivoOutputDTO> outputArchivos = new ArrayList<>();
-//        List<Long> idFuentes = hechosFiltrados.stream()
-//            .map(HechoEstatica::getIdArchivo)
-//            .distinct()
-//            .toList();
-//        idFuentes.forEach(id -> {
-//            List<HechoEstatica> hechosFuente = hechosFiltrados.stream()
-//                .filter(e -> e.getIdArchivo().equals(id))
-//                .toList();
-//            this.toOutputArchivo(outputArchivos, id, hechosFuente);
-//        });
-//        return outputArchivos;
-//    }
 
     private List<ArchivoOutputDTO> buscarPorIdHecho(Long idHecho) {
         Optional<HechoEstatica> hecho = hechoRepository.findById(idHecho);

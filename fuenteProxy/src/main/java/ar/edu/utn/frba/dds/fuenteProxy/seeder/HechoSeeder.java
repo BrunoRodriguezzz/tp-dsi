@@ -19,10 +19,10 @@ public class HechoSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        fuenteRepository.findAll().forEach(f -> {
-            f.getAllHechos()
-                    .doOnNext(hechoService::guardarHecho)
-                    .blockLast(); // Para que espere a que termine
-        });
+//        fuenteRepository.findAll().forEach(f -> {
+//            f.getAllHechos()
+//                    .doOnNext(hechoService::guardarHecho)
+//                    .blockLast(); // Para que espere a que termine
+//        });
     }
 }

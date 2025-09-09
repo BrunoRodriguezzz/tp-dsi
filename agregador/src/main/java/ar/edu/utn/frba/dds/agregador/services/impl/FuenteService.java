@@ -7,7 +7,9 @@ import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.FuenteOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
+import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
+import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,6 @@ import java.util.List;
 
 @Service
 public class FuenteService implements IFuenteService {
-
   @Autowired
   private IFuenteRepository fuenteRepository;
 
@@ -50,10 +51,19 @@ public class FuenteService implements IFuenteService {
   public List<Hecho> buscarHechosFuente(String nombre) {
     return buscarHechosFuenteStream(nombre)
         .collectList()
-        .block(); 
+        .block();
   }
 
-  @Override
+    @Override
+    public List<Hecho> buscarHechosProxy() {
+
+        return this.fuenteRepository.findByTipoFuente(TipoFuente.PROXY)
+                .stream()
+                .flatMap(f -> f.importarHechos().collectList().block().stream())
+                .toList();
+    }
+
+    @Override
   public Fuente buscarFuente(String nombre) {
     return Mono.fromCallable(() -> fuenteRepository.findByNombre(nombre))
         .subscribeOn(Schedulers.boundedElastic())
@@ -74,12 +84,17 @@ public class FuenteService implements IFuenteService {
 
   @Override
   public Fuente incorporarFuente(FuenteInputDTO fuenteInputDTO) {
-    return Mono.fromCallable(() -> {
+    Fuente fuenteIncorporada = Mono.fromCallable(() -> {
           Fuente fuente = FuenteInputDTO.DTOToFuente(fuenteInputDTO);
-          return fuenteRepository.save(fuente);
+          Fuente fuenteAux = this.fuenteRepository.findByNombre(fuente.getNombre());
+          if(fuenteAux != null){
+              fuente.setId(fuenteAux.getId());
+          }
+          return this.fuenteRepository.save(fuente);
         })
         .subscribeOn(Schedulers.boundedElastic())
-        .block(); 
+        .block();
+    return fuenteIncorporada;
   }
 
   @Override

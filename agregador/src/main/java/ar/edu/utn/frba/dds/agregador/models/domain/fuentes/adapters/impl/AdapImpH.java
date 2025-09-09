@@ -20,12 +20,12 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 @Slf4j
-public class AdapImpHEstatico implements IAdapImpH {
+public class AdapImpH implements IAdapImpH {
 
   @Getter
-  private static final AdapImpHEstatico instance = new AdapImpHEstatico();
+  private static final AdapImpH instance = new AdapImpH();
 
-  private AdapImpHEstatico() {}
+  private AdapImpH() {}
 
   @Override
   public Flux<Hecho> importarHechos(WebClient webClient, Fuente fuente) {
