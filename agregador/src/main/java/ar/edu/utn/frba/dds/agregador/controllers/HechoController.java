@@ -74,4 +74,13 @@ public class HechoController {
     List<String> incorporadoEn = this.agregadorService.incorporarHecho(hecho);
     return ResponseEntity.status(HttpStatus.OK).body(incorporadoEn);
   }
+
+  @GetMapping("/proxy")
+  public ResponseEntity buscarHechosProxy() {
+    List<HechoOutputDTO> hechos = this.hechoService.buscarHechosProxy();
+    if(hechos == null) {
+      return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(hechos);
+  }
 }

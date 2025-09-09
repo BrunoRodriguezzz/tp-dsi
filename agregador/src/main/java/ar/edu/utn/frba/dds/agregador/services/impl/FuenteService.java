@@ -56,6 +56,7 @@ public class FuenteService implements IFuenteService {
 
     @Override
     public List<Hecho> buscarHechosProxy() {
+
         return this.fuenteRepository.findByTipoFuente(TipoFuente.PROXY)
                 .stream()
                 .map(f -> f.importarHechos().blockLast())
@@ -85,7 +86,11 @@ public class FuenteService implements IFuenteService {
   public Fuente incorporarFuente(FuenteInputDTO fuenteInputDTO) {
     Fuente fuenteIncorporada = Mono.fromCallable(() -> {
           Fuente fuente = FuenteInputDTO.DTOToFuente(fuenteInputDTO);
-          return fuenteRepository.save(fuente);
+          Fuente fuenteAux = this.fuenteRepository.findByNombre(fuente.getNombre());
+          if(fuenteAux != null){
+              fuente.setId(fuenteAux.getId());
+          }
+          return this.fuenteRepository.save(fuente);
         })
         .subscribeOn(Schedulers.boundedElastic())
         .block();

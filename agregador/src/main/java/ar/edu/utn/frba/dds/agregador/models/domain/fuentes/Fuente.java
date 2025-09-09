@@ -17,11 +17,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+@Slf4j
 @Getter
 @Setter
 @NoArgsConstructor
@@ -66,6 +68,7 @@ public class Fuente {
 
 
   public Flux<Hecho> importarHechos() {
+      log.info("Importando hechos de la fuente: {}", this.nombre);
     return iAdapImpH.importarHechos(this.webClient, this)
         .flatMap(this::verificarHecho)
         .onErrorResume(error -> {
@@ -96,23 +99,20 @@ public class Fuente {
             .baseUrl(path + "/api/fuenteDinamica")
             .build();
         this.iAdapImpH = AdapImpHDinamico.getInstance();
-        this.iAdapImpH = AdapImpHDinamico.getInstance();
       }
       case ESTATICA -> {
         this.webClient = WebClient.builder()
             .baseUrl(path)
             .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(20 * 1024 * 1024))
             .build();
-        this.iAdapImpH = AdapImpHEstatico.getInstance();
-        this.iAdapImpH = AdapImpHEstatico.getInstance();
+        this.iAdapImpH = AdapImpH.getInstance();
       }
       case PROXY -> {
         this.webClient = WebClient.builder()
             .baseUrl(path)
             .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(20 * 1024 * 1024))
             .build();
-        this.iAdapImpH = AdapImpHProxy.getInstance();
-        this.iAdapImpH = AdapImpHProxy.getInstance();
+        this.iAdapImpH = AdapImpH.getInstance();
         this.iAdapImpC = AdapImpC.getInstance();
       }
     }
@@ -129,6 +129,7 @@ public class Fuente {
   }
 
   private Mono<Hecho> cargarUbicacionReactiva(Hecho hecho) {
+      log.info("Cargando ubicacion para el hecho: {}", hecho.getTitulo());
     if (hecho.getUbicacion().faltanDatos()) {
       Ubicacion ubiAnterior = hecho.getUbicacion();
       Ubicacion actualizada = IAdapUbicacion.buscarUbicacion(ubiAnterior.getLatitud(), ubiAnterior.getLongitud());

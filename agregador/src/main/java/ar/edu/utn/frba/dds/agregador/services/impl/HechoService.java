@@ -51,24 +51,11 @@ public class HechoService implements IHechoService {
     }
     else hechosFiltrados = hechos;
     return HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
+  }
 
-//    List<Hecho> hechos = this.fuenteService.buscarHechos();
-//    hechos = this.guardarHechos(hechos);
-//
-//    List<Filtro> filtrosBusqueda = params.instanciarFiltros();
-//    List<Hecho> hechosFiltrados;
-//
-//    if(!filtrosBusqueda.isEmpty()) {
-//      hechosFiltrados = hechos
-//          .stream()
-//          .filter(h -> filtrosBusqueda.stream().allMatch(f -> f.coincide(h)))
-//          .toList();
-//    }
-//    else hechosFiltrados = hechos;
-//
-//    List<HechoOutputDTO> hechosDTO = HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
-//
-//    return hechosDTO;
+  @Override
+  public List<HechoOutputDTO> buscarHechosProxy() {
+    return HechoOutputDTO.mapHechoToDTO(this.fuenteService.buscarHechosProxy());
   }
 
   @Override
