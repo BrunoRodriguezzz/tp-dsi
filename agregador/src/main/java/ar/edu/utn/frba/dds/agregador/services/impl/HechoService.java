@@ -37,10 +37,9 @@ public class HechoService implements IHechoService {
 
   @Override
   public List<HechoOutputDTO> buscarHechos(QueryParamsFiltro params) {
-    List<Hecho> hechos = this.hechoRepository.findAll();
     List<Hecho> hechosProxy = this.fuenteService.buscarHechosProxy();
-    List<Hecho> hechosProxyGuardados = this.guardarHechos(hechosProxy);
-    hechos.addAll(hechosProxyGuardados);
+    this.guardarHechos(hechosProxy);
+    List<Hecho> hechos = this.hechoRepository.findAll();
     List<Filtro> filtrosBusqueda = params.instanciarFiltros();
     List<Hecho> hechosFiltrados;
     if(!filtrosBusqueda.isEmpty()) {
