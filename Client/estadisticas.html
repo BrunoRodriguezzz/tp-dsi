@@ -102,7 +102,7 @@
                     <button class="nav-link w-100" type="button" data-bs-toggle="tab"
                         data-bs-target="#categoria-general" role="tab" aria-controls="categoria-general"
                         aria-selected="false">
-                        <i class="bi bi-bar-chart me-2"></i>
+                        <i class="bi bi-bullseye me-2"></i>
                         <span class="d-none d-sm-inline">Categorías</span>
                         <span class="d-sm-none">Cat</span>
                     </button>
@@ -208,7 +208,8 @@
             <!-- Tab 2: Categorías General -->
             <div class="tab-pane fade" id="categoria-general" role="tabpanel">
                 <div class="card">
-                    <div class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
+                    <div
+                        class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
                         <h5 class="card-title mb-3 mb-sm-0 d-flex align-items-center">
                             <i class="bi bi-bar-chart me-2"></i>
                             Hechos por Categoría
@@ -265,7 +266,7 @@
                                             style="width: 16px; height: 16px; background-color: #8B5CF6;"></div>
                                         <span class="fw-medium">Transporte</span>
                                     </div>
-                                    <span class="badge bg-info">156 hechos</span>
+                                    <span class="badge" style="background-color: #8B5CF6;">156 hechos</span>
                                 </div>
                             </div>
                         </div>
@@ -291,21 +292,40 @@
                         </h5>
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                id="categoriaProvinciaDropdown" data-bs-toggle="dropdown">
+                                id="categoriaProvinciaDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <span id="selectedCategoriaP">Infraestructura</span>
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="categoriaProvinciaDropdown">
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="selectCategoriaP('Infraestructura')">Infraestructura</a></li>
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="selectCategoriaP('Seguridad')">Seguridad</a>
+                            <ul class="dropdown-menu" aria-labelledby="categoriaProvinciaDropdown" role="menu">
+                                <li>
+                                    <button class="dropdown-item" type="button" data-categoria-p="Infraestructura"
+                                        role="menuitem" aria-current="true">
+                                        Infraestructura
+                                    </button>
                                 </li>
-                                <li><a class="dropdown-item" href="#" onclick="selectCategoriaP('Medio Ambiente')">Medio
-                                        Ambiente</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="selectCategoriaP('Salud')">Salud</a>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-categoria-p="Seguridad"
+                                        role="menuitem">
+                                        Seguridad
+                                    </button>
                                 </li>
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="selectCategoriaP('Transporte')">Transporte</a></li>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-categoria-p="Medio Ambiente"
+                                        role="menuitem">
+                                        Medio Ambiente
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-categoria-p="Salud"
+                                        role="menuitem">
+                                        Salud
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-categoria-p="Transporte"
+                                        role="menuitem">
+                                        Transporte
+                                    </button>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -317,9 +337,8 @@
                             <p class="text-success mb-0">
                                 <strong>Resultado:</strong> Para la categoría "<span
                                     id="resultCategoriaP">Infraestructura</span>",
-                                la provincia con mayor cantidad de hechos es <strong>Buenos Aires</strong> con 89
-                                hechos
-                                reportados.
+                                la provincia con mayor cantidad de hechos es <strong id="resultProvinciaP"></strong> con
+                                <strong id="resultCantidadP"></strong> hechos reportados.
                             </p>
                         </div>
                     </div>
@@ -337,21 +356,40 @@
                         </h5>
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                id="categoriaHoraDropdown" data-bs-toggle="dropdown">
+                                id="categoriaHoraDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <span id="selectedCategoriaH">Infraestructura</span>
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="categoriaHoraDropdown">
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="selectCategoriaH('Infraestructura')">Infraestructura</a></li>
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="selectCategoriaH('Seguridad')">Seguridad</a>
+                            <ul class="dropdown-menu" aria-labelledby="categoriaHoraDropdown" role="menu">
+                                <li>
+                                    <button class="dropdown-item" type="button" data-categoria-h="Infraestructura"
+                                        role="menuitem" aria-current="true">
+                                        Infraestructura
+                                    </button>
                                 </li>
-                                <li><a class="dropdown-item" href="#" onclick="selectCategoriaH('Medio Ambiente')">Medio
-                                        Ambiente</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="selectCategoriaH('Salud')">Salud</a>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-categoria-h="Seguridad"
+                                        role="menuitem">
+                                        Seguridad
+                                    </button>
                                 </li>
-                                <li><a class="dropdown-item" href="#"
-                                        onclick="selectCategoriaH('Transporte')">Transporte</a></li>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-categoria-h="Medio Ambiente"
+                                        role="menuitem">
+                                        Medio Ambiente
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-categoria-h="Salud"
+                                        role="menuitem">
+                                        Salud
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-categoria-h="Transporte"
+                                        role="menuitem">
+                                        Transporte
+                                    </button>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -363,14 +401,17 @@
                             <p class="text-warning-emphasis mb-0">
                                 <strong>Resultado:</strong> Los hechos de la categoría "<span
                                     id="resultCategoriaH">Infraestructura</span>"
-                                ocurren con mayor frecuencia a las <strong>18:00 horas</strong> con 134 reportes,
-                                seguido
-                                por las 16:00 horas con 92 reportes.
+                                ocurren con mayor frecuencia a las <strong id="resultHoraMaxima">18:00 horas</strong>
+                                con
+                                <strong id="resultCantidadH">134</strong> reportes, seguido por las
+                                <strong id="resultHoraSegunda">16:00 horas</strong> con <strong
+                                    id="resultCantidadSegundaH">92</strong> reportes.
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
+
 
             <!-- Tab 5: Solicitudes Spam -->
             <div class="tab-pane fade" id="solicitudes-spam" role="tabpanel">
