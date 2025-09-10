@@ -51,15 +51,46 @@
             <h6>Fecha del Acontecimiento</h6>
             <input type="date" class="form-control" id="fechaInput" name="fechaAcontecimiento">
         </div>
+        <div class="form-category">
+            <h6>Provincia</h6>
+            <select class="form-select" id="categoriaSelect" name="categoria">
+                <option value="" disabled selected hidden>Seleccionar categoría</option>
+                <option value="Buenos Aires">Buenos Aires</option>
+                <option value="Catamarca">Catamarca</option>
+                <option value="Chaco">Chaco</option>
+                <option value="Chubut">Chubut</option>
+                <option value="Córdoba">Córdoba</option>
+                <option value="Corrientes">Corrientes</option>
+                <option value="Entre Ríos">Entre Ríos</option>
+                <option value="Formosa">Formosa</option>
+                <option value="Jujuy">Jujuy</option>
+                <option value="La Pampa">La Pampa</option>
+                <option value="La Rioja">La Rioja</option>
+                <option value="Mendoza">Mendoza</option>
+                <option value="Misiones">Misiones</option>
+                <option value="Neuquén">Neuquén</option>
+                <option value="Río Negro">Río Negro</option>
+                <option value="Salta">Salta</option>
+                <option value="San Juan">San Juan</option>
+                <option value="San Luis">San Luis</option>
+                <option value="Santa Cruz">Santa Cruz</option>
+                <option value="Santa Fe">Santa Fe</option>
+                <option value="Santiago del Estero">Santiago del Estero</option>
+                <option value="Tierra del Fuego">Tierra del Fuego</option>
+                <option value="Tucumán">Tucumán</option>
+                <option value="Ciudad Autónoma de Buenos Aires">Ciudad Autónoma de Buenos Aires</option>
+            </select>
+        </div>
+        <div class="form-title">
+            <h6>Municipio</h6>
+            <input type="text" class="form-control" placeholder="Nombre del municipio" id="municipioInput" name="municipio">
+        </div>
+        <div class="form-title">
+            <h6>Ciudad</h6>
+            <input type="text" class="form-control" placeholder="Nombre de la ciudad" id="ciudadInput" name="ciudad">
+        </div>
         <div class="container-ubicacion">
-            <div class="form-latitud">
-                <h6>Latitud</h6>
-                <input type="number" class="form-control" placeholder="-34.6037" id="latitudInput" name="latitud" step="any"> <!-- min="-90" max="90" -->
-            </div>
-            <div class="form-longitud">
-                <h6>Longitud</h6>
-                <input type="number" class="form-control" placeholder="-58.3816" id="longitudInput" name="longitud" step="any">
-            </div>
+            MAPA
         </div>
         <div class="form-etiquetas">
             <h6>Etiquetas</h6>
