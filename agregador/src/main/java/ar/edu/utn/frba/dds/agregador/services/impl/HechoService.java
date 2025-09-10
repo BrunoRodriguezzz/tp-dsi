@@ -15,10 +15,8 @@ import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import jakarta.persistence.Id;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,7 +77,11 @@ public class HechoService implements IHechoService {
     }
     Fuente fuente = this.fuenteService.buscarFuente(hechoDTO.getFuente());
     Hecho hecho = HechoInputDTO.DTOToHecho(hechoDTO, contribuyente, fuente);
-    Hecho hechoGuardado = this.guardarHecho(hecho);
+
+    Hecho hechoGuardado = this.guardarHechos(Collections.singletonList(hecho))
+            .stream()
+            .findFirst()
+            .get();
     return hechoGuardado;
   }
 
