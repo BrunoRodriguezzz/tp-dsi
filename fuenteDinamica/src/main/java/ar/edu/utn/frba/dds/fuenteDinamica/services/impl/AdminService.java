@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Etiqueta;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IAdminService;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -29,7 +30,7 @@ public class AdminService implements IAdminService {
             .build();
 
     @Override
-    public SolicitudOutputDTO gestionarHecho(HechoRevisadoInputDTO hechoRevisado){
+    public HechoOutputDTO gestionarHecho(HechoRevisadoInputDTO hechoRevisado){
 
         Hecho hecho = this.dinamicaRepository.buscarPorID(hechoRevisado.getId());
 
@@ -47,7 +48,7 @@ public class AdminService implements IAdminService {
 
         this.enviarHecho(hecho);
 
-        return SolicitudOutputDTO.convertir(hecho);
+        return HechoOutputDTO.convertir(hecho);
     }
 
     @Override
@@ -63,19 +64,23 @@ public class AdminService implements IAdminService {
     private void enviarHecho(Hecho hecho){
         HechoOutputDTO hechoParaEnviar = HechoOutputDTO.convertir(hecho);
 
-        this.webClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/hechos").build())
-                .bodyValue(hechoParaEnviar)
-                .retrieve()
-                .toBodilessEntity()
-                .doOnSuccess(response -> {
-                    hecho.setEnviado(true);
-                    this.dinamicaRepository.guardar(hecho);
-                })
-                .doOnError(error -> {
-                    System.err.println("Fallo el envio del Hecho");
-                })
-                .subscribe();
+        try {
+            this.webClient.post()
+                    .uri(uriBuilder -> uriBuilder.path("/hechos").build())
+                    .contentType(MediaType.APPLICATION_JSON)  // aseguramos Content-Type
+                    .bodyValue(hechoParaEnviar)
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();  // bloquea y espera la respuesta
+
+            hecho.setEnviado(true);
+            this.dinamicaRepository.guardar(hecho);
+
+        } catch (Exception e) {
+            System.err.println("Fallo el envio del Hecho");
+            e.printStackTrace();
+            // acá podrías agregar lógica extra de reintentos o flags
+        }
     }
 
     private Etiqueta convertirEtiqueta(String etiqueta){

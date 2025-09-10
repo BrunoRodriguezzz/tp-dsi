@@ -46,7 +46,7 @@ public class Hecho {
     @Column(name = "fecha_acontecimiento",nullable = false)
     private LocalDate fechaAcontecimiento;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "etiquetas_x_hecho",
             joinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id"),

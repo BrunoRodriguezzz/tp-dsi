@@ -73,6 +73,9 @@ public class UserService implements IUserService {
             // Guardo el contribuyente, solo si indico su nombre
             if(usuario.getNombre() != "" && usuario.getApellido() != ""){
                 if(!this.comprobarUsuarioRegistrado(usuario)) {
+
+                    // Si no esta registrado se instancia el Contribuyente
+
                     Contribuyente nuevoContribuyente = Contribuyente.builder()
                             .nombre(usuario.getNombre())
                             .apellido(usuario.getApellido())
@@ -83,6 +86,9 @@ public class UserService implements IUserService {
 
                     this.contribuyentesRepository.save(nuevoContribuyente);
                 }else{
+
+                    // Si esta registrado se le asigna el hecho
+
                     List<Contribuyente> contribuyentes = this.contribuyentesRepository.findAll();
 
                     Contribuyente contribuyenteRegistrado = contribuyentes
