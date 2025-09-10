@@ -85,7 +85,7 @@ public class EstadisticaService implements IEstadisticaService {
 
     // Estadisticas Principales
     @Override
-    public Provincia provinciaConMasHechosDeUnaColeccion(Long idColeccion) {
+    public EstadisticaProvinciaXColeccion provinciaConMasHechosDeUnaColeccion(Long idColeccion) {
         Coleccion coleccion = this.coleccionRepository.findById(idColeccion).orElse(null);
         Provincia provincia = estadisticaRepository.findProvinciaConMasHechosPorColeccion(idColeccion);
         EstadisticaProvinciaXColeccion estadististica = new EstadisticaProvinciaXColeccion(
@@ -94,37 +94,41 @@ public class EstadisticaService implements IEstadisticaService {
             coleccion
         );
         this.estadisticaProvinciaXColeccionRepository.save(estadististica);
-        return provincia;
+        return estadististica;
     }
 
     @Override
-    public Categoria categoriaConMasHechos() {
+    public EstadisticaCategoria categoriaConMasHechos() {
         Categoria categoria = estadisticaRepository.findCategoriaConMasHechos();
-        this.estadisticaCategoriaRepository.save(new EstadisticaCategoria(categoria, LocalDateTime.now()));
-        return categoria;
+        EstadisticaCategoria estadisticaCategoria = new EstadisticaCategoria(categoria, LocalDateTime.now());
+        this.estadisticaCategoriaRepository.save(estadisticaCategoria);
+        return estadisticaCategoria;
     }
 
     @Override
-    public Provincia provinciaConMasHechosSegunCategoria(Long idCategoria) {
+    public EstadisticaProvinciaXCategoria provinciaConMasHechosSegunCategoria(Long idCategoria) {
         Provincia provincia = estadisticaRepository.findProvinciaConMasHechosPorCategoria(idCategoria);
         Categoria categoria = categoriaRepository.findById(idCategoria).orElse(null);
-        this.estadisticaProvinciaXCategoriaRepository.save(new EstadisticaProvinciaXCategoria(categoria, LocalDateTime.now(), provincia));
-        return provincia;
+        EstadisticaProvinciaXCategoria estadisticaProvinciaXCategoria = new EstadisticaProvinciaXCategoria(categoria, LocalDateTime.now(), provincia);
+        this.estadisticaProvinciaXCategoriaRepository.save(estadisticaProvinciaXCategoria);
+        return estadisticaProvinciaXCategoria;
     }
 
     @Override
-    public LocalTime horaConMasHechosSegunCategoria(Long idCategoria) {
+    public EstadisticaHoraXCategoria horaConMasHechosSegunCategoria(Long idCategoria) {
         HoraDelDia horaDelDia = estadisticaRepository.findHoraConMasHechosPorCategoria(idCategoria);
         Categoria categoria = categoriaRepository.findById(idCategoria).orElse(null);
-        this.estadisticaHoraXCategoriaRepository.save(new EstadisticaHoraXCategoria(categoria, LocalDateTime.now(), horaDelDia));
-        return horaDelDia != null ? horaDelDia.getHora() : null;
+        EstadisticaHoraXCategoria estadisticaHoraXCategoria = new EstadisticaHoraXCategoria(categoria, LocalDateTime.now(), horaDelDia);
+        this.estadisticaHoraXCategoriaRepository.save(estadisticaHoraXCategoria);
+        return estadisticaHoraXCategoria;
     }
 
     @Override
-    public Long cantSolicitudesSpam() {
+    public EstadisticaSolicitudes cantSolicitudesSpam() {
         Long cantSpam = this.solicitudRepository.countByEstado(EstadoSolicitudEliminacion.SPAM);
-        this.estadisticaSolicitudesRepository.save(new EstadisticaSolicitudes(LocalDateTime.now(), cantSpam.intValue()));
-        return cantSpam;
+        EstadisticaSolicitudes estadisticaSolicitudes = new EstadisticaSolicitudes(LocalDateTime.now(), cantSpam.intValue());
+        this.estadisticaSolicitudesRepository.save(estadisticaSolicitudes);
+        return estadisticaSolicitudes;
     }
 
     @Override

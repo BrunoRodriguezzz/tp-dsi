@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -28,6 +29,7 @@ public class EstadisticaCategoria {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @JsonIgnore
   Long id;
 
   @ManyToOne(fetch = FetchType.EAGER)

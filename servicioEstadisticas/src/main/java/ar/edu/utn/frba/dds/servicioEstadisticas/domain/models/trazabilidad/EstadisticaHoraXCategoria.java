@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.HoraDelDia;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,6 +32,7 @@ public class EstadisticaHoraXCategoria {
   }
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @JsonIgnore
   Long id;
 
   @Column(name = "hora_mas_hechos", nullable = false, columnDefinition = "TIMESTAMP")
