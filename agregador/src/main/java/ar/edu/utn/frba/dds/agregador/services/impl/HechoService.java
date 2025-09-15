@@ -83,7 +83,7 @@ public class HechoService implements IHechoService {
       }
     }
     //List<Fuente> fuentes = this.fuenteRepository.findAll().stream().filter(f -> hechoDTO.getFuentes().contains(FuenteOutputDTO.toOutputDTO(f))).toList();
-    Fuente fuente = this.fuenteRepository.findById(hechoDTO.getFuente().t);
+    Fuente fuente = this.fuenteRepository.findByTipoFuente(TipoFuente.DINAMICA).get(0); // supongo que solo se incorporara de la unica fuente dinamica
     Hecho hecho = HechoInputDTO.DTOToHecho(hechoDTO, contribuyente, fuente);
 
     Hecho hechoGuardado = this.guardarHechos(Collections.singletonList(hecho))
@@ -127,16 +127,21 @@ public class HechoService implements IHechoService {
       if (h.getId() == null) {
         // Buscar hecho existente
         if (h.getFuentes() != null && !h.getFuentes().isEmpty()) {
-          Fuente fuentePrincipal = h.getFuentes().get(0);
+          for (int i = 0; i < h.getFuentes().size(); i++) {
+            Fuente fuente = h.getFuentes().get(i);
+            Long idInterno = h.getIdsInternosFuentes().get(i);
 
-          hechoRepository.findByFuente_IdAndIdInternoFuente(fuentePrincipal.getId(), h.getIdsInternosFuentes())
-              .ifPresent(hechoExistente -> {
-                h.setId(hechoExistente.getId());
+            hechoRepository.findByFuente_IdAndIdInternoFuente(fuente.getId(), idInterno)
+                    .ifPresent(hechoExistente -> {
+                      h.setId(hechoExistente.getId());
 
-                if (h.getCategoria() != null && h.getCategoria().getId() == null) {
-                  h.getCategoria().setId(hechoExistente.getCategoria().getId());
-                }
-              });
+                      if (h.getCategoria() != null && h.getCategoria().getId() == null) {
+                        h.getCategoria().setId(hechoExistente.getCategoria().getId());
+                      }
+                    });
+
+            if (h.getId() != null) break; // corta el loop cuando lo encuentra
+          }
         }
 
         if (h.getCategoria() != null && h.getCategoria().getId() == null) {
