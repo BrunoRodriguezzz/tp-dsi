@@ -161,5 +161,4 @@ Coleccion ||--o| Criterio
 
 Filtros_x_Criterio }o--|| Criterio
 Filtros_x_Criterio }o--|| Filtro
-
 @enduml
