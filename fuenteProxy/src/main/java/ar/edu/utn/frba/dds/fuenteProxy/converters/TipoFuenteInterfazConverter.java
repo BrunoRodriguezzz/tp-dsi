@@ -33,14 +33,14 @@ public class TipoFuenteInterfazConverter implements AttributeConverter<TipoFuent
 
         TipoFuente fuente;
 
-        String ruta = ""; // esta hardcodeado en el TipoFuente
+        String rutaApiCatedra = "https://api-ddsi.disilab.ar/public";
         String rutaMetaMapa = ""; // TODO: falta que le llegue la url de la instancia de metamapa
 
-        switch (s) {
-            case "ApiCatedra": fuente = new APICatedra(ruta); break;
-            case "InstanciaMetaMapa": fuente = new InstanciaMetaMapa(rutaMetaMapa); break;
-            default: fuente = null;
-        }
+        fuente = switch (s) {
+            case "ApiCatedra" -> new APICatedra(rutaApiCatedra);
+            case "InstanciaMetaMapa" -> new InstanciaMetaMapa(rutaMetaMapa);
+            default -> null;
+        };
 
         return fuente;
     }
