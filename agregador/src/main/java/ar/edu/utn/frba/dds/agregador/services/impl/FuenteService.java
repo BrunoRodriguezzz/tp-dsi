@@ -100,8 +100,8 @@ public class FuenteService implements IFuenteService {
   @Override
   public void eliminarHecho(Hecho hecho) {
     Mono.fromRunnable(() -> {
-          Fuente fuente = hecho.getFuente();
-          fuente.eliminarHecho(hecho);
+          List<Fuente> fuentes = hecho.getFuentes();
+          fuentes.forEach(f -> eliminarHecho(hecho));
         })
         .subscribeOn(Schedulers.boundedElastic())
         .block(); 

@@ -7,15 +7,15 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.criteria.Predicate;  // correcto
-import org.springframework.data.jpa.domain.Specification;
+
 
 public class HechoSpecification {
     public static Specification<HechoEstatica> conFiltro(FiltroEstatica filtro) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (filtro.getArchivoId() != null) {
-                predicates.add(cb.equal(root.get("idArchivo"), filtro.getArchivoId()));
+            if (filtro.getFuenteId() != null) {
+                predicates.add(cb.equal(root.get("idArchivo"), filtro.getFuenteId()));
             }
 
             if (filtro.getIdHecho() != null) {

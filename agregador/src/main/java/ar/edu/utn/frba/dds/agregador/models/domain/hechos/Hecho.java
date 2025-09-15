@@ -8,6 +8,8 @@ import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.TituloInvalid
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import jakarta.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ContenidoMultimedia;
@@ -34,8 +36,14 @@ public class Hecho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "fuente_interno_id")
-    private Long idInternoFuente;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+        name = "hecho_ids_internos_fuentes",
+        joinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id")
+    )
+    @MapKeyJoinColumn(name = "fuente_id", referencedColumnName = "id")
+    @Column(name = "id_interno_fuente")
+    private Map<Fuente, Long> idsInternosFuentes;
 
     @Column(nullable = false)
     private String titulo;
@@ -84,30 +92,37 @@ public class Hecho {
     @Column(name = "esta_eliminado")
     private Boolean estaEliminado;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
-    private Fuente fuente;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "fuentes_x_hecho",
+        joinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "fuente_id", referencedColumnName = "id")
+    )
+    private List<Fuente> fuentes;
 
     @OneToMany
     @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     private List<ContenidoMultimedia> contenidoMultimedia;
 
     public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) throws FechaInvalidaException, TituloInvalidoException, DescripcionInvalidaException {
-        if(titulo == null || titulo.isBlank()) throw new TituloInvalidoException("El título no puede estar vacío");
-        if(descripcion == null || descripcion.isBlank()) throw new DescripcionInvalidaException("La descripcion no puede ser nula o vacía");
-        if(fechaAcontecimiento == null) {throw new FechaInvalidaException("No se proveyó una fecha de acontecimiento");}
+        if (titulo == null || titulo.isBlank())
+            throw new TituloInvalidoException("El título no puede estar vacío");
+        if (descripcion == null || descripcion.isBlank())
+            throw new DescripcionInvalidaException("La descripcion no puede ser nula o vacía");
+        if (fechaAcontecimiento == null) {
+            throw new FechaInvalidaException("No se proveyó una fecha de acontecimiento");
+        }
 
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.ubicacion = ubicacion;
-//        if(fechaAcontecimiento.isAfter(LocalDate.now())) {
-//            throw new FechaInvalidaException("La fecha: " + fechaAcontecimiento + "es una fecha futura");
-//        }
         this.fechaAcontecimiento = fechaAcontecimiento;
         this.origen = origen;
         this.fechaCarga = null;
+        this.fuentes = new ArrayList<>();
         this.consensos = new ArrayList<>();
+        this.idsInternosFuentes = new HashMap<>();
     }
 
     public void eliminar() throws Exception {
@@ -126,6 +141,25 @@ public class Hecho {
             this.etiquetas.add(etiqueta);
             return true;
         }
+        return false;
+    }
+
+    public Boolean agregarFuente(Fuente fuente, Long idHechoEnFuente) {
+        if (this.fuentes.stream().noneMatch(f -> f.getNombre().equals(fuente.getNombre()))) {
+            this.fuentes.add(fuente);
+            return true;
+        }
+        this.idsInternosFuentes.put(fuente, idHechoEnFuente);
+        return false;
+    }
+
+    public Long getIdInternoFuente(Fuente fuente) {
+        return this.idsInternosFuentes.get(fuente);
+    }
+
+    public Boolean quitarFuente(Fuente fuente, Long idHechoEnFuente) {
+        this.idsInternosFuentes.remove(fuente);
+        this.fuentes.remove(fuente);
         return false;
     }
 

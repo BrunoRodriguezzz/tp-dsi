@@ -33,7 +33,9 @@ public class AdapImpH implements IAdapImpH {
 
     return webClient.get()
         .uri(uriBuilder -> {
-          String uri = uriBuilder.path("/hechos/filtered").build().toString();
+          String uri = uriBuilder.path("/hechos/filtered")
+              .queryParam("fuenteId", fuente.getIdInternoFuente())
+              .build().toString();
           log.info("URI construida para importarHechos: {}", uri);
           return uriBuilder.path("").build();
         })
@@ -42,10 +44,9 @@ public class AdapImpH implements IAdapImpH {
         .doOnNext(dtos -> log.info("Recibidos {} DTOs de fuente ID: {}", dtos.size(), fuente.getIdInternoFuente()))
         .flatMapMany(dtos -> {
           try {
-            List<Hecho> hechos = FuenteResponseDTO.servicioResponseToHechos(dtos);
-            List<Hecho> hechosConFuente = hechos.stream().peek(h -> h.setFuente(fuente)).collect(Collectors.toList());
+            List<Hecho> hechos = FuenteResponseDTO.servicioResponseToHechos(dtos, fuente);
             log.info("Convertidos {} hechos exitosamente para fuente ID: {}", hechos.size(), fuente.getIdInternoFuente());
-            return Flux.fromIterable(hechosConFuente);
+            return Flux.fromIterable(hechos);
           } catch (Exception e) {
             log.error("Error convirtiendo DTOs a Hechos para fuente ID: {}. Error: {}", fuente.getIdInternoFuente(), e.getMessage(), e);
             return Flux.error(e);
@@ -82,12 +83,14 @@ public class AdapImpH implements IAdapImpH {
         .uri(uriBuilder -> {
           String uri = uriBuilder
               .path("/hechos/filtered")
+              .queryParam("fuenteId", fuente.getIdInternoFuente())
               .queryParam("dateTimeGT", ultimaFechaRefresco.toString())
               .build().toString();
           log.debug("URI construida para buscarNuevosHechos: {}", uri);
           return uriBuilder
               .path("")
               .queryParam("dateTimeGT", ultimaFechaRefresco.toString())
+              .queryParam("fuenteId", fuente.getIdInternoFuente())
               .build();
         })
         .retrieve()
@@ -95,10 +98,9 @@ public class AdapImpH implements IAdapImpH {
         .doOnNext(dtos -> log.debug("Recibidos {} DTOs nuevos para fuente ID: {}", dtos.size(), fuente.getIdInternoFuente()))
         .flatMapMany(dtos -> {
           try {
-            List<Hecho> hechos = FuenteResponseDTO.servicioResponseToHechos(dtos);
-            List<Hecho> hechosConFuente = hechos.stream().peek(h -> h.setFuente(fuente)).collect(Collectors.toList());
+            List<Hecho> hechos = FuenteResponseDTO.servicioResponseToHechos(dtos, fuente);
             log.info("Convertidos {} nuevos hechos para fuente ID: {}", hechos.size(), fuente.getIdInternoFuente());
-            return Flux.fromIterable(hechosConFuente);
+            return Flux.fromIterable(hechos);
           } catch (Exception e) {
             log.error("Error convirtiendo DTOs a Hechos nuevos para fuente ID: {}. Error: {}", fuente.getIdInternoFuente(), e.getMessage(), e);
             return Flux.error(e);
@@ -126,39 +128,39 @@ public class AdapImpH implements IAdapImpH {
 
   @Override
   public Mono<Void> eliminarHecho(Hecho hecho, WebClient webClient, Fuente fuente) {
-    log.info("Eliminando hecho ID: {} de fuente ID: {}", hecho.getFuente().getIdInternoFuente(), fuente.getIdInternoFuente());
+    log.info("Eliminando hecho ID: {} de fuente ID: {}", hecho.getIdInternoFuente(fuente), fuente.getIdInternoFuente());
 
     return webClient.patch()
         .uri(uriBuilder -> {
           String uri = uriBuilder
               .path("/eliminacion/{id}")
-              .build(hecho.getFuente().getIdInternoFuente()).toString();
+              .build(hecho.getIdInternoFuente(fuente)).toString();
           log.debug("URI construida para eliminarHecho: {}", uri);
           return uriBuilder
               .path("/eliminacion/{id}")
-              .build(hecho.getFuente().getIdInternoFuente());
+              .build(hecho.getIdInternoFuente(fuente));
         })
         .bodyValue(HechoOutputDTO.HechoToDTO(hecho))
         .retrieve()
         .toBodilessEntity()
         .then()
         .doOnError(error -> log.error("Error eliminando hecho ID: {} de fuente ID: {}. Tipo: {}, Mensaje: {}",
-            hecho.getFuente().getIdInternoFuente(), fuente.getIdInternoFuente(), error.getClass().getSimpleName(), error.getMessage()))
+            hecho.getIdInternoFuente(fuente), fuente.getIdInternoFuente(), error.getClass().getSimpleName(), error.getMessage()))
         .retryWhen(Retry.backoff(1, Duration.ofSeconds(2))
             .doBeforeRetry(retrySignal -> log.warn("Reintentando eliminarHecho ID: {} para fuente ID: {}. Intento: {}",
-                hecho.getFuente().getIdInternoFuente(), fuente.getIdInternoFuente(), retrySignal.totalRetries() + 1)))
+                hecho.getIdInternoFuente(fuente), fuente.getIdInternoFuente(), retrySignal.totalRetries() + 1)))
         .onErrorResume(error -> {
           if (error instanceof WebClientResponseException) {
             WebClientResponseException wcre = (WebClientResponseException) error;
             log.error("Error HTTP eliminando hecho ID: {} fuente ID: {}. Status: {}, Body: {}",
-                hecho.getFuente().getIdInternoFuente(), fuente.getIdInternoFuente(), wcre.getStatusCode(), wcre.getResponseBodyAsString());
+                hecho.getIdInternoFuente(fuente), fuente.getIdInternoFuente(), wcre.getStatusCode(), wcre.getResponseBodyAsString());
           } else {
             log.error("Error eliminando hecho ID: {} fuente ID: {}. Tipo: {}, Mensaje: {}",
-                hecho.getFuente().getIdInternoFuente(), fuente.getIdInternoFuente(), error.getClass().getSimpleName(), error.getMessage(), error);
+                hecho.getIdInternoFuente(fuente), fuente.getIdInternoFuente(), error.getClass().getSimpleName(), error.getMessage(), error);
           }
           return Mono.empty();
         })
-        .doOnSuccess(result -> log.info("Hecho ID: {} eliminado exitosamente de fuente ID: {}", hecho.getFuente().getIdInternoFuente(), fuente.getIdInternoFuente()));
+        .doOnSuccess(result -> log.info("Hecho ID: {} eliminado exitosamente de fuente ID: {}", hecho.getIdInternoFuente(fuente), fuente.getIdInternoFuente()));
   }
 
   @Override
@@ -184,10 +186,9 @@ public class AdapImpH implements IAdapImpH {
         .doOnNext(dtos -> log.debug("Recibidos {} DTOs con título '{}' para fuente ID: {}", dtos.size(), hechos.getTitulo(), fuente.getIdInternoFuente()))
         .flatMapMany(dtos -> {
           try {
-            List<Hecho> hechosResultado = HechoInputDTO.mapDTOToHechos(dtos);
-            List<Hecho> hechosConFuente = hechosResultado.stream().peek(h -> h.setFuente(fuente)).collect(Collectors.toList());
+            List<Hecho> hechosResultado = HechoInputDTO.mapDTOToHechos(dtos, fuente);
             log.info("Convertidos {} hechos con título '{}' para fuente ID: {}", hechosResultado.size(), hechos.getTitulo(), fuente.getIdInternoFuente());
-            return Flux.fromIterable(hechosConFuente);
+            return Flux.fromIterable(hechosResultado);
           } catch (Exception e) {
             log.error("Error convirtiendo DTOs a Hechos para título '{}' fuente ID: {}. Error: {}", hechos.getTitulo(), fuente.getIdInternoFuente(), e.getMessage(), e);
             return Flux.error(e);

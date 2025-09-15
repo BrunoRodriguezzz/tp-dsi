@@ -4,12 +4,17 @@ import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consensuador;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.FuenteOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.ICategoriaRepository;
+import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
@@ -18,6 +23,7 @@ import jakarta.persistence.Id;
 
 import java.util.*;
 
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,17 +31,19 @@ import org.springframework.stereotype.Service;
 public class HechoService implements IHechoService {
   @Autowired
   private IHechoRepository hechoRepository;
-  private IFuenteService fuenteService;
-  private ICategoriaRepository categoriaRepository;
 
-  public HechoService(IFuenteService fuenteService, ICategoriaRepository categoriaRepository) {
-    this.fuenteService = fuenteService;
+  //private IFuenteService fuenteService;
+  private ICategoriaRepository categoriaRepository;
+  private IFuenteRepository fuenteRepository;
+
+  public HechoService(IFuenteRepository fuenteRepository, ICategoriaRepository categoriaRepository) {
+    this.fuenteRepository = fuenteRepository;
     this.categoriaRepository = categoriaRepository;
   }
 
   @Override
   public List<HechoOutputDTO> buscarHechos(QueryParamsFiltro params) {
-    List<Hecho> hechosProxy = this.fuenteService.buscarHechosProxy();
+    List<Hecho> hechosProxy = this.hechoRepository.findByOrigen(Origen.PROXY); // fuenteService.buscarHechosProxy(); se podria sacar y llamar directamente al repo de hecho
     this.guardarHechos(hechosProxy);
     List<Hecho> hechos = this.hechoRepository.findAll();
     List<Filtro> filtrosBusqueda = params.instanciarFiltros();
@@ -52,14 +60,13 @@ public class HechoService implements IHechoService {
 
   @Override
   public List<HechoOutputDTO> buscarHechosProxy() {
-    return HechoOutputDTO.mapHechoToDTO(this.fuenteService.buscarHechosProxy());
+    return HechoOutputDTO.mapHechoToDTO(this.pedirHechosProxy(fuenteRepository.findAll().stream().filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY)).toList())); //(this.fuenteService.buscarHechosProxy()); // si cambio lo de arriba se iria
   }
 
   @Override
-  public List<HechoOutputDTO> buscarHechosIndependientes() {
+  public List<HechoOutputDTO> buscarHechosIndependientes() { // metodo muerto?
     return null;
   }
-
 
   @Override
   public Hecho incorporarHecho(HechoInputDTO hechoDTO) {
@@ -75,7 +82,8 @@ public class HechoService implements IHechoService {
         throw new RuntimeException(e);
       }
     }
-    Fuente fuente = this.fuenteService.buscarFuente(hechoDTO.getFuente());
+    //List<Fuente> fuentes = this.fuenteRepository.findAll().stream().filter(f -> hechoDTO.getFuentes().contains(FuenteOutputDTO.toOutputDTO(f))).toList();
+    Fuente fuente = this.fuenteRepository.findById(hechoDTO.getFuente().t);
     Hecho hecho = HechoInputDTO.DTOToHecho(hechoDTO, contribuyente, fuente);
 
     Hecho hechoGuardado = this.guardarHechos(Collections.singletonList(hecho))
@@ -102,32 +110,41 @@ public class HechoService implements IHechoService {
     Map<String, Categoria> cacheCategorias = new HashMap<>();
 
     hechos.forEach(h -> {
-      // Resolver la Fuente desde el repositorio
-      if (h.getFuente() != null && h.getFuente().getId() != null) {
-        Fuente fuenteManaged = fuenteService.findById(h.getFuente().getId());
-        if (fuenteManaged == null) {
-          throw new RuntimeException("Fuente no encontrada: " + h.getFuente().getId());
-        }
-        h.setFuente(fuenteManaged);
+      // Resolver todas las fuentes desde el repositorio
+      if (h.getFuentes() != null && !h.getFuentes().isEmpty()) {
+        List<Fuente> fuentesManaged = h.getFuentes().stream()
+            .map(f -> {
+              if (f != null && f.getId() != null) {
+                return this.fuenteRepository.findById(f.getId()).orElseThrow();
+              }
+              return f;
+            })
+            .toList();
+
+        h.setFuentes(fuentesManaged);
       }
 
       if (h.getId() == null) {
         // Buscar hecho existente
-        hechoRepository.findByFuente_IdAndIdInternoFuente(h.getFuente().getId(), h.getIdInternoFuente())
-            .ifPresent(hechoExistente -> {
-              h.setId(hechoExistente.getId());
+        if (h.getFuentes() != null && !h.getFuentes().isEmpty()) {
+          Fuente fuentePrincipal = h.getFuentes().get(0);
 
-              if (h.getCategoria().getId() == null) {
-                h.getCategoria().setId(hechoExistente.getCategoria().getId());
-              }
-            });
+          hechoRepository.findByFuente_IdAndIdInternoFuente(fuentePrincipal.getId(), h.getIdsInternosFuentes())
+              .ifPresent(hechoExistente -> {
+                h.setId(hechoExistente.getId());
 
-        // Resolver categoría por título con cache
+                if (h.getCategoria() != null && h.getCategoria().getId() == null) {
+                  h.getCategoria().setId(hechoExistente.getCategoria().getId());
+                }
+              });
+        }
+
         if (h.getCategoria() != null && h.getCategoria().getId() == null) {
           String titulo = h.getCategoria().getTitulo();
 
           Categoria categoria = cacheCategorias.computeIfAbsent(titulo, t ->
-              categoriaRepository.findByTitulo(t).orElseGet(() -> h.getCategoria())
+              categoriaRepository.findByTitulo(t)
+                  .orElseGet(() -> h.getCategoria())
           );
 
           h.setCategoria(categoria);
@@ -142,7 +159,7 @@ public class HechoService implements IHechoService {
   @Override
   public void consensuarHechos() {
     List<Hecho> hechosGuardados = this.hechoRepository.findAll();
-    List<Hecho> hechosConsensuados = Consensuador.getInstance().consensuarHechos(this.fuenteService.buscarFuentes(), hechosGuardados);
+    List<Hecho> hechosConsensuados = Consensuador.getInstance().consensuarHechos(this.fuenteRepository.findAll(), hechosGuardados); // lo puedo cambiar por el repo de la fuente
     this.hechoRepository.saveAll(hechosConsensuados);
   }
 
@@ -160,5 +177,12 @@ public class HechoService implements IHechoService {
     else {
       throw new NotFoundException("Hecho no encontrado.");
     }
+  }
+
+  private List<Hecho> pedirHechosProxy(List<Fuente> fuentes) {
+    return fuentes.stream()
+        .map(fuente -> fuente.importarHechos().toStream().toList())
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList());
   }
 }

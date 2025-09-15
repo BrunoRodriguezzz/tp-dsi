@@ -31,7 +31,7 @@ public class AdapImpHDinamico implements IAdapImpH {
             .build())
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
-        .flatMapMany(dtos -> Flux.fromIterable(HechoInputDTO.mapDTOToHechos(dtos)))
+        .flatMapMany(dtos -> Flux.fromIterable(HechoInputDTO.mapDTOToHechos(dtos, fuente)))
         .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
             .maxBackoff(Duration.ofSeconds(10)))
         .onErrorResume(error -> {
@@ -51,7 +51,7 @@ public class AdapImpHDinamico implements IAdapImpH {
             .build())
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
-        .flatMapMany(dtos -> Flux.fromIterable(HechoInputDTO.mapDTOToHechos(dtos)))
+        .flatMapMany(dtos -> Flux.fromIterable(HechoInputDTO.mapDTOToHechos(dtos, fuente)))
         .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
             .maxBackoff(Duration.ofSeconds(10)))
         .onErrorResume(error -> {
@@ -65,7 +65,7 @@ public class AdapImpHDinamico implements IAdapImpH {
     return webClient.patch()
         .uri(uriBuilder -> uriBuilder
             .path("/eliminacion/{id}")
-            .build(hecho.getIdInternoFuente()))
+            .build(hecho.getIdInternoFuente(fuente)))
         .bodyValue(HechoOutputDTO.HechoToDTO(hecho))
         .retrieve()
         .toBodilessEntity()
@@ -86,7 +86,7 @@ public class AdapImpHDinamico implements IAdapImpH {
             .build())
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
-        .flatMapMany(dtos -> Flux.fromIterable(HechoInputDTO.mapDTOToHechos(dtos)))
+        .flatMapMany(dtos -> Flux.fromIterable(HechoInputDTO.mapDTOToHechos(dtos, fuente)))
         .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
             .maxBackoff(Duration.ofSeconds(10)))
         .onErrorResume(error -> {

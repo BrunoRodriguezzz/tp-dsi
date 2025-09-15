@@ -8,15 +8,15 @@ import java.time.format.DateTimeFormatter;
 
 @Data
 public class FiltroEstatica {
-    private Long archivoId;
+    private Long fuenteId;
     private Long idHecho;
     private String fecha; // TODO: No funciona :
     private LocalDateTime date; // primero como String
 
     public void validate() {
-        if(archivoId != null) {
-            if(archivoId <= 0) {
-                throw new ValidationError("fuenteId tiene que ser mayor a 0, ID ingresado: " + archivoId);
+        if(fuenteId != null) {
+            if(fuenteId <= 0) {
+                throw new ValidationError("fuenteId tiene que ser mayor a 0, ID ingresado: " + fuenteId);
             }
         }
         if(idHecho != null) {

@@ -73,9 +73,9 @@ public class HechoService implements IHechoService {
             return buscarPorIdHecho(filtro.getIdHecho());
         }
 
-        List<Long> archivoIds = (filtro.getArchivoId() == null)
+        List<Long> archivoIds = (filtro.getFuenteId() == null)
                 ? this.devolverArchivoID()
-                : List.of(filtro.getArchivoId());
+                : List.of(filtro.getFuenteId());
 
         return archivoIds.stream()
                 .map(id -> {

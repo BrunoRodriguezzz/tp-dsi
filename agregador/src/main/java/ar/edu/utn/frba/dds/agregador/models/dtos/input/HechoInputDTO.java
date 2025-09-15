@@ -42,8 +42,7 @@ public class HechoInputDTO {
           hechoDTO.getFechaAcontecimiento(),
           Origen.valueOf(hechoDTO.getOrigen().toUpperCase())
       );
-      hecho.setIdInternoFuente(hechoDTO.getId());
-      hecho.setFuente(fuente);
+      hecho.agregarFuente(fuente, hechoDTO.getId());
       hecho.setEstaEliminado(false);
       if(contribuyente != null) {
         hecho.setContribuyente(contribuyente);
@@ -66,49 +65,7 @@ public class HechoInputDTO {
     return null;
   }
 
-  public static Hecho DTOToHecho(HechoInputDTO hechoDTO) {
-    Hecho hecho;
-    try {
-      hecho = new Hecho(
-          hechoDTO.getTitulo(),
-          hechoDTO.getDescripcion(),
-          new Categoria(hechoDTO.getCategoria()),
-          new Ubicacion(
-              hechoDTO.getUbicacion().getLatitud(),
-              hechoDTO.getUbicacion().getLongitud()
-          ),
-          hechoDTO.getFechaAcontecimiento(),
-          Origen.valueOf(hechoDTO.getOrigen().toUpperCase())
-      );
-      hecho.setIdInternoFuente(hechoDTO.getId());
-      hecho.setEstaEliminado(false);
-      if(hechoDTO.getContribuyente() != null) {
-        hecho.setContribuyente(new Contribuyente(
-            hechoDTO.getContribuyente().getNombre(),
-            hechoDTO.getContribuyente().getApellido(),
-            hechoDTO.getContribuyente().getFechaNacimiento()
-        ));
-      }
-
-      if(hechoDTO.getEtiquetas() != null) {
-        hecho.setEtiquetas(hechoDTO.getEtiquetas().stream().map(Etiqueta::new).collect(Collectors.toList()));
-      }
-      if(hechoDTO.getContenidoMultimedia() != null) {
-        hecho.setContenidoMultimedia(hechoDTO.getContenidoMultimedia().stream().map(ContenidoMultimedia::new).collect(Collectors.toList()));
-      }
-
-      if(hechoDTO.getFechaCarga() != null) {
-        hecho.setFechaCarga(hechoDTO.getFechaCarga());
-      }
-
-      return hecho;
-    } catch (Exception e){
-      System.out.println(e.getMessage());
-    }
-    return null;
-  }
-
-  public static List<Hecho> mapDTOToHechos (List<HechoInputDTO> hechosInput) {
-    return hechosInput.stream().map(HechoInputDTO::DTOToHecho).collect(Collectors.toList());
+  public static List<Hecho> mapDTOToHechos (List<HechoInputDTO> hechosInput, Fuente fuente) {
+    return hechosInput.stream().map(h -> HechoInputDTO.DTOToHecho(h, null, fuente)).collect(Collectors.toList());
   }
 }

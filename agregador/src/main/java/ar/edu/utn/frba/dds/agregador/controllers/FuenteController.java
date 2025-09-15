@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.FuenteOutputDTO;
+import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import java.util.List;
@@ -31,21 +32,14 @@ public class FuenteController {
   @Autowired
   private IColeccionService coleccionService;
 
+  @Autowired
+  private IAgregadorService agregadorService;
+
   @PostMapping
   public ResponseEntity<FuenteOutputDTO> incorporarFuente(@RequestBody FuenteInputDTO fuente) {
     ValidadorInput.validarFuenteInputDTO(fuente);
-    Fuente fuenteIncorporada = this.fuenteService.incorporarFuente(fuente);
-
-    List<Hecho> hechos;
-    if(fuenteIncorporada.getNombre() != null){
-      hechos = fuenteService.buscarHechosFuenteStream(fuenteIncorporada.getNombre()).collectList().block();
-      this.hechoService.guardarHechos(hechos);
-      this.coleccionService.incorporarHechos(hechos);
-    }
-    else
-      throw new RuntimeException("Se incorporó una fuente sin nombre, no fue posible obtener sus hechos");
-
-    FuenteOutputDTO fuenteOutputDTO = FuenteOutputDTO.toOutputDTO(fuenteIncorporada);
+    Fuente fuenteGuardada = this.agregadorService.incorporarFuente(fuente);
+    FuenteOutputDTO fuenteOutputDTO = FuenteOutputDTO.toOutputDTO(fuenteGuardada);
     return ResponseEntity.status(HttpStatus.OK).body(fuenteOutputDTO);
   }
 
