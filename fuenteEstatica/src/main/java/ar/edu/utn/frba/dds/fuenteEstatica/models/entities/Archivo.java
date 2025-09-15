@@ -1,8 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.models.entities;
 
-import ar.edu.utn.frba.dds.fuenteEstatica.converters.tipoArchivoConverter;
+import ar.edu.utn.frba.dds.fuenteEstatica.converters.TipoArchivoConverter;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.impl.ArchivoCSV;
-import ar.edu.utn.frba.dds.fuenteEstatica.models.enums.TipoArchivoEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,28 +25,14 @@ public class Archivo {
     @Column(nullable = false)
     private String rutaArchivo;
 
-    @Transient
+    @Convert(converter = TipoArchivoConverter.class)
+    @Column(name = "tipoArchivo")
     private TipoArchivo tipoArchivo;
-
-    @Column(nullable = false)
-    @Convert(converter = tipoArchivoConverter.class)
-    private TipoArchivoEnum tipoArchivoEnum;
 
     public Flux<HechoEstatica> importarHechos(){
         return tipoArchivo.importarHechos(rutaArchivo).map(h -> {
             h.setIdArchivo(this.id);
             return h;
         });
-    }
-
-    @PostLoad
-    private void contruirTipoArchivo() {
-        switch (this.tipoArchivoEnum) {
-            case archivoCSV -> {
-                ArchivoCSV tipo = new ArchivoCSV();
-                this.tipoArchivo = tipo;
-            }
-            default -> {}
-        }
     }
 }

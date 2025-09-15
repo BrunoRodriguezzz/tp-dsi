@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,13 +55,14 @@ public class HechoService implements IHechoService {
 
     @Override
     public ArchivoOutputDTO getById(Long id) {
-        AtomicReference<ArchivoOutputDTO> rta = new AtomicReference<>();
-        this.hechoRepository.findById(id).ifPresentOrElse(hechoEstatica -> {
-            List<HechoEstatica> hechos = new ArrayList<>();
-            hechos.add(hechoEstatica);
-            archivoRepository.findById(hechoEstatica.getId()).ifPresent(a -> rta.set(UtilsDTO.toOutputArchivo(a, hechos)));
-        }, () -> {throw new NotFoundError("Hecho no encontrado");});
-        return rta.get();
+        // HechoEstatica hecho = this.hechoRepository.getById(id);
+        HechoEstatica hecho = this.hechoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundError("Hecho NO encontrado con ID: " + id));
+        List<HechoEstatica> hechos = new ArrayList<>();
+        hechos.add(hecho);
+
+        return UtilsDTO.toOutputArchivo(this.archivoRepository.getById(hecho.getIdArchivo()), hechos);
+        //return UtilsDTO.hechoToOutputDTO(this.hechoRepository.getById(id));
     }
 
     @Override
@@ -96,11 +96,11 @@ public class HechoService implements IHechoService {
 
     @Override
     public void save(HechoEstatica hecho) {
-        this.hechoRepository.findByTitulo(hecho.getTitulo())
-                .stream()
-                .findFirst()
-                .ifPresent(h -> hecho.setId(h.getId()));
-        this.hechoRepository.save(hecho);
+      this.hechoRepository.findByTitulo(hecho.getTitulo())
+          .stream()
+          .findFirst()
+          .ifPresent(h -> hecho.setId(h.getId()));
+      this.hechoRepository.save(hecho);
     }
 
     @Override
@@ -114,6 +114,26 @@ public class HechoService implements IHechoService {
             throw new ValidationError("ID invalido");
         }
     }
+
+//    @Override
+//    public List<ArchivoOutputDTO> getByTitleAndIdFuente(String title, Long idFuente) {
+//        List<HechoEstatica> hechos = this.hechoRepository.getByName(title);
+//        List<HechoEstatica> hechosFiltrados = hechos.stream()
+//            .filter(h -> h.getIdArchivo().equals(idFuente))
+//            .toList();
+//        List<ArchivoOutputDTO> outputArchivos = new ArrayList<>();
+//        List<Long> idFuentes = hechosFiltrados.stream()
+//            .map(HechoEstatica::getIdArchivo)
+//            .distinct()
+//            .toList();
+//        idFuentes.forEach(id -> {
+//            List<HechoEstatica> hechosFuente = hechosFiltrados.stream()
+//                .filter(e -> e.getIdArchivo().equals(id))
+//                .toList();
+//            this.toOutputArchivo(outputArchivos, id, hechosFuente);
+//        });
+//        return outputArchivos;
+//    }
 
     private List<ArchivoOutputDTO> buscarPorIdHecho(Long idHecho) {
         Optional<HechoEstatica> hecho = hechoRepository.findById(idHecho);
