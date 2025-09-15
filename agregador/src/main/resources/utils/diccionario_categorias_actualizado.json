@@ -1,0 +1,225 @@
+{
+  "version": "2.0",
+  "fecha_creacion": "2024-09-10",
+  "descripcion": "Diccionario actualizado de categorías similares incluyendo datos de rtaproxy",
+  "categorias_similares": {
+    "incendio_forestal": [
+      "Incendio forestal",
+      "Fuego forestal",
+      "Fuego en bosque nativo",
+      "Fuego en área protegida",
+      "Incendio en reserva natural",
+      "Fuego arrasador en zona boscosa",
+      "Incendio en zona de monte",
+      "Quema descontrolada",
+      "Quema de pastizales"
+    ],
+    "incendio_urbano": [
+      "Incendio en viviendas",
+      "Incendio en edificio residencial",
+      "Fuego en centro comercial",
+      "Fuego en local comercial",
+      "Fuego destructivo en zona urbana",
+      "Incendio con víctimas"
+    ],
+    "incendio_industrial": [
+      "Incendio en fábrica",
+      "Incendio en depósito",
+      "Detonación en fábrica",
+      "Deflagración en planta industrial"
+    ],
+    "evento_sismico": [
+      "Sismo con epicentro local",
+      "Sismo de gran magnitud",
+      "Evento sísmico",
+      "Movimiento telúrico",
+      "Temblor",
+      "Terremoto destructivo",
+      "Réplica sísmica"
+    ],
+    "inundacion": [
+      "Inundación repentina",
+      "Inundación en zona urbana",
+      "Inundación por lluvias intensas",
+      "Anegamiento masivo",
+      "Desborde de río",
+      "Desborde de arroyo",
+      "Crecida histórica",
+      "Crecida de aguas subterráneas"
+    ],
+    "vientos_fuertes": [
+      "Ráfagas de más de 100 km/h",
+      "Ráfagas destructivas",
+      "Vientos huracanados",
+      "Vientos con fuerza ciclónica",
+      "Vendaval",
+      "Temporal de viento",
+      "Tornado",
+      "Torbellino",
+      "Remolino de aire",
+      "Embudo de viento",
+      "Manga de viento",
+      "Fenómeno de viento rotativo"
+    ],
+    "tormenta": [
+      "Tormenta severa",
+      "Tormenta eléctrica",
+      "Tormenta tropical",
+      "Frente tormentoso",
+      "Temporal",
+      "Tormenta de viento",
+      "Tormenta con fuertes vientos"
+    ],
+    "granizo": [
+      "Precipitación de granizo",
+      "Granizo de gran tamaño",
+      "Granizada destructiva",
+      "Tormenta de granizo",
+      "Tormenta con piedras de granizo",
+      "Fenómeno meteorológico con granizo"
+    ],
+    "nieve_frio": [
+      "Nevada extrema",
+      "Nevada histórica",
+      "Nevada fuera de temporada",
+      "Tormenta de nieve",
+      "Nevazón",
+      "Copiosa caída de nieve",
+      "Precipitación de nieve",
+      "Ventisca con nieve",
+      "Frío extremo",
+      "Temperaturas bajo cero",
+      "Helada destructiva",
+      "Helada severa",
+      "Helada fuera de temporada",
+      "Congelamiento",
+      "Fenómeno de frío intenso"
+    ],
+    "calor_extremo": [
+      "Calor extremo",
+      "Ola de calor extremo",
+      "Récord histórico de calor",
+      "Temperaturas récord",
+      "Temperaturas sofocantes",
+      "Emergencia por altas temperaturas",
+      "Fenómeno de calor intenso"
+    ],
+    "sequia": [
+      "Sequía extrema",
+      "Sequía prolongada",
+      "Sequía con pérdidas agrícolas",
+      "Crisis hídrica",
+      "Déficit hídrico",
+      "Escasez de agua",
+      "Emergencia por sequía"
+    ],
+    "lluvia_intensa": [
+      "Lluvia torrencial",
+      "Lluvia de hielo"
+    ],
+    "actividad_volcanica": [
+      "Emisión volcánica",
+      "Caída de ceniza",
+      "Nube de ceniza",
+      "Contaminación por ceniza volcánica",
+      "Polvo volcánico en suspensión",
+      "Lluvia de ceniza volcánica",
+      "Precipitación de material volcánico"
+    ],
+    "deslizamiento": [
+      "Deslizamiento de tierra",
+      "Corrimiento de tierra",
+      "Desprendimiento de ladera",
+      "Derrumbe de cerro",
+      "Aluvión de tierra y rocas",
+      "Avalancha de lodo",
+      "Alud"
+    ],
+    "accidente_aereo": [
+      "Accidente de avión",
+      "Accidente de helicóptero",
+      "Caída de aeronave",
+      "Avioneta caída",
+      "Fallo en vuelo",
+      "Incidente aéreo",
+      "Aterrizaje de emergencia",
+      "Emergencia en aeropuerto"
+    ],
+    "accidente_ferroviario": [
+      "Descarrilamiento de tren",
+      "Descarrilamiento de vagones",
+      "Descarrilamiento con derrame",
+      "Choque de formaciones ferroviarias",
+      "Colisión de tren de carga",
+      "Accidente ferroviario con pasajeros",
+      "Accidente en paso a nivel"
+    ],
+    "accidente_vehicular": [
+      "Accidente vehicular",
+      "Siniestro vial fatal",
+      "Colisión frontal",
+      "Colisión grave en ruta",
+      "Choque en cadena",
+      "Atropello masivo",
+      "Accidente de tránsito múltiple",
+      "Vuelco de vehículo de pasajeros",
+      "Accidente con transporte público"
+    ],
+    "gas_toxico": [
+      "Emanación de gas tóxico",
+      "Escape de gas",
+      "Escape de gas domiciliario",
+      "Pérdida de gas con evacuación",
+      "Fuga masiva de gas natural",
+      "Fuga en gasoducto",
+      "Gas con riesgo de explosión",
+      "Estallido de gasoducto"
+    ],
+    "explosion": [
+      "Explosión seguida de incendio",
+      "Explosión en zona residencial",
+      "Explosión de origen desconocido",
+      "Explosión de tanque de gas",
+      "Estallido con víctimas"
+    ],
+    "colapso_estructural": [
+      "Colapso de estructura",
+      "Colapso de puente",
+      "Derrumbe de edificio",
+      "Derrumbe en obra en construcción",
+      "Derrumbe parcial",
+      "Derrumbe con personas atrapadas",
+      "Caída de construcción",
+      "Colapso por fallas estructurales"
+    ],
+    "corte_energia": [
+      "Apagón por tormenta",
+      "Apagón general",
+      "Corte prolongado de energía",
+      "Corte masivo de electricidad",
+      "Interrupción del suministro eléctrico",
+      "Fallo en estación transformadora",
+      "Colapso en red de distribución",
+      "Fallo en sistema eléctrico"
+    ],
+    "accidente_industrial": [
+      "Accidente en planta industrial",
+      "Accidente en refinería",
+      "Fallo en planta procesadora",
+      "Accidente con maquinaria industrial",
+      "Accidente con químicos industriales",
+      "Fuga en planta industrial",
+      "Incidente en fábrica",
+      "Emergencia en zona industrial",
+      "Fallo en sistema de seguridad industrial"
+    ],
+    "contaminacion": [
+      "Desastre Tecnológico - Contaminación",
+      "Desastre Tecnológico - Derrame"
+    ],
+    "evento_sanitario": [
+      "Desastre Tecnológico - Evento sanitario",
+      "Desastre Tecnológico - Intoxicación masiva"
+    ]
+  }
+}

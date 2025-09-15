@@ -127,6 +127,15 @@ entity Filtro {
     valor VARCHAR(100)
 }
 
+entity "CategoriaSinonimo" {
+  id : BIGINT <<PK>>
+  --
+  sinonimo : VARCHAR(255) <<UNIQUE>>
+  categoria_id : BIGINT <<FK>>
+}
+
+Categoria ||--o{ CategoriaSinonimo
+
 'RELACIONES
 Hecho ||--o{ Etiquetas_x_Hecho
 Hecho ||--o{ Consensos_x_Hecho
