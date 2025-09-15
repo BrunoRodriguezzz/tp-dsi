@@ -11,6 +11,7 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IHechoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ColeccionService implements IColeccionService {
@@ -22,7 +23,8 @@ public class ColeccionService implements IColeccionService {
 
     @Override
     public List<OutputColeccionDTO> getAll() {
-        return coleccionRepository.getAll()
+
+        return coleccionRepository.findAll()
                 .stream()
                 .map(UtilsDTO::toOutputColeccion)
                 .toList();
@@ -30,14 +32,17 @@ public class ColeccionService implements IColeccionService {
 
     @Override
     public List<OutputHecho> getHechosByColeccion(Long id) {
-        Coleccion coleccion = coleccionRepository.getById(id);
+        Optional<Coleccion> coleccion = coleccionRepository.findById(id);
+        Coleccion coleccionAux;
 
-        if (coleccion == null) {
+        if (coleccion.isPresent()) {
+            coleccionAux  = coleccion.get();
+        }
+        else {
             throw new NotFoundError("Colección no encontrada con ID: " + id);
         }
 
-        return coleccion.getIdsHechos().stream() // consigo los IDs de los hechos de la coleccion
-                .map(idHecho -> hechoRepository.getById(idHecho)) // consigo los hechos con los IDs
+        return coleccionAux.getHechos().stream() // consigo los IDs de los hechos de la coleccion
                 .map(UtilsDTO::hechoToDtoOutput) // los transformo a output
                 .toList();
     }
@@ -45,6 +50,6 @@ public class ColeccionService implements IColeccionService {
     @Override
     public void guardarColeccion(InputColeccionDTO coleccionDTO) {
         Coleccion coleccion = UtilsDTO.toColeccion(coleccionDTO);
-        coleccionRepository.guardarColeccion(coleccion);
+        coleccionRepository.save(coleccion);
     }
 }

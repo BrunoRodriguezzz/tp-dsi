@@ -1,14 +1,17 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface IHechoRepository {
-  public Hecho guardarHecho(Hecho hecho);
-  public Boolean inicializarHechos(List<Hecho> hechos);
-  public Hecho buscarHecho(Long id);
-  public List<Hecho> buscarHechos();
-  public List<Hecho> guardarHechos(List<Hecho> hechos);
-  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente);
+import java.util.List;
+import java.util.Optional;
+
+public interface IHechoRepository extends JpaRepository<Hecho, Long> {
+    List<Hecho> findByFuente(Fuente fuente);
+
+    Optional<Hecho> findByFuente_IdAndIdInternoFuente(Long id, Long idInternoFuente);
+//  public Boolean inicializarHechos(List<Hecho> hechos);
+//  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente);
 }

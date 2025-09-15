@@ -1,7 +1,10 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.criterio;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -9,7 +12,15 @@ import java.util.List;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@Entity
+@Table(name = "criterio")
 public class Criterio {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Transient
     private List<Filtro> filtros;
 
     public Criterio() {

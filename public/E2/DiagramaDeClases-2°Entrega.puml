@@ -49,13 +49,18 @@ Fuente --> IAdapImpH
 Criterio --> Filtro
 
 'ElementoCriterio
-Filtro <|.. FiltroTitulo
 Filtro <|.. FiltroCategoria
-Filtro <|.. FiltroFechaAcontecimiento
+Filtro <|.. FiltroEtiqueta
+Filtro <|.. FiltroFechaAcontecimientoFinal
+Filtro <|.. FiltroFechaAcontecimientoInicio
+Filtro <|.. FiltroFechaCargaFinal
+Filtro <|.. FiltroFechaCargaInicio
+Filtro <|.. FiltroLatitud
+Filtro <|.. FiltroLongitud
+Filtro <|.. FiltroTitulo
 
 'Estrategias
 FiltroCategoria --> Categoria
-FiltroFechaAcontecimiento --> RangoFechas
 
 'Contenido Multimedia
 ContenidoMultimedia --> Formato
@@ -98,7 +103,7 @@ enum Formato {
 
 class Hecho {
     -id: Long
-    -idHFuente: Long
+    -idInternoFuente: Long
     -titulo: String
     -descripcion: String
     -categoria: Categoria
@@ -108,8 +113,8 @@ class Hecho {
     -fechaCarga: LocalDate
     -origen: Origen
     -contribuyente: Contribuyente
-    -consensuado: <List> Consenso
-    -eliminado: Boolean
+    -consensos: <List> Consenso
+    -estaEliminado: Boolean
     -fuente: Fuente
     -idFuente: Long
     -contenidoMultimedia: List<ContenidoMultimedia>
@@ -265,23 +270,48 @@ interface Filtro{
     +coincide(algo): Boolean
 }
 
-class RangoFechas {
+class FiltroCategoria{
+    -categoria: Categoria
+    +coincide(algo): Boolean
+}
+
+class FiltroEtiqueta {
+    -nombre: String
+    +coincide(algo): Boolean
+}
+
+class FiltroFechaAcontecimientoInicio {
     -fechaInicio: LocalDate
-    -fechaFin: LocalDate
+    +coincide(algo): Boolean
+}
+
+class FiltroFechaAcontecimientoFinal {
+    -fechaFinal: LocalDate
+    +coincide(algo): Boolean
+}
+
+class FiltroFechaCargaInicio {
+    -fechaInicio: LocalDate
+    +coincide(algo): Boolean
+}
+
+class FiltroFechaCargaFinal {
+    -fechaFinal: LocalDate
+    +coincide(algo): Boolean
+}
+
+class FiltroLatitud{
+    -latitud: String
+    +coincide(algo): Boolean
+}
+
+class FiltroLongitud{
+    -longitud: String
+    +coincide(algo): Boolean
 }
 
 class FiltroTitulo{
     -titulo: String
-    +coincide(algo): Boolean
-}
-
-class FiltroFechaAcontecimiento{
-    -fechaAcontecimientoEntre: RangoFechas
-    +coincide(algo): Boolean
-}
-
-class FiltroCategoria{
-    -categoria: Categoria
     +coincide(algo): Boolean
 }
 

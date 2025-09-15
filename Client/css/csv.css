@@ -1,0 +1,105 @@
+:root {
+    --svg-size: 3rem;
+    --margin-bottom: 1rem;
+}
+
+a svg {
+    max-block-size: 1rem;
+}
+
+.estado-importacion {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    align-items: center;
+    margin-bottom: var(--margin-bottom);
+}
+
+.info-page {
+    width: 100%;
+    margin-top: 5rem;
+}
+
+.info-page a {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    color: var(--color-gray-500);
+}
+
+.estado-importacion svg {
+    margin-right: 0.5rem;
+    width: var(--svg-size);
+    height: var(--svg-size);
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+}
+
+.estado-importacion p {
+    margin-bottom: 0.1rem;
+    font-size: small;
+}
+
+#estado {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.violet {
+    color: var(--color-violet-600);
+    background-color: var(--color-violet-100);
+}
+
+.importar-csv {
+    border: 1px solid var(--color-gray-300);
+    padding-top: 1rem;
+    border-radius: var(--border-radius);
+}
+
+.titulo {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.requisitos-csv {
+    border: 1px solid var(--color-blue-200);
+    border-radius: var(--border-radius);
+    background-color: var(--color-blue-100);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.requisitos-csv ul {
+    margin-bottom: 0;
+}
+
+.requisitos-csv p {
+    font-weight: bolder;
+}
+
+.requisitos-csv li {
+    list-style: disc;
+}
+
+.subir-csv button {
+    width: 100%;
+}
+
+.subir-csv {
+    margin-bottom: 1rem;
+}
+
+.important-container {
+    border: 1px solid var(--color-yellow-600);
+    border-radius: var(--border-radius);
+    background-color: var(--color-yellow-100);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.important-container li {
+    list-style: disc;
+}

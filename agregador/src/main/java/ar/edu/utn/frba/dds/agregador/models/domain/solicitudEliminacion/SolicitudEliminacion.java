@@ -6,18 +6,42 @@ import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.FundamentoInvalidoException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.HechoYaEliminadoException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.SolicitudEliminacionYaResueltaException;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Setter @Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table
 public class SolicitudEliminacion {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     private Hecho hecho;
+
+    @Column(columnDefinition = "TEXT")
     private String fundamento;
+
+    @Enumerated(EnumType.STRING)
     private EstadoSolicitudEliminacion estadoSolicitudEliminacion;
+
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
+
+    @OneToOne
+    @JoinColumn(name = "resolucion_id", referencedColumnName = "id")
     private ResolucionSolicitudEliminacion resolucionSolicitudEliminacion;
+
+    @OneToOne
+    @JoinColumn(name = "contribuyente_id", referencedColumnName = "id")
     private Contribuyente contribuyente;
 
     public SolicitudEliminacion(Hecho hecho, String fundamento, Contribuyente contribuyente, LocalDateTime fechaCreacion) throws FundamentoInvalidoException {

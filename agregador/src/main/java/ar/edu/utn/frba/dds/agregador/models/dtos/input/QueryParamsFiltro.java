@@ -10,7 +10,6 @@ import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroLatitud;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroLongitud;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroTitulo;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
-import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.RangoFechas;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,0 +1,157 @@
+body{
+    display: flex;
+    background-color: white;
+    margin-top: 5rem;
+    justify-content: center;
+}
+
+.container-responsive{
+    width: 100%;
+}
+
+.container-navegador{
+    display: block;
+    width: 100%;
+    justify-content:space-around;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1rem;
+}
+
+.config-nav{
+    display: flex;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    align-items: center;
+}
+
+.boton-navegacion{
+    color: grey;
+    text-decoration:none;
+}
+
+.boton-navegacion:hover{
+    color: black;
+    transition: 5ms;
+}
+
+@media (min-width: 760px) {
+    .container-responsive {
+        max-width: 760px;
+    }
+
+    .caja-de-imagenes{
+        grid-template-columns: auto auto;
+    }
+
+}
+
+.config-form{
+    border:1px solid;
+    border-radius: 5px;
+    border-color: var(--color-gray-200);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.caja-de-imagenes{
+    display: grid;
+    gap:1rem;
+    margin-bottom: 1rem;
+}
+
+
+.config-label{
+    font-size: 0.9rem;
+    font-weight: 425;
+    margin-bottom: 0.3rem;
+}
+
+.config-input{
+    border:1px solid;
+    border-radius: 5px;
+    border-color: rgb(204, 204, 204);
+    font-size: 0.9rem;
+    width: 100%;
+    padding: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.config-select{
+    border:1px solid;
+    border-radius: 5px;
+    border-color: var(--color-gray-300);
+    font-size: 0.9rem;
+    width: 100%;
+    padding: 0.3rem;
+    margin-bottom: 1rem;
+}
+
+.latitud-y-longitud{
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.btn-red {
+    background-color: white;
+    color: red;
+    border-color: rgb(250, 137, 137);
+}
+
+.btn-red:hover{
+    border-color: red;
+    color: red;
+}
+
+.nombre-imagen{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.config-image{
+    border:1px solid;
+    border-radius: 5px;
+    border-color: rgb(204, 204, 204);
+    padding: 1rem;
+}
+
+.preview{
+    display: flex;
+    border:1px solid;
+    border-radius: 5px;
+    border-color: rgb(204, 204, 204);
+    padding: 1rem;
+    background-color: whitesmoke;
+    height: 150px;
+    
+    /* Lo siguiente solo es para centrar el icono*/
+    
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    color:var(--color-gray-400);
+}
+
+.config-opciones{
+    width: 100%;
+}
+
+.opciones{
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-cancelar {
+    background-color: white;
+    color: black;
+    border-color: rgb(204, 204, 204);
+}
+
+.btn-cancelar:hover{
+    border-color: var(--color-gray-400);
+    color: black;
+}

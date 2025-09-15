@@ -1,0 +1,70 @@
+@startuml
+entity "Coleccion" as Coleccion {
+    *Coleccion_ID : PK
+    --
+    Titulo
+    Descripcion
+    Criterio
+}
+
+entity "Fuente" as Fuente {
+    *Fuente_ID : PK
+    --
+    TipoFuente
+    Nombre
+    Ruta
+}
+
+entity "FuentexColeccion" as FuentexColeccion {
+    *Fuente_ID : FK
+    *Coleccion_ID : FK
+}
+
+entity "Hecho" as Hecho {
+    *Hecho_ID : PK
+    --
+    Externo_ID
+    Fuente_ID : FK
+    Titulo
+    Descripcion
+    Categoria
+    Fecha_Hecho
+    Fecha_Creacion
+    Fecha_Modificacion
+    Origen
+    Ubicacion_ID : FK
+}
+
+entity "ColeccionxHecho" as ColeccionxHecho {
+    *Hecho_ID : FK
+    *Coleccion_ID : FK
+}
+
+entity "SolicitudDeEliminacion" as SolicitudDeEliminacion {
+    *Solicitud_ID : PK
+    --
+    hecho_id : FK
+    motivo
+    solicitante
+    fechaCreacion
+    estado
+}
+
+entity "Ubicacion" as Ubicacion {
+    *Ubicacion_ID : PK
+    --
+    Latitud
+    Longitud
+}
+
+' =========================
+' Relaciones
+' =========================
+Coleccion ||--o{ FuentexColeccion
+Fuente ||--o{ FuentexColeccion
+Coleccion ||--o{ ColeccionxHecho
+Hecho ||--o{ ColeccionxHecho
+Fuente ||--o{ Hecho
+Ubicacion ||--o{ Hecho
+Hecho ||--o{ SolicitudDeEliminacion
+@enduml

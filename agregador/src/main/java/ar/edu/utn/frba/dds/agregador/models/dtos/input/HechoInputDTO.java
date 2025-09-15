@@ -7,7 +7,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ContenidoMultimedia;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Etiqueta;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
-import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Ubicacion;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.Ubicacion;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;

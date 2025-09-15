@@ -17,7 +17,7 @@ Esto tambíen provocó que ahora conozcamos las fuentes internas de los módulos
 Al momento de agregar una fuente en un módulo, el mismo tendrá la responsabilidad de avisarnos que se agrego una nueva fuente (`Push based`). De esta forma el agregador siempre sabe las fuentes que existen sin necesidad de preguntarle a los módulos.
 
 ### Persistencia de las fuentes
-Se agrego un `Fuente repository` para persistir las fuentes. Como de momento los repositorios son en memoria los módulos nos envían siempre al incia
+Se agrego un `Fuente repository` para persistir las fuentes. Como de momento los repositorios son en memoria los módulos nos envían siempre al inciar las fuentes, lo que provoca que tenga que iniciarse al comiezo el agregador.
 
 ## Algoritmos de consenso
 Para realizar la implementación de el requerimiento mencionado se utilizará un Scheduler que llamará al service de Hechos. 

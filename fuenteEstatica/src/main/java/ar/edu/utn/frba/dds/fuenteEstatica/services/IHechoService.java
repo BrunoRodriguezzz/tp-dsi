@@ -14,5 +14,5 @@ public interface IHechoService {
     ArchivoOutputDTO getById(Long id);
     void save(HechoEstatica hecho);
     void deleteHecho(Long id);
-    public List<ArchivoOutputDTO> getByTitleAndIdFuente(String title, Long idFuente);
+    //public List<ArchivoOutputDTO> getByTitleAndIdFuente(String title, Long idFuente);
 }

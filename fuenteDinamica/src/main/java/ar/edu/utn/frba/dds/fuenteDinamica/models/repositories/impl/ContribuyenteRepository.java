@@ -1,3 +1,4 @@
+/*
 package ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.impl;
 
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Contribuyente;
@@ -54,3 +55,4 @@ public class ContribuyenteRepository implements IContribuyenteRepository {
 
     }
 }
+*/

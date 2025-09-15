@@ -37,7 +37,6 @@
 
     'Estrategias
     FiltroCategoria --> Categoria
-    FiltroFechaAcontecimiento --> RangoFechas
 
     'Contenido Multimedia
     ContenidoMultimedia --> Formato
@@ -156,22 +155,12 @@
         +agregarFiltro((Filtro filtro): Void
     }
 
-    class RangoFechas {
-        -fechaInicio: LocalDate
-        -fechaFin: LocalDate
-    }
-
     interface Filtro{
         +coincide(algo): Boolean
     }
 
     class FiltroTitulo{
         -titulo: String
-        +coincide(algo): Boolean
-    }
-
-    class FiltroFechaAcontecimiento{
-        -fechaAcontecimientoEntre: RangoFechas
         +coincide(algo): Boolean
     }
 

@@ -1,3 +1,4 @@
+/*
 package ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.impl;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
@@ -116,4 +117,4 @@ public class DinamicaRepository implements IDinamicaRepository {
         return (hecho.getEstadoHecho() == EstadoHecho.ACEPTADA) || (hecho.getEstadoHecho() == EstadoHecho.ACEPTADA_CON_SUGERENCIA);
 
     }
-}
+}*/

@@ -11,7 +11,7 @@
 //import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Etiqueta;
 //import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
 //import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.RangoFechas;
-//import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Ubicacion;
+//import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.Ubicacion;
 //import org.junit.jupiter.api.*;
 //
 //import java.util.ArrayList;

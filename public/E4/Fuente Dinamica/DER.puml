@@ -1,0 +1,81 @@
+'||--o{ ONE TO MANY
+
+@startuml
+
+entity Hecho {
+  hecho_id INTEGER(11) <<PK>>
+  --
+  hecho_categoria_id INTEGER(11) <<FK>>
+  hecho_ubicacion_id INTEGER(11) <<FK>>
+  contribuyente_id INTEGER(11) <<FK>>
+  titulo VARCHAR(50)
+  descripcion TEXT
+  fecha_acontecimiento DATE
+  fecha_carga DATE
+  origen VARCHAR(20)
+  esta_eliminado BOOLEAN
+  contenido_multimedia *(INTEGER(11)) <<FK>>
+  categoria_id INTEGER(11) <<FK>>
+  fecha_guardado DATE
+  fecha_modificacion DATE
+  estado_hecho VARCHAR(50)
+  sugerencia_de_cambio TEXT
+  enviado BOOLEAN
+  fuente VARCHAR(50)
+}
+
+entity Contribuyente {
+    contribuyente_id INTEGER(11) <<PK>>
+    --
+    nombre VARCHAR(50)
+    apellido VARCHAR(50)
+    contrasenia VARCHAR(50)
+    fecha_nacimiento DATE
+}
+
+entity Etiquetas_x_Hecho {
+  hecho_id INTEGER(11) <<PK,FK>>
+  etiqueta_id INTEGER(11) <<PK,FK>>
+  --
+}
+
+entity ContenidoMultimedia {
+  contenido_id INTEGER(11) <<PK>>
+  --
+  'TODO: Implementar en el dominio
+  nombre VARCHAR(50)
+  ruta VARCHAR(100)
+  formato VARCHAR(20)
+}
+
+entity Categoria {
+  'TODO: Implementar en el dominio
+  categoria_id INTEGER(11) <<PK>>
+  --
+  titulo VARCHAR(100)
+}
+
+entity Ubicacion {
+    ubicacion_id INTEGER(11) <<PK>>
+    --
+    latitud VARCHAR(50)
+    longitud VARCHAR(50)
+}
+
+entity Etiqueta {
+    'TODO: Implementar en el dominio
+    etiqueta_id INTEGER(11) <<PK>>
+    --
+    titulo VARCHAR(50)
+}
+
+'RELACIONES
+Hecho ||--o{ Etiquetas_x_Hecho
+Hecho ||--o{ ContenidoMultimedia
+Hecho ||--|| Ubicacion
+Hecho }|--|| Contribuyente
+Hecho }o--|| Categoria
+
+Etiquetas_x_Hecho }o--|| Etiqueta
+
+@enduml

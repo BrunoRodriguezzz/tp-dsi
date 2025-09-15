@@ -1,13 +1,15 @@
 package ar.edu.utn.frba.dds.fuenteProxy.models.repositories;
 
-import ar.edu.utn.frba.dds.fuenteProxy.models.domain.Fuente;
+import ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.Fuente;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface IFuenteRepository {
-    public List<Fuente> getAll();
-    public Fuente getById(Long id);
-    public void save(Fuente fuente);
-    public void delete(Fuente fuente);
-    public List<Long> devolverIDs();
+public interface IFuenteRepository extends JpaRepository<Fuente, Long> {
+    List<Fuente> findByNombre(String nombre);
+//    public List<Fuente> getAll();
+//    public Fuente getById(Long id);
+//    public void save(Fuente fuente);
+//    public void delete(Fuente fuente);
+//    public List<Long> devolverIDs();
 }

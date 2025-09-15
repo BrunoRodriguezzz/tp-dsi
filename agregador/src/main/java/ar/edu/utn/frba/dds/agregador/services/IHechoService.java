@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 public interface IHechoService {
   public List<HechoOutputDTO> buscarHechos(QueryParamsFiltro params);
@@ -15,4 +16,6 @@ public interface IHechoService {
   public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente);
   public List<Hecho> guardarHechos(List<Hecho> hechos);
   public void consensuarHechos();
+  public List<HechoOutputDTO> buscarHechosIndependientes();
+  public List<HechoOutputDTO> buscarHechosProxy();
 }
