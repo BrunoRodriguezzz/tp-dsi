@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoProhibido;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
@@ -32,6 +33,8 @@ public class UserService implements IUserService {
 
     @Override
     public SolicitudOutputDTO crear(HechoInputDTO hechoInputDTO) {
+        if(this.verificarEdadNecesaria(hechoInputDTO)){
+
             Usuario usuario = Usuario
                     .builder()
                     .nombre(hechoInputDTO.getNombreUsuario())
@@ -104,6 +107,10 @@ public class UserService implements IUserService {
             this.dinamicaRepository.guardar(hecho);
 
             return SolicitudOutputDTO.convertir(hecho);
+            
+        }else{
+            throw new ErrorAccesoProhibido("No cumple con la mayoria de edad.");
+        }
     }
 
     @Override
@@ -170,49 +177,6 @@ public class UserService implements IUserService {
         Long diferencia = ChronoUnit.YEARS.between(solicitud.getFechaNacimientoUsuario(),fechaHoy);
 
         return diferencia>18;
-    }
-
-    @Override
-    public Boolean verificarTiposDeDatos(HechoInputDTO hechoIngresado){
-        return hechoIngresado.getNombreUsuario() != null
-                && hechoIngresado.getApellidoUsuario() != null
-                && hechoIngresado.getFechaNacimientoUsuario() != null
-                && hechoIngresado.getTitulo() != null
-                && hechoIngresado.getDescripcion() != null
-                && hechoIngresado.getCategoria() != null
-                && hechoIngresado.getContenidoMultimedia() != null
-                && hechoIngresado.getLatitud() != null
-                && hechoIngresado.getLongitud() != null
-                && hechoIngresado.getFechaAcontecimiento() != null;
-    }
-
-    @Override
-    public String tipoDeDatoErroneo(HechoInputDTO solicitudHecho){
-
-        String datoErroneo = "";
-
-        if(solicitudHecho.getNombreUsuario() == null)
-            datoErroneo = "Nombre de Usuario";
-        if(solicitudHecho.getApellidoUsuario() == null)
-            datoErroneo = "Apellido de Usuario";
-        if(solicitudHecho.getFechaNacimientoUsuario() == null)
-            datoErroneo = "Fecha de Nacimiento";
-        if(solicitudHecho.getTitulo() == null || solicitudHecho.getTitulo().isEmpty())
-            datoErroneo = "Titulo";
-        if(solicitudHecho.getDescripcion() == null || solicitudHecho.getDescripcion().isEmpty())
-            datoErroneo = "Descripcion";
-        if(solicitudHecho.getCategoria() == null || solicitudHecho.getCategoria().isEmpty())
-            datoErroneo = "Categoria";
-        if(solicitudHecho.getContenidoMultimedia() == null)
-            datoErroneo = "Contenido Multimedia";
-        if(solicitudHecho.getLatitud() == null)
-            datoErroneo = "Latitud";
-        if(solicitudHecho.getLongitud() == null)
-            datoErroneo = "Longitud";
-        if(solicitudHecho.getFechaAcontecimiento() == null)
-            datoErroneo = "Fecha de Acontecimiento";
-
-        return datoErroneo;
     }
 
     @Override

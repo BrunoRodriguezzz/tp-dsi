@@ -1,5 +1,7 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.entities;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.valueObjects.Pais;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.valueObjects.Provincia;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,4 +23,13 @@ public class Ubicacion {
 
     @Column(name = "longitud")
     private String longitud;
+
+    @Enumerated(EnumType.STRING)
+    private Pais Pais;
+
+    @Enumerated(EnumType.STRING)
+    private Provincia Provincia;
+
+    @Column(name = "municipio")
+    private String municipio;
 }
