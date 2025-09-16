@@ -1,6 +1,10 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.ContenidoMultimediaDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.EtiquetaOutputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.ContenidoMultimedia;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import lombok.Getter;
 import lombok.Setter;
 

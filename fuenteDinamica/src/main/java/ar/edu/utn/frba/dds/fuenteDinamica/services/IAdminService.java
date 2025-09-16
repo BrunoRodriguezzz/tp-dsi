@@ -7,6 +7,6 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 
 public interface IAdminService {
     public HechoOutputDTO gestionarHecho(HechoRevisadoInputDTO hechoRevisado);
-    public void           eliminar(HechoEliminarInputDTO hechoAEliminar, Long id);
+    public void           eliminar(Long id);
 
     }

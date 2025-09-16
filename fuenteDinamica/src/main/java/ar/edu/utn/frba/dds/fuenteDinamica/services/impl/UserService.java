@@ -1,6 +1,8 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoNoAutorizado;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoProhibido;
+import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorDeTiempo;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
@@ -116,44 +118,51 @@ public class UserService implements IUserService {
     @Override
     public SolicitudOutputDTO actualizar(HechoModificadoInputDTO hechoModificado){
 
-        List<Hecho> hechos = this.dinamicaRepository.buscarTodos();
+        if(this.verificarUsuarioRegistrado(hechoModificado)){
+            if(this.verificarTiempoParaActualizar(hechoModificado)){
+                List<Hecho> hechos = this.dinamicaRepository.buscarTodos();
 
-        Hecho hechoOriginal = hechos
-                .stream()
-                .filter(hecho -> hecho.getId().equals(hechoModificado.getId()))
-                .findFirst()
-                .orElse(null);
+                Hecho hechoOriginal = hechos
+                        .stream()
+                        .filter(hecho -> hecho.getId().equals(hechoModificado.getId()))
+                        .findFirst()
+                        .orElse(null);
 
-        Categoria categoria = this.convertirCategoria(hechoModificado.getCategoria());
+                Categoria categoria = this.convertirCategoria(hechoModificado.getCategoria());
 
-        List<ContenidoMultimedia> contenido = hechoModificado
-                .getContenidoMultimedia()
-                .stream()
-                .map(this::convertirMultimedia)
-                .collect(Collectors.toCollection(ArrayList::new));
+                List<ContenidoMultimedia> contenido = hechoModificado
+                        .getContenidoMultimedia()
+                        .stream()
+                        .map(this::convertirMultimedia)
+                        .collect(Collectors.toCollection(ArrayList::new));
 
-        hechoOriginal.setTitulo(hechoModificado.getTitulo());
-        hechoOriginal.setDescripcion(hechoModificado.getDescripcion());
-        hechoOriginal.setCategoria(categoria);
-        hechoOriginal.setContenidoMultimedia(contenido);
-        hechoOriginal.setFechaModificacion(LocalDateTime.now());
+                hechoOriginal.setTitulo(hechoModificado.getTitulo());
+                hechoOriginal.setDescripcion(hechoModificado.getDescripcion());
+                hechoOriginal.setCategoria(categoria);
+                hechoOriginal.setContenidoMultimedia(contenido);
+                hechoOriginal.setFechaModificacion(LocalDateTime.now());
 
-        Ubicacion ubicacion = Ubicacion
-                .builder()
-                .latitud(hechoModificado.getLatitud())
-                .longitud(hechoModificado.getLongitud())
-                .build();
+                Ubicacion ubicacion = Ubicacion
+                        .builder()
+                        .latitud(hechoModificado.getLatitud())
+                        .longitud(hechoModificado.getLongitud())
+                        .build();
 
-        hechoOriginal.setUbicacion(ubicacion);
-        hechoOriginal.setFechaAcontecimiento(hechoModificado.getFechaAcontecimiento());
-        hechoOriginal.setFechaModificacion(LocalDateTime.now());
-        hechoOriginal.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
-        hechoOriginal.setEnviado(false);
+                hechoOriginal.setUbicacion(ubicacion);
+                hechoOriginal.setFechaAcontecimiento(hechoModificado.getFechaAcontecimiento());
+                hechoOriginal.setFechaModificacion(LocalDateTime.now());
+                hechoOriginal.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
+                hechoOriginal.setEnviado(false);
 
-        this.dinamicaRepository.guardar(hechoOriginal);
+                this.dinamicaRepository.guardar(hechoOriginal);
 
-        return SolicitudOutputDTO.convertir(hechoOriginal);
-
+                return SolicitudOutputDTO.convertir(hechoOriginal);
+            }else{
+                throw new ErrorDeTiempo("El plazo para modificar el hecho se ha terminado y no es posible modificar el hecho.");
+            }
+        }else{
+            throw new ErrorAccesoNoAutorizado("No existe un usuario registrado con estos datos.");
+        }
     }
 
     @Override
@@ -201,10 +210,6 @@ public class UserService implements IUserService {
                                 && usuario.getApellido().equals(contribuyente.getApellido())
                                 && usuario.getFechaNacimiento().equals(contribuyente.getFechaNacimiento()));
 
-    }
-
-    private Etiqueta convertirString(String etiqueta){
-        return Etiqueta.builder().titulo(etiqueta).build();
     }
 
     private ContenidoMultimedia convertirMultimedia(String url){

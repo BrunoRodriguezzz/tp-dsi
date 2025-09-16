@@ -24,10 +24,10 @@ public class UserController {
     @PostMapping("/solicitud")
     public SolicitudOutputDTO solicitudCrearHecho(@RequestBody HechoInputDTO hecho){
 
-        if(verificarTiposDeDatos(hecho)) {
+        if(this.verificarTiposDeDatos(hecho)) {
             return userService.crear(hecho);
         }else{
-            throw new ErrorTipoDeDatos("Error de ingreso de datos en: " + tipoDeDatoErroneo(hecho) + ". No puede haber campos vacios.");
+            throw new ErrorTipoDeDatos("Error de ingreso de datos en: " + this.tipoDeDatoErroneo(hecho) + ". No puede haber campos vacios.");
         }
 
     }
@@ -36,25 +36,17 @@ public class UserController {
 
     @PatchMapping("/modificacion")
     public SolicitudOutputDTO actualizarHecho(@RequestBody HechoModificadoInputDTO hecho){
-        if(verificarUsuarioRegistrado(hecho)){
-            if(verificarTiempoParaActualizar(hecho)){
-                return userService.actualizar(hecho);
-            }else{
-                throw new ErrorDeTiempo("El plazo para modificar el hecho se termino.");
-            }
+
+        HechoInputDTO hechoParaValidarInput = HechoInputDTO.convertirModAInput(hecho);
+
+        if(this.verificarTiposDeDatos(hechoParaValidarInput)){
+            return this.userService.actualizar(hecho);
         }else{
-            throw new ErrorAccesoNoAutorizado("Usuario no registrado.");
+            throw new ErrorTipoDeDatos("Error de ingreso de datos en: " + this.tipoDeDatoErroneo(hechoParaValidarInput) + ". No puede haber campos vacios.");
         }
-
-        //TODO: Estas validaciones correspondan a la capa de Service, no a la de Controllers
     }
 
-    // Verificadores necesarios
-
-    private Boolean verificarUsuarioRegistrado(HechoModificadoInputDTO hechoParaActualizar){
-
-        return this.userService.verificarUsuarioRegistrado(hechoParaActualizar);
-    }
+    // Verificaciones de la capa de Controllers
 
     private Boolean verificarTiposDeDatos(HechoInputDTO hecho){
 
@@ -97,12 +89,6 @@ public class UserController {
             datoErroneo = "Fecha de Acontecimiento";
 
         return datoErroneo;
-
-    }
-
-    private Boolean verificarTiempoParaActualizar(HechoModificadoInputDTO hecho) {
-
-        return this.userService.verificarTiempoParaActualizar(hecho);
 
     }
 }
