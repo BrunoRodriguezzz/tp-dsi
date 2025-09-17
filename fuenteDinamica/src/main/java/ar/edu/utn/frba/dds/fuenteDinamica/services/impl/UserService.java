@@ -12,7 +12,10 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IContribuyenteRepo
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IUbicacionRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IUserService;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
+import ar.edu.utn.frba.dds.fuenteDinamica.services.impl.adapters.IUbicacionAPI;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,6 +31,9 @@ public class UserService implements IUserService {
     private IContribuyenteRepository contribuyentesRepository;
     private ICategoriaRepository categoriaRepository;
     private IUbicacionRepository ubicacionRepository;
+
+    @Autowired
+    private IUbicacionAPI ubicacionAPI;
 
     public UserService(IRepositoryService dinamicaRepository,
                        IContribuyenteRepository contribuyentesRepository,
@@ -86,13 +92,19 @@ public class UserService implements IUserService {
             Ubicacion ubicacionGuardada = this.ubicacionRepository.findByLatitudAndLongitud(hechoInputDTO.getLatitud(), hechoInputDTO.getLongitud());
 
             if(ubicacionGuardada==null){
+
                 Ubicacion nuevaUbicacion = Ubicacion
                         .builder()
                         .latitud(hechoInputDTO.getLatitud())
                         .longitud(hechoInputDTO.getLongitud())
                         .build();
+
+                this.ubicacionAPI.buscarUbicacion(nuevaUbicacion);
+
                 this.ubicacionRepository.save(nuevaUbicacion);
+
                 hecho.setUbicacion(nuevaUbicacion);
+
             }else{
                 hecho.setUbicacion(ubicacionGuardada);
             }
