@@ -7,11 +7,11 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.*;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.ICategoriaRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IContribuyenteRepository;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IDinamicaRepository;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IUbicacionRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IUserService;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,10 +26,19 @@ public class UserService implements IUserService {
 
     private IRepositoryService dinamicaRepository;
     private IContribuyenteRepository contribuyentesRepository;
+    private ICategoriaRepository categoriaRepository;
+    private IUbicacionRepository ubicacionRepository;
 
-    public UserService(IRepositoryService dinamicaRepository, IContribuyenteRepository contribuyentesRepository){
+    public UserService(IRepositoryService dinamicaRepository,
+                       IContribuyenteRepository contribuyentesRepository,
+                       ICategoriaRepository categoriaRepository,
+                       IUbicacionRepository ubicacionRepository){
+
         this.dinamicaRepository = dinamicaRepository;
         this.contribuyentesRepository = contribuyentesRepository;
+        this.categoriaRepository = categoriaRepository;
+        this.ubicacionRepository = ubicacionRepository;
+
     }
 
     @Override
@@ -44,11 +52,6 @@ public class UserService implements IUserService {
                     .fechaNacimiento(hechoInputDTO.getFechaNacimientoUsuario())
                     .build();
 
-            Ubicacion ubicacion = Ubicacion
-                    .builder()
-                    .latitud(hechoInputDTO.getLatitud())
-                    .longitud(hechoInputDTO.getLongitud())
-                    .build();
 
             List<ContenidoMultimedia> contenidoMultimedia = hechoInputDTO
                     .getContenidoMultimedia()
@@ -56,15 +59,11 @@ public class UserService implements IUserService {
                     .map(this::convertirMultimedia)
                     .toList();
 
-            Categoria categoria = this.convertirCategoria(hechoInputDTO.getCategoria());
-
             Hecho hecho = Hecho
                     .builder()
                     .titulo(hechoInputDTO.getTitulo())
                     .descripcion(hechoInputDTO.getDescripcion())
-                    .categoria(categoria)
                     .contenidoMultimedia(contenidoMultimedia)
-                    .ubicacion(ubicacion)
                     .fechaGuardado(LocalDateTime.now())
                     .estaEliminado(false)
                     .enviado(false)
@@ -74,6 +73,29 @@ public class UserService implements IUserService {
                     .fuente("Provistos por contribuyentes")
                     .build();
 
+            Categoria categoriaGuardada = this.categoriaRepository.findByNombre(hechoInputDTO.getCategoria());
+
+            if(categoriaGuardada==null){
+                Categoria categoria = this.convertirCategoria(hechoInputDTO.getCategoria());
+                this.categoriaRepository.save(categoria);
+                hecho.setCategoria(categoria);
+            }else{
+                hecho.setCategoria(categoriaGuardada);
+            }
+
+            Ubicacion ubicacionGuardada = this.ubicacionRepository.findByLatitudAndLongitud(hechoInputDTO.getLatitud(), hechoInputDTO.getLongitud());
+
+            if(ubicacionGuardada==null){
+                Ubicacion nuevaUbicacion = Ubicacion
+                        .builder()
+                        .latitud(hechoInputDTO.getLatitud())
+                        .longitud(hechoInputDTO.getLongitud())
+                        .build();
+                this.ubicacionRepository.save(nuevaUbicacion);
+                hecho.setUbicacion(nuevaUbicacion);
+            }else{
+                hecho.setUbicacion(ubicacionGuardada);
+            }
 
             // Guardo el contribuyente, solo si indico su nombre
             if(usuario.getNombre() != "" && usuario.getApellido() != ""){
