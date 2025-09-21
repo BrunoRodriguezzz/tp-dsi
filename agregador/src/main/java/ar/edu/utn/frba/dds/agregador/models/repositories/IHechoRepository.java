@@ -7,14 +7,15 @@ import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface IHechoRepository extends JpaRepository<Hecho, Long> {
-    List<Hecho> findByFuente(Fuente fuente);
-
-    Optional<Hecho> findByFuente_IdAndIdInternoFuente(Long id, Long idInternoFuente);
-
     List<Hecho> findByOrigen(Origen origen);
+
+    Optional<Hecho> findByFuentesAndIdsInternosFuentes(List<Fuente> fuentes, Map<Fuente, Long> idsInternosFuentes);
+
+    List<Hecho> findByFuentes(List<Fuente> fuentes);
 //  public Boolean inicializarHechos(List<Hecho> hechos);
 //  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente);
 }

@@ -32,12 +32,14 @@ public class HechoOutputDTO {
     if(hecho.getContribuyente() != null){
       hechoDTO.setContribuyente(ContribuyenteOutputDTO.ContribuyenteToDTO(hecho.getContribuyente()));
     }
-
     else{
       hechoDTO.setContribuyente(null);
     }
 
-    hechoDTO.setFuente(hecho.getFuente().getNombre()); // TODO: Revisar si devolver el nombre y ya o el objeto
+    hecho.getFuentes()
+            .stream()
+            .findFirst()
+            .ifPresent(f -> hechoDTO.setFuente(f.getNombre()));
     hechoDTO.setOrigen(hecho.getOrigen().name());
     return hechoDTO;
   }
@@ -46,10 +48,8 @@ public class HechoOutputDTO {
     if(hechos == null){
       return null;
     }
-    List<HechoOutputDTO> hechosDTO =
-        hechos.stream()
-            .map(HechoOutputDTO::HechoToDTO)
-            .collect(Collectors.toList());
-    return hechosDTO;
+      return hechos.stream()
+          .map(HechoOutputDTO::HechoToDTO)
+          .collect(Collectors.toList());
   }
 }

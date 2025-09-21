@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consensuador;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.HechoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
@@ -110,28 +111,18 @@ public class HechoService implements IHechoService {
     Map<String, Categoria> cacheCategorias = new HashMap<>();
 
     hechos.forEach(h -> {
-      // Resolver todas las fuentes desde el repositorio
-      if (h.getFuentes() != null && !h.getFuentes().isEmpty()) {
-        List<Fuente> fuentesManaged = h.getFuentes().stream()
-            .map(f -> {
-              if (f != null && f.getId() != null) {
-                return this.fuenteRepository.findById(f.getId()).orElseThrow();
-              }
-              return f;
-            })
-            .toList();
-
-        h.setFuentes(fuentesManaged);
-      }
-
       if (h.getId() == null) {
         // Buscar hecho existente
         if (h.getFuentes() != null && !h.getFuentes().isEmpty()) {
-          for (int i = 0; i < h.getFuentes().size(); i++) {
-            Fuente fuente = h.getFuentes().get(i);
-            Long idInterno = h.getIdsInternosFuentes().get(i);
+            List<Fuente> fuentes = h.getFuentes();
+          Map<Fuente, Long> idInternos = h.getIdsInternosFuentes()
+                  .stream()
+                  .collect(Collectors.toMap(
+                          HechoFuente::getFuente,
+                          HechoFuente::getIdInternoFuente
+                  ));
 
-            hechoRepository.findByFuente_IdAndIdInternoFuente(fuente.getId(), idInterno)
+            hechoRepository.findByFuentesAndIdsInternosFuentes(fuentes, idInternos)
                     .ifPresent(hechoExistente -> {
                       h.setId(hechoExistente.getId());
 
@@ -139,9 +130,6 @@ public class HechoService implements IHechoService {
                         h.getCategoria().setId(hechoExistente.getCategoria().getId());
                       }
                     });
-
-            if (h.getId() != null) break; // corta el loop cuando lo encuentra
-          }
         }
 
         if (h.getCategoria() != null && h.getCategoria().getId() == null) {
@@ -149,7 +137,7 @@ public class HechoService implements IHechoService {
 
           Categoria categoria = cacheCategorias.computeIfAbsent(titulo, t ->
               categoriaRepository.findByTitulo(t)
-                  .orElseGet(() -> h.getCategoria())
+                  .orElseGet(h::getCategoria)
           );
 
           h.setCategoria(categoria);
@@ -157,6 +145,7 @@ public class HechoService implements IHechoService {
       }
     });
 
+    System.out.print("Por guardar hechos " + hechos.size());
     return this.hechoRepository.saveAll(hechos);
   }
 
@@ -169,8 +158,8 @@ public class HechoService implements IHechoService {
   }
 
   @Override
-  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente){
-    List<Hecho> hechos = this.hechoRepository.findByFuente(fuente);
+  public List<Hecho> buscarHechosGuardadosFuente(List<Fuente> fuentes){
+    List<Hecho> hechos = this.hechoRepository.findByFuentes(fuentes);
     return hechos;
   }
 

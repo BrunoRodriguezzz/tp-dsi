@@ -142,11 +142,8 @@ public class ColeccionService implements IColeccionService {
     List<Filtro> filtrosNuevos = CriterioInputDTO.crearFiltros(criterio);
     coleccion.cambiarCriterio(new Criterio(filtrosNuevos));
 
-    List<Hecho> hechosFuentes = coleccion.getFuentes()
-        .stream()
-        .map(this.hechoService::buscarHechosGuardadosFuente) // TODO pedir filtrado
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
+    List<Fuente> fuentes = coleccion.getFuentes();
+    List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentes);
     coleccion.cargarHechos(hechosFuentes);
     coleccion.recalcularHechos();
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
@@ -162,7 +159,9 @@ public class ColeccionService implements IColeccionService {
     }
 
     coleccion.agregarFuente(fuente);
-    List<Hecho> hechos = this.hechoRepository.findByFuente(fuente);
+    List<Fuente> fuentes = new ArrayList<>();
+    fuentes.add(fuente);
+    List<Hecho> hechos = this.hechoRepository.findByFuentes(fuentes);
     coleccion.cargarHechos(hechos);
 
     this.coleccionRepository.save(coleccion);

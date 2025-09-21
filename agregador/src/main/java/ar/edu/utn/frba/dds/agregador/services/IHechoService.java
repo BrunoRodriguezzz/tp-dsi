@@ -13,7 +13,7 @@ public interface IHechoService {
   public Hecho incorporarHecho(HechoInputDTO hecho);
   public Hecho guardarHecho(Hecho hecho);
   public Hecho buscarHecho(Long id);
-  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente);
+  public List<Hecho> buscarHechosGuardadosFuente(List<Fuente> fuentes);
   public List<Hecho> guardarHechos(List<Hecho> hechos);
   public void consensuarHechos();
   public List<HechoOutputDTO> buscarHechosIndependientes();

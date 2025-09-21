@@ -8,8 +8,9 @@ import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.TituloInvalid
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import jakarta.persistence.*;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ContenidoMultimedia;
@@ -20,8 +21,6 @@ import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.U
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,14 +35,16 @@ public class Hecho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(
-        name = "hecho_ids_internos_fuentes",
-        joinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id")
-    )
-    @MapKeyJoinColumn(name = "fuente_id", referencedColumnName = "id")
-    @Column(name = "id_interno_fuente")
-    private Map<Fuente, Long> idsInternosFuentes;
+//    @ElementCollection(fetch = FetchType.LAZY)
+//    @CollectionTable(
+//        name = "hecho_ids_internos_fuentes",
+//        joinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id")
+//    )
+//    @MapKeyJoinColumn(name = "fuente_id", referencedColumnName = "id")
+//    @Column(name = "id_interno_fuente")
+//    private Map<Fuente, Long> idsInternosFuentes;
+    @OneToMany(mappedBy = "hecho", cascade = CascadeType.ALL)
+    private Set<HechoFuente> idsInternosFuentes;
 
     @Column(nullable = false)
     private String titulo;
@@ -122,7 +123,7 @@ public class Hecho {
         this.fechaCarga = null;
         this.fuentes = new ArrayList<>();
         this.consensos = new ArrayList<>();
-        this.idsInternosFuentes = new HashMap<>();
+        this.idsInternosFuentes = new HashSet<>();
     }
 
     public void eliminar() throws Exception {
@@ -147,14 +148,23 @@ public class Hecho {
     public Boolean agregarFuente(Fuente fuente, Long idHechoEnFuente) {
         if (this.fuentes.stream().noneMatch(f -> f.getNombre().equals(fuente.getNombre()))) {
             this.fuentes.add(fuente);
+            HechoFuente hechoFuente = new HechoFuente();
+            hechoFuente.setHecho(this);
+            hechoFuente.setFuente(fuente);
+            hechoFuente.setId(idHechoEnFuente);
+            this.idsInternosFuentes.add(hechoFuente);
             return true;
         }
-        this.idsInternosFuentes.put(fuente, idHechoEnFuente);
         return false;
     }
 
     public Long getIdInternoFuente(Fuente fuente) {
-        return this.idsInternosFuentes.get(fuente);
+        return this.idsInternosFuentes
+                .stream()
+                .filter(hechoFuente -> hechoFuente.getFuente().equals(fuente))
+                .findFirst()
+                .map(HechoFuente::getId)
+                .orElse(null);
     }
 
     public Boolean quitarFuente(Fuente fuente, Long idHechoEnFuente) {

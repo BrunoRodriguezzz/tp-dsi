@@ -169,15 +169,16 @@ public class Coleccion {
 
     // Auxiliares a consultas de Hechos
     private List<Hecho> filtrarHechosSegunCriterioYFuentes(List<Hecho> hechos) {
-        List<Long> idsFuentes = this.getFuentes().stream()
-            .map(Fuente::getId)
-            .toList();
+        List<Long> IDfuentes = this.getFuentes()
+                .stream()
+                .map(Fuente::getId)
+                .toList();
 
         return hechos.stream()
             .filter(hecho ->
                 this.cumpleCriterioColeccion(hecho) &&
                     !hecho.getEstaEliminado() &&
-                    idsFuentes.contains(hecho.getFuente().getId())
+                    hecho.getFuentes().stream().map(Fuente::getId).anyMatch(IDfuentes::contains)
             )
             .collect(Collectors.toList());
     }

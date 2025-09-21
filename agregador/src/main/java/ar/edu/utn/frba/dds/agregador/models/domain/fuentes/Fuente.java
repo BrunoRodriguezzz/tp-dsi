@@ -69,13 +69,12 @@ public class Fuente {
 
   public Flux<Hecho> importarHechos() {
       log.info("Importando hechos de la fuente: {}", this.nombre);
-      Flux<Hecho> hechos = iAdapImpH.importarHechos(this.webClient, this)
+      return iAdapImpH.importarHechos(this.webClient, this)
           .flatMap(this::verificarHecho)
           .onErrorResume(error -> {
             System.err.println("Error en importarHechos de fuente " + this.nombre + ": " + error.getMessage());
             return Flux.empty();
           });
-    return hechos;
   }
 
   public Flux<Hecho> importarHechosMismoTitulo(Hecho hecho) {
@@ -122,7 +121,7 @@ public class Fuente {
   private Mono<Hecho> verificarHecho(Hecho h) {
     h.getUbicacion().setPais(Pais.ARGENTINA);
     return Mono.fromCallable(() -> {
-          h.setFuente(this);
+          h.getFuentes().add(this);
           return h;
         })
         .flatMap(this::cargarUbicacionReactiva)
