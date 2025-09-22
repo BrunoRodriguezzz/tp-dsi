@@ -28,8 +28,7 @@ public class AgregadorService implements IAgregadorService {
   @Override
   public List<String> incorporarHecho(HechoInputDTO hecho) {
     Hecho guardado = this.hechoService.incorporarHecho(hecho);
-    List<String> nombresColecciones = this.coleccionService.incorporarHecho(guardado);
-    return nombresColecciones;
+      return this.coleccionService.incorporarHecho(guardado);
   }
 
   @Override

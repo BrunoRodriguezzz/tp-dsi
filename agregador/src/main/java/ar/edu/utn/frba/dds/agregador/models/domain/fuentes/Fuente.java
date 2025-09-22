@@ -120,10 +120,7 @@ public class Fuente {
 
   private Mono<Hecho> verificarHecho(Hecho h) {
     h.getUbicacion().setPais(Pais.ARGENTINA);
-    return Mono.fromCallable(() -> {
-          h.getFuentes().add(this);
-          return h;
-        })
+    return Mono.defer(() -> Mono.just(h))
         .flatMap(this::cargarUbicacionReactiva)
         .subscribeOn(Schedulers.boundedElastic());
   }

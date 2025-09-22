@@ -15,11 +15,7 @@ public class AlgConsensoAbsoluto implements IStratConsenso {
   public Hecho consensuados(List<Hecho> hechos, List<Fuente> fuentes, Hecho hecho) {
     Integer cantFuentes = fuentes.size();
 
-    Integer cantFuentesConHecho = hechos.stream()
-            .map(h -> h.getFuentes().stream().map(Fuente::getId).toList())
-            .distinct()
-            .toList()
-            .stream().flatMap(List::stream).toList()
+    Integer cantFuentesConHecho = hecho.getFuenteSet()
             .size();
 
     if(cantFuentesConHecho.equals(cantFuentes)) {

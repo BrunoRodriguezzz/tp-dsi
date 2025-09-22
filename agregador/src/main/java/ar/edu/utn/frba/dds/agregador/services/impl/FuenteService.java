@@ -4,6 +4,7 @@ package ar.edu.utn.frba.dds.agregador.services.impl;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.HechoFuente;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.FuenteOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
@@ -99,7 +100,11 @@ public class FuenteService implements IFuenteService {
   @Override
   public void eliminarHecho(Hecho hecho) {
     Mono.fromRunnable(() -> {
-          List<Fuente> fuentes = hecho.getFuentes();
+          List<Fuente> fuentes = hecho
+                  .getFuenteSet()
+                  .stream()
+                  .map(HechoFuente::getFuente)
+                  .toList();
           fuentes.forEach(f -> eliminarHecho(hecho));
         })
         .subscribeOn(Schedulers.boundedElastic())
@@ -194,30 +199,4 @@ public class FuenteService implements IFuenteService {
     return this.fuenteRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("No se encontró la fuente con ID: " + id));
   }
-  
-//  public static class FuenteHechosResult {
-//    private String nombreFuente;
-//    private List<Hecho> hechos;
-//    private String error;
-//    private LocalDateTime timestamp;
-//
-//    public FuenteHechosResult(String nombreFuente, List<Hecho> hechos) {
-//      this.nombreFuente = nombreFuente;
-//      this.hechos = hechos;
-//      this.timestamp = LocalDateTime.now();
-//    }
-//
-//    public FuenteHechosResult(String nombreFuente, List<Hecho> hechos, String error) {
-//      this(nombreFuente, hechos);
-//      this.error = error;
-//    }
-//
-//    // Getters
-//    public String getNombreFuente() { return nombreFuente; }
-//    public List<Hecho> getHechos() { return hechos; }
-//    public String getError() { return error; }
-//    public LocalDateTime getTimestamp() { return timestamp; }
-//    public boolean tieneError() { return error != null; }
-//    public int getCantidadHechos() { return hechos.size(); }
-//  }
 }

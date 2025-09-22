@@ -15,12 +15,7 @@ public class AlgConsensoMaySimple implements IStratConsenso {
   public Hecho consensuados(List<Hecho> hechos, List<Fuente> fuentes, Hecho hecho) {
     int cantFuentes = fuentes.size();
 
-    int cantFuentesConHecho = hechos.stream()
-            .map(h -> h.getFuentes().stream().map(Fuente::getId).toList())
-            .distinct()
-            .toList()
-            .stream().flatMap(List::stream).toList()
-            .size();
+    int cantFuentesConHecho = hecho.getFuenteSet().size();
 
     if(cantFuentesConHecho*2 >= cantFuentes) {
       hecho.agregarConsenso(Consenso.MAYSIMPLE);

@@ -16,13 +16,7 @@ public class AlgConsensoMultMenciones implements IStratConsenso {
   private AlgConsensoMultMenciones() {}
 
   public Hecho consensuados(List<Hecho> hechos, List<Fuente> fuentes, Hecho hecho) {
-    List<Long> idFuentes = hechos.stream()
-        .map(h -> h.getFuentes().stream().map(Fuente::getId).toList())
-        .distinct()
-        .toList()
-        .stream().flatMap(List::stream).toList();
-
-    if(idFuentes.size() >= 2 && comprobarAtributos(hechos, hecho)) {
+    if(hecho.getFuenteSet().size() >= 2 && comprobarAtributos(hechos, hecho)) {
       hecho.agregarConsenso(Consenso.MULTMENCIONES);
     }
 

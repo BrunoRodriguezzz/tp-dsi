@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.HechoFuente;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.*;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
@@ -238,9 +239,17 @@ public class ColeccionService implements IColeccionService {
 
   private void agregarHechosAColecciones(List<Hecho> hechos, List<Coleccion> colecciones) {
     // TODO Es poco eficiciente pero funciona
+    List<Fuente> fuentesHechos = hechos.stream()
+            .map(h -> h.getFuenteSet()
+                    .stream()
+                    .map(HechoFuente::getFuente)
+                    .toList())
+            .flatMap(Collection::stream)
+            .toList();
+
     hechos.forEach(hecho -> {
       colecciones.forEach(c -> {
-        if(new HashSet<>(c.getFuentes()).containsAll(hecho.getFuentes())) {
+        if(new HashSet<>(c.getFuentes()).containsAll(fuentesHechos)) {
           if(c.getHechos()==null || c.getHechos().stream().noneMatch(h -> h.getId().equals(hecho.getId()))) { // TODO: Revisar, esto es lo que hace que no haya hechos repetidos en las colecciones
             c.cargarHecho(hecho);
             this.hechoService.guardarHecho(hecho);

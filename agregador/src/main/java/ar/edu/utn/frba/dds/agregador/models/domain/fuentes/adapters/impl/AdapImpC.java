@@ -5,7 +5,6 @@ import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpC;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.FuenteResponseDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;

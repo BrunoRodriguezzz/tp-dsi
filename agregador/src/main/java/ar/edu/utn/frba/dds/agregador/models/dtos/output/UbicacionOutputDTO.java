@@ -20,7 +20,9 @@ public class UbicacionOutputDTO {
     if (ubicacion.getProvincia() != null) {
       ubicacionDTO.setProvincia(ubicacion.getProvincia().toString());
     }
-    ubicacionDTO.setPais(ubicacion.getPais().toString());
+    if (ubicacion.getPais() != null) {
+      ubicacionDTO.setPais(ubicacion.getPais().toString());
+    }
     return ubicacionDTO;
   }
 }

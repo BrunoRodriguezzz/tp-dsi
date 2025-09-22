@@ -36,10 +36,10 @@ public class HechoOutputDTO {
       hechoDTO.setContribuyente(null);
     }
 
-    hecho.getFuentes()
+    hecho.getFuenteSet()
             .stream()
             .findFirst()
-            .ifPresent(f -> hechoDTO.setFuente(f.getNombre()));
+            .ifPresent(f -> hechoDTO.setFuente(f.getFuente().getNombre()));
     hechoDTO.setOrigen(hecho.getOrigen().name());
     return hechoDTO;
   }

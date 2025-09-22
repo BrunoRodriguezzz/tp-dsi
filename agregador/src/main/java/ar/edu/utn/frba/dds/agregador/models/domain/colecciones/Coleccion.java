@@ -100,6 +100,7 @@ public class Coleccion {
 
     public void cambiarCriterio(Criterio criterio) {
         this.setCriterio(criterio);
+        this.recalcularHechos();
     }
 
     public boolean cargarHecho(Hecho hecho) {
@@ -122,26 +123,21 @@ public class Coleccion {
     }
 
     public List<Hecho> consultarHechosCurados() {
-        if(this.hechos == null){
-            return new ArrayList<>();
-        }
         return this.filtrarCurados(this.hechos);
     }
 
     private List<Hecho> filtrarCurados(List<Hecho> hechos) {
-        List<Hecho> filtrados = hechos.stream().filter(h ->
-            {
+        return hechos.stream().filter(h -> {
                 if(h.getConsensos().isEmpty()){
                     return false;
                 }
                 else
-                return h.getConsensos().stream().allMatch(consensoHecho ->
+                    return h.getConsensos().stream().allMatch(consensoHecho ->
                     this.consensos.stream().anyMatch(consensoInterno ->
                         consensoInterno.equals(consensoHecho))
                 );
             }
         ).collect(Collectors.toList());
-        return filtrados;
     }
 
     // Consultas de Hechos
@@ -153,12 +149,12 @@ public class Coleccion {
     }
 
     public List<Hecho> consultarHechos(List<Filtro> filtros) {
-        List<Hecho> hechosQueCumplenFiltrosUsuario = this.aplicarFiltros(filtros);
-        return hechosQueCumplenFiltrosUsuario;
+        return this.aplicarFiltros(filtros);
     }
 
     public void agregarFiltroACriterio(Filtro filtro){
         this.criterio.agregarFiltro(filtro);
+        this.recalcularHechos();
     }
 
     public List<Hecho> recalcularHechos(){
@@ -178,13 +174,16 @@ public class Coleccion {
             .filter(hecho ->
                 this.cumpleCriterioColeccion(hecho) &&
                     !hecho.getEstaEliminado() &&
-                    hecho.getFuentes().stream().map(Fuente::getId).anyMatch(IDfuentes::contains)
+                    hecho.getFuenteSet()
+                            .stream()
+                            .map(hechoFuente -> hechoFuente.getFuente().getId())
+                            .anyMatch(IDfuentes::contains)
             )
             .collect(Collectors.toList());
     }
 
-    private Boolean cumpleCriterioColeccion(Hecho hecho){
-    if(this.criterio == null){ //Si no tengo criterio, lo cumple
+    private Boolean cumpleCriterioColeccion(Hecho hecho) {
+    if(this.criterio == null) { //Si no tengo criterio, lo cumple
         return true;
     }
         return this.criterio.cumpleCriterio(hecho);
