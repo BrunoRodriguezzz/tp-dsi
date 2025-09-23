@@ -19,6 +19,7 @@
     <module>fuenteEstatica</module>
     <module>servicioEstadisticas</module>
     <module>domain</module>
+    <module>client</module>
   </modules>
 
   <properties>
