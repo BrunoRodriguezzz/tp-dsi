@@ -8,8 +8,9 @@ import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.TituloInvalid
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import jakarta.persistence.*;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ContenidoMultimedia;
@@ -20,8 +21,6 @@ import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.U
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,14 +35,8 @@ public class Hecho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(
-        name = "hecho_ids_internos_fuentes",
-        joinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id")
-    )
-    @MapKeyJoinColumn(name = "fuente_id", referencedColumnName = "id")
-    @Column(name = "id_interno_fuente")
-    private Map<Fuente, Long> idsInternosFuentes;
+    @OneToMany(mappedBy = "hecho", cascade = CascadeType.ALL)
+    private Set<HechoFuente> fuenteSet;
 
     @Column(nullable = false)
     private String titulo;
@@ -92,14 +85,6 @@ public class Hecho {
     @Column(name = "esta_eliminado")
     private Boolean estaEliminado;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(
-        name = "fuentes_x_hecho",
-        joinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "fuente_id", referencedColumnName = "id")
-    )
-    private List<Fuente> fuentes;
-
     @OneToMany
     @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     private List<ContenidoMultimedia> contenidoMultimedia;
@@ -120,9 +105,8 @@ public class Hecho {
         this.fechaAcontecimiento = fechaAcontecimiento;
         this.origen = origen;
         this.fechaCarga = null;
-        this.fuentes = new ArrayList<>();
         this.consensos = new ArrayList<>();
-        this.idsInternosFuentes = new HashMap<>();
+        this.fuenteSet = new HashSet<>();
     }
 
     public void eliminar() throws Exception {
@@ -144,23 +128,28 @@ public class Hecho {
         return false;
     }
 
-    public Boolean agregarFuente(Fuente fuente, Long idHechoEnFuente) {
-        if (this.fuentes.stream().noneMatch(f -> f.getNombre().equals(fuente.getNombre()))) {
-            this.fuentes.add(fuente);
-            return true;
+    public void agregarFuente(Fuente fuente, Long idHechoEnFuente) {
+        if (this.fuenteSet.stream().noneMatch(e -> e.getFuente().getNombre().equals(fuente.getNombre()))) {
+            HechoFuente hechoFuente = new HechoFuente();
+            hechoFuente.setHecho(this);
+            hechoFuente.setFuente(fuente);
+            hechoFuente.setIdInternoFuente(idHechoEnFuente);
+            this.fuenteSet.add(hechoFuente);
         }
-        this.idsInternosFuentes.put(fuente, idHechoEnFuente);
-        return false;
     }
 
     public Long getIdInternoFuente(Fuente fuente) {
-        return this.idsInternosFuentes.get(fuente);
+        return this.fuenteSet
+                .stream()
+                .filter(hechoFuente -> hechoFuente.getFuente().equals(fuente))
+                .findFirst()
+                .map(HechoFuente::getId)
+                .orElse(null);
     }
 
-    public Boolean quitarFuente(Fuente fuente, Long idHechoEnFuente) {
-        this.idsInternosFuentes.remove(fuente);
-        this.fuentes.remove(fuente);
-        return false;
+    public void quitarFuente(Fuente fuente, Long idHechoEnFuente) {
+        this.fuenteSet
+                .removeIf(hf -> hf.getFuente().equals(fuente));
     }
 
     public void agregarConsenso(Consenso consenso) {
@@ -171,12 +160,11 @@ public class Hecho {
         if (this == hecho) return true;
         if (hecho == null || getClass() != hecho.getClass()) return false;
 
-        boolean resultado = this.titulo.equals(hecho.getTitulo()) &&
+        return this.titulo.equals(hecho.getTitulo()) &&
             this.descripcion.equals(hecho.getDescripcion()) &&
             this.categoria.getTitulo().equals(hecho.getCategoria().getTitulo()) &&
             this.ubicacion.getLatitud().equals(hecho.getUbicacion().getLatitud()) &&
             this.ubicacion.getLongitud().equals(hecho.getUbicacion().getLongitud()) &&
             this.fechaAcontecimiento.equals(hecho.fechaAcontecimiento);
-        return resultado;
     }
 }
