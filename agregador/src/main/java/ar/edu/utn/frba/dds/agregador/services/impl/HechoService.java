@@ -21,21 +21,25 @@ import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.util.*;
 
 import java.util.stream.Collectors;
+
+import ar.edu.utn.frba.dds.agregador.services.IUbicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 @Service
 public class HechoService implements IHechoService {
   @Autowired
-  private IHechoRepository hechoRepository;
+  private IUbicacionService ubicacionService;
 
-  //private IFuenteService fuenteService;
+  private IHechoRepository hechoRepository;
   private ICategoriaRepository categoriaRepository;
   private IFuenteRepository fuenteRepository;
 
-  public HechoService(IFuenteRepository fuenteRepository, ICategoriaRepository categoriaRepository) {
+  public HechoService(IFuenteRepository fuenteRepository, ICategoriaRepository categoriaRepository, IHechoRepository hechoRepository) {
     this.fuenteRepository = fuenteRepository;
     this.categoriaRepository = categoriaRepository;
+    this.hechoRepository = hechoRepository;
   }
 
   @Override
@@ -101,6 +105,8 @@ public class HechoService implements IHechoService {
 
   @Override
   public List<Hecho> guardarHechos(List<Hecho> hechos) {
+    this.ubicacionService.obtenerUbicacionesReactivo(Flux.fromIterable(hechos)).blockLast();
+
     Map<String, Categoria> cacheCategorias = new HashMap<>();
 
     hechos.forEach(h -> {

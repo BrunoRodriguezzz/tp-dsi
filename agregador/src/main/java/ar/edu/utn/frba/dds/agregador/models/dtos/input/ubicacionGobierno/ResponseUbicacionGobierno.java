@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.agregador.models.dtos.input;
+package ar.edu.utn.frba.dds.agregador.models.dtos.input.ubicacionGobierno;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.ProvinciaMapper;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.Ubicacion;
