@@ -9,6 +9,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import lombok.AllArgsConstructor;
@@ -60,10 +61,10 @@ public class Hecho {
     private List<Etiqueta> etiquetas;
 
     @Column(name = "fecha_acontecimiento")
-    private LocalDate fechaAcontecimiento;
+    private LocalDateTime fechaAcontecimiento;
 
     @Column(name = "fecha_carga")
-    private LocalDate fechaCarga;
+    private LocalDateTime fechaCarga;
 
     @Column()
     @Convert(converter = OrigenConverter.class)
@@ -89,7 +90,7 @@ public class Hecho {
     @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     private List<ContenidoMultimedia> contenidoMultimedia;
 
-    public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDate fechaAcontecimiento, Origen origen) throws FechaInvalidaException, TituloInvalidoException, DescripcionInvalidaException {
+    public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDateTime fechaAcontecimiento, Origen origen) throws FechaInvalidaException, TituloInvalidoException, DescripcionInvalidaException {
         if (titulo == null || titulo.isBlank())
             throw new TituloInvalidoException("El título no puede estar vacío");
         if (descripcion == null || descripcion.isBlank())

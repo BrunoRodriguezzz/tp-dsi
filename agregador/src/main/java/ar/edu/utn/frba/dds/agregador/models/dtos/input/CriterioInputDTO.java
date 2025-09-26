@@ -11,6 +11,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroLongitud;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroTitulo;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
@@ -18,10 +19,10 @@ import lombok.Data;
 @Data
 public class CriterioInputDTO {
     String titulo;
-    LocalDate fechaAcontecimientoInicio;
-    LocalDate fechaAcontecimientoFin;
-    LocalDate fechaCargaInicio;
-    LocalDate fechaCargaFin;
+    LocalDateTime fechaAcontecimientoInicio;
+    LocalDateTime fechaAcontecimientoFin;
+    LocalDateTime fechaCargaInicio;
+    LocalDateTime fechaCargaFin;
     String latitud;
     String longitud;
     String categoria;

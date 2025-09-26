@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,13 +35,13 @@ public class ColeccionController {
   public ResponseEntity buscarHechosColeccion(
       @PathVariable("id") Long id,
       @RequestParam(name = "categoria", required = false) String categoria,
-      @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDate fechaAcontecimientoInicio,
-      @RequestParam(name = "fechaAcontecimientoFin", required = false) LocalDate fechaAcontecimientoFin,
+      @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDateTime fechaAcontecimientoInicio,
+      @RequestParam(name = "fechaAcontecimientoFin", required = false) LocalDateTime fechaAcontecimientoFin,
       @RequestParam(name = "titulo", required = false) String titulo,
       @RequestParam(name = "latitud", required = false) String latitud,
       @RequestParam(name = "longitud", required = false) String longitud,
-      @RequestParam(name = "fechaCargaInicio", required = false) LocalDate fechaCargaInicio,
-      @RequestParam(name = "fechaCargaFin", required = false) LocalDate fechaCargaFin
+      @RequestParam(name = "fechaCargaInicio", required = false) LocalDateTime fechaCargaInicio,
+      @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin
   ) {
     QueryParamsFiltro params = new QueryParamsFiltro();
     params.setCategoria(categoria);
@@ -63,13 +64,13 @@ public class ColeccionController {
   public ResponseEntity buscarHechosCuradosColeccion(
       @PathVariable("id") Long id,
       @RequestParam(name = "categoria", required = false) String categoria,
-      @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDate fechaAcontecimientoInicio,
-      @RequestParam(name = "fechaAcontecimientoFin", required = false) LocalDate fechaAcontecimientoFin,
+      @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDateTime fechaAcontecimientoInicio,
+      @RequestParam(name = "fechaAcontecimientoFin", required = false) LocalDateTime fechaAcontecimientoFin,
       @RequestParam(name = "titulo", required = false) String titulo,
       @RequestParam(name = "latitud", required = false) String latitud,
       @RequestParam(name = "longitud", required = false) String longitud,
-      @RequestParam(name = "fechaCargaInicio", required = false) LocalDate fechaCargaInicio,
-      @RequestParam(name = "fechaCargaFin", required = false) LocalDate fechaCargaFin
+      @RequestParam(name = "fechaCargaInicio", required = false) LocalDateTime fechaCargaInicio,
+      @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin
   ) {
     QueryParamsFiltro params = new QueryParamsFiltro();
     params.setCategoria(categoria);

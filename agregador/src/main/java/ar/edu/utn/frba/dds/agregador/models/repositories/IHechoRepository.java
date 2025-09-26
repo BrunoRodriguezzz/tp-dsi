@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,14 @@ public interface IHechoRepository extends JpaRepository<Hecho, Long> {
             "JOIN h.fuenteSet hf " +
             "WHERE hf.fuente = :fuente")
     List<Hecho> findByFuente(@Param("fuente") Fuente fuente);
+
+    @Query("SELECT h FROM Hecho h " +
+            "WHERE h.fechaAcontecimiento BETWEEN :desde AND :hasta " +
+            "AND h.ubicacion.latitud BETWEEN :latMin AND :latMax " +
+            "AND h.ubicacion.longitud BETWEEN :lonMin AND :lonMax")
+    List<Hecho> findByFechaYUbicacion(LocalDateTime desde, LocalDateTime hasta,
+                                         double latMin, double latMax,
+                                         double lonMin, double lonMax);
 
 //  public Boolean inicializarHechos(List<Hecho> hechos);
 //  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente);

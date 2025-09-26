@@ -22,6 +22,7 @@ import java.util.*;
 
 import java.util.stream.Collectors;
 
+import ar.edu.utn.frba.dds.agregador.services.INormalizadorService;
 import ar.edu.utn.frba.dds.agregador.services.IUbicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,8 @@ import reactor.core.publisher.Flux;
 public class HechoService implements IHechoService {
   @Autowired
   private IUbicacionService ubicacionService;
+  @Autowired
+  private INormalizadorService normalizadorService;
 
   private IHechoRepository hechoRepository;
   private ICategoriaRepository categoriaRepository;
@@ -105,11 +108,14 @@ public class HechoService implements IHechoService {
 
   @Override
   public List<Hecho> guardarHechos(List<Hecho> hechos) {
-    this.ubicacionService.obtenerUbicacionesReactivo(Flux.fromIterable(hechos)).blockLast();
+    List<Hecho> hechosNormalizados = hechos.stream()
+            .map(h -> this.normalizadorService.normalizarHecho(h))
+            .toList();
+    this.ubicacionService.obtenerUbicacionesReactivo(Flux.fromIterable(hechosNormalizados)).blockLast();
 
     Map<String, Categoria> cacheCategorias = new HashMap<>();
 
-    hechos.forEach(h -> {
+    hechosNormalizados.forEach(h -> {
       if (h.getId() == null) {
         // Buscar hecho existente
         if (h.getFuenteSet() != null && !h.getFuenteSet().isEmpty()) {

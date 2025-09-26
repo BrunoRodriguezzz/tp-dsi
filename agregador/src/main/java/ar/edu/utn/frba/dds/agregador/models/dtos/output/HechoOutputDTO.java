@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos.output;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Data;
@@ -13,11 +13,11 @@ public class HechoOutputDTO {
   private String descripcion;
   private String categoria;
   private UbicacionOutputDTO ubicacion;
-  private LocalDate fechaAcontecimiento;
+  private LocalDateTime fechaAcontecimiento;
   private ContribuyenteOutputDTO contribuyente;
   private String fuente;
   private String origen;
-  private LocalDate fechaCarga;
+  private LocalDateTime fechaCarga;
 
   public static HechoOutputDTO HechoToDTO(Hecho hecho) {
     HechoOutputDTO hechoDTO = new HechoOutputDTO();

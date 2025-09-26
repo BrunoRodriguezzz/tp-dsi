@@ -1,6 +1,5 @@
-package ar.edu.utn.frba.dds.agregador.services.impl;
+package ar.edu.utn.frba.dds.agregador.services.impl.normalizador;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.CategoriaInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.CategoriaNoEncontradaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.SinonimoInvalidoException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.SinonimoYaExistenteException;
