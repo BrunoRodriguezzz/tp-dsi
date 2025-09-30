@@ -5,10 +5,8 @@ import ar.edu.utn.frba.dds.agregador.exceptions.dtos.HechoYaEliminadoExceptionDT
 import ar.edu.utn.frba.dds.agregador.exceptions.dtos.HechoYaExistenteExceptionDTO;
 import ar.edu.utn.frba.dds.agregador.exceptions.dtos.NotFoundExceptionDTO;
 import ar.edu.utn.frba.dds.agregador.exceptions.dtos.RequestExceptionDTO;
-import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaEliminadoException;
-import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaExistenteException;
-import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
-import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.RequestException;
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.*;
+
 import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,12 +37,22 @@ public class ErrorHandlerController {
   }
 
   @ExceptionHandler(value = RequestException.class)
-  public ResponseEntity<RequestExceptionDTO> handleRequestException(RequestException exception){
+  public ResponseEntity<RequestExceptionDTO> handleValidationException(RequestException exception){
     RequestExceptionDTO error = RequestExceptionDTO.builder()
         .message(exception.getMessage())
         .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
         .timestamp(LocalDateTime.now())
         .build();
+    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(value = ValidationException.class)
+  public ResponseEntity<RequestExceptionDTO> handleValidationException(Exception exception){
+    RequestExceptionDTO error = RequestExceptionDTO.builder()
+            .message(exception.getMessage())
+            .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+            .timestamp(LocalDateTime.now())
+            .build();
     return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
   }
 

@@ -11,6 +11,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroLongitud;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroTitulo;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Setter;
@@ -19,10 +20,10 @@ import org.springframework.cglib.core.Local;
 @Setter
 public class QueryParamsFiltro {
   public String categoria;
-  public LocalDate fechaAcontecimientoInicio;
-  public LocalDate fechaAcontecimientoFin;
-  public LocalDate fechaCargaInicio;
-  public LocalDate fechaCargaFin;
+  public LocalDateTime fechaAcontecimientoInicio;
+  public LocalDateTime fechaAcontecimientoFin;
+  public LocalDateTime fechaCargaInicio;
+  public LocalDateTime fechaCargaFin;
   public String longitud;
   public String latitud;
   public String titulo;

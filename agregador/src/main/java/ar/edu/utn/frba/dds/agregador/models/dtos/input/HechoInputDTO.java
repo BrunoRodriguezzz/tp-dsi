@@ -9,6 +9,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Etiqueta;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.Ubicacion;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Data;
@@ -20,13 +21,13 @@ public class HechoInputDTO {
   private String descripcion;
   private String categoria;
   private UbicacionInputDTO ubicacion;
-  private LocalDate fechaAcontecimiento;
+  private LocalDateTime fechaAcontecimiento;
   private ContribuyenteInputDTO contribuyente;
   private String origen;
   private String fuente;
   private List<String> contenidoMultimedia;
   private List<String> etiquetas;
-  private LocalDate fechaCarga;
+  private LocalDateTime fechaCarga;
 
   public static Hecho DTOToHecho(HechoInputDTO hechoDTO, Contribuyente contribuyente, Fuente fuente) {
     Hecho hecho;
