@@ -41,29 +41,9 @@
             <th:block th:replace="~{landingPage/fragments/cardsDestacados :: section-header('Hechos Destacados')}"></th:block>
 
             <div class="hechos-destacados-container row">
-                <th:block th:replace="~{landingPage/fragments/cardsDestacados :: hecho-card(
-                'Manifestación por derechos laborales',
-                'Protesta Social',
-                '2024-01-15',
-                'Plaza de mayo, Buenos Aires',
-                ${{{'trabajo', 'derechos'}}}
-            )}"></th:block>
-
-                <th:block th:replace="~{landingPage/fragments/cardsDestacados :: hecho-card(
-                'Inauguración centro comunitario',
-                'Desarrollo Social',
-                '2024-01-20',
-                'Barrio de San Telmo',
-                ${{{'Comunidad', 'Desarrollo'}}}
-            )}"></th:block>
-
-                <th:block th:replace="~{landingPage/fragments/cardsDestacados :: hecho-card(
-                'Contaminación en río local',
-                'Medio Ambiente',
-                '2024-01-10',
-                'Río de la Plata',
-                ${{{'Contaminación', 'Ambiente'}}}
-            )}"></th:block>
+                <th:block th:each="hecho : ${hechosDestacados}"
+                          th:insert="~{landingPage/fragments/cardsDestacados :: hecho-card(${hecho})}">
+                </th:block>
             </div>
             <button class="btn btn-outline-primary">Ver Todos los Hechos</button>
         </div>

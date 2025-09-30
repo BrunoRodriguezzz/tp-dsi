@@ -1,19 +1,25 @@
 <!-- Fragmento para tarjetas de hechos destacados -->
-<div th:fragment="hecho-card(titulo, categoria, fecha, ubicacion, etiquetas)" class="col">
-    <div class="hecho-destacado-card card">
-        <div class="hecho-destacado-card-body card-body">
-            <div class="titulo-etiqueta">
-                <h5 class="card-title" th:text="${titulo}"></h5>
-                <p class="etiqueta-categoria" th:text="${categoria}"></p>
-            </div>
-            <p class="card-text"><strong>Fecha: </strong><span th:text="${fecha}"></span></p>
-            <p class="card-text"><strong>Ubicación: </strong><span th:text="${ubicacion}"></span></p>
-            <div style="display: flex; gap: 0.5rem">
-                <p th:each="etiqueta : ${etiquetas}" class="etiqueta-interes" th:text="${etiqueta}"></p>
+<th:block th:fragment="hecho-card(hecho)">
+    <div class="col">
+        <div class="hecho-destacado-card card">
+            <div class="hecho-destacado-card-body card-body">
+                <div class="titulo-etiqueta">
+                    <h5 class="card-title" th:text="${hecho.titulo}"></h5>
+                    <p class="etiqueta-categoria" th:text="${hecho.categoria}"></p>
+                </div>
+                <p class="card-text"><strong>Fecha: </strong><span th:text="${hecho.fechaAcontecimiento}"></span></p>
+                <p class="card-text">
+                    <strong>Ubicación: </strong>
+                    <span th:text="${hecho.ubicacion.provincia != null ? hecho.ubicacion.provincia : 'N/A'}"></span>,
+                    <span th:text="${hecho.ubicacion.municipio != null ? hecho.ubicacion.municipio : 'N/A'}"></span>
+                </p>
+                <div style="display: flex; gap: 0.5rem">
+                    <p th:each="etiqueta : ${hecho.etiquetas}" class="etiqueta-interes" th:text="${etiqueta}"></p>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</th:block>
 
 <!-- Fragmento para tarjetas de colecciones -->
 <div th:fragment="coleccion-card(titulo, cantidad, descripcion)" class="col">
