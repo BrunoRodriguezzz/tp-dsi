@@ -44,7 +44,7 @@ public class Hecho {
     private Ubicacion ubicacion;
 
     @Column(name = "fecha_acontecimiento",nullable = false)
-    private LocalDate fechaAcontecimiento;
+    private LocalDateTime fechaAcontecimiento;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(

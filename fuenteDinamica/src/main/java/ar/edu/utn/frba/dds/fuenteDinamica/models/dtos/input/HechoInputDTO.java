@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -15,16 +16,16 @@ import java.util.List;
 @Builder
 public class HechoInputDTO {
 
-    private String       nombreUsuario;
-    private String       apellidoUsuario;
-    private LocalDate    fechaNacimientoUsuario;
-    private String       titulo;
-    private String       descripcion;
-    private String       categoria;
-    private List<String> contenidoMultimedia;
-    private String       latitud;
-    private String       longitud;
-    private LocalDate    fechaAcontecimiento;
+    private String        nombreUsuario;
+    private String        apellidoUsuario;
+    private LocalDate     fechaNacimientoUsuario;
+    private String        titulo;
+    private String        descripcion;
+    private String        categoria;
+    private List<String>  contenidoMultimedia;
+    private String        latitud;
+    private String        longitud;
+    private LocalDateTime fechaAcontecimiento;
 
     public static HechoInputDTO convertirModAInput(HechoModificadoInputDTO hecho){
         return HechoInputDTO
