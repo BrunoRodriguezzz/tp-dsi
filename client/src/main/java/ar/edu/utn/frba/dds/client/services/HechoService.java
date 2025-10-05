@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.client.services;
 
-import ar.edu.utn.frba.dds.client.dtos.HechoOutputDTO;
+import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,8 +22,8 @@ public class HechoService {
         this.hechoServiceUrl = hechoServiceUrl;
     }
 
-    public List<HechoOutputDTO> obtenerHechosDestacados() {
-        List<HechoOutputDTO> response = this.webApiCallerService.getList(this.hechoServiceUrl, HechoOutputDTO.class);
+    public List<HechoDTO> obtenerHechosDestacados() {
+        List<HechoDTO> response = this.webApiCallerService.getList(this.hechoServiceUrl, HechoDTO.class);
         return response != null ? response : List.of();
     }
 }

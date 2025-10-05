@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
-import ar.edu.utn.frba.dds.client.dtos.HechoOutputDTO;
+import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
 import ar.edu.utn.frba.dds.client.services.HechoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +17,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model){
         model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
-        List<HechoOutputDTO> hechosDestacados=
+        List<HechoDTO> hechosDestacados=
                 this.hechoService.obtenerHechosDestacados().stream().limit(3).toList();
         // TODO: HARDCODEO etiquetas (faltan las etiquetas al agregador)
         System.out.println("Antes de agregar al modelo:");
@@ -28,7 +28,7 @@ public class HomeController {
 
         System.out.println("Cantidad de hechos: " + hechosDestacados.size());
         for (int i = 0; i < hechosDestacados.size(); i++) {
-            HechoOutputDTO hecho = hechosDestacados.get(i);
+            HechoDTO hecho = hechosDestacados.get(i);
             System.out.println("Hecho " + i + ": " + hecho);
             if (hecho != null) {
                 System.out.println("  - titulo: " + hecho.getTitulo());

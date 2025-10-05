@@ -13,10 +13,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HechoOutputDTO {
+public class HechoDTO {
     private String titulo;
     private String categoria;
-    private UbicacionOutputDTO ubicacion;
+    private UbicacionDTO ubicacion;
     private LocalDate fechaAcontecimiento;
     private List<String> etiquetas;
 }
