@@ -18,9 +18,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "estadistica_solicitudes")
 public class EstadisticaSolicitudes {
-  public EstadisticaSolicitudes(LocalDateTime fecha, Integer solicitudes_spam) {
+  public EstadisticaSolicitudes(LocalDateTime fecha, Integer solicitudes_spam, Integer solicitudes_no_spam) {
       this.fecha = fecha;
       this.solicitudes_spam = solicitudes_spam;
+      this.solicitudes_no_spam = solicitudes_no_spam;
   }
 
   @Id
@@ -33,4 +34,7 @@ public class EstadisticaSolicitudes {
 
   @Column(nullable = false, columnDefinition = "BIGINT")
   Integer solicitudes_spam;
+
+  @Column(nullable = false, columnDefinition = "BIGINT")
+  Integer solicitudes_no_spam;
 }

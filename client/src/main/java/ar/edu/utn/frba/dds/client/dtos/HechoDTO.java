@@ -1,6 +1,4 @@
 package ar.edu.utn.frba.dds.client.dtos;
-
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

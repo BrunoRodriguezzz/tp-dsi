@@ -126,7 +126,11 @@ public class EstadisticaService implements IEstadisticaService {
     @Override
     public EstadisticaSolicitudes cantSolicitudesSpam() {
         Long cantSpam = this.solicitudRepository.countByEstado(EstadoSolicitudEliminacion.SPAM);
-        EstadisticaSolicitudes estadisticaSolicitudes = new EstadisticaSolicitudes(LocalDateTime.now(), cantSpam.intValue());
+        Long cantNoSpam =
+            this.solicitudRepository.countByEstado(EstadoSolicitudEliminacion.ACEPTADA)
+            + this.solicitudRepository.countByEstado(EstadoSolicitudEliminacion.RECHAZADA)
+            + this.solicitudRepository.countByEstado(EstadoSolicitudEliminacion.PENDIENTE);
+        EstadisticaSolicitudes estadisticaSolicitudes = new EstadisticaSolicitudes(LocalDateTime.now(), cantSpam.intValue(), cantNoSpam.intValue());
         this.estadisticaSolicitudesRepository.save(estadisticaSolicitudes);
         return estadisticaSolicitudes;
     }
