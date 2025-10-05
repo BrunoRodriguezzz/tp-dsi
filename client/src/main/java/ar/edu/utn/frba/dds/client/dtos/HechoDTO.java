@@ -20,4 +20,6 @@ public class HechoDTO {
     private UbicacionDTO ubicacion;
     private LocalDate fechaAcontecimiento;
     private List<String> etiquetas;
+    private String origen;
+    private String fuente;
 }

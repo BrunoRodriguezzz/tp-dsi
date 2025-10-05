@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,8 +26,9 @@ public class HechoService {
     }
 
     public List<HechoDTO> obtenerHechosDestacados() {
-        List<HechoDTO> response = this.webApiCallerService.getList(this.hechoServiceUrl, HechoDTO.class);
-        return response != null ? response : List.of();
+//        List<HechoDTO> response = this.webApiCallerService.getList(this.hechoServiceUrl, HechoDTO.class);
+//        return response != null ? response : List.of();
+        return this.mockService.obtenerHechosMockeados();
     }
 
     public List<HechoDTO> obtenerHechos() {

@@ -8,24 +8,21 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- th:href: los archivos estáticos los busca en la carpeta static -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{css/components.css}">
     <link rel="stylesheet" th:href="@{css/header.css}">
-    <!-- Permite Incrustar Links Adicionales a las demás plantillas-->
+    <link rel="stylesheet" th:href="@{css/footer.css}">
     <th:block th:replace="~{::additional-links}"></th:block>
 </head>
 
-<body>
-<!-- Fragmento de Navegación  class="d-flex flex-column min-vh-100" -->
-<nav th:fragment="navegacion" class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
     <div class="container-fluid">
         <a class="navbar-brand" th:href="@{/static}">MetaMapa</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <!-- TODO: agregar los th:href con su respectivo HTTP-->
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
@@ -66,15 +63,11 @@
     </div>
 </nav>
 
-<!-- Contenido principal class="container my-4 flex-grow-1" -->
-<main>
-    <!-- Inyección de contenido de un fragmento -->
+<main class="flex-grow-1" style="margin-top: 80px;">
     <div th:replace="${contenido} :: contenido"></div>
 </main>
 
-<!-- Fragmento de footer -->
-<!-- TODO: agregar los th:ref con sus respectivos Controllers/HTTP -->
-<footer th:fragment="footer">
+<footer>
     <div class="container-footer">
         <div class="footer-content">
             <div class="footer-metamapa">

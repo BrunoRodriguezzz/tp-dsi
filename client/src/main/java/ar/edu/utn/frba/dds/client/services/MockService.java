@@ -21,6 +21,8 @@ public class MockService {
                                 .build())
                         .fechaAcontecimiento(LocalDate.of(2024, 3, 15))
                         .etiquetas(Arrays.asList("tango", "música", "cultura", "barrio"))
+                        .fuente("Secretaría de Cultura de San Telmo")
+                        .origen("MANUAL")
                         .build(),
 
                 HechoDTO.builder()
@@ -33,6 +35,8 @@ public class MockService {
                                 .build())
                         .fechaAcontecimiento(LocalDate.of(2024, 2, 28))
                         .etiquetas(Arrays.asList("accidente", "tránsito", "emergencia"))
+                        .fuente("Policía de Córdoba - Sistema de Emergencias")
+                        .origen("DATASET")
                         .build(),
 
                 HechoDTO.builder()
@@ -45,6 +49,8 @@ public class MockService {
                                 .build())
                         .fechaAcontecimiento(LocalDate.of(2024, 4, 10))
                         .etiquetas(Arrays.asList("educación", "biblioteca", "inauguración", "comunidad"))
+                        .fuente("Diario La Capital")
+                        .origen("PROXY")
                         .build(),
 
                 HechoDTO.builder()
@@ -57,6 +63,8 @@ public class MockService {
                                 .build())
                         .fechaAcontecimiento(LocalDate.of(2024, 1, 22))
                         .etiquetas(Arrays.asList("protesta", "trabajo", "derechos", "sindical"))
+                        .fuente("María González - Vecina del barrio")
+                        .origen("CONTRIBUYENTE")
                         .build(),
 
                 HechoDTO.builder()
@@ -69,6 +77,8 @@ public class MockService {
                                 .build())
                         .fechaAcontecimiento(LocalDate.of(2024, 5, 8))
                         .etiquetas(Arrays.asList("fútbol", "juvenil", "deporte", "torneo"))
+                        .fuente("Liga Deportiva Municipal")
+                        .origen("MANUAL")
                         .build(),
 
                 HechoDTO.builder()
@@ -81,6 +91,8 @@ public class MockService {
                                 .build())
                         .fechaAcontecimiento(LocalDate.of(2024, 3, 5))
                         .etiquetas(Arrays.asList("limpieza", "medio ambiente", "plaza", "comunidad"))
+                        .fuente("ONG Verde Tucumán")
+                        .origen("CONTRIBUYENTE")
                         .build(),
 
                 HechoDTO.builder()
@@ -93,6 +105,8 @@ public class MockService {
                                 .build())
                         .fechaAcontecimiento(LocalDate.of(2024, 4, 20))
                         .etiquetas(Arrays.asList("rock", "música", "concierto", "nacional"))
+                        .fuente("Portal de Noticias Mar del Plata Hoy")
+                        .origen("PROXY")
                         .build(),
 
                 HechoDTO.builder()
@@ -105,6 +119,8 @@ public class MockService {
                                 .build())
                         .fechaAcontecimiento(LocalDate.of(2024, 2, 14))
                         .etiquetas(Arrays.asList("vacunación", "salud", "gratuita", "campaña"))
+                        .fuente("Ministerio de Salud de Salta - Boletín Epidemiológico")
+                        .origen("DATASET")
                         .build()
         );
     }
