@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class HechoDTO {
     private String titulo;
+    private String descripcion;
     private String categoria;
     private UbicacionDTO ubicacion;
     private LocalDate fechaAcontecimiento;

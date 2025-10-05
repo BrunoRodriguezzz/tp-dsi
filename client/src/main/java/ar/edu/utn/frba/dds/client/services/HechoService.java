@@ -13,6 +13,7 @@ public class HechoService {
     private final WebClient webClient;
     private final WebApiCallerService webApiCallerService;
     private final String hechoServiceUrl;
+    private final MockService mockService;
 
     public HechoService(
             WebApiCallerService webApiCallerService,
@@ -20,10 +21,15 @@ public class HechoService {
         this.webClient = WebClient.builder().build();
         this.webApiCallerService = webApiCallerService;
         this.hechoServiceUrl = hechoServiceUrl;
+        this.mockService = new MockService();
     }
 
     public List<HechoDTO> obtenerHechosDestacados() {
         List<HechoDTO> response = this.webApiCallerService.getList(this.hechoServiceUrl, HechoDTO.class);
         return response != null ? response : List.of();
+    }
+
+    public List<HechoDTO> obtenerHechos() {
+        return this.mockService.obtenerHechosMockeados();
     }
 }
