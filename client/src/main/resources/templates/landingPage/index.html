@@ -16,7 +16,7 @@
         <div class="metaMapa-info-button-container">
             <!-- TODO: agregar los th:ref con sus respectivos Controllers -->
             <button class="btn btn-dark"><a class="nav-link active" aria-current="page" href="map.html">Explorar Mapa</a></button>
-            <button class="btn btn-outline-primary"><a class="nav-link active" aria-current="page" href="hechos.html">Ver Hechos</a></button>
+            <button class="btn btn-outline-primary"><a class="nav-link active" aria-current="page" th:href="@{/hechos}">Ver Hechos</a></button>
         </div>
     </div>
 
@@ -45,7 +45,7 @@
                           th:insert="~{landingPage/fragments/cardsDestacados :: hecho-card(${hecho})}">
                 </th:block>
             </div>
-            <button class="btn btn-outline-primary">Ver Todos los Hechos</button>
+            <button class="btn btn-outline-primary"><a class="nav-link active" aria-current="page" th:href="@{/hechos}">Ver Todos los Hechos</a></button>
         </div>
     </div>
 

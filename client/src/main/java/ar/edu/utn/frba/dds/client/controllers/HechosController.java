@@ -21,6 +21,7 @@ public class HechosController {
 
     @GetMapping
     public String listarHechos(Model model) {
+        model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
         List<HechoDTO> hechos = this.hechoService.obtenerHechos();
         model.addAttribute("hechos", hechos);
         model.addAttribute("cantidad", hechos.size());
