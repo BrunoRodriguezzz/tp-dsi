@@ -37,8 +37,8 @@ public class HechoInputDTO {
           hechoDTO.getDescripcion(),
           new Categoria(hechoDTO.getCategoria()),
           new Ubicacion(
-              hechoDTO.getUbicacion().getLatitud(),
-              hechoDTO.getUbicacion().getLongitud()
+              Double.parseDouble(hechoDTO.getUbicacion().getLatitud()),
+              Double.parseDouble(hechoDTO.getUbicacion().getLongitud())
           ),
           hechoDTO.getFechaAcontecimiento(),
           Origen.valueOf(hechoDTO.getOrigen().toUpperCase())

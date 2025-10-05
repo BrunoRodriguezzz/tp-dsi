@@ -37,12 +37,12 @@ public class QueryParamsFiltro {
     }
     if(latitud != null && !latitud.isEmpty()) {
       try{
-        filtros.add(new FiltroLatitud(latitud));
+        filtros.add(new FiltroLatitud(Double.parseDouble(latitud)));
       } catch(Exception e){throw new RuntimeException("Latitud invalida " + e.getMessage());}
     }
     if(longitud != null && !longitud.isEmpty()) {
       try{
-        filtros.add(new FiltroLongitud(longitud));
+        filtros.add(new FiltroLongitud(Double.parseDouble(longitud)));
       } catch(Exception e){throw new RuntimeException("Longitud invalida " + e.getMessage());}
     }
     if(fechaAcontecimientoInicio != null) {

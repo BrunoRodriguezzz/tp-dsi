@@ -5,10 +5,14 @@ import ar.edu.utn.frba.dds.agregador.models.domain.comparador.ComparadorHechos;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.HechoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
+import ar.edu.utn.frba.dds.agregador.models.repositories.ICategoriaRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.agregador.services.INormalizadorCategoriaService;
 import ar.edu.utn.frba.dds.agregador.services.INormalizadorService;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,50 +22,86 @@ public class NormalizadorService implements INormalizadorService {
     private INormalizadorCategoriaService normalizadorCategoriaService;
     private IHechoRepository hechoRepository;
     private ComparadorHechos comparadorHechos;
+    private ICategoriaRepository categoriaRepository;
 
-    public NormalizadorService(INormalizadorCategoriaService normalizadorCategoriaService, IHechoRepository hechoRepository) {
+    public NormalizadorService(INormalizadorCategoriaService normalizadorCategoriaService, IHechoRepository hechoRepository, ICategoriaRepository categoriaRepository) {
         this.normalizadorCategoriaService = normalizadorCategoriaService;
         this.hechoRepository = hechoRepository;
-        ComparadorHechos comparadorHechos = new ComparadorHechos();
+        this.categoriaRepository = categoriaRepository;
+        this.comparadorHechos = new ComparadorHechos();
+    }
+
+    @Deprecated
+    @Override
+    public Hecho normalizarHecho(Hecho hecho) {
+        String nombreCatNormalizado = normalizadorCategoriaService.normalizarCategoria(hecho.getCategoria().getTitulo());
+        Categoria categoriaNormalizada = this.categoriaRepository.findByTituloOrCreate(nombreCatNormalizado);
+        hecho.setCategoria(categoriaNormalizada);
+
+        return this.buscarCandidatos(hecho).block();
     }
 
     @Override
-    public Hecho normalizarHecho(Hecho hecho) {
-        String categoriaNormalizada = normalizadorCategoriaService.normalizarCategoria(hecho.getCategoria().getTitulo());
-        Categoria categoria = new Categoria(categoriaNormalizada);
-        hecho.setCategoria(categoria);
+    public Flux<Hecho> normalizarHechosReactivo(Flux<Hecho> hechos) {
+        return hechos.flatMap(hecho ->
+                Mono.fromCallable(() -> normalizadorCategoriaService.normalizarCategoria(hecho.getCategoria().getTitulo()))
+                .subscribeOn(Schedulers.boundedElastic())
+                .flatMap(categoriaNormalizada ->
+                    // Buscar o crear la categoría de forma reactiva
+                    Mono.fromCallable(() -> categoriaRepository.findByTituloOrCreate(categoriaNormalizada))
+                            .subscribeOn(Schedulers.boundedElastic())
+                            .map(categoriaGestionada -> {
+                                hecho.setCategoria(categoriaGestionada);
+                                return hecho;
+                            })
+                )
+                .flatMap(this::buscarCandidatos), 50 // Concurrencia máxima
+        );
+    }
 
-        // Calculamos rangos
-        LocalDateTime fecha = hecho.getFechaAcontecimiento();
+    private Mono<Hecho> buscarCandidatos(Hecho hechoConCategoria) {
+        LocalDateTime fecha = hechoConCategoria.getFechaAcontecimiento();
         LocalDateTime desde = fecha.minusDays(1);
         LocalDateTime hasta = fecha.plusDays(1);
 
-        double lat = Double.parseDouble(hecho.getUbicacion().getLatitud());
-        double lon = Double.parseDouble(hecho.getUbicacion().getLongitud());
-        double delta = 0.05; // En teoría son unos 5km aprox
+        double lat = hechoConCategoria.getUbicacion().getLatitud();
+        double lon = hechoConCategoria.getUbicacion().getLongitud();
+        double delta = 0.05;
 
         double latMin = lat - delta;
         double latMax = lat + delta;
         double lonMin = lon - delta;
         double lonMax = lon + delta;
 
-        List<Hecho> candidatos = hechoRepository
-                .findByFechaYUbicacion(desde, hasta, latMin, latMax, lonMin, lonMax);
-
-        return candidatos.stream()
-                .filter(h -> this.comparadorHechos.comparar(hecho, h))
-                .findFirst()
+        return buscarCandidatosReactivo(desde, hasta, latMin, latMax, lonMin, lonMax)
+                .collectList()
+                .flatMapMany(candidatos -> Flux.fromIterable(candidatos)
+                        .filter(h -> this.comparadorHechos.comparar(hechoConCategoria, h)))
+                .next()
                 .map(h -> {
-                    HechoFuente hf = hecho.getFuenteSet()
+                    HechoFuente hf = hechoConCategoria.getFuenteSet()
                             .stream()
                             .findFirst()
                             .orElse(null);
-                    if(hf == null) {
+                    if (hf == null) {
                         throw new ValidationException("Me llego un hecho sin fuente");
                     }
                     h.agregarFuente(hf.getFuente(), hf.getIdInternoFuente());
                     return h;
                 })
-                .orElse(hecho);
+                .onErrorResume(ValidationException.class, e -> {
+                    // Si no hay fuente, devolver el hecho original
+                    return Mono.just(hechoConCategoria);
+                })
+                .defaultIfEmpty(hechoConCategoria);
+    }
+
+    // Método auxiliar para buscar candidatos de forma reactiva
+    private Flux<Hecho> buscarCandidatosReactivo(LocalDateTime desde, LocalDateTime hasta,
+                                                 double latMin, double latMax,
+                                                 double lonMin, double lonMax) {
+        return Flux.defer(() -> Flux.fromIterable(
+                hechoRepository.findByFechaYUbicacion(desde, hasta, latMin, latMax, lonMin, lonMax)
+        )).subscribeOn(Schedulers.boundedElastic());
     }
 }

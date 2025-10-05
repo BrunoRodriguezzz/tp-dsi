@@ -12,10 +12,10 @@ import lombok.Setter;
 @Embeddable
 public class Ubicacion {
     @Column(nullable = false)
-    private String latitud;
+    private double latitud;
 
     @Column(nullable = false)
-    private String longitud;
+    private double longitud;
 
     @Enumerated(EnumType.STRING)
     private Pais Pais;
@@ -26,7 +26,7 @@ public class Ubicacion {
     @Column
     private String municipio;
 
-    public Ubicacion(String latitud, String longitud) throws UbicacionInvalidaException {
+    public Ubicacion(double latitud, double longitud) throws UbicacionInvalidaException {
         if(this.latitudInvalida(latitud)){
             throw new UbicacionInvalidaException("Latitud invalida: " + latitud);
         }
@@ -41,16 +41,16 @@ public class Ubicacion {
         if(this.latitudInvalida(ubicacion.latitud) || this.longitudInvalida(ubicacion.longitud)){
             throw new UbicacionInvalidaException("Valores de Ubicacion Invalidos: " + ubicacion.latitud + ";" + ubicacion.longitud);
         }
-        return  this.latitud.equals(ubicacion.latitud) &&
-                this.longitud.equals(ubicacion.longitud);
+        return  this.latitud == ubicacion.latitud &&
+                this.longitud == ubicacion.longitud;
     }
 
-    public boolean latitudInvalida(String latitud) {
-        return (Double.parseDouble(latitud) < -90) || (Double.parseDouble(latitud) > 90);
+    public boolean latitudInvalida(double latitud) {
+        return latitud < -90 || latitud > 90;
     }
 
-    public boolean longitudInvalida(String longitud){
-        return (Double.parseDouble(longitud) < -180) || (Double.parseDouble(longitud) > 180);
+    public boolean longitudInvalida(double longitud){
+        return longitud < -180 || longitud > 180;
     }
 
     public boolean faltanDatos() {

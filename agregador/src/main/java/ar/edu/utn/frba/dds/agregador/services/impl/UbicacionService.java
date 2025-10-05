@@ -10,9 +10,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class UbicacionService implements IUbicacionService {
     private IHechoRepository hechoRepository;
@@ -34,18 +31,10 @@ public class UbicacionService implements IUbicacionService {
                 })
                 .orElseGet(() -> {
                     Ubicacion antigua = hecho.getUbicacion();
-                    Ubicacion ubicacion = IAdapUbicacion.buscarUbicacion(antigua.getLatitud(), antigua.getLongitud());
+                    Ubicacion ubicacion = IAdapUbicacion.buscarUbicacion(String.valueOf(antigua.getLatitud()), String.valueOf(antigua.getLongitud()));
                     hecho.setUbicacion(ubicacion);
                     return hecho;
                 });
-    }
-
-    @Override
-    public List<Hecho> obtenerUbicaciones(List<Hecho> hechos) {
-        return hechos
-                .stream()
-                .map(this::cargarUbicacion)
-                .collect(Collectors.toList());
     }
 
     @Override

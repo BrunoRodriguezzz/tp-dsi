@@ -14,8 +14,8 @@ public class UbicacionOutputDTO {
 
   public static UbicacionOutputDTO UbicacionToDTO(Ubicacion ubicacion) {
     UbicacionOutputDTO ubicacionDTO = new UbicacionOutputDTO();
-    ubicacionDTO.setLatitud(ubicacion.getLatitud());
-    ubicacionDTO.setLongitud(ubicacion.getLongitud());
+    ubicacionDTO.setLatitud(String.valueOf(ubicacion.getLatitud()));
+    ubicacionDTO.setLongitud(String.valueOf(ubicacion.getLongitud()));
     ubicacionDTO.setMuncipio(ubicacion.getMunicipio());
     if (ubicacion.getProvincia() != null) {
       ubicacionDTO.setProvincia(ubicacion.getProvincia().toString());

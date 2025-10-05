@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.ValidationException;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consensuador;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
@@ -20,13 +21,17 @@ import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 
 import java.util.*;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import ar.edu.utn.frba.dds.agregador.services.INormalizadorService;
 import ar.edu.utn.frba.dds.agregador.services.IUbicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 public class HechoService implements IHechoService {
@@ -112,7 +117,6 @@ public class HechoService implements IHechoService {
             .map(h -> this.normalizadorService.normalizarHecho(h))
             .toList();
     this.ubicacionService.obtenerUbicacionesReactivo(Flux.fromIterable(hechosNormalizados)).blockLast();
-
     Map<String, Categoria> cacheCategorias = new HashMap<>();
 
     hechosNormalizados.forEach(h -> {
@@ -144,10 +148,117 @@ public class HechoService implements IHechoService {
       }
     });
 
-    System.out.print("Por guardar hechos " + hechos.size());
     return this.hechoRepository.saveAll(hechos);
   }
 
+  @Override
+  public List<Hecho> guardarHechosReactivo(Flux<Hecho> hechos) {
+    // Normalizar los hechos de forma reactiva
+    Flux<Hecho> hechosNormalizados = normalizadorService.normalizarHechosReactivo(hechos);
+
+    // Procesar ubicaciones de forma reactiva (sin bloquear)
+    Flux<Hecho> hechosConUbicaciones = ubicacionService.obtenerUbicacionesReactivo(hechosNormalizados);
+
+    // Recolectar todos los hechos en una lista (aquí termina la parte reactiva)
+    List<Hecho> listaHechos = hechosConUbicaciones.collectList().block();
+
+    if(listaHechos == null) {
+      return null;
+    }
+
+    // Procesamiento imperativo (no reactivo)
+    return guardarHechosImperativo(listaHechos);
+  }
+
+  private List<Hecho> guardarHechosImperativo(List<Hecho> hechos) {
+    List<Hecho> resultado = new ArrayList<>();
+
+    for (Hecho hecho : hechos) {
+      try {
+        // Si el hecho ya tiene ID, agregarlo directamente al resultado
+        if (hecho.getId() != null) {
+          resultado.add(hecho);
+          continue;
+        }
+
+        // Procesar hecho sin ID
+        procesarHechoSinIdImperativo(hecho);
+
+        // Asegurarse de que la categoría esté gestionada
+        gestionarCategoriaImperativo(hecho);
+
+        // Guardar el hecho
+        Hecho hechoGuardado = guardarHechoImperativo(hecho);
+        resultado.add(hechoGuardado);
+
+      } catch (Exception e) {
+        // Manejar errores individuales sin detener todo el proceso
+        System.err.println("Error al procesar hecho: " + e.getMessage());
+        // Agregar el hecho original al resultado para no perderlo
+        resultado.add(hecho);
+      }
+    }
+
+    return resultado;
+  }
+
+  private void procesarHechoSinIdImperativo(Hecho hecho) {
+    // Buscar hecho existente por fuente
+    if (hecho.getFuenteSet() != null && !hecho.getFuenteSet().isEmpty()) {
+      HechoFuente hf = hecho.getFuenteSet()
+              .stream()
+              .findFirst()
+              .orElseThrow(() -> new ValidationException("Llego un hecho sin Fuente"));
+      Long fuenteID = hf.getFuente().getId();
+      Long idInterno = hf.getIdInternoFuente();
+
+      Optional<Hecho> hechoExistenteOptional = hechoRepository.findByFuenteIdAndIdInternoFuente(fuenteID, idInterno);
+
+      if (hechoExistenteOptional.isPresent()) {
+        Hecho hechoExistente = hechoExistenteOptional.get();
+        hecho.setId(hechoExistente.getId());
+
+        // Si la categoría del hecho existente tiene ID, usarla
+        if (hechoExistente.getCategoria() != null && hechoExistente.getCategoria().getId() != null) {
+          hecho.setCategoria(hechoExistente.getCategoria());
+        }
+      }
+    }
+  }
+
+  private void gestionarCategoriaImperativo(Hecho hecho) {
+    if (hecho.getCategoria() != null) {
+      Categoria categoria = hecho.getCategoria();
+
+      // Si la categoría no tiene ID, buscarla o crearla
+      if (categoria.getId() == null) {
+        Categoria categoriaGestionada = categoriaRepository.findByTituloOrCreate(categoria.getTitulo());
+        hecho.setCategoria(categoriaGestionada);
+      } else {
+        // Si la categoría tiene ID, asegurarse de que esté gestionada
+        Categoria categoriaGestionada = categoriaRepository.findById(categoria.getId())
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada: " + categoria.getId()));
+        hecho.setCategoria(categoriaGestionada);
+      }
+    }
+  }
+
+  private Hecho guardarHechoImperativo(Hecho hecho) {
+    try {
+      return hechoRepository.save(hecho);
+    } catch (DataIntegrityViolationException e) {
+      // Si hay un error al guardar, intentar recuperar el hecho existente
+      if (hecho.getFuenteSet() != null && !hecho.getFuenteSet().isEmpty()) {
+        HechoFuente hf = hecho.getFuenteSet().iterator().next();
+        Long fuenteID = hf.getFuente().getId();
+        Long idInterno = hf.getIdInternoFuente();
+
+        Optional<Hecho> hechoExistente = hechoRepository.findByFuenteIdAndIdInternoFuente(fuenteID, idInterno);
+        return hechoExistente.orElseThrow(() -> e);
+      }
+      throw e;
+    }
+  }
 
   @Override
   public void consensuarHechos() {

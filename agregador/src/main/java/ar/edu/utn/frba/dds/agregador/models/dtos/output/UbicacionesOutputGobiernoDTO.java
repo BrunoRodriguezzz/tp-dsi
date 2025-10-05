@@ -19,8 +19,8 @@ public class UbicacionesOutputGobiernoDTO {
     }
 
     public void agregarUbicacion(Ubicacion ubicacion) {
-        Double lat = Double.parseDouble(ubicacion.getLatitud());
-        Double lon = Double.parseDouble(ubicacion.getLongitud());
+        Double lat = ubicacion.getLatitud();
+        Double lon = ubicacion.getLongitud();
         UbicacionOutputGobiernoDTO dto = new UbicacionOutputGobiernoDTO(lat, lon);
         this.ubicaciones.add(dto);
     }

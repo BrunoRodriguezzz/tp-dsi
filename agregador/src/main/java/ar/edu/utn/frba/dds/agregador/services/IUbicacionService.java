@@ -8,5 +8,4 @@ import java.util.List;
 public interface IUbicacionService {
     Hecho cargarUbicacion(Hecho hecho);
     Flux<Hecho> obtenerUbicacionesReactivo(Flux<Hecho> hechos);
-    List<Hecho> obtenerUbicaciones(List<Hecho> hechos);
 }

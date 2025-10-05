@@ -67,12 +67,12 @@ public class CriterioInputDTO {
             }
 
             if (criterioInputDTO.getLatitud() != null) {
-                FiltroLatitud filtroLatitud = new FiltroLatitud(criterioInputDTO.getLatitud());
+                FiltroLatitud filtroLatitud = new FiltroLatitud(Double.parseDouble(criterioInputDTO.getLatitud()));
                 filtros.add(filtroLatitud);
             }
 
             if (criterioInputDTO.getLongitud() != null) {
-                FiltroLongitud filtroLongitud = new FiltroLongitud(criterioInputDTO.getLatitud());
+                FiltroLongitud filtroLongitud = new FiltroLongitud(Double.parseDouble(criterioInputDTO.getLongitud()));
                 filtros.add(filtroLongitud);
             }
 
