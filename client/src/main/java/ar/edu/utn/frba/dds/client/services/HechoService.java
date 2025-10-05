@@ -32,6 +32,11 @@ public class HechoService {
     }
 
     public List<HechoDTO> obtenerHechos() {
-        return this.mockService.obtenerHechosMockeados();
+        return mockService.obtenerHechosMockeados();
+    }
+
+    public HechoDTO obtenerHechoPorId(Long id) {
+        HechoDTO hecho = mockService.obtenerHechoPorId(id);
+        return hecho;
     }
 }

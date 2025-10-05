@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -27,5 +28,14 @@ public class HechosController {
         model.addAttribute("cantidad", hechos.size());
         LOGGER.info("Mostrando {} hechos.", hechos.size());
         return "hechos";
+    }
+
+    @GetMapping("/{id}")
+    public String verDetalleHecho(@PathVariable Long id, Model model) {
+        HechoDTO hecho = hechoService.obtenerHechoPorId(id);
+        LOGGER.info("Mostrando {} hecho.", id);
+        model.addAttribute("hecho", hecho);
+        model.addAttribute("titulo", hecho.getTitulo());
+        return "hecho";
     }
 }

@@ -1,11 +1,8 @@
 <html lang="en" th:replace="~{layout/base :: html}">
-<html lang="en" th:replace="~{layout/base :: html}">
 <th:block th:fragment="additional-links">
     <link rel="stylesheet" th:href="@{/css/hechos.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
 </th:block>
-
-
 <div th:fragment="contenido">
     <div class="container-responsive">
         <div class="container-principal">
@@ -29,7 +26,7 @@
                     </div>
                     <div class="opciones">
                         <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Sin Categoría</p>
-                        <a href="verDetalle-hecho1.html" class="btn btn-primary btn-dark config-opciones">Ver Detalles</a>
+                        <a href="verDetalle-hecho1.html" class="btn btn-primary btn-dark config-opciones" th:href="@{/hechos/{id}(id=${hecho.id})}">Ver Detalles</a>
                         <a href="reportarHecho.html" class="btn btn-red config-opciones">Reportar</a>
                     </div>
                 </div>
