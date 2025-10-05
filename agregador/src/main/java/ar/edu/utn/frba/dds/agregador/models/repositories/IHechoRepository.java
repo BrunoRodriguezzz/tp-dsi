@@ -27,19 +27,15 @@ public interface IHechoRepository extends JpaRepository<Hecho, Long> {
             "WHERE hf.fuente IN :fuentes")
     List<Hecho> findByFuentes(@Param("fuentes") List<Fuente> fuentes);
 
-    @Query("SELECT DISTINCT h FROM Hecho h " +
-            "JOIN h.fuenteSet hf " +
-            "WHERE hf.fuente = :fuente")
-    List<Hecho> findByFuente(@Param("fuente") Fuente fuente);
-
     @Query("SELECT h FROM Hecho h " +
             "WHERE h.fechaAcontecimiento BETWEEN :desde AND :hasta " +
             "AND h.ubicacion.latitud BETWEEN :latMin AND :latMax " +
             "AND h.ubicacion.longitud BETWEEN :lonMin AND :lonMax")
-    List<Hecho> findByFechaYUbicacion(LocalDateTime desde, LocalDateTime hasta,
-                                         double latMin, double latMax,
-                                         double lonMin, double lonMax);
-
-//  public Boolean inicializarHechos(List<Hecho> hechos);
-//  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente);
+    List<Hecho> findByFechaYUbicacion(
+            @Param("desde") LocalDateTime desde,
+            @Param("hasta") LocalDateTime hasta,
+            @Param("latMin") double latMin,
+            @Param("latMax") double latMax,
+            @Param("lonMin") double lonMin,
+            @Param("lonMax") double lonMax);
 }

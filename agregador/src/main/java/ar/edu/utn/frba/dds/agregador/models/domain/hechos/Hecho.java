@@ -45,7 +45,7 @@ public class Hecho {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "id")
     private Categoria categoria;
 
@@ -164,8 +164,8 @@ public class Hecho {
         return this.titulo.equals(hecho.getTitulo()) &&
             this.descripcion.equals(hecho.getDescripcion()) &&
             this.categoria.getTitulo().equals(hecho.getCategoria().getTitulo()) &&
-            this.ubicacion.getLatitud().equals(hecho.getUbicacion().getLatitud()) &&
-            this.ubicacion.getLongitud().equals(hecho.getUbicacion().getLongitud()) &&
+            this.ubicacion.getLatitud() == hecho.getUbicacion().getLatitud() &&
+            this.ubicacion.getLongitud() == hecho.getUbicacion().getLongitud() &&
             this.fechaAcontecimiento.equals(hecho.fechaAcontecimiento);
     }
 }

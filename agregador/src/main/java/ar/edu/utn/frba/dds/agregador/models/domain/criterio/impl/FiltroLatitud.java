@@ -4,9 +4,9 @@ import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 
 public class FiltroLatitud implements Filtro {
-  private String latitud;
+  private double latitud;
 
-  public FiltroLatitud(String latitud) {
+  public FiltroLatitud(double latitud) {
     if (!esLatitudValida(latitud)) {
       throw new IllegalArgumentException("Latitud inválida: " + latitud);
     }
@@ -14,19 +14,14 @@ public class FiltroLatitud implements Filtro {
   }
 
   public Boolean coincide(Hecho hecho) {
-    return hecho.getUbicacion().getLatitud().equals(latitud);
+    return hecho.getUbicacion().getLatitud() == latitud;
   }
 
   public String toDTO() {
     return "latitud: " + this.latitud;
   }
 
-  private boolean esLatitudValida(String latitudStr) {
-    try {
-      double lat = Double.parseDouble(latitudStr);
+  private boolean esLatitudValida(double lat) {
       return lat >= -90 && lat <= 90;
-    } catch (NumberFormatException e) {
-      return false;
-    }
   }
 }

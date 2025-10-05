@@ -42,17 +42,9 @@ public class HechoController {
       @RequestParam(name = "fechaCargaInicio", required = false) LocalDateTime fechaCargaInicio,
       @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin
   ) {
-    QueryParamsFiltro params = new QueryParamsFiltro();
-    params.setCategoria(categoria);
-    params.setFechaAcontecimientoInicio(fechaAcontecimientoInicio);
-    params.setFechaAcontecimientoFin(fechaAcontecimientoFin);
-    params.setFechaCargaInicio(fechaCargaInicio);
-    params.setFechaCargaFin(fechaCargaFin);
-    params.setLatitud(latitud);
-    params.setLongitud(longitud);
-    params.setTitulo(titulo);
+      QueryParamsFiltro params = ColeccionController.crearFiltros(categoria, fechaAcontecimientoInicio, fechaAcontecimientoFin, titulo, latitud, longitud, fechaCargaInicio, fechaCargaFin);
 
-    List<HechoOutputDTO> hechos = this.hechoService.buscarHechos(params);
+      List<HechoOutputDTO> hechos = this.hechoService.buscarHechos(params);
     if(hechos == null) {
       return new ResponseEntity(HttpStatus.NOT_FOUND);
     }

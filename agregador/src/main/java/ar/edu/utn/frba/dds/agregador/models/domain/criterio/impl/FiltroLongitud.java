@@ -4,9 +4,9 @@ import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 
 public class FiltroLongitud implements Filtro {
-  private String longitud;
+  private double longitud;
 
-  public FiltroLongitud(String longitud) {
+  public FiltroLongitud(double longitud) {
     if (!esLongitudValida(longitud)) {
       throw new IllegalArgumentException("Longitud inválida: " + longitud);
     }
@@ -14,19 +14,14 @@ public class FiltroLongitud implements Filtro {
   }
 
   public Boolean coincide(Hecho hecho) {
-    return hecho.getUbicacion().getLongitud().equals(longitud);
+    return hecho.getUbicacion().getLongitud() == longitud;
   }
 
   public String toDTO() {
-    return this.longitud;
+    return "longitud: " + this.longitud;
   }
 
-  private boolean esLongitudValida(String longitudStr) {
-    try {
-      double lon = Double.parseDouble(longitudStr);
+  private boolean esLongitudValida(double lon) {
       return lon >= -180 && lon <= 180;
-    } catch (NumberFormatException e) {
-      return false;
-    }
   }
 }

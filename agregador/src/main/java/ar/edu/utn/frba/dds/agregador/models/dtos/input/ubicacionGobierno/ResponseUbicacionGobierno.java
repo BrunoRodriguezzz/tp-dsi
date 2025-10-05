@@ -10,8 +10,8 @@ public class ResponseUbicacionGobierno {
 
     public static Ubicacion toUbicacion(ResponseUbicacionGobierno ubicacionDTO) {
         Ubicacion ubicacion = new Ubicacion();
-        ubicacion.setLatitud(ubicacionDTO.ubicacion.getLat());
-        ubicacion.setLongitud(ubicacionDTO.ubicacion.getLon());
+        ubicacion.setLatitud(Double.parseDouble(ubicacionDTO.ubicacion.getLat()));
+        ubicacion.setLongitud(Double.parseDouble(ubicacionDTO.ubicacion.getLon()));
         ubicacion.setMunicipio(ubicacionDTO.ubicacion.getMunicipio_nombre());
         ubicacion.setProvincia(ProvinciaMapper.map(ubicacionDTO.ubicacion.getProvincia_nombre()));
 

@@ -9,8 +9,11 @@ import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import java.util.List;
+
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import reactor.core.publisher.Flux;
 
 @Service
 public class AgregadorService implements IAgregadorService {
@@ -34,15 +37,21 @@ public class AgregadorService implements IAgregadorService {
   @Override
   public Fuente incorporarFuente(@RequestBody FuenteInputDTO fuente) {
     Fuente fuenteIncorporada = this.fuenteService.incorporarFuente(fuente);
-    List<Hecho> hechos;
-    if(fuenteIncorporada.getNombre() != null){
-      hechos = fuenteService.buscarHechosFuenteStream(fuenteIncorporada.getNombre()).collectList().block();
-      this.hechoService.guardarHechos(hechos);
-      this.coleccionService.incorporarHechos(hechos);
-    }
-    else
-      throw new RuntimeException("Se incorporó una fuente sin nombre, no fue posible obtener sus hechos");
+    this.buscarHechosFuente(fuenteIncorporada);
     return fuenteIncorporada;
   }
 
+  @Async
+  public void buscarHechosFuente(Fuente fuenteIncorporada) {
+    List<Hecho> hechos;
+    if(fuenteIncorporada.getNombre() != null){
+      hechos = fuenteService.buscarHechosFuenteStream(fuenteIncorporada.getNombre()).collectList().block();
+      if(hechos != null){
+        this.hechoService.guardarHechosReactivo(Flux.fromIterable(hechos));
+        this.coleccionService.incorporarHechos(hechos);
+      }
+    }
+    else
+      throw new RuntimeException("Se incorporó una fuente sin nombre, no fue posible obtener sus hechos");
+  }
 }
