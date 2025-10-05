@@ -17,29 +17,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model){
         model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
-        List<HechoDTO> hechosDestacados=
-                this.hechoService.obtenerHechosDestacados().stream().limit(3).toList();
-        // TODO: HARDCODEO etiquetas (faltan las etiquetas al agregador)
-        System.out.println("Antes de agregar al modelo:");
-        hechosDestacados.forEach(h -> {
-            System.out.println("Hecho: " + h.getTitulo());
-            System.out.println("Ubicacion es null? " + (h.getUbicacion() == null));
-        });
-
-        System.out.println("Cantidad de hechos: " + hechosDestacados.size());
-        for (int i = 0; i < hechosDestacados.size(); i++) {
-            HechoDTO hecho = hechosDestacados.get(i);
-            System.out.println("Hecho " + i + ": " + hecho);
-            if (hecho != null) {
-                System.out.println("  - titulo: " + hecho.getTitulo());
-                System.out.println("  - categoria: " + hecho.getCategoria());
-                System.out.println("  - fecha: " + hecho.getFechaAcontecimiento());
-                System.out.println("  - ubicacion: " + hecho.getUbicacion());
-            }
-        }
-
-        List<String> hard = List.of("zaraza", "zaraza");
-        hechosDestacados.forEach(h -> h.setEtiquetas(hard));
+        List<HechoDTO> hechosDestacados = this.hechoService.obtenerHechos().stream().limit(3).toList();
         model.addAttribute("hechosDestacados", hechosDestacados);
         return "landingPage/index";
     }
