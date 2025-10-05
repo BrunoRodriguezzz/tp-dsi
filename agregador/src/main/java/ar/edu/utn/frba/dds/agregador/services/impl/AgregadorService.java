@@ -47,7 +47,7 @@ public class AgregadorService implements IAgregadorService {
     if(fuenteIncorporada.getNombre() != null){
       hechos = fuenteService.buscarHechosFuenteStream(fuenteIncorporada.getNombre()).collectList().block();
       if(hechos != null){
-        this.hechoService.guardarHechosReactivo(Flux.fromIterable(hechos));
+        this.hechoService.guardarHechos(hechos);
         this.coleccionService.incorporarHechos(hechos);
       }
     }

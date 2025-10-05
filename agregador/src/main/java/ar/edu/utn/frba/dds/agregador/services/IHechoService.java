@@ -19,5 +19,4 @@ public interface IHechoService {
   public void consensuarHechos();
   public List<HechoOutputDTO> buscarHechosIndependientes();
   public List<HechoOutputDTO> buscarHechosProxy();
-  public List<Hecho> guardarHechosReactivo(Flux<Hecho> hechos);
 }
