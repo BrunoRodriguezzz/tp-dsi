@@ -26,7 +26,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/}">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="map.html">Mapa</a>
@@ -50,7 +50,7 @@
                     <a class="nav-link" href="panelControl.html">Panel de Control</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="sobreNosotros.html">Sobre Nosotros</a>
+                    <a class="nav-link" href="sobreNosotros.html" th:href="@{/sobreNosotros}">Sobre Nosotros</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="estadisticas.html">Estadisticas</a>
@@ -63,7 +63,7 @@
     </div>
 </nav>
 
-<main class="flex-grow-1" style="margin-top: 80px;">
+<main class="flex-grow-1" style="width: 100%">
     <div th:replace="${contenido} :: contenido"></div>
 </main>
 

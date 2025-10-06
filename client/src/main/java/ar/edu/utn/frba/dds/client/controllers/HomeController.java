@@ -21,4 +21,9 @@ public class HomeController {
         model.addAttribute("hechosDestacados", hechosDestacados);
         return "landingPage/index";
     }
+
+    @GetMapping("/sobreNosotros")
+    public String sobreNosotros(Model model){
+        return "sobreNosotros";
+    }
 }

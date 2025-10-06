@@ -15,26 +15,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/hechos")
 @RequiredArgsConstructor
 public class ColeccionController {
-  private final ColeccionController coleccionController;
   private final Logger LOGGER = LogManager.getLogger(HechoController.class);
 
-  @GetMapping
-  public String listarHechos(Model model) {
-    model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
-    List<HechoDTO> hechos = this.hechoService.obtenerHechos();
-    model.addAttribute("hechos", hechos);
-    model.addAttribute("cantidad", hechos.size());
-    LOGGER.info("Mostrando {} hechos.", hechos.size());
-    return "hechos";
-  }
-
-  @GetMapping("/{id}")
-  public String verDetalleHecho(@PathVariable Long id, Model model) {
-    HechoDTO hecho = hechoService.obtenerHechoPorId(id);
-    LOGGER.info("Mostrando {} hecho.", id);
-    model.addAttribute("hecho", hecho);
-    model.addAttribute("titulo", hecho.getTitulo());
-    return "hecho";
-  }
+//  @GetMapping
+//  public String listarHechos(Model model) {
+//    model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
+//    List<HechoDTO> hechos = this.hechoService.obtenerHechos();
+//    model.addAttribute("hechos", hechos);
+//    model.addAttribute("cantidad", hechos.size());
+//    LOGGER.info("Mostrando {} hechos.", hechos.size());
+//    return "hechos";
+//  }
+//
+//  @GetMapping("/{id}")
+//  public String verDetalleHecho(@PathVariable Long id, Model model) {
+//    HechoDTO hecho = hechoService.obtenerHechoPorId(id);
+//    LOGGER.info("Mostrando {} hecho.", id);
+//    model.addAttribute("hecho", hecho);
+//    model.addAttribute("titulo", hecho.getTitulo());
+//    return "hecho";
+//  }
 }
 
