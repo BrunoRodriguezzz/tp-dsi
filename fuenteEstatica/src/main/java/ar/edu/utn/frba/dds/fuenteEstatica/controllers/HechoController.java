@@ -22,24 +22,15 @@ public class HechoController {
         this.hechoService = hechoService;
     }
 
-//    @GetMapping()
-//    public ResponseEntity<List<ArchivoOutputDTO>> getByTitle(
-//        @RequestParam(name = "titulo", required = false) String title,
-//        @RequestParam(name = "id", required = false) Long idFuente
-//    ) {
-//        if(title != null && !title.isEmpty() && idFuente != null && idFuente > 0) {
-//            List<ArchivoOutputDTO> outputDTO = this.hechoService.getByTitleAndIdFuente(title, idFuente);
-//            return new ResponseEntity<>(outputDTO, HttpStatus.OK);
-//        }
-//        else {
-//            List<ArchivoOutputDTO> response = hechoService.getAll();
-//            return new ResponseEntity<>(response, HttpStatus.OK);
-//        }
-//    }
-
     @GetMapping("/filtered")
     public ResponseEntity<List<ArchivoOutputDTO>> getWithFilters(@ModelAttribute FiltroEstatica filtro) {
         List<ArchivoOutputDTO> response = hechoService.getWithFilters(filtro);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/fuente/{id}")
+    public ResponseEntity<ArchivoOutputDTO> getByFuente(@PathVariable("id") Long id) {
+        ArchivoOutputDTO response = hechoService.getByFuenteId(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

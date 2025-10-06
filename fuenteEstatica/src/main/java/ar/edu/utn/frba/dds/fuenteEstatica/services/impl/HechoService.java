@@ -30,16 +30,8 @@ public class HechoService implements IHechoService {
         this.archivoRepository = archivoRepository;
     }
 
-//    @Override
-//    public List<ArchivoOutputDTO> getAll() {
-//        List<HechoEstatica> hechos = hechoRepository.getAll();
-//        Archivo archivo = archivoRepository.getAll().get(0);
-//        ArchivoOutputDTO archivoOutputDTO = UtilsDTO.toOutputArchivo(archivo, hechos);
-//        return List.of(archivoOutputDTO);
-//    }
-
     @Override
-    public List<ArchivoOutputDTO> getAll() { //TODO: paginado de GET
+    public List<ArchivoOutputDTO> getAll() {
         List<ArchivoOutputDTO> outputArchivos = new ArrayList<>();
         List<Long> ids = this.devolverArchivoID();
         ids.forEach(id -> {
@@ -55,14 +47,12 @@ public class HechoService implements IHechoService {
 
     @Override
     public ArchivoOutputDTO getById(Long id) {
-        // HechoEstatica hecho = this.hechoRepository.getById(id);
         HechoEstatica hecho = this.hechoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundError("Hecho NO encontrado con ID: " + id));
         List<HechoEstatica> hechos = new ArrayList<>();
         hechos.add(hecho);
 
         return UtilsDTO.toOutputArchivo(this.archivoRepository.getById(hecho.getIdArchivo()), hechos);
-        //return UtilsDTO.hechoToOutputDTO(this.hechoRepository.getById(id));
     }
 
     @Override
@@ -115,25 +105,20 @@ public class HechoService implements IHechoService {
         }
     }
 
-//    @Override
-//    public List<ArchivoOutputDTO> getByTitleAndIdFuente(String title, Long idFuente) {
-//        List<HechoEstatica> hechos = this.hechoRepository.getByName(title);
-//        List<HechoEstatica> hechosFiltrados = hechos.stream()
-//            .filter(h -> h.getIdArchivo().equals(idFuente))
-//            .toList();
-//        List<ArchivoOutputDTO> outputArchivos = new ArrayList<>();
-//        List<Long> idFuentes = hechosFiltrados.stream()
-//            .map(HechoEstatica::getIdArchivo)
-//            .distinct()
-//            .toList();
-//        idFuentes.forEach(id -> {
-//            List<HechoEstatica> hechosFuente = hechosFiltrados.stream()
-//                .filter(e -> e.getIdArchivo().equals(id))
-//                .toList();
-//            this.toOutputArchivo(outputArchivos, id, hechosFuente);
-//        });
-//        return outputArchivos;
-//    }
+    @Override
+    public ArchivoOutputDTO getByFuenteId(Long id) {
+        if(id == null || id <= 0) {
+            throw new ValidationError("ID invalido");
+        }
+
+        Archivo archivo = archivoRepository.findById(id).orElse(null);
+        if(archivo == null) {
+            throw new NotFoundError("Archivo no encontrado");
+        }
+
+        List<HechoEstatica> hechos = this.hechoRepository.findByIdArchivo(id);
+        return UtilsDTO.toOutputArchivo(archivo, hechos);
+    }
 
     private List<ArchivoOutputDTO> buscarPorIdHecho(Long idHecho) {
         Optional<HechoEstatica> hecho = hechoRepository.findById(idHecho);
@@ -184,20 +169,4 @@ public class HechoService implements IHechoService {
             outputFuentes.add(outputFuente);
         }
     }
-
-//    @Override
-//    public HechoOutputDTO crearHecho(HechoEstatica hecho) {
-//        return UtilsDTO.hechoToOutputDTO(this.hechoRepository.save(hecho));
-//    }
-
-//    @Override
-//    public void guardarHecho(InputHechoDTO hechoDTO) { //TODO Validador
-//        HechoEstatica hecho = UtilsDTO.toHechoEstica(hechoDTO);
-//        hechoRepository.guardarHecho(hecho);
-//    }
-
-//    @Override
-//    public void guardarHecho(HechoEstatica hecho) {
-//        hechoRepository.save(hecho);
-//    }
 }

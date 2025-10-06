@@ -27,4 +27,12 @@ public class FuenteResponseDTO {
     });
     return hechos;
   }
+
+  public static List<Hecho> toHechos(FuenteResponseDTO response, Fuente fuente) {
+      return response
+              .getHechos()
+              .stream()
+              .map(hechoInputDTO -> HechoInputDTO.DTOToHecho(hechoInputDTO, null, fuente))
+              .toList();
+  }
 }
