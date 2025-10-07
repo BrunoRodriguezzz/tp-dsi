@@ -156,4 +156,19 @@ public class HechoService implements IHechoService {
                 .ifPresent(h -> hechoAGuardar.setId(h.getId()));
         hechoRepository.save(hechoAGuardar);
     }
+
+    @Override
+    public OutputFuente getByFuenteId(Long id) {
+        if(id == null || id <= 0) {
+            throw new ValidationError("ID invalido");
+        }
+
+        Fuente archivo = fuenteRepository.findById(id).orElse(null);
+        if(archivo == null) {
+            throw new NotFoundError("Archivo no encontrado");
+        }
+
+        List<HechoProxy> hechos = this.hechoRepository.findByIdFuente(id);
+        return UtilsDTO.toOutputFuente(archivo, hechos);
+    }
 }

@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 import ar.edu.utn.frba.dds.agregador.services.INormalizadorService;
 import ar.edu.utn.frba.dds.agregador.services.IUbicacionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+@Slf4j
 @Service
 public class HechoService implements IHechoService {
   @Autowired
@@ -113,14 +115,32 @@ public class HechoService implements IHechoService {
 
   @Override
   public List<Hecho> guardarHechos(List<Hecho> hechos) {
-    Flux<Hecho> hechosNorm = this.normalizadorService.normalizarHechosReactivo(Flux.fromIterable(hechos));
-    List <Hecho> hechosParaGuardar = this.ubicacionService
-            .obtenerUbicacionesReactivo(hechosNorm)
+    List<Hecho> hechosParaGuardar = this.ubicacionService
+            .obtenerUbicacionesReactivo(
+                    this.normalizadorService.normalizarHechosReactivo(Flux.fromIterable(hechos))
+                            .doOnError(e -> log.error("❌ Error al normalizar hechos", e))
+                            .onErrorContinue((e, h) -> log.warn("⚠️ Error procesando hecho: {}", h, e))
+            )
+            .doOnError(e -> log.error("❌ Error al obtener ubicaciones", e))
+            .onErrorResume(e -> {
+              log.error("🚨 Error general en pipeline de guardarHechos", e);
+              return Flux.empty(); // continúa con una lista vacía si hubo error global
+            })
             .collectList()
             .block();
-    System.out.print("Por guardar hechos " + hechosParaGuardar.size());
-    return this.hechoRepository.saveAll(hechosParaGuardar);
+
+    if (hechosParaGuardar == null || hechosParaGuardar.isEmpty()) {
+      log.warn("⚠️ No hay hechos para guardar (pipeline vacío o con errores).");
+      return List.of();
+    }
+
+    log.info("🗂 Guardando {} hechos en la base de datos...", hechosParaGuardar.size());
+    List<Hecho> guardados = this.hechoRepository.saveAll(hechosParaGuardar);
+    log.info("✅ Se guardaron {} hechos correctamente.", guardados.size());
+
+    return guardados;
   }
+
 
   @Override
   public void consensuarHechos() {

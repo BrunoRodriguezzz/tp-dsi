@@ -36,7 +36,7 @@ public class Hecho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "hecho", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hecho", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<HechoFuente> fuenteSet;
 
     @Column(nullable = false)

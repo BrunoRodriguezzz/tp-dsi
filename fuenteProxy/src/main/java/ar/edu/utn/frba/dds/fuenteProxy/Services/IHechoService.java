@@ -15,4 +15,6 @@ public interface IHechoService {
     public List<OutputHecho> getAllFuente(Long fuenteId);
     public void delete(Long id);
     public void guardarHecho(InputHecho hechoDTO);
+
+    OutputFuente getByFuenteId(Long id);
 }

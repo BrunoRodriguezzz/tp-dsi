@@ -43,26 +43,33 @@ public class NormalizadorService implements INormalizadorService {
         return hechos
                 .publishOn(Schedulers.boundedElastic())
                 .flatMap(hecho ->
-                                Mono.just(hecho)
-                                        .flatMap(this::normalizarCategoriaReactivo)
-                                        .flatMap(this::buscarCandidatosReactivo)
-                                        .onErrorResume(e -> {
-                                            return Mono.just(hecho);
-                                        }),
-                        5
+                        Mono.just(hecho)
+                                .flatMap(this::normalizarCategoriaReactivo)
+                                .flatMap(this::buscarCandidatosReactivo)
+                                .onErrorResume(e -> Mono.just(hecho)),
+                5
                 );
     }
 
     private Mono<Hecho> normalizarCategoriaReactivo(Hecho hecho) {
-        return Mono.fromCallable(() -> normalizadorCategoriaService.normalizarCategoria(hecho.getCategoria().getTitulo()))
+        return Mono.fromCallable(() ->
+                        normalizadorCategoriaService.normalizarCategoria(
+                                hecho.getCategoria().getTitulo()
+                        )
+                )
+                .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(categoriaNormalizada ->
-                        Mono.fromCallable(() -> categoriaRepository.findByTituloOrCreate(categoriaNormalizada))
+                        Mono.fromCallable(() ->
+                                        categoriaRepository.findByTituloOrCreate(categoriaNormalizada)
+                                )
+                                .subscribeOn(Schedulers.boundedElastic())
                 )
                 .map(categoriaGestionada -> {
                     hecho.setCategoria(categoriaGestionada);
                     return hecho;
                 });
     }
+
 
     private Mono<Hecho> buscarCandidatosReactivo(Hecho hecho) {
         LocalDateTime fecha = hecho.getFechaAcontecimiento();
@@ -80,6 +87,7 @@ public class NormalizadorService implements INormalizadorService {
                                 lon - delta, lon + delta
                         )
                 )
+                .subscribeOn(Schedulers.boundedElastic())
                 .flatMapMany(Flux::fromIterable)
                 .filter(candidato -> comparadorHechos.comparar(hecho, candidato))
                 .next()
@@ -92,4 +100,5 @@ public class NormalizadorService implements INormalizadorService {
                 })
                 .defaultIfEmpty(hecho);
     }
+
 }
