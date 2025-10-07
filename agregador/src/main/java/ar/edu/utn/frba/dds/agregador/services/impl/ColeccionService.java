@@ -48,11 +48,8 @@ public class ColeccionService implements IColeccionService {
   public List<ColeccionOutputDTO> buscarColecciones() {
     List <Coleccion> colecciones = this.coleccionRepository.findAll();
     // TODO: Pedirle a la proxy solo los hechos de las fuentes que use. No todos, evitar consultas al pedo
-    List<Hecho> hechosProxy = this.pedirHechosProxy(this.fuenteRepository.findByTipoFuente(TipoFuente.PROXY));
-    List<Hecho> hechosGuardados = this.hechoService.guardarHechos(hechosProxy);
-    colecciones.forEach(coleccion -> {
-      coleccion.cargarHechos(hechosGuardados);
-    });
+    List <Hecho> hechosNuevos = this.hechoService.actualizarHechosProxy();
+    colecciones.forEach(c -> c.cargarHechos(hechosNuevos));
     // TODO: Buscar colecciones del servicio PROXY
     return ColeccionOutputDTO.mapColeccionesToDTO(colecciones);
   }
@@ -215,13 +212,8 @@ public class ColeccionService implements IColeccionService {
 
   @Override
   public void refrescarColecciones(){
-    List<Hecho> nuevosHechos = this.fuenteRepository.findAll()
-        .stream()
-        .map(f -> f.buscarNuevosHechos(this.ultimaFechaRefresco).toStream().toList())
-        .flatMap(Collection::stream)
-        .toList();
-    List<Hecho> hechos = this.hechoService.guardarHechos(nuevosHechos);
-    this.incorporarHechos(hechos);
+    List<Hecho> nuevosHechos = this.hechoService.actualizarHechosProxy();
+    this.incorporarHechos(nuevosHechos);
     this.ultimaFechaRefresco = LocalDateTime.now();
   }
 

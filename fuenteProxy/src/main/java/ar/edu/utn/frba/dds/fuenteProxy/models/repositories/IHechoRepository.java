@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.domain.HechoProxy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,8 @@ public interface IHechoRepository extends JpaRepository<HechoProxy, Long>, JpaSp
     List<HechoProxy> findByIdFuente(Long id);
 
     List<HechoProxy> findByIdFuenteAndIdExterno(Long idFuente, Long idExterno);
+
+    List<HechoProxy> findByIdFuenteAndFechaModificacionAfter(Long id, LocalDateTime ultimaConsulta);
 //    public List<HechoProxy> getAll();
 //    public List<HechoProxy> getWithFilters(FiltroProxy filtro);
 //    public void delete(Long idHecho);

@@ -13,4 +13,6 @@ public interface IAdapImpH {
     Flux<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient, Fuente fuente);
     Mono<Void> eliminarHecho(Hecho hecho, WebClient webClient, Fuente fuente);
     Flux<Hecho> importarHechosMismoTitulo(WebClient webClient, Fuente fuente, Hecho hechos);
+
+    Flux<Hecho> importarNuevos(WebClient webClient, Fuente fuente);
 }

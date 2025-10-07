@@ -209,4 +209,48 @@ public class AdapImpH implements IAdapImpH {
         })
         .doOnComplete(() -> log.info("Importación de hechos con título '{}' completada para fuente ID: {}", hechos.getTitulo(), fuente.getIdInternoFuente()));
   }
+
+    @Override
+    public Flux<Hecho> importarNuevos(WebClient webClient, Fuente fuente) {
+        log.info("Iniciando importación de hechos nuevos para fuente ID: {}", fuente.getIdInternoFuente());
+
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/hechos/fuente/{id}")
+                        .queryParam("nuevos", true)
+                        .build(fuente.getIdInternoFuente()))
+                .retrieve()
+                .bodyToMono(FuenteResponseDTO.class)
+                .doOnNext(dto -> log.info("Recibido DTO para fuente ID: {}", fuente.getIdInternoFuente()))
+                .flatMapMany(dto -> {
+                    try {
+                        List<Hecho> hechos = FuenteResponseDTO.toHechos(dto, fuente);
+                        log.info("Convertidos {} hechos exitosamente para fuente ID: {}", hechos.size(), fuente.getIdInternoFuente());
+                        return Flux.fromIterable(hechos);
+                    } catch (Exception e) {
+                        log.error("Error convirtiendo DTO a Hechos para fuente ID: {}. Error: {}",
+                                fuente.getIdInternoFuente(), e.getMessage(), e);
+                        return Flux.error(e);
+                    }
+                })
+                .doOnError(error -> log.error("Error en flujo importarHechos para fuente ID: {}. Tipo: {}, Mensaje: {}",
+                        fuente.getIdInternoFuente(), error.getClass().getSimpleName(), error.getMessage()))
+                .timeout(Duration.ofSeconds(45))
+                .retryWhen(Retry.backoff(2, Duration.ofSeconds(2))
+                        .maxBackoff(Duration.ofSeconds(15))
+                        .doBeforeRetry(retrySignal -> log.warn("Reintentando importarHechos para fuente ID: {}. Intento: {}",
+                                fuente.getIdInternoFuente(), retrySignal.totalRetries() + 1)))
+                .onErrorResume(error -> {
+                    if (error instanceof WebClientResponseException) {
+                        WebClientResponseException wcre = (WebClientResponseException) error;
+                        log.error("Error HTTP importando hechos fuente ID: {}. Status: {}, Body: {}",
+                                fuente.getIdInternoFuente(), wcre.getStatusCode(), wcre.getResponseBodyAsString());
+                    } else {
+                        log.error("Error importando hechos fuente ID: {}. Tipo: {}, Mensaje: {}",
+                                fuente.getIdInternoFuente(), error.getClass().getSimpleName(), error.getMessage(), error);
+                    }
+                    return Flux.empty();
+                })
+                .doOnComplete(() -> log.info("Importación de hechos completada para fuente ID: {}", fuente.getIdInternoFuente()));
+    }
 }

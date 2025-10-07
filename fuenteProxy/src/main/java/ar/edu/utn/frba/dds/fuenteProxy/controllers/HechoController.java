@@ -29,8 +29,8 @@ public class HechoController {
     }
 
     @GetMapping("/fuente/{id}")
-    public ResponseEntity<OutputFuente> getByFuente(@PathVariable("id") Long id) {
-        OutputFuente response = hechoService.getByFuenteId(id);
+    public ResponseEntity<OutputFuente> getByFuente(@PathVariable("id") Long id, @RequestParam(name = "nuevos", required = false) boolean nuevos) {
+        OutputFuente response = hechoService.getByFuenteId(id, nuevos);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

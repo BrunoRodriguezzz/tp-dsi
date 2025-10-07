@@ -43,13 +43,10 @@ public class AgregadorService implements IAgregadorService {
 
   @Async
   public void buscarHechosFuente(Fuente fuenteIncorporada) {
-    List<Hecho> hechos;
     if(fuenteIncorporada.getNombre() != null){
-      hechos = fuenteService.buscarHechosFuenteStream(fuenteIncorporada.getNombre()).collectList().block();
-      if(hechos != null){
-        this.hechoService.guardarHechos(hechos);
-        this.coleccionService.incorporarHechos(hechos);
-      }
+      Flux<Hecho> hechos = fuenteService.buscarHechosFuenteStream(fuenteIncorporada.getNombre());
+      this.hechoService.guardarHechos(hechos).blockLast();
+      this.coleccionService.incorporarHechos(hechos.collectList().block());
     }
     else
       throw new RuntimeException("Se incorporó una fuente sin nombre, no fue posible obtener sus hechos");

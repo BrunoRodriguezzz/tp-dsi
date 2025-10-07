@@ -53,11 +53,11 @@ public class HechoService implements IHechoService {
   }
 
   @Override
-  public List<HechoOutputDTO> buscarHechos(QueryParamsFiltro params) {
-    List<Hecho> hechosProxy = this.hechoRepository.findByOrigen(Origen.PROXY); // fuenteService.buscarHechosProxy(); se podria sacar y llamar directamente al repo de hecho
-    this.guardarHechos(hechosProxy);
+  public List<HechoOutputDTO> buscarHechos(QueryParamsFiltro params) { // Devuelve todos los hechos
+    this.actualizarHechosProxy();
+
     List<Hecho> hechos = this.hechoRepository.findAll();
-    List<Filtro> filtrosBusqueda = params.instanciarFiltros();
+    List<Filtro> filtrosBusqueda = params.instanciarFiltros(); // TODO: Estos filtros deberían aplicarse en el repositorio
     List<Hecho> hechosFiltrados;
     if(!filtrosBusqueda.isEmpty()) {
       hechosFiltrados = hechos
@@ -93,14 +93,12 @@ public class HechoService implements IHechoService {
         throw new RuntimeException(e);
       }
     }
-    //List<Fuente> fuentes = this.fuenteRepository.findAll().stream().filter(f -> hechoDTO.getFuentes().contains(FuenteOutputDTO.toOutputDTO(f))).toList();
+
     Fuente fuente = this.fuenteRepository.findByTipoFuente(TipoFuente.DINAMICA).get(0); // supongo que solo se incorporara de la unica fuente dinamica
     Hecho hecho = HechoInputDTO.DTOToHecho(hechoDTO, contribuyente, fuente);
 
-      return this.guardarHechos(Collections.singletonList(hecho))
-              .stream()
-              .findFirst()
-              .orElse(null);
+      return this.guardarHechos(Flux.fromIterable(Collections.singletonList(hecho)))
+              .blockFirst();
   }
 
   @Override
@@ -114,33 +112,31 @@ public class HechoService implements IHechoService {
   }
 
   @Override
-  public List<Hecho> guardarHechos(List<Hecho> hechos) {
-    List<Hecho> hechosParaGuardar = this.ubicacionService
+  public Flux<Hecho> guardarHechos(Flux<Hecho> hechosFlux) {
+    return this.ubicacionService
             .obtenerUbicacionesReactivo(
-                    this.normalizadorService.normalizarHechosReactivo(Flux.fromIterable(hechos))
+                    this.normalizadorService.normalizarHechosReactivo(hechosFlux)
                             .doOnError(e -> log.error("❌ Error al normalizar hechos", e))
                             .onErrorContinue((e, h) -> log.warn("⚠️ Error procesando hecho: {}", h, e))
             )
             .doOnError(e -> log.error("❌ Error al obtener ubicaciones", e))
             .onErrorResume(e -> {
               log.error("🚨 Error general en pipeline de guardarHechos", e);
-              return Flux.empty(); // continúa con una lista vacía si hubo error global
+              return Flux.empty();
             })
             .collectList()
-            .block();
+            .flatMapMany(hechosParaGuardar -> {
+              if (hechosParaGuardar.isEmpty()) {
+                log.warn("⚠️ No hay hechos para guardar (pipeline vacío o con errores).");
+                return Flux.empty();
+              }
 
-    if (hechosParaGuardar == null || hechosParaGuardar.isEmpty()) {
-      log.warn("⚠️ No hay hechos para guardar (pipeline vacío o con errores).");
-      return List.of();
-    }
-
-    log.info("🗂 Guardando {} hechos en la base de datos...", hechosParaGuardar.size());
-    List<Hecho> guardados = this.hechoRepository.saveAll(hechosParaGuardar);
-    log.info("✅ Se guardaron {} hechos correctamente.", guardados.size());
-
-    return guardados;
+              log.info("🗂 Guardando {} hechos en la base de datos...", hechosParaGuardar.size());
+              List<Hecho> guardados = this.hechoRepository.saveAll(hechosParaGuardar);
+              log.info("✅ Se guardaron {} hechos correctamente.", guardados.size());
+              return Flux.fromIterable(guardados);
+            });
   }
-
 
   @Override
   public void consensuarHechos() {
@@ -150,9 +146,15 @@ public class HechoService implements IHechoService {
   }
 
   @Override
-  public List<Hecho> buscarHechosGuardadosFuente(List<Fuente> fuentes){
-    List<Hecho> hechos = this.hechoRepository.findByFuentes(fuentes);
-    return hechos;
+  public List<Hecho> actualizarHechosProxy() {
+    Flux<Hecho> hechos = Flux.fromIterable(
+                    this.fuenteRepository.findByTipoFuente(TipoFuente.PROXY)
+            )
+            .flatMap(Fuente::importarHechosNuevos);
+
+    Flux<Hecho> guardados = this.guardarHechos(hechos);
+
+    return guardados.collectList().block();
   }
 
   private Hecho buscarPorID(Long id){
