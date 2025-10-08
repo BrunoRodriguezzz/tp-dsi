@@ -2,7 +2,9 @@ package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -10,32 +12,33 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapKeyJoinColumn;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Entity
+@Table(name = "estadistica_categoria")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "estadistica_categoria")
 public class EstadisticaCategoria {
-  public EstadisticaCategoria(Categoria categoria, LocalDateTime fecha) {
-    this.categoria = categoria;
-    this.fecha = fecha;
-  }
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @JsonIgnore
-  Long id;
+  private Long id;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "categoria_mas_hechos")
-  Categoria categoria;
+  private LocalDateTime fecha;
 
-  @Column(nullable = false, columnDefinition = "TIMESTAMP")
-  LocalDateTime fecha;
+  @ElementCollection
+  @CollectionTable(name = "categoria_hechos")
+  @MapKeyJoinColumn(name = "categoria_id")
+  private Map<Categoria, Long> categoriasConHechos;
+
+  public EstadisticaCategoria(Map<Categoria, Long> categoriasConHechos, LocalDateTime fecha) {
+    this.categoriasConHechos = categoriasConHechos;
+    this.fecha = fecha;
+  }
 }

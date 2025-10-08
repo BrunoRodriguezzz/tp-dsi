@@ -7,7 +7,9 @@ import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.Estad
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaSolicitudes;
 import java.io.IOException;
 import java.util.List;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface IEstadisticasCsvExporter {
 
   /**

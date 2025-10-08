@@ -1,10 +1,14 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.exportacion_csv;
 
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.HoraDelDia;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaHoraXCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaSolicitudes;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,14 +16,10 @@ import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/**
- * Componente Spring para la exportación de estadísticas a archivos CSV
- */
 @Component
 public class EstadisticasCsvExporterImpl implements IEstadisticasCsvExporter {
 
   private static final String CSV_SEPARATOR = ",";
-  private static final String CSV_LINE_SEPARATOR = "";
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
   @Override
@@ -29,40 +29,56 @@ public class EstadisticasCsvExporterImpl implements IEstadisticasCsvExporter {
       List<EstadisticaProvinciaXCategoria> estadisticasProvinciaXCategoria,
       List<EstadisticaProvinciaXColeccion> estadisticasProvinciaXColeccion,
       List<EstadisticaSolicitudes> estadisticasSolicitudes,
-      String directorioDestino
-  ) throws IOException {
+      String directorioDestino) throws IOException {
 
     String timestamp = java.time.LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 
-    exportarEstadisticasCategorias(estadisticasCategorias,
-        Paths.get(directorioDestino, "estadisticas_categorias_" + timestamp + ".csv").toString());
+    if (estadisticasCategorias != null && !estadisticasCategorias.isEmpty()) {
+      exportarEstadisticasCategorias(estadisticasCategorias,
+          directorioDestino + "/estadisticas_categorias_" + timestamp + ".csv");
+    }
 
-    exportarEstadisticasHoraXCategoria(estadisticasHoraXCategoria,
-        Paths.get(directorioDestino, "estadisticas_hora_categoria_" + timestamp + ".csv").toString());
+    if (estadisticasHoraXCategoria != null && !estadisticasHoraXCategoria.isEmpty()) {
+      exportarEstadisticasHoraXCategoria(estadisticasHoraXCategoria,
+          directorioDestino + "/estadisticas_hora_x_categoria_" + timestamp + ".csv");
+    }
 
-    exportarEstadisticasProvinciaXCategoria(estadisticasProvinciaXCategoria,
-        Paths.get(directorioDestino, "estadisticas_provincia_categoria_" + timestamp + ".csv").toString());
+    if (estadisticasProvinciaXCategoria != null && !estadisticasProvinciaXCategoria.isEmpty()) {
+      exportarEstadisticasProvinciaXCategoria(estadisticasProvinciaXCategoria,
+          directorioDestino + "/estadisticas_provincia_x_categoria_" + timestamp + ".csv");
+    }
 
-    exportarEstadisticasProvinciaXColeccion(estadisticasProvinciaXColeccion,
-        Paths.get(directorioDestino, "estadisticas_provincia_coleccion_" + timestamp + ".csv").toString());
+    if (estadisticasProvinciaXColeccion != null && !estadisticasProvinciaXColeccion.isEmpty()) {
+      exportarEstadisticasProvinciaXColeccion(estadisticasProvinciaXColeccion,
+          directorioDestino + "/estadisticas_provincia_x_coleccion_" + timestamp + ".csv");
+    }
 
-    exportarEstadisticasSolicitudes(estadisticasSolicitudes,
-        Paths.get(directorioDestino, "estadisticas_solicitudes_" + timestamp + ".csv").toString());
+    if (estadisticasSolicitudes != null && !estadisticasSolicitudes.isEmpty()) {
+      exportarEstadisticasSolicitudes(estadisticasSolicitudes,
+          directorioDestino + "/estadisticas_solicitudes_" + timestamp + ".csv");
+    }
   }
 
   @Override
   public void exportarEstadisticasCategorias(List<EstadisticaCategoria> estadisticas, String nombreArchivo) throws IOException {
     try (FileWriter writer = new FileWriter(nombreArchivo)) {
-      // Escribir encabezados
-      writer.append("ID").append(CSV_SEPARATOR)
-          .append("FECHA").append(CSV_SEPARATOR)
-          .append("CATEGORIA_DETALLE").append(CSV_LINE_SEPARATOR);
+      writer.write("ID" + CSV_SEPARATOR +
+          "FECHA" + CSV_SEPARATOR +
+          "CATEGORIA_ID" + CSV_SEPARATOR +
+          "CATEGORIA_DETALLE" + CSV_SEPARATOR +
+          "CANTIDAD_HECHOS" + "\n");
 
-      // Escribir datos
       for (EstadisticaCategoria estadistica : estadisticas) {
-        writer.append(String.valueOf(estadistica.getId())).append(CSV_SEPARATOR)
-            .append(estadistica.getFecha().format(DATE_FORMATTER)).append(CSV_SEPARATOR)
-            .append(escapeCsvValue(estadistica.getCategoria().getDetalle())).append(CSV_LINE_SEPARATOR);
+        for (Map.Entry<Categoria, Long> entry : estadistica.getCategoriasConHechos().entrySet()) {
+          Categoria categoria = entry.getKey();
+          Long cantidad = entry.getValue();
+
+          writer.write(estadistica.getId() + CSV_SEPARATOR +
+              estadistica.getFecha().format(DATE_FORMATTER) + CSV_SEPARATOR +
+              categoria.getId() + CSV_SEPARATOR +
+              escapeCsvValue(categoria.getDetalle()) + CSV_SEPARATOR +
+              cantidad + "\n");
+        }
       }
     }
   }
@@ -70,18 +86,27 @@ public class EstadisticasCsvExporterImpl implements IEstadisticasCsvExporter {
   @Override
   public void exportarEstadisticasHoraXCategoria(List<EstadisticaHoraXCategoria> estadisticas, String nombreArchivo) throws IOException {
     try (FileWriter writer = new FileWriter(nombreArchivo)) {
-      // Escribir encabezados
-      writer.append("ID").append(CSV_SEPARATOR)
-          .append("FECHA").append(CSV_SEPARATOR)
-          .append("HORA").append(CSV_SEPARATOR)
-          .append("CATEGORIA_DETALLE").append(CSV_LINE_SEPARATOR);
+      writer.write("ID" + CSV_SEPARATOR +
+          "FECHA" + CSV_SEPARATOR +
+          "CATEGORIA_ID" + CSV_SEPARATOR +
+          "CATEGORIA_DETALLE" + CSV_SEPARATOR +
+          "HORA_ENUM" + CSV_SEPARATOR +
+          "HORA_VALOR" + CSV_SEPARATOR +
+          "CANTIDAD_HECHOS" + "\n");
 
-      // Escribir datos
       for (EstadisticaHoraXCategoria estadistica : estadisticas) {
-        writer.append(String.valueOf(estadistica.getId())).append(CSV_SEPARATOR)
-            .append(estadistica.getFecha().format(DATE_FORMATTER)).append(CSV_SEPARATOR)
-            .append(String.valueOf(estadistica.getHora())).append(CSV_SEPARATOR)
-            .append(escapeCsvValue(estadistica.getCategoria().getDetalle())).append(CSV_LINE_SEPARATOR);
+        for (Map.Entry<HoraDelDia, Long> entry : estadistica.getHorasConHechos().entrySet()) {
+          HoraDelDia hora = entry.getKey();
+          Long cantidad = entry.getValue();
+
+          writer.write(estadistica.getId() + CSV_SEPARATOR +
+              estadistica.getFecha().format(DATE_FORMATTER) + CSV_SEPARATOR +
+              estadistica.getCategoria().getId() + CSV_SEPARATOR +
+              escapeCsvValue(estadistica.getCategoria().getDetalle()) + CSV_SEPARATOR +
+              hora.name() + CSV_SEPARATOR +
+              hora.getValue() + CSV_SEPARATOR +
+              cantidad + "\n");
+        }
       }
     }
   }
@@ -89,18 +114,27 @@ public class EstadisticasCsvExporterImpl implements IEstadisticasCsvExporter {
   @Override
   public void exportarEstadisticasProvinciaXCategoria(List<EstadisticaProvinciaXCategoria> estadisticas, String nombreArchivo) throws IOException {
     try (FileWriter writer = new FileWriter(nombreArchivo)) {
-      // Escribir encabezados
-      writer.append("ID").append(CSV_SEPARATOR)
-          .append("FECHA").append(CSV_SEPARATOR)
-          .append("PROVINCIA").append(CSV_SEPARATOR)
-          .append("CATEGORIA_DETALLE").append(CSV_LINE_SEPARATOR);
+      writer.write("ID" + CSV_SEPARATOR +
+          "FECHA" + CSV_SEPARATOR +
+          "CATEGORIA_ID" + CSV_SEPARATOR +
+          "CATEGORIA_DETALLE" + CSV_SEPARATOR +
+          "PROVINCIA_ENUM" + CSV_SEPARATOR +
+          "PROVINCIA_VALOR" + CSV_SEPARATOR +
+          "CANTIDAD_HECHOS" + "\n");
 
-      // Escribir datos
       for (EstadisticaProvinciaXCategoria estadistica : estadisticas) {
-        writer.append(String.valueOf(estadistica.getId())).append(CSV_SEPARATOR)
-            .append(estadistica.getFecha().format(DATE_FORMATTER)).append(CSV_SEPARATOR)
-            .append(estadistica.getProvincia().toString()).append(CSV_SEPARATOR)
-            .append(escapeCsvValue(estadistica.getCategoria().getDetalle())).append(CSV_LINE_SEPARATOR);
+        for (Map.Entry<Provincia, Long> entry : estadistica.getProvinciasConHechos().entrySet()) {
+          Provincia provincia = entry.getKey();
+          Long cantidad = entry.getValue();
+
+          writer.write(estadistica.getId() + CSV_SEPARATOR +
+              estadistica.getFecha().format(DATE_FORMATTER) + CSV_SEPARATOR +
+              estadistica.getCategoria().getId() + CSV_SEPARATOR +
+              escapeCsvValue(estadistica.getCategoria().getDetalle()) + CSV_SEPARATOR +
+              provincia.name() + CSV_SEPARATOR +
+              escapeCsvValue(provincia.getValue()) + CSV_SEPARATOR +
+              cantidad + "\n");
+        }
       }
     }
   }
@@ -108,18 +142,27 @@ public class EstadisticasCsvExporterImpl implements IEstadisticasCsvExporter {
   @Override
   public void exportarEstadisticasProvinciaXColeccion(List<EstadisticaProvinciaXColeccion> estadisticas, String nombreArchivo) throws IOException {
     try (FileWriter writer = new FileWriter(nombreArchivo)) {
-      // Escribir encabezados
-      writer.append("ID").append(CSV_SEPARATOR)
-          .append("FECHA").append(CSV_SEPARATOR)
-          .append("PROVINCIA").append(CSV_SEPARATOR)
-          .append("COLECCION_ID").append(CSV_LINE_SEPARATOR);
+      writer.write("ID" + CSV_SEPARATOR +
+          "FECHA" + CSV_SEPARATOR +
+          "COLECCION_ID" + CSV_SEPARATOR +
+          "COLECCION_DETALLE" + CSV_SEPARATOR +
+          "PROVINCIA_ENUM" + CSV_SEPARATOR +
+          "PROVINCIA_VALOR" + CSV_SEPARATOR +
+          "CANTIDAD_HECHOS" + "\n");
 
-      // Escribir datos
       for (EstadisticaProvinciaXColeccion estadistica : estadisticas) {
-        writer.append(String.valueOf(estadistica.getId())).append(CSV_SEPARATOR)
-            .append(estadistica.getFecha().format(DATE_FORMATTER)).append(CSV_SEPARATOR)
-            .append(estadistica.getProvincia().toString()).append(CSV_SEPARATOR)
-            .append(String.valueOf(estadistica.getColeccion().getId())).append(CSV_LINE_SEPARATOR);
+        for (Map.Entry<Provincia, Long> entry : estadistica.getProvinciasConHechos().entrySet()) {
+          Provincia provincia = entry.getKey();
+          Long cantidad = entry.getValue();
+
+          writer.write(estadistica.getId() + CSV_SEPARATOR +
+              estadistica.getFecha().format(DATE_FORMATTER) + CSV_SEPARATOR +
+              estadistica.getColeccion().getId() + CSV_SEPARATOR +
+              escapeCsvValue(estadistica.getColeccion().getDetalle()) + CSV_SEPARATOR +
+              provincia.name() + CSV_SEPARATOR +
+              escapeCsvValue(provincia.getValue()) + CSV_SEPARATOR +
+              cantidad + "\n");
+        }
       }
     }
   }
@@ -127,33 +170,27 @@ public class EstadisticasCsvExporterImpl implements IEstadisticasCsvExporter {
   @Override
   public void exportarEstadisticasSolicitudes(List<EstadisticaSolicitudes> estadisticas, String nombreArchivo) throws IOException {
     try (FileWriter writer = new FileWriter(nombreArchivo)) {
-      // Escribir encabezados
-      writer.append("ID").append(CSV_SEPARATOR)
-          .append("FECHA").append(CSV_SEPARATOR)
-          .append("SOLICITUDES_SPAM").append(CSV_LINE_SEPARATOR);
+      writer.write("ID" + CSV_SEPARATOR +
+          "FECHA" + CSV_SEPARATOR +
+          "SOLICITUDES_SPAM" + CSV_SEPARATOR +
+          "SOLICITUDES_NO_SPAM" + "\n");
 
-      // Escribir datos
       for (EstadisticaSolicitudes estadistica : estadisticas) {
-        writer.append(String.valueOf(estadistica.getId())).append(CSV_SEPARATOR)
-            .append(estadistica.getFecha().format(DATE_FORMATTER)).append(CSV_SEPARATOR)
-            .append(String.valueOf(estadistica.getSolicitudes_spam())).append(CSV_LINE_SEPARATOR);
+        writer.write(estadistica.getId() + CSV_SEPARATOR +
+            estadistica.getFecha().format(DATE_FORMATTER) + CSV_SEPARATOR +
+            estadistica.getSolicitudes_spam() + CSV_SEPARATOR +
+            estadistica.getSolicitudes_no_spam() + "\n");
       }
     }
   }
 
-  /**
-   * Escapa valores que contienen caracteres especiales en CSV
-   */
   private String escapeCsvValue(String value) {
     if (value == null) {
       return "";
     }
 
-    // Si el valor contiene comas, comillas o saltos de línea, lo envolvemos en comillas
-    if (value.contains(",") || value.contains("\"") || value.contains("") || value.contains("")) {
-      // Escapar comillas dobles existentes duplicándolas
-      value = value.replace("\"", "\"\"");
-      return "\"" + value + "\"";
+    if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+      return "\"" + value.replace("\"", "\"\"") + "\"";
     }
 
     return value;

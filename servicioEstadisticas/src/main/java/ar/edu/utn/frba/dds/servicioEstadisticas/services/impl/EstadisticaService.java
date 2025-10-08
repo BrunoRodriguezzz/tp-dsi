@@ -28,11 +28,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,19 +57,16 @@ public class EstadisticaService implements IEstadisticaService {
     private IEstadisticaCombinacionRepository estadisticaRepository;
 
     @Autowired
-    private ICategoriaRepository categoriaRepository;
+    private IHechoRepository hechoRepository;
 
     @Autowired
     private IColeccionRepository coleccionRepository;
 
     @Autowired
-    private ISolicitudRepository solicitudRepository;
+    private ICategoriaRepository categoriaRepository;
 
     @Autowired
-    private IHechoRepository hechoRepository;
-
-    @Autowired
-    private IEstadisticaHoraXCategoriaRepository estadisticaHoraXCategoriaRepository;
+    private IEstadisticaProvinciaXColeccionRepository estadisticaProvinciaXColeccionRepository;
 
     @Autowired
     private IEstadisticaCategoriaRepository estadisticaCategoriaRepository;
@@ -78,61 +75,119 @@ public class EstadisticaService implements IEstadisticaService {
     private IEstadisticaProvinciaXCategoriaRepository estadisticaProvinciaXCategoriaRepository;
 
     @Autowired
-    private IEstadisticaProvinciaXColeccionRepository estadisticaProvinciaXColeccionRepository;
+    private IEstadisticaHoraXCategoriaRepository estadisticaHoraXCategoriaRepository;
 
     @Autowired
     private IEstadisticaSolicitudesRepository estadisticaSolicitudesRepository;
 
-    // Estadisticas Principales
-    @Override
+    @Autowired
+    private ISolicitudRepository solicitudRepository;
+
     public EstadisticaProvinciaXColeccion provinciaConMasHechosDeUnaColeccion(Long idColeccion) {
-        Coleccion coleccion = this.coleccionRepository.findById(idColeccion).orElse(null);
-        Provincia provincia = estadisticaRepository.findProvinciaConMasHechosPorColeccion(idColeccion);
-        EstadisticaProvinciaXColeccion estadististica = new EstadisticaProvinciaXColeccion(
-            provincia,
+        Coleccion coleccion = coleccionRepository.findById(idColeccion)
+            .orElseThrow(() -> new RuntimeException("Colección no encontrada"));
+
+        // Obtener los resultados del repository como Object[]
+        List<Object[]> resultados = estadisticaRepository.findProvinciaConHechosPorColeccion(idColeccion);
+
+        // Convertir los resultados a un mapa
+        Map<Provincia, Long> provinciasConHechos = new LinkedHashMap<>();
+        for (Object[] resultado : resultados) {
+            Provincia provincia = (Provincia) resultado[0];
+            Long cantidad = ((Number) resultado[1]).longValue();
+            provinciasConHechos.put(provincia, cantidad);
+        }
+
+        EstadisticaProvinciaXColeccion estadistica = new EstadisticaProvinciaXColeccion(
+            provinciasConHechos,
             LocalDateTime.now(),
             coleccion
         );
-        this.estadisticaProvinciaXColeccionRepository.save(estadististica);
-        return estadististica;
+
+        return this.estadisticaProvinciaXColeccionRepository.save(estadistica);
     }
 
-    @Override
     public EstadisticaCategoria categoriaConMasHechos() {
-        Categoria categoria = estadisticaRepository.findCategoriaConMasHechos();
-        EstadisticaCategoria estadisticaCategoria = new EstadisticaCategoria(categoria, LocalDateTime.now());
-        this.estadisticaCategoriaRepository.save(estadisticaCategoria);
-        return estadisticaCategoria;
+        List<Object[]> resultados = estadisticaRepository.findCategoriasConHechos();
+
+        // Convertir los resultados a un mapa (limitado a 30)
+        Map<Categoria, Long> categoriasConHechos = new LinkedHashMap<>();
+        for (Object[] resultado : resultados) {
+            if (categoriasConHechos.size() >= 30) {
+                break; // Limitar a máximo 30 categorías
+            }
+            Categoria categoria = (Categoria) resultado[0];
+            Long cantidad = ((Number) resultado[1]).longValue();
+            categoriasConHechos.put(categoria, cantidad);
+        }
+
+        EstadisticaCategoria estadisticaCategoria = new EstadisticaCategoria(categoriasConHechos, LocalDateTime.now());
+        return this.estadisticaCategoriaRepository.save(estadisticaCategoria);
     }
 
-    @Override
     public EstadisticaProvinciaXCategoria provinciaConMasHechosSegunCategoria(Long idCategoria) {
-        Provincia provincia = estadisticaRepository.findProvinciaConMasHechosPorCategoria(idCategoria);
-        Categoria categoria = categoriaRepository.findById(idCategoria).orElse(null);
-        EstadisticaProvinciaXCategoria estadisticaProvinciaXCategoria = new EstadisticaProvinciaXCategoria(categoria, LocalDateTime.now(), provincia);
-        this.estadisticaProvinciaXCategoriaRepository.save(estadisticaProvinciaXCategoria);
-        return estadisticaProvinciaXCategoria;
+        Categoria categoria = categoriaRepository.findById(idCategoria)
+            .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+
+        List<Object[]> resultados = estadisticaRepository.findProvinciasConHechosPorCategoria(idCategoria);
+
+        // Convertir los resultados a un mapa
+        Map<Provincia, Long> provinciasConHechos = new LinkedHashMap<>();
+        for (Object[] resultado : resultados) {
+            Provincia provincia = (Provincia) resultado[0];
+            Long cantidad = ((Number) resultado[1]).longValue();
+            provinciasConHechos.put(provincia, cantidad);
+        }
+
+        // Crear y guardar la estadística
+        EstadisticaProvinciaXCategoria estadisticaProvinciaXCategoria = new EstadisticaProvinciaXCategoria(
+            categoria,
+            LocalDateTime.now(),
+            provinciasConHechos
+        );
+
+        return this.estadisticaProvinciaXCategoriaRepository.save(estadisticaProvinciaXCategoria);
     }
 
-    @Override
     public EstadisticaHoraXCategoria horaConMasHechosSegunCategoria(Long idCategoria) {
-        HoraDelDia horaDelDia = estadisticaRepository.findHoraConMasHechosPorCategoria(idCategoria);
-        Categoria categoria = categoriaRepository.findById(idCategoria).orElse(null);
-        EstadisticaHoraXCategoria estadisticaHoraXCategoria = new EstadisticaHoraXCategoria(categoria, LocalDateTime.now(), horaDelDia);
-        this.estadisticaHoraXCategoriaRepository.save(estadisticaHoraXCategoria);
-        return estadisticaHoraXCategoria;
+        Categoria categoria = categoriaRepository.findById(idCategoria)
+            .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+
+        List<Object[]> resultados = estadisticaRepository.findHorasConHechosPorCategoria(idCategoria);
+
+        // Convertir los resultados a un mapa
+        Map<HoraDelDia, Long> horasConHechos = new LinkedHashMap<>();
+        for (Object[] resultado : resultados) {
+            HoraDelDia hora = (HoraDelDia) resultado[0];
+            Long cantidad = ((Number) resultado[1]).longValue();
+            horasConHechos.put(hora, cantidad);
+        }
+
+        // Crear y guardar la estadística
+        EstadisticaHoraXCategoria estadisticaHoraXCategoria = new EstadisticaHoraXCategoria(
+            categoria,
+            LocalDateTime.now(),
+            horasConHechos
+        );
+
+        return this.estadisticaHoraXCategoriaRepository.save(estadisticaHoraXCategoria);
     }
 
-    @Override
     public EstadisticaSolicitudes cantSolicitudesSpam() {
-        Long cantSpam = this.solicitudRepository.countByEstado(EstadoSolicitudEliminacion.SPAM);
-        Long cantNoSpam =
-            this.solicitudRepository.countByEstado(EstadoSolicitudEliminacion.ACEPTADA)
-            + this.solicitudRepository.countByEstado(EstadoSolicitudEliminacion.RECHAZADA)
-            + this.solicitudRepository.countByEstado(EstadoSolicitudEliminacion.PENDIENTE);
-        EstadisticaSolicitudes estadisticaSolicitudes = new EstadisticaSolicitudes(LocalDateTime.now(), cantSpam.intValue(), cantNoSpam.intValue());
-        this.estadisticaSolicitudesRepository.save(estadisticaSolicitudes);
-        return estadisticaSolicitudes;
+        Long cantSpam = solicitudRepository.countByEstado(EstadoSolicitudEliminacion.SPAM);
+        Long cantAceptada = solicitudRepository.countByEstado(EstadoSolicitudEliminacion.ACEPTADA);
+        Long cantRechazada = solicitudRepository.countByEstado(EstadoSolicitudEliminacion.RECHAZADA);
+        Long cantPendiente = solicitudRepository.countByEstado(EstadoSolicitudEliminacion.PENDIENTE);
+
+        Long cantNoSpam = cantAceptada + cantRechazada + cantPendiente;
+
+        EstadisticaSolicitudes estadisticaSolicitudes = new EstadisticaSolicitudes(
+            LocalDateTime.now(),
+            cantSpam,
+            cantNoSpam
+        );
+
+        return this.estadisticaSolicitudesRepository.save(estadisticaSolicitudes);
     }
 
     @Override
