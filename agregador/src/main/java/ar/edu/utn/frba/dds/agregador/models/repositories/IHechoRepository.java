@@ -3,6 +3,9 @@ package ar.edu.utn.frba.dds.agregador.models.repositories;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IHechoRepository extends JpaRepository<Hecho, Long>, JpaSpecificationExecutor<Hecho> {
-    List<Hecho> findByOrigen(Origen origen);
+
+    Page<Hecho> findAll(Specification<Hecho> spec, Pageable pageable);
+
 
     @Query("SELECT h FROM Hecho h " +
             "JOIN h.fuenteSet hf " +

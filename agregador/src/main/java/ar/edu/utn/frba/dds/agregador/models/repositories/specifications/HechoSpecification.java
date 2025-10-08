@@ -8,6 +8,10 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 
 public class HechoSpecification {
+    public static Specification<Hecho> noEliminado() {
+        return (root, query, cb) -> cb.isFalse(root.get("estaEliminado"));
+    }
+
     public static Specification<Hecho> conFiltros(QueryParamsFiltro params) {
         return (root, query, cb) -> {
             var predicates = new ArrayList<Predicate>();

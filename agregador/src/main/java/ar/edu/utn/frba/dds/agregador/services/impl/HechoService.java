@@ -3,13 +3,9 @@ package ar.edu.utn.frba.dds.agregador.services.impl;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.ValidationException;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consensuador;
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
-import ar.edu.utn.frba.dds.agregador.models.domain.hechos.HechoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
-import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
-import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
@@ -22,19 +18,15 @@ import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 
 import java.util.*;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
 import ar.edu.utn.frba.dds.agregador.services.INormalizadorService;
 import ar.edu.utn.frba.dds.agregador.services.IUbicacionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 @Slf4j
 @Service
@@ -55,23 +47,14 @@ public class HechoService implements IHechoService {
   }
 
   @Override
-  public List<HechoOutputDTO> buscarHechos(QueryParamsFiltro params) {
-    this.actualizarHechosProxy();
+  public Page<HechoOutputDTO> buscarHechos(QueryParamsFiltro params, Pageable pageable) {
+    //this.actualizarHechosProxy();
 
-    Specification<Hecho> spec = HechoSpecification.conFiltros(params);
-    List<Hecho> hechosFiltrados = hechoRepository.findAll(spec);
+    Specification<Hecho> spec = HechoSpecification.conFiltros(params)
+            .and(HechoSpecification.noEliminado());
+    Page<Hecho> hechosPaginados = hechoRepository.findAll(spec, pageable);
 
-    return HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
-  }
-
-  @Override
-  public List<HechoOutputDTO> buscarHechosProxy() {
-    return HechoOutputDTO.mapHechoToDTO(this.pedirHechosProxy(fuenteRepository.findAll().stream().filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY)).toList())); //(this.fuenteService.buscarHechosProxy()); // si cambio lo de arriba se iria
-  }
-
-  @Override
-  public List<HechoOutputDTO> buscarHechosIndependientes() { // metodo muerto?
-    return null;
+    return hechosPaginados.map(HechoOutputDTO::HechoToDTO);
   }
 
   @Override
@@ -92,8 +75,7 @@ public class HechoService implements IHechoService {
     Fuente fuente = this.fuenteRepository.findByTipoFuente(TipoFuente.DINAMICA).get(0); // supongo que solo se incorporara de la unica fuente dinamica
     Hecho hecho = HechoInputDTO.DTOToHecho(hechoDTO, contribuyente, fuente);
 
-      return this.guardarHechos(Flux.fromIterable(Collections.singletonList(hecho)))
-              .blockFirst();
+    return this.guardarHecho(hecho);
   }
 
   @Override
@@ -103,7 +85,9 @@ public class HechoService implements IHechoService {
 
   @Override
   public Hecho guardarHecho(Hecho hecho) {
-      return this.hechoRepository.save(hecho);
+      Hecho hechoNormalizado = this.normalizadorService.normalizarHecho(hecho);
+      Hecho hechoConUbicacion = this.ubicacionService.cargarUbicacion(hechoNormalizado);
+      return this.hechoRepository.save(hechoConUbicacion);
   }
 
   @Override
@@ -134,9 +118,21 @@ public class HechoService implements IHechoService {
   }
 
   @Override
+  public Hecho eliminarHecho(Long id) {
+    if (id <= 0) throw new ValidationException("El id del hecho debe ser mayor que 0");
+
+    return hechoRepository.findById(id)
+            .map(hecho -> {
+              hecho.eliminar();
+              return hechoRepository.save(hecho);
+            })
+            .orElseThrow(() -> new NotFoundException("No se ha encontrado el hecho"));
+  }
+
+  @Override
   public void consensuarHechos() {
     List<Hecho> hechosGuardados = this.hechoRepository.findAll();
-    List<Hecho> hechosConsensuados = Consensuador.getInstance().consensuarHechos(this.fuenteRepository.findAll(), hechosGuardados); // lo puedo cambiar por el repo de la fuente
+    List<Hecho> hechosConsensuados = Consensuador.getInstance().consensuarHechos(this.fuenteRepository.findAll(), hechosGuardados);
     this.hechoRepository.saveAll(hechosConsensuados);
   }
 
@@ -160,12 +156,5 @@ public class HechoService implements IHechoService {
     else {
       throw new NotFoundException("Hecho no encontrado.");
     }
-  }
-
-  private List<Hecho> pedirHechosProxy(List<Fuente> fuentes) {
-    return fuentes.stream()
-        .map(fuente -> fuente.importarHechos().toStream().toList())
-        .flatMap(Collection::stream)
-        .collect(Collectors.toList());
   }
 }

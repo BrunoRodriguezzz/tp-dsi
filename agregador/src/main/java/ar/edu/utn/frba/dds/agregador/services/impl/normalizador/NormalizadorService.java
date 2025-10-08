@@ -34,8 +34,7 @@ public class NormalizadorService implements INormalizadorService {
         String nombreCatNormalizado = normalizadorCategoriaService.normalizarCategoria(hecho.getCategoria().getTitulo());
         Categoria categoriaNormalizada = this.categoriaRepository.findByTituloOrCreate(nombreCatNormalizado);
         hecho.setCategoria(categoriaNormalizada);
-        return null;
-        //return this.buscarCandidatos(hecho).block();
+        return this.buscarCandidatosReactivo(hecho).block();
     }
 
     @Override

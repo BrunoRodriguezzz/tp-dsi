@@ -8,4 +8,5 @@ import java.util.List;
 public interface IAgregadorService {
   public List<String> incorporarHecho(HechoInputDTO hecho);
   public Fuente incorporarFuente(FuenteInputDTO fuente);
+  public void eliminarHecho(Long id);
 }

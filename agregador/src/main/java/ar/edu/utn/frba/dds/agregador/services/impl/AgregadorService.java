@@ -41,6 +41,17 @@ public class AgregadorService implements IAgregadorService {
     return fuenteIncorporada;
   }
 
+  @Override
+  public void eliminarHecho(Long id) {
+    Hecho hechoEliminado = this.hechoService.eliminarHecho(id);
+    hechoEliminado
+            .getFuenteSet()
+            .forEach(f -> f.getFuente()
+                    .eliminarHecho(hechoEliminado)
+                    .block());
+    this.coleccionService.eliminarHechoDeColecciones(hechoEliminado);
+  }
+
   @Async
   public void buscarHechosFuente(Fuente fuenteIncorporada) {
     if(fuenteIncorporada.getNombre() != null){

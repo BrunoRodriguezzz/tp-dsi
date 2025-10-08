@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.agregador.models.domain.hechos;
 
 import ar.edu.utn.frba.dds.agregador.converters.ConsensoConverter;
 import ar.edu.utn.frba.dds.agregador.converters.OrigenConverter;
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaEliminadoException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.DescripcionInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.FechaInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.TituloInvalidoException;
@@ -25,6 +26,7 @@ import java.time.LocalDate;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 @Getter @Setter
 @AllArgsConstructor
@@ -110,8 +112,8 @@ public class Hecho {
         this.fuenteSet = new HashSet<>();
     }
 
-    public void eliminar() throws Exception {
-        if(this.estaEliminado) {throw new Exception("El hecho ya fue eliminado");}
+    public void eliminar() {
+        if(this.estaEliminado) throw new HechoYaEliminadoException("El hecho ya fue eliminado", this);
         this.estaEliminado = true;
     }
 

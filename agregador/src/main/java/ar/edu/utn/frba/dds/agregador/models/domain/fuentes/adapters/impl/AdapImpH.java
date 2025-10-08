@@ -6,10 +6,12 @@ import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.FuenteResponseDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
+
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -122,42 +124,40 @@ public class AdapImpH implements IAdapImpH {
         .doOnComplete(() -> log.info("Búsqueda de nuevos hechos completada para fuente ID: {}", fuente.getIdInternoFuente()));
   }
 
-  @Override
-  public Mono<Void> eliminarHecho(Hecho hecho, WebClient webClient, Fuente fuente) {
-    log.info("Eliminando hecho ID: {} de fuente ID: {}", hecho.getIdInternoFuente(fuente), fuente.getIdInternoFuente());
+    @Override
+    public Mono<Void> eliminarHecho(Hecho hecho, WebClient webClient, Fuente fuente) {
+        Long idInterno = hecho.getIdInternoFuente(fuente);
+        log.info("Eliminando hecho ID: {} de fuente ID: {}", idInterno, fuente.getIdInternoFuente());
 
-    return webClient.patch()
-        .uri(uriBuilder -> {
-          String uri = uriBuilder
-              .path("/eliminacion/{id}")
-              .build(hecho.getIdInternoFuente(fuente)).toString();
-          log.debug("URI construida para eliminarHecho: {}", uri);
-          return uriBuilder
-              .path("/eliminacion/{id}")
-              .build(hecho.getIdInternoFuente(fuente));
-        })
-        .bodyValue(HechoOutputDTO.HechoToDTO(hecho))
-        .retrieve()
-        .toBodilessEntity()
-        .then()
-        .doOnError(error -> log.error("Error eliminando hecho ID: {} de fuente ID: {}. Tipo: {}, Mensaje: {}",
-            hecho.getIdInternoFuente(fuente), fuente.getIdInternoFuente(), error.getClass().getSimpleName(), error.getMessage()))
-        .retryWhen(Retry.backoff(1, Duration.ofSeconds(2))
-            .doBeforeRetry(retrySignal -> log.warn("Reintentando eliminarHecho ID: {} para fuente ID: {}. Intento: {}",
-                hecho.getIdInternoFuente(fuente), fuente.getIdInternoFuente(), retrySignal.totalRetries() + 1)))
-        .onErrorResume(error -> {
-          if (error instanceof WebClientResponseException) {
-            WebClientResponseException wcre = (WebClientResponseException) error;
-            log.error("Error HTTP eliminando hecho ID: {} fuente ID: {}. Status: {}, Body: {}",
-                hecho.getIdInternoFuente(fuente), fuente.getIdInternoFuente(), wcre.getStatusCode(), wcre.getResponseBodyAsString());
-          } else {
-            log.error("Error eliminando hecho ID: {} fuente ID: {}. Tipo: {}, Mensaje: {}",
-                hecho.getIdInternoFuente(fuente), fuente.getIdInternoFuente(), error.getClass().getSimpleName(), error.getMessage(), error);
-          }
-          return Mono.empty();
-        })
-        .doOnSuccess(result -> log.info("Hecho ID: {} eliminado exitosamente de fuente ID: {}", hecho.getIdInternoFuente(fuente), fuente.getIdInternoFuente()));
-  }
+        return webClient.delete()
+                .uri(uriBuilder -> {
+                    URI uri = uriBuilder
+                            .path("/eliminacion/{id}")
+                            .build(idInterno);
+                    log.debug("URI construida para eliminarHecho: {}", uri);
+                    return uri;
+                })
+                .retrieve()
+                .toBodilessEntity()
+                .then()
+                .doOnError(error -> log.error("Error eliminando hecho ID: {} de fuente ID: {}. Tipo: {}, Mensaje: {}",
+                        idInterno, fuente.getIdInternoFuente(), error.getClass().getSimpleName(), error.getMessage()))
+                .retryWhen(Retry.backoff(1, Duration.ofSeconds(2))
+                        .doBeforeRetry(retrySignal -> log.warn("Reintentando eliminarHecho ID: {} para fuente ID: {}. Intento: {}",
+                                idInterno, fuente.getIdInternoFuente(), retrySignal.totalRetries() + 1)))
+                .onErrorResume(error -> {
+                    if (error instanceof WebClientResponseException) {
+                        WebClientResponseException wcre = (WebClientResponseException) error;
+                        log.error("Error HTTP eliminando hecho ID: {} fuente ID: {}. Status: {}, Body: {}",
+                                idInterno, fuente.getIdInternoFuente(), wcre.getStatusCode(), wcre.getResponseBodyAsString());
+                    } else {
+                        log.error("Error eliminando hecho ID: {} fuente ID: {}. Tipo: {}, Mensaje: {}",
+                                idInterno, fuente.getIdInternoFuente(), error.getClass().getSimpleName(), error.getMessage(), error);
+                    }
+                    return Mono.empty();
+                })
+                .doOnSuccess(result -> log.info("Hecho ID: {} eliminado exitosamente de fuente ID: {}", idInterno, fuente.getIdInternoFuente()));
+    }
 
   @Override
   public Flux<Hecho> importarHechosMismoTitulo(WebClient webClient,
