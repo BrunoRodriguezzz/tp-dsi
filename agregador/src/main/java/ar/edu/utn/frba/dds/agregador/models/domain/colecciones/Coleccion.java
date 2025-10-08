@@ -27,8 +27,9 @@ public class Coleccion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "fuente_interno_id")
+    @Column(name = "fuente_interno_id")
     private Long idInternoFuente;
+
     @Column(nullable = false)
     private String titulo;
     @Column

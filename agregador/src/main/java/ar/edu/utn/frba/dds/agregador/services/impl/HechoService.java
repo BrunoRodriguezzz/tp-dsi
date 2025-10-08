@@ -148,6 +148,16 @@ public class HechoService implements IHechoService {
     return guardados.collectList().block();
   }
 
+  @Override
+  public List<Hecho> actualizarHechos(List<Fuente> fuentes) {
+    Flux<Hecho> hechos = Flux.fromIterable(fuentes)
+            .flatMap(Fuente::importarHechosNuevos);
+
+    Flux<Hecho> guardados = this.guardarHechos(hechos);
+
+    return guardados.collectList().block();
+  }
+
   private Hecho buscarPorID(Long id){
     Optional<Hecho> hechoOptional = this.hechoRepository.findById(id);
     if(hechoOptional.isPresent()) {

@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.services;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
@@ -26,5 +27,6 @@ public interface IHechoService {
 
   // Se usa solo en los services, no en los controllers
   public List<Hecho> actualizarHechosProxy();
+  public List<Hecho> actualizarHechos(List<Fuente> fuentes);
   public void consensuarHechos();
 }

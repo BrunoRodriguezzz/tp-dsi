@@ -18,7 +18,7 @@ public interface IAdapUbicacion {
     public static Ubicacion buscarUbicacion(String latitud, String longitud) {
         WebClient client;
         client = WebClient.builder()
-            .baseUrl("https://apis.datos.gob.ar/georef/api")
+            .baseUrl("https://apis.datos.gob.ar/georef/api/v2.0")
             .build();
         return client.get()
             .uri(uriBuilder -> uriBuilder

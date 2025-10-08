@@ -2,15 +2,16 @@ package ar.edu.utn.frba.dds.agregador.controllers;
 
 import ar.edu.utn.frba.dds.agregador.controllers.validadores.ValidadorInput;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.*;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +24,9 @@ public class ColeccionController {
   private IColeccionService coleccionService;
 
   @GetMapping
-  public ResponseEntity buscarColecciones() {
-    List<ColeccionOutputDTO> colecciones = this.coleccionService.buscarColecciones();
-    if(colecciones.isEmpty()) {
-      return new ResponseEntity(HttpStatus.NO_CONTENT);
-    }
-    return ResponseEntity.status(HttpStatus.OK).body(colecciones);
+  public ResponseEntity<Page<ColeccionOutputDTO>> buscarColecciones(Pageable pageable) {
+    Page<ColeccionOutputDTO> colecciones = this.coleccionService.buscarColecciones(pageable);
+    return ResponseEntity.ok(colecciones);
   }
 
   @GetMapping("/{id}/hechos")
@@ -144,13 +142,6 @@ public class ColeccionController {
     }
     coleccionService.eliminarColeccion(id);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-  }
-
-  // TODO: Borrar esto, creado para tests nada más
-  @GetMapping("/refresco")
-  public ResponseEntity refrescarColecciones() {
-    this.coleccionService.refrescarColecciones();
-    return ResponseEntity.status(HttpStatus.OK).build();
   }
 
   // PRIVADOS

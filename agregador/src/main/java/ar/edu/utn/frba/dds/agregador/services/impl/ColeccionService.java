@@ -26,6 +26,8 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,13 +47,20 @@ public class ColeccionService implements IColeccionService {
     this.ultimaFechaRefresco = LocalDateTime.now().minusDays(1); // TODO: Debería persistirse
   }
 
-  public List<ColeccionOutputDTO> buscarColecciones() {
-    List <Coleccion> colecciones = this.coleccionRepository.findAll();
-    // TODO: Pedirle a la proxy solo los hechos de las fuentes que use. No todos, evitar consultas al pedo
-    List <Hecho> hechosNuevos = this.hechoService.actualizarHechosProxy();
+  public Page<ColeccionOutputDTO> buscarColecciones(Pageable pageable) {
+    Page<Coleccion> colecciones = this.coleccionRepository.findAll(pageable);
+    List <Hecho> hechosNuevos = this.hechoService
+            .actualizarHechos(colecciones
+                    .stream()
+                    .flatMap(coleccion -> coleccion
+                            .getFuentes()
+                            .stream()
+                            .filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY))
+                            )
+                    .toList());
     colecciones.forEach(c -> c.cargarHechos(hechosNuevos));
     // TODO: Buscar colecciones del servicio PROXY
-    return ColeccionOutputDTO.mapColeccionesToDTO(colecciones);
+    return colecciones.map(ColeccionOutputDTO::coleccionToDTO);
   }
 
   public List<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params) {
@@ -208,13 +217,6 @@ public class ColeccionService implements IColeccionService {
   @Override
   public void eliminarColeccion(Long id) { // TODO: Hacer baja lógica
       coleccionRepository.deleteById(id);
-  }
-
-  @Override
-  public void refrescarColecciones(){
-    List<Hecho> nuevosHechos = this.hechoService.actualizarHechosProxy();
-    this.incorporarHechos(nuevosHechos);
-    this.ultimaFechaRefresco = LocalDateTime.now();
   }
 
   // ---------------------------------------------------- Privados ----------------------------------------------------
