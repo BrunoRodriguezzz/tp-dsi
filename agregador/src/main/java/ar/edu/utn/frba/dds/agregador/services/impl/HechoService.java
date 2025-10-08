@@ -16,6 +16,7 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.ICategoriaRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
+import ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 
@@ -29,6 +30,7 @@ import ar.edu.utn.frba.dds.agregador.services.IUbicacionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -53,19 +55,12 @@ public class HechoService implements IHechoService {
   }
 
   @Override
-  public List<HechoOutputDTO> buscarHechos(QueryParamsFiltro params) { // Devuelve todos los hechos
+  public List<HechoOutputDTO> buscarHechos(QueryParamsFiltro params) {
     this.actualizarHechosProxy();
 
-    List<Hecho> hechos = this.hechoRepository.findAll();
-    List<Filtro> filtrosBusqueda = params.instanciarFiltros(); // TODO: Estos filtros deberían aplicarse en el repositorio
-    List<Hecho> hechosFiltrados;
-    if(!filtrosBusqueda.isEmpty()) {
-      hechosFiltrados = hechos
-              .stream()
-              .filter(h -> filtrosBusqueda.stream().allMatch(f -> f.coincide(h)))
-              .toList();
-    }
-    else hechosFiltrados = hechos;
+    Specification<Hecho> spec = HechoSpecification.conFiltros(params);
+    List<Hecho> hechosFiltrados = hechoRepository.findAll(spec);
+
     return HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
   }
 
