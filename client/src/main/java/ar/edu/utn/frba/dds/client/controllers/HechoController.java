@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
 import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.client.services.DinamicaService;
 import ar.edu.utn.frba.dds.client.services.HechoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HechoController {
     private final HechoService hechoService;
+    private final DinamicaService dinamicaService;
     private final Logger LOGGER = LogManager.getLogger(HechoController.class);
 
     @GetMapping
@@ -37,5 +40,14 @@ public class HechoController {
         model.addAttribute("hecho", hecho);
         model.addAttribute("titulo", hecho.getTitulo());
         return "hecho";
+    }
+
+    @GetMapping("/misHechos")
+    public String mostrarMisHechos(@RequestParam(required = false) Long id, Model model){
+        List<HechoDTO> hechos = this.dinamicaService.mostrarMisHechos(id);
+        model.addAttribute("hechos", hechos);
+        model.addAttribute("cantidad", hechos.size());
+        model.addAttribute("titulo", "Mis Hechos");
+        return "misHechos";
     }
 }
