@@ -80,7 +80,7 @@ public class DinamicaService {
                     .origen("Contribuyentes")
                     .fuente("Fuente Dinamica")
                     .build();
-            misHechos.add(hecho);
+            misHechos.add(hecho2);
 
             return misHechos;
 

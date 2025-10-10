@@ -8,10 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -49,5 +46,28 @@ public class HechoController {
         model.addAttribute("cantidad", hechos.size());
         model.addAttribute("titulo", "Mis Hechos");
         return "misHechos";
+    }
+
+    @GetMapping("/eliminacion/{id}")
+    public String eliminacionHecho(@PathVariable Long id, Model model){
+        HechoDTO hecho = hechoService.obtenerHechoPorId(id);
+        model.addAttribute("hecho", hecho);
+        model.addAttribute("titulo", "Eliminación");
+        return "reportarHecho";
+    }
+
+    @PostMapping("/reportarHecho")
+    public String reportarHecho(@RequestParam Long id,
+                                @RequestParam String motivo,
+                                @RequestParam String descripcion,
+                                @RequestParam String contacto,
+                                Model model){
+
+        LOGGER.info("ID del hecho a reportar: {}", id);
+        LOGGER.info("Motivo: {}", motivo);
+        LOGGER.info("Descripcion: {}", descripcion);
+        LOGGER.info("Contacto: {}", contacto);
+
+        return "redirect:/hechos";
     }
 }
