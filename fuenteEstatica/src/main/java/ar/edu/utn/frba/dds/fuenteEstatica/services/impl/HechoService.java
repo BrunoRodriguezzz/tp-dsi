@@ -30,23 +30,12 @@ public class HechoService implements IHechoService {
         this.archivoRepository = archivoRepository;
     }
 
-    @Override
-    public List<ArchivoOutputDTO> getAll() {
-        List<ArchivoOutputDTO> outputArchivos = new ArrayList<>();
-        List<Long> ids = this.devolverArchivoID();
-        ids.forEach(id -> {
-            List<HechoEstatica> hechos = hechoRepository.findByIdArchivo(id); // Devuelve los hechos con ese ID Fuente
-            toOutputArchivo(outputArchivos, id, hechos);
-        });
-        return outputArchivos;
-    }
-
     private List<Long> devolverArchivoID() {
         return archivoRepository.findAll().stream().map(Archivo::getId).toList();
     }
 
     @Override
-    public ArchivoOutputDTO getById(Long id) {
+    public ArchivoOutputDTO getHechoById(Long id) {
         HechoEstatica hecho = this.hechoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundError("Hecho NO encontrado con ID: " + id));
         List<HechoEstatica> hechos = new ArrayList<>();
@@ -63,9 +52,7 @@ public class HechoService implements IHechoService {
             return buscarPorIdHecho(filtro.getIdHecho());
         }
 
-        List<Long> archivoIds = (filtro.getFuenteId() == null)
-                ? this.devolverArchivoID()
-                : List.of(filtro.getFuenteId());
+        List<Long> archivoIds = this.devolverArchivoID();
 
         return archivoIds.stream()
                 .map(id -> {
@@ -106,7 +93,7 @@ public class HechoService implements IHechoService {
     }
 
     @Override
-    public ArchivoOutputDTO getByFuenteId(Long id) {
+    public ArchivoOutputDTO getByFuenteId(Long id, FiltroEstatica filtroEstatica) {
         if(id == null || id <= 0) {
             throw new ValidationError("ID invalido");
         }
@@ -116,7 +103,13 @@ public class HechoService implements IHechoService {
             throw new NotFoundError("Archivo no encontrado");
         }
 
-        List<HechoEstatica> hechos = this.hechoRepository.findByIdArchivo(id);
+        List<HechoEstatica> hechos;
+        if(filtroEstatica.nuevos()) {
+            hechos = this.hechoRepository.findAll(HechoSpecification.nuevos(archivo.getUltimaConsulta(), id));
+        } else {
+            hechos = this.hechoRepository.findAll(HechoSpecification.conFiltro(filtroEstatica));
+        }
+
         return UtilsDTO.toOutputArchivo(archivo, hechos);
     }
 
@@ -147,26 +140,5 @@ public class HechoService implements IHechoService {
         output.setHechos(List.of(hechoDTO));
 
         return List.of(output);
-    }
-
-    private void toOutputArchivo(List<ArchivoOutputDTO> outputFuentes, Long id, List<HechoEstatica> hechos) {
-        if (!hechos.isEmpty()) { // Tengo que agregarlos
-            ArchivoOutputDTO outputFuente = new ArchivoOutputDTO();
-            Optional<Archivo> archivo = archivoRepository.findById(id);
-            String nombreArchivo;
-            if (archivo.isPresent()) {
-                nombreArchivo = archivo.get().getNombre();
-            }
-            else {
-                throw new NotFoundError("Archivo no encontrada con ID: " + id);
-            }
-
-            List<HechoOutputDTO> hechosOutput = hechos.stream().map(UtilsDTO::hechoToOutputDTO).toList();
-
-            outputFuente.setHechos(hechosOutput);
-            outputFuente.setId(id);
-            outputFuente.setNombre(nombreArchivo);
-            outputFuentes.add(outputFuente);
-        }
     }
 }

@@ -88,11 +88,6 @@ public class Fuente {
     return iAdapImpH.importarHechosMismoTitulo(this.webClient, this, hecho);
   }
 
-  @Deprecated
-  public Flux<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
-    return iAdapImpH.buscarNuevosHechos(ultimaFechaRefresco, this.webClient, this);
-  }
-
   public Mono<Void> eliminarHecho(Hecho hecho) {
     return this.iAdapImpH.eliminarHecho(hecho, webClient, this);
   }

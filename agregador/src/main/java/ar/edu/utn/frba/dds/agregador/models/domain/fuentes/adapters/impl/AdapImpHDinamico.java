@@ -40,7 +40,6 @@ public class AdapImpHDinamico implements IAdapImpH {
         });
   }
 
-  @Override
   public Flux<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco,
                                         WebClient webClient,
                                         Fuente fuente) {
