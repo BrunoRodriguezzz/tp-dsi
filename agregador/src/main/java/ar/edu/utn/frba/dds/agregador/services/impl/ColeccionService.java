@@ -3,7 +3,9 @@ package ar.edu.utn.frba.dds.agregador.services.impl;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.EntidadFiltro;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroMapper;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.HechoFuente;
@@ -133,9 +135,12 @@ public class ColeccionService implements IColeccionService {
   public ColeccionOutputDTO agregarFiltrosCriterio(Long id, CriterioInputDTO criterioInputDTO) {
     List<Filtro> nuevosFiltros = CriterioInputDTO.crearFiltros(criterioInputDTO);
 
+    FiltroMapper filtroMapper = new FiltroMapper();
+    List<EntidadFiltro> nuevosFiltrosEntity = filtroMapper.toEntities(nuevosFiltros);
+
     Coleccion coleccion = this.findColecccionAux(id);
 
-    coleccion.getCriterio().getFiltros().addAll(nuevosFiltros);
+    coleccion.getCriterio().getFiltros().addAll(nuevosFiltrosEntity);
     coleccion.recalcularHechos();
 
     this.coleccionRepository.save(coleccion);
@@ -147,12 +152,17 @@ public class ColeccionService implements IColeccionService {
     Coleccion coleccion = this.findColecccionAux(id);
 
     List<Filtro> filtrosNuevos = CriterioInputDTO.crearFiltros(criterio);
-    coleccion.cambiarCriterio(new Criterio(filtrosNuevos));
+
+    FiltroMapper filtroMapper = new FiltroMapper();
+    List<EntidadFiltro> entidadesFiltrosNuevos = filtroMapper.toEntities(filtrosNuevos);
+
+    coleccion.cambiarCriterio(new Criterio(entidadesFiltrosNuevos));
 
     List<Fuente> fuentes = coleccion.getFuentes();
     List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentes);
     coleccion.cargarHechos(hechosFuentes);
     coleccion.recalcularHechos();
+
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
