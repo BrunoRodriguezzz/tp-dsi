@@ -6,16 +6,13 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
-import ar.edu.utn.frba.dds.agregador.services.ISeederService;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +38,7 @@ public class HechoController {
       @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin,
       Pageable pageable
   ) {
-      QueryParamsFiltro params = ColeccionController.crearFiltros(categoria, fechaAcontecimientoInicio,
+      QueryParamsFiltro params = Utils.crearFiltros(categoria, fechaAcontecimientoInicio,
               fechaAcontecimientoFin, titulo, latitud, longitud, fechaCargaInicio, fechaCargaFin);
       Page<HechoOutputDTO> hechos = this.hechoService.buscarHechos(params, pageable);
     return ResponseEntity.ok(hechos);
@@ -54,6 +51,12 @@ public class HechoController {
     List<String> incorporadoEn = this.agregadorService.incorporarHecho(hecho);
     return ResponseEntity.ok(incorporadoEn);
   }
+
+  @PutMapping("/{id}")
+    public ResponseEntity<HechoOutputDTO> actualizarHecho(@RequestBody HechoInputDTO hecho, @PathVariable(name = "id") Long id) {
+        HechoOutputDTO hechoActualizado = this.hechoService.actualizarHecho(hecho, id);
+        return ResponseEntity.ok(hechoActualizado);
+    }
 
   @DeleteMapping("/{id}")
   public ResponseEntity eliminarHecho(@PathVariable(name = "id") Long id) {

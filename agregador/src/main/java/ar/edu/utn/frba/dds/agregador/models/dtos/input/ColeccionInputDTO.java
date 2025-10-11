@@ -5,7 +5,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
-import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
+
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import lombok.Data;

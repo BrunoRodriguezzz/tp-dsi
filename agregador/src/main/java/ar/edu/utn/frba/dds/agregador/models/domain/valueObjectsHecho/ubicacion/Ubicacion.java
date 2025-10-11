@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion;
 
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.ValidationException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.UbicacionInvalidaException;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,20 +27,20 @@ public class Ubicacion {
     @Column
     private String municipio;
 
-    public Ubicacion(double latitud, double longitud) throws UbicacionInvalidaException {
+    public Ubicacion(double latitud, double longitud) {
         if(this.latitudInvalida(latitud)){
-            throw new UbicacionInvalidaException("Latitud invalida: " + latitud);
+            throw new ValidationException("Latitud invalida: " + latitud);
         }
-            if(this.longitudInvalida(longitud)){
-            throw new UbicacionInvalidaException("Longitud invalida: " + longitud);
+        if(this.longitudInvalida(longitud)){
+            throw new ValidationException("Longitud invalida: " + longitud);
         }
         this.latitud = latitud;
         this.longitud = longitud;
     }
 
-    public Boolean coincide(Ubicacion ubicacion) throws UbicacionInvalidaException {
+    public Boolean coincide(Ubicacion ubicacion) {
         if(this.latitudInvalida(ubicacion.latitud) || this.longitudInvalida(ubicacion.longitud)){
-            throw new UbicacionInvalidaException("Valores de Ubicacion Invalidos: " + ubicacion.latitud + ";" + ubicacion.longitud);
+            throw new ValidationException("Valores de Ubicacion Invalidos: " + ubicacion.latitud + ";" + ubicacion.longitud);
         }
         return  this.latitud == ubicacion.latitud &&
                 this.longitud == ubicacion.longitud;

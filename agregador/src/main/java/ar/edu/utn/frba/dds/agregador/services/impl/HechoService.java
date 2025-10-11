@@ -9,7 +9,6 @@ import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
-import ar.edu.utn.frba.dds.agregador.models.repositories.ICategoriaRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification;
@@ -36,13 +35,11 @@ public class HechoService implements IHechoService {
   @Autowired
   private INormalizadorService normalizadorService;
 
-  private IHechoRepository hechoRepository;
-  private ICategoriaRepository categoriaRepository;
-  private IFuenteRepository fuenteRepository;
+  private final IHechoRepository hechoRepository;
+  private final IFuenteRepository fuenteRepository;
 
-  public HechoService(IFuenteRepository fuenteRepository, ICategoriaRepository categoriaRepository, IHechoRepository hechoRepository) {
+  public HechoService(IFuenteRepository fuenteRepository, IHechoRepository hechoRepository) {
     this.fuenteRepository = fuenteRepository;
-    this.categoriaRepository = categoriaRepository;
     this.hechoRepository = hechoRepository;
   }
 
@@ -59,22 +56,9 @@ public class HechoService implements IHechoService {
 
   @Override
   public Hecho incorporarHecho(HechoInputDTO hechoDTO) {
-    Contribuyente contribuyente = null;
-    if(hechoDTO.getContribuyente() != null) {
-      try {
-        contribuyente = new Contribuyente(
-            hechoDTO.getContribuyente().getNombre(),
-            hechoDTO.getContribuyente().getApellido(),
-            hechoDTO.getContribuyente().getFechaNacimiento()
-        );
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    Fuente fuente = this.fuenteRepository.findByTipoFuente(TipoFuente.DINAMICA).get(0); // supongo que solo se incorporara de la unica fuente dinamica
+    Contribuyente contribuyente = crearContribuyente(hechoDTO);
+    Fuente fuente = this.fuenteRepository.findByTipoFuente(TipoFuente.DINAMICA).get(0);
     Hecho hecho = HechoInputDTO.DTOToHecho(hechoDTO, contribuyente, fuente);
-
     return this.guardarHecho(hecho);
   }
 
@@ -130,6 +114,16 @@ public class HechoService implements IHechoService {
   }
 
   @Override
+  public HechoOutputDTO actualizarHecho(HechoInputDTO hechoDTO, Long id) {
+    if (id <= 0) throw new ValidationException("El id del hecho debe ser mayor que 0");
+
+    Hecho hechoExistente = this.buscarPorID(id);
+    hechoExistente.actualizarDesdeDTO(hechoDTO);
+    Hecho hechoGuardado = this.guardarHecho(hechoExistente);
+    return HechoOutputDTO.HechoToDTO(hechoGuardado);
+  }
+
+  @Override
   public void consensuarHechos() {
     List<Hecho> hechosGuardados = this.hechoRepository.findAll();
     List<Hecho> hechosConsensuados = Consensuador.getInstance().consensuarHechos(this.fuenteRepository.findAll(), hechosGuardados);
@@ -166,5 +160,17 @@ public class HechoService implements IHechoService {
     else {
       throw new NotFoundException("Hecho no encontrado.");
     }
+  }
+
+  private Contribuyente crearContribuyente(HechoInputDTO hechoDTO) {
+    Contribuyente contribuyente = null;
+    if(hechoDTO.getContribuyente() != null) {
+        contribuyente = new Contribuyente(
+                hechoDTO.getContribuyente().getNombre(),
+                hechoDTO.getContribuyente().getApellido(),
+                hechoDTO.getContribuyente().getFechaNacimiento()
+        );
+    }
+    return contribuyente;
   }
 }

@@ -14,6 +14,8 @@ import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.HechoSpecification
 import ar.edu.utn.frba.dds.fuenteEstatica.services.IHechoService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -106,6 +108,8 @@ public class HechoService implements IHechoService {
         List<HechoEstatica> hechos;
         if(filtroEstatica.nuevos()) {
             hechos = this.hechoRepository.findAll(HechoSpecification.nuevos(archivo.getUltimaConsulta(), id));
+            archivo.setUltimaConsulta(LocalDateTime.now());
+            archivoRepository.save(archivo);
         } else {
             hechos = this.hechoRepository.findAll(HechoSpecification.conFiltro(filtroEstatica));
         }

@@ -41,12 +41,10 @@ public class ColeccionController {
       @RequestParam(name = "fechaCargaInicio", required = false) LocalDateTime fechaCargaInicio,
       @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin
   ) {
-    QueryParamsFiltro params = crearFiltros(categoria, fechaAcontecimientoInicio, fechaAcontecimientoFin, titulo, latitud, longitud, fechaCargaInicio, fechaCargaFin);
+    QueryParamsFiltro params = Utils.crearFiltros(categoria, fechaAcontecimientoInicio, fechaAcontecimientoFin,
+            titulo, latitud, longitud, fechaCargaInicio, fechaCargaFin);
 
     List<HechoOutputDTO> hechos = this.coleccionService.buscarHechosColeccion(id,params);
-    if(hechos == null) {
-      return new ResponseEntity(HttpStatus.NOT_FOUND);
-    }
     return ResponseEntity.status(HttpStatus.OK).body(hechos);
   }
 
@@ -62,7 +60,8 @@ public class ColeccionController {
       @RequestParam(name = "fechaCargaInicio", required = false) LocalDateTime fechaCargaInicio,
       @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin
   ) {
-    QueryParamsFiltro params = crearFiltros(categoria, fechaAcontecimientoInicio, fechaAcontecimientoFin, titulo, latitud, longitud, fechaCargaInicio, fechaCargaFin);
+    QueryParamsFiltro params = Utils.crearFiltros(categoria, fechaAcontecimientoInicio, fechaAcontecimientoFin, titulo,
+            latitud, longitud, fechaCargaInicio, fechaCargaFin);
 
     List<HechoOutputDTO> hechos = this.coleccionService.buscarHechosCuradosColeccion(id,params);
     if(hechos == null) {
@@ -142,19 +141,5 @@ public class ColeccionController {
     }
     coleccionService.eliminarColeccion(id);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-  }
-
-  // PRIVADOS
-  static QueryParamsFiltro crearFiltros(@RequestParam(name = "categoria", required = false) String categoria, @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDateTime fechaAcontecimientoInicio, @RequestParam(name = "fechaAcontecimientoFin", required = false) LocalDateTime fechaAcontecimientoFin, @RequestParam(name = "titulo", required = false) String titulo, @RequestParam(name = "latitud", required = false) String latitud, @RequestParam(name = "longitud", required = false) String longitud, @RequestParam(name = "fechaCargaInicio", required = false) LocalDateTime fechaCargaInicio, @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin) {
-    QueryParamsFiltro params = new QueryParamsFiltro();
-    params.setCategoria(categoria);
-    params.setFechaAcontecimientoInicio(fechaAcontecimientoInicio);
-    params.setFechaAcontecimientoFin(fechaAcontecimientoFin);
-    params.setFechaCargaInicio(fechaCargaInicio);
-    params.setFechaCargaFin(fechaCargaFin);
-    params.setLatitud(latitud);
-    params.setLongitud(longitud);
-    params.setTitulo(titulo);
-    return params;
   }
 }

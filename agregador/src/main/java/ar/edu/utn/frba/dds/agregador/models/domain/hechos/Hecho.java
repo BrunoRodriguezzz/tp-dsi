@@ -159,6 +159,38 @@ public class Hecho {
         this.consensos.add(consenso);
     }
 
+    public void actualizarDesdeDTO(ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO dto)  {
+        if (dto.getTitulo() != null) this.titulo = dto.getTitulo();
+        if (dto.getDescripcion() != null) this.descripcion = dto.getDescripcion();
+        if (dto.getCategoria() != null) this.categoria = new Categoria(dto.getCategoria());
+        if (dto.getUbicacion() != null) {
+            this.ubicacion = new Ubicacion(
+                Double.parseDouble(dto.getUbicacion().getLatitud()),
+                Double.parseDouble(dto.getUbicacion().getLongitud())
+            );
+        }
+        if (dto.getEtiquetas() != null) {
+            this.etiquetas = dto.getEtiquetas().stream()
+                .map(Etiqueta::new)
+                .collect(java.util.stream.Collectors.toList());
+        }
+        if (dto.getFechaAcontecimiento() != null) this.fechaAcontecimiento = dto.getFechaAcontecimiento();
+        if (dto.getOrigen() != null) this.origen = Origen.valueOf(dto.getOrigen().toUpperCase());
+        if (dto.getContribuyente() != null) {
+            this.contribuyente = new Contribuyente(
+                dto.getContribuyente().getNombre(),
+                dto.getContribuyente().getApellido(),
+                dto.getContribuyente().getFechaNacimiento()
+            );
+        }
+        if (dto.getContenidoMultimedia() != null) {
+            this.contenidoMultimedia = dto.getContenidoMultimedia().stream()
+                .map(ContenidoMultimedia::new)
+                .collect(java.util.stream.Collectors.toList());
+        }
+        // No se actualizan consensos ni estaEliminado desde el DTO por seguridad
+    }
+
     public boolean equals(Hecho hecho) {
         if (this == hecho) return true;
         if (hecho == null || getClass() != hecho.getClass()) return false;
