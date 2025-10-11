@@ -44,6 +44,12 @@ public class HechoController {
     return ResponseEntity.ok(hechos);
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<HechoOutputDTO> buscarHechoPorID(@PathVariable(name = "id") Long id) {
+    HechoOutputDTO hecho = HechoOutputDTO.HechoToDTO(this.hechoService.buscarHecho(id));
+    return ResponseEntity.ok(hecho);
+  }
+
   // Incorpora nuevos hechos que le envíen las fuentes(push based)
   @PostMapping
   public ResponseEntity<List<String>> incorporarHecho(@RequestBody HechoInputDTO hecho) {
@@ -53,10 +59,10 @@ public class HechoController {
   }
 
   @PutMapping("/{id}")
-    public ResponseEntity<HechoOutputDTO> actualizarHecho(@RequestBody HechoInputDTO hecho, @PathVariable(name = "id") Long id) {
-        HechoOutputDTO hechoActualizado = this.hechoService.actualizarHecho(hecho, id);
-        return ResponseEntity.ok(hechoActualizado);
-    }
+  public ResponseEntity<HechoOutputDTO> actualizarHecho(@RequestBody HechoInputDTO hecho, @PathVariable(name = "id") Long id) {
+      HechoOutputDTO hechoActualizado = this.hechoService.actualizarHecho(hecho, id);
+      return ResponseEntity.ok(hechoActualizado);
+  }
 
   @DeleteMapping("/{id}")
   public ResponseEntity eliminarHecho(@PathVariable(name = "id") Long id) {
