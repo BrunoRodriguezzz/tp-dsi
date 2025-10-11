@@ -40,6 +40,8 @@ public class ColeccionService implements IColeccionService {
   private IHechoRepository hechoRepository;
   @Autowired
   private IFuenteRepository fuenteRepository;
+  @Autowired
+  private FiltroMapper filtroMapper;
 
   private final IHechoService hechoService;
   private LocalDateTime ultimaFechaRefresco;
@@ -116,17 +118,56 @@ public class ColeccionService implements IColeccionService {
     return this.deleteHechoFromColeccion(hecho);
   }
 
+//  @Override
+//  public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
+//    List<Fuente> fuentesColeccion = new ArrayList<>();
+//    coleccionInputDTO.getFuentes().forEach(fuente -> {
+//      Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
+//      if(temp == null){
+//        throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
+//      }
+//      fuentesColeccion.add(temp);
+//    });
+//    Coleccion coleccion = ColeccionInputDTO.inputColeccionToColeccion(coleccionInputDTO, fuentesColeccion);
+//    this.coleccionRepository.save(coleccion);
+//    return ColeccionOutputDTO.coleccionToDTO(coleccion);
+//  }
+
   @Override
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
     List<Fuente> fuentesColeccion = new ArrayList<>();
     coleccionInputDTO.getFuentes().forEach(fuente -> {
       Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
-      if(temp == null){
+      if (temp == null) {
         throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
       }
       fuentesColeccion.add(temp);
     });
-    Coleccion coleccion = ColeccionInputDTO.inputColeccionToColeccion(coleccionInputDTO, fuentesColeccion);
+
+    List<Filtro> filtrosTransitorios = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
+
+    List<EntidadFiltro> filtrosGestionados = this.filtroMapper.toEntities(filtrosTransitorios);
+
+    Criterio criterio = new Criterio();
+    criterio.agregarFiltros(filtrosGestionados);
+
+    List<Consenso> listaConsensos = new ArrayList<>();
+    if (coleccionInputDTO.getConsensos() != null) {
+      listaConsensos = coleccionInputDTO.getConsensos()
+              .stream()
+              .map(Consenso::valueOf)
+              .collect(Collectors.toList());
+    }
+
+    Coleccion coleccion = new Coleccion(
+            coleccionInputDTO.getNombre(),
+            coleccionInputDTO.getDescripcion(),
+            fuentesColeccion,
+            criterio
+    );
+
+    listaConsensos.forEach(coleccion::agregarConsenso);
+
     this.coleccionRepository.save(coleccion);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
@@ -135,8 +176,7 @@ public class ColeccionService implements IColeccionService {
   public ColeccionOutputDTO agregarFiltrosCriterio(Long id, CriterioInputDTO criterioInputDTO) {
     List<Filtro> nuevosFiltros = CriterioInputDTO.crearFiltros(criterioInputDTO);
 
-    FiltroMapper filtroMapper = new FiltroMapper();
-    List<EntidadFiltro> nuevosFiltrosEntity = filtroMapper.toEntities(nuevosFiltros);
+    List<EntidadFiltro> nuevosFiltrosEntity = this.filtroMapper.toEntities(nuevosFiltros);
 
     Coleccion coleccion = this.findColecccionAux(id);
 
@@ -153,8 +193,7 @@ public class ColeccionService implements IColeccionService {
 
     List<Filtro> filtrosNuevos = CriterioInputDTO.crearFiltros(criterio);
 
-    FiltroMapper filtroMapper = new FiltroMapper();
-    List<EntidadFiltro> entidadesFiltrosNuevos = filtroMapper.toEntities(filtrosNuevos);
+    List<EntidadFiltro> entidadesFiltrosNuevos = this.filtroMapper.toEntities(filtrosNuevos);
 
     coleccion.cambiarCriterio(new Criterio(entidadesFiltrosNuevos));
 
