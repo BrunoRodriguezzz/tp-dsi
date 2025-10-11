@@ -8,11 +8,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "criterio")
 public class Criterio {
@@ -20,33 +22,44 @@ public class Criterio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Transient
-    private List<Filtro> filtros;
+    private String nombre;
+    private String detalle;
 
-    public Criterio() {
-        this.filtros = new ArrayList<>();
-    }
+    @OneToMany(mappedBy = "criterio", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EntidadFiltro> filtros = new ArrayList<>();
 
-    public Criterio(List<Filtro> filtros) {
+    public Criterio(List<EntidadFiltro> filtros) {
         this.filtros = filtros;
     }
 
-    public Boolean cumpleCriterio(Hecho hecho) {
-        Boolean resultado = false;
-        resultado = this.filtros.stream().allMatch(filtro ->
-            {
-                try {
-                    return filtro.coincide(hecho);
-                } catch (Exception e) {
-                    // TODO: Catchea el controller?
-                    throw new RuntimeException(e);
-                }
+    public Boolean coincideCon(Hecho hecho) {
+        return filtros.stream().anyMatch(filtro -> {
+            try {
+                return filtro.coincide(hecho);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-        );
-        return resultado;
+        });
     }
 
-    public void agregarFiltro(Filtro filtro) {
+    public void agregarFiltro(EntidadFiltro filtro) {
+        filtro.setCriterio(this);
         this.filtros.add(filtro);
+    }
+
+    public void agregarFiltros(Collection<? extends EntidadFiltro> filtros) {
+        filtros.forEach(this::agregarFiltro);
+    }
+
+    public void setFiltros(List<EntidadFiltro> nuevosFiltros) {
+        this.filtros.clear();
+        if (nuevosFiltros != null) {
+            agregarFiltros(nuevosFiltros);
+        }
+    }
+
+    public void quitarFiltro(EntidadFiltro filtro) {
+        this.filtros.remove(filtro);
+        filtro.setCriterio(null);
     }
 }

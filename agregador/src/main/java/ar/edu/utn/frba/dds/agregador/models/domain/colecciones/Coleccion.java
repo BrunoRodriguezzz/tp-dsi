@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.agregador.models.domain.colecciones;
 
 import ar.edu.utn.frba.dds.agregador.converters.OrigenConverter;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroMapper;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
@@ -41,9 +42,10 @@ public class Coleccion {
             joinColumns = @JoinColumn(name = "coleccion_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "fuente_id", referencedColumnName = "id")
     )
-    private List<Fuente> fuentes;
+    private List<Fuente> fuentes = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "criterio_id")
     private Criterio criterio;
 
     @ElementCollection(fetch = FetchType.LAZY)
@@ -52,8 +54,8 @@ public class Coleccion {
             joinColumns = @JoinColumn(name = "coleccion_id", referencedColumnName = "id")
     )
     @Column(name = "consenso")
-    @Convert(converter = OrigenConverter.class)
-    private List<Consenso> consensos;
+    @Enumerated(EnumType.STRING) // estaba esto --> @Convert(converter = OrigenConverter.class)
+    private List<Consenso> consensos = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -61,7 +63,7 @@ public class Coleccion {
             joinColumns = @JoinColumn(name = "coleccion_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     )
-    private List<Hecho> hechos;
+    private List<Hecho> hechos = new ArrayList<>();
 
     public Coleccion(String titulo, String descripcion, List<Fuente> fuentes, Criterio criterio) {
         if (titulo == null || titulo.isEmpty()) {
@@ -154,7 +156,8 @@ public class Coleccion {
     }
 
     public void agregarFiltroACriterio(Filtro filtro){
-        this.criterio.agregarFiltro(filtro);
+        FiltroMapper filtroMapper = new FiltroMapper();
+        this.criterio.agregarFiltro(filtroMapper.toEntity(filtro));
         this.recalcularHechos();
     }
 
@@ -187,7 +190,7 @@ public class Coleccion {
     if(this.criterio == null) { //Si no tengo criterio, lo cumple
         return true;
     }
-        return this.criterio.cumpleCriterio(hecho);
+        return this.criterio.coincideCon(hecho);
     }
 
     private List<Hecho> aplicarFiltros(List<Filtro> filtros) {

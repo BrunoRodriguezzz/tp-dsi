@@ -3,7 +3,9 @@ package ar.edu.utn.frba.dds.agregador.services.impl;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.EntidadFiltro;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroMapper;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.HechoFuente;
@@ -38,6 +40,8 @@ public class ColeccionService implements IColeccionService {
   private IHechoRepository hechoRepository;
   @Autowired
   private IFuenteRepository fuenteRepository;
+  @Autowired
+  private FiltroMapper filtroMapper;
 
   private final IHechoService hechoService;
   private LocalDateTime ultimaFechaRefresco;
@@ -114,17 +118,56 @@ public class ColeccionService implements IColeccionService {
     return this.deleteHechoFromColeccion(hecho);
   }
 
+//  @Override
+//  public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
+//    List<Fuente> fuentesColeccion = new ArrayList<>();
+//    coleccionInputDTO.getFuentes().forEach(fuente -> {
+//      Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
+//      if(temp == null){
+//        throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
+//      }
+//      fuentesColeccion.add(temp);
+//    });
+//    Coleccion coleccion = ColeccionInputDTO.inputColeccionToColeccion(coleccionInputDTO, fuentesColeccion);
+//    this.coleccionRepository.save(coleccion);
+//    return ColeccionOutputDTO.coleccionToDTO(coleccion);
+//  }
+
   @Override
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
     List<Fuente> fuentesColeccion = new ArrayList<>();
     coleccionInputDTO.getFuentes().forEach(fuente -> {
       Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
-      if(temp == null){
+      if (temp == null) {
         throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
       }
       fuentesColeccion.add(temp);
     });
-    Coleccion coleccion = ColeccionInputDTO.inputColeccionToColeccion(coleccionInputDTO, fuentesColeccion);
+
+    List<Filtro> filtrosTransitorios = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
+
+    List<EntidadFiltro> filtrosGestionados = this.filtroMapper.toEntities(filtrosTransitorios);
+
+    Criterio criterio = new Criterio();
+    criterio.agregarFiltros(filtrosGestionados);
+
+    List<Consenso> listaConsensos = new ArrayList<>();
+    if (coleccionInputDTO.getConsensos() != null) {
+      listaConsensos = coleccionInputDTO.getConsensos()
+              .stream()
+              .map(Consenso::valueOf)
+              .collect(Collectors.toList());
+    }
+
+    Coleccion coleccion = new Coleccion(
+            coleccionInputDTO.getNombre(),
+            coleccionInputDTO.getDescripcion(),
+            fuentesColeccion,
+            criterio
+    );
+
+    listaConsensos.forEach(coleccion::agregarConsenso);
+
     this.coleccionRepository.save(coleccion);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
@@ -133,9 +176,11 @@ public class ColeccionService implements IColeccionService {
   public ColeccionOutputDTO agregarFiltrosCriterio(Long id, CriterioInputDTO criterioInputDTO) {
     List<Filtro> nuevosFiltros = CriterioInputDTO.crearFiltros(criterioInputDTO);
 
+    List<EntidadFiltro> nuevosFiltrosEntity = this.filtroMapper.toEntities(nuevosFiltros);
+
     Coleccion coleccion = this.findColecccionAux(id);
 
-    coleccion.getCriterio().getFiltros().addAll(nuevosFiltros);
+    coleccion.getCriterio().getFiltros().addAll(nuevosFiltrosEntity);
     coleccion.recalcularHechos();
 
     this.coleccionRepository.save(coleccion);
@@ -147,12 +192,16 @@ public class ColeccionService implements IColeccionService {
     Coleccion coleccion = this.findColecccionAux(id);
 
     List<Filtro> filtrosNuevos = CriterioInputDTO.crearFiltros(criterio);
-    coleccion.cambiarCriterio(new Criterio(filtrosNuevos));
+
+    List<EntidadFiltro> entidadesFiltrosNuevos = this.filtroMapper.toEntities(filtrosNuevos);
+
+    coleccion.cambiarCriterio(new Criterio(entidadesFiltrosNuevos));
 
     List<Fuente> fuentes = coleccion.getFuentes();
     List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentes);
     coleccion.cargarHechos(hechosFuentes);
     coleccion.recalcularHechos();
+
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
