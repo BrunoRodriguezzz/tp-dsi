@@ -1,0 +1,97 @@
+<html th:replace="~{layout/base :: html}">
+<head>
+    <th:block th:fragment="additional-links">
+        <link rel="stylesheet" href="css/estadisticas.css">
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <!-- Bootstrap CSS
+         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+         -->
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </th:block>
+</head>
+
+<body>
+
+<div th:fragment="contenido" class="container-fluid px-4 py-4">
+    <div class="mb-4">
+        <h1>Estadísticas y Análisis</h1>
+        <p>Dashboards interactivos para analizar patrones y tendencias en los datos de MetaMapa</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <!-- Total Hechos -->
+        <div th:replace="fragments/stats :: statsCard(
+      'Total Hechos',
+      ${totalHechos},
+      'bi bi-graph-up-arrow',
+      'bg-primary bg-opacity-10',
+      'text-primary')">
+        </div>
+
+        <!-- Colecciones -->
+        <div th:replace="fragments/stats :: statsCard(
+      'Colecciones',
+      ${totalColecciones},
+      'bi bi-pie-chart-fill',
+      'bg-success bg-opacity-10',
+      'text-success')">
+        </div>
+
+        <!-- Solicitudes Spam -->
+        <div th:replace="fragments/stats :: statsCard(
+      'Solicitudes Spam',
+      ${cantSpam},
+      'bi bi-exclamation-triangle',
+      'bg-danger bg-opacity-10',
+      'text-danger')">
+        </div>
+
+        <!-- Categoría Top -->
+        <div th:replace="fragments/stats :: statsCard(
+      'Categoría Top',
+      ${categoriaTop},
+      'bi bi-bullseye',
+      'bg-warning bg-opacity-10',
+      'text-warning')">
+        </div>
+    </div>
+
+    <div class="stats-tabs-wrapper">
+        <ul class="nav nav-tabs stats-tabs" id="statisticsTabs" role="tablist">
+            <div th:replace="fragments/tabs :: tabButton(
+        'Colección por Provincia','Col/Prov','bi bi-geo-alt',
+        '#coleccion-provincia', true)"></div>
+
+            <div th:replace="fragments/tabs :: tabButton(
+        'Categorías','Cat','bi bi-bullseye',
+        '#categoria-general', false)"></div>
+
+            <div th:replace="fragments/tabs :: tabButton(
+        'Cat por Provincia','Cat/Prov','bi bi-geo-alt',
+        '#categoria-provincia', false)"></div>
+
+            <div th:replace="fragments/tabs :: tabButton(
+        'Cat por Hora','Cat/Hora','bi bi-clock',
+        '#categoria-hora', false)"></div>
+
+            <div th:replace="fragments/tabs :: tabButton(
+        'Solicitudes','Spam','bi bi-exclamation-triangle',
+        '#solicitudes-spam', false)"></div>
+        </ul>
+    </div>
+</div>
+
+
+
+
+
+<!-- Bootstrap JS
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+-->
+<script src="js/estadisticas.js"></script>
+</body>
+
+</html>

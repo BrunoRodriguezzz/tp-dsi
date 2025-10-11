@@ -1,11 +1,13 @@
 package ar.edu.utn.frba.dds.client.services;
 
-import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
-import ar.edu.utn.frba.dds.client.dtos.UbicacionDTO;
+import ar.edu.utn.frba.dds.client.dtos.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MockService {
 
@@ -153,5 +155,51 @@ public class MockService {
             .stream()
             .filter(hecho -> hecho.getId().equals(id))
             .findFirst().get();
+    }
+
+    public Map<String, Long> getCategoriaTop() {
+        List<HechoDTO> hechos = this.obtenerHechosMockeados();
+        // Agrupar por categoría (String) y contar
+        return hechos.stream()
+                .collect(Collectors.groupingBy(
+                        HechoDTO::getCategoria,
+                        Collectors.counting()
+                ));
+    }
+
+    public List<String> getSolicitudes() {
+        return Arrays.asList(
+                "SPAM",
+                "SPAM",
+                "ACEPTADA",
+                "RECHAZADA",
+                "PENDIENTE",
+                "ACEPTADA",
+                "SPAM",
+                "PENDIENTE",
+                "ACEPTADA",
+                "RECHAZADA"
+        );
+    }
+
+    public EstadisticaSolicitudesDTO getCantSolicitudesSpam() {
+        List<String> solicitudes = this.getSolicitudes();
+
+        // Contar ocurrencias por estado
+        Map<String, Long> conteoPorEstado = solicitudes.stream()
+                .collect(Collectors.groupingBy(s -> s, Collectors.counting()));
+
+        Long cantSpam = conteoPorEstado.getOrDefault("SPAM", 0L);
+
+        // Calcular "no spam"
+        Long cantNoSpam = conteoPorEstado.entrySet().stream()
+                .filter(e -> !e.getKey().equals("SPAM"))
+                .mapToLong(Map.Entry::getValue)
+                .sum();
+
+        // Alternativamente podrías usar total - cantSpam:
+        // Long cantNoSpam = (long) solicitudes.size() - cantSpam;
+
+        return new EstadisticaSolicitudesDTO(LocalDateTime.now(), cantSpam, cantNoSpam);
     }
 }
