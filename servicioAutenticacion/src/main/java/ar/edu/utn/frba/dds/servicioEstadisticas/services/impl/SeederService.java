@@ -1,0 +1,34 @@
+package ar.edu.utn.frba.dds.servicioAutenticacion.services.impl;
+
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.repositories.ICategoriaRepository;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.repositories.IColeccionRepository;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.repositories.IEstadisticaCombinacionRepository;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.repositories.ISolicitudRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
+
+@Component
+public class SeederService implements ApplicationRunner {
+  @Autowired
+  private IEstadisticaCombinacionRepository estadisticaHechosRepository;
+
+  @Autowired
+  private ICategoriaRepository categoriaRepository;
+
+  @Autowired
+  private ISolicitudRepository solicitudRepository;
+
+  @Autowired
+  private IColeccionRepository coleccionRepository;
+
+  public void init() {
+
+  }
+
+  @Override
+  public void run(ApplicationArguments args) throws Exception {
+
+  }
+}
