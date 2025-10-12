@@ -3,12 +3,14 @@ package ar.edu.utn.frba.dds.servicioAutenticacion.controllers;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.AuthResponseDTO;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.RefreshRequest;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.TokenResponse;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.NotFoundException;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.NotFoundError;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.RegisterError;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Usuario;
 import ar.edu.utn.frba.dds.servicioAutenticacion.services.AuthService;
 import ar.edu.utn.frba.dds.servicioAutenticacion.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +56,7 @@ public class AuthController {
             log.info("El usuario {} está logueado. El token generado es {}", username, accessToken);
 
             return ResponseEntity.ok(response);
-        } catch (NotFoundException e) {
+        } catch (NotFoundError e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -92,12 +94,41 @@ public class AuthController {
             String username = authentication.getName();
             Usuario response = authService.obtenerUsuario(username);
             return ResponseEntity.ok(response);
-        } catch (NotFoundException e) {
+        } catch (NotFoundError e) {
             log.error("Usuario no encontrado", e);
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             log.error("Error al obtener roles y permisos del usuario", e);
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponseDTO> registrarUsuario(@Valid @RequestBody Usuario usuario) {
+            // Validación básica de credenciales
+            if (usuario.getUsername() == null || usuario.getUsername().trim().isEmpty() ||
+                    usuario.getPassword() == null || usuario.getPassword().trim().isEmpty()) {
+                throw new RegisterError("El nombre y la contraseña no pueden estar vacíos");
+            }
+
+            Usuario usuarioCreado = authService.registrarUsuario(usuario);
+
+            String accessToken = authService.generarAccessToken(usuarioCreado);
+            String refreshToken = authService.generarRefreshToken(usuarioCreado);
+
+            AuthResponseDTO response = AuthResponseDTO.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
+
+            log.info("El usuario {} está logueado. El token generado es {}", usuarioCreado.getUsername(), accessToken);
+
+            return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/user/{id}")
+    public ResponseEntity<Usuario> modificarUsuario(@PathVariable("id") Long id, @Valid @RequestBody Usuario usuario) {
+        Usuario usuarioModificado = authService.modificarUsuario(id, usuario);
+        return ResponseEntity.ok(usuarioModificado);
     }
 }

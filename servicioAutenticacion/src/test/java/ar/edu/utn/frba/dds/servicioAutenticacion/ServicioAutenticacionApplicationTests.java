@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.agregador;
+package ar.edu.utn.frba.dds.servicioAutenticacion;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
