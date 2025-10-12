@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -96,6 +97,20 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (NotFoundError e) {
             log.error("Usuario no encontrado", e);
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error("Error al obtener roles y permisos del usuario", e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<Usuario>> getUsuarios(Authentication authentication) {
+        try {
+            List<Usuario> response = authService.obtenerUsuarios();
+            return ResponseEntity.ok(response);
+        } catch (NotFoundError e) {
+            log.error("Usuarios no encontrado", e);
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             log.error("Error al obtener roles y permisos del usuario", e);

@@ -25,48 +25,17 @@ public class ComparadorUbicacion implements IComparacionUbicacion {
 
     @Override
     public boolean comparar(Ubicacion ubicacion1, Ubicacion ubicacion2) {
-        if (!sonUbicacionesValidas(ubicacion1, ubicacion2)) {
+        if (ubicacion1 == null || ubicacion2 == null) {
             return false;
         }
 
-        try {
-            Double lat1 = parsearCoordenadaSeguro(ubicacion1.getLatitud());
-            Double lon1 = parsearCoordenadaSeguro(ubicacion1.getLongitud());
-            Double lat2 = parsearCoordenadaSeguro(ubicacion2.getLatitud());
-            Double lon2 = parsearCoordenadaSeguro(ubicacion2.getLongitud());
+        double lat1 = ubicacion1.getLatitud();
+        double lon1 = ubicacion1.getLongitud();
+        double lat2 = ubicacion2.getLatitud();
+        double lon2 = ubicacion2.getLongitud();
 
-            if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) {
-                return false;
-            }
-
-            double distancia = calcularDistanciaHaversine(lat1, lon1, lat2, lon2);
-            return distancia <= radioMetros;
-
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private boolean sonUbicacionesValidas(Ubicacion u1, Ubicacion u2) {
-        return u1 != null && u2 != null &&
-                u1.getLatitud() != null && u1.getLongitud() != null &&
-                u2.getLatitud() != null && u2.getLongitud() != null;
-    }
-
-    private Double parsearCoordenadaSeguro(String coordenada) {
-        if (coordenada == null) {
-            return null;
-        }
-
-        try {
-            String normalizada = coordenada.trim()
-                    .replace(',', '.')
-                    .replaceAll("[^0-9.\\-]", ""); // Solo números, punto y signo negativo
-
-            return Double.parseDouble(normalizada);
-        } catch (NumberFormatException e) {
-            return null;
-        }
+        double distancia = calcularDistanciaHaversine(lat1, lon1, lat2, lon2);
+        return distancia <= radioMetros;
     }
 
     private double calcularDistanciaHaversine(double lat1, double lon1, double lat2, double lon2) {

@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.servicioAutenticacion.domain.models;
 
 import ar.edu.utn.frba.dds.servicioAutenticacion.converter.PermisoConverter;
 import ar.edu.utn.frba.dds.servicioAutenticacion.converter.RolConverter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

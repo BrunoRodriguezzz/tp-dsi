@@ -5,7 +5,6 @@ import lombok.Getter;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.Getter;
 
 import java.security.Key;
 import java.util.Date;

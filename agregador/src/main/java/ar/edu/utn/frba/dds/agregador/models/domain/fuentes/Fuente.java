@@ -66,26 +66,26 @@ public class Fuente {
     this.inicializar();
   }
 
-
   public Flux<Hecho> importarHechos() {
       log.info("Importando hechos de la fuente: {}", this.nombre);
-      Flux<Hecho> hechos = iAdapImpH.importarHechos(this.webClient, this)
-          .flatMap(this::verificarHecho)
+      return iAdapImpH.importarHechos(this.webClient, this)
           .onErrorResume(error -> {
             System.err.println("Error en importarHechos de fuente " + this.nombre + ": " + error.getMessage());
             return Flux.empty();
           });
-    return hechos;
+  }
+
+  public Flux<Hecho> importarHechosNuevos() {
+    log.info("Importando hechosNuevos de la fuente: {}", this.nombre);
+    return iAdapImpH.importarNuevos(this.webClient, this)
+            .onErrorResume(error -> {
+                log.error("Error en importarHechosNuevos de fuente {}: {}", this.nombre, error.getMessage());
+              return Flux.empty();
+            });
   }
 
   public Flux<Hecho> importarHechosMismoTitulo(Hecho hecho) {
-    return iAdapImpH.importarHechosMismoTitulo(this.webClient, this, hecho)
-        .flatMap(this::verificarHecho);
-  }
-
-  public Flux<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
-    return iAdapImpH.buscarNuevosHechos(ultimaFechaRefresco, this.webClient, this)
-        .flatMap(this::verificarHecho);
+    return iAdapImpH.importarHechosMismoTitulo(this.webClient, this, hecho);
   }
 
   public Mono<Void> eliminarHecho(Hecho hecho) {
@@ -116,30 +116,6 @@ public class Fuente {
         this.iAdapImpH = AdapImpH.getInstance();
         this.iAdapImpC = AdapImpC.getInstance();
       }
-    }
-  }
-
-  private Mono<Hecho> verificarHecho(Hecho h) {
-    h.getUbicacion().setPais(Pais.ARGENTINA);
-    return Mono.fromCallable(() -> {
-          h.setFuente(this);
-          return h;
-        })
-        .flatMap(this::cargarUbicacionReactiva)
-        .subscribeOn(Schedulers.boundedElastic());
-  }
-
-  private Mono<Hecho> cargarUbicacionReactiva(Hecho hecho) {
-      log.info("Cargando ubicacion para el hecho: {}", hecho.getTitulo());
-    if (hecho.getUbicacion().faltanDatos()) {
-      Ubicacion ubiAnterior = hecho.getUbicacion();
-      Ubicacion actualizada = IAdapUbicacion.buscarUbicacion(ubiAnterior.getLatitud(), ubiAnterior.getLongitud());
-      hecho.setUbicacion(actualizada);
-      hecho.getUbicacion().setPais(Pais.ARGENTINA);
-      return Mono.just(hecho);
-    } else {
-      hecho.getUbicacion().setPais(Pais.ARGENTINA);
-      return Mono.just(hecho);
     }
   }
 }

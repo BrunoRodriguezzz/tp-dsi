@@ -14,7 +14,7 @@ public class HomeController {
     @Autowired
     private HechoService hechoService;
 
-    @GetMapping("/")
+    @GetMapping("/home")
     public String home(Model model){
         model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
         List<HechoDTO> hechosDestacados = this.hechoService.obtenerHechos().stream().limit(3).toList();
@@ -22,7 +22,7 @@ public class HomeController {
         return "landingPage/index";
     }
 
-    @GetMapping("/sobreNosotros")
+    @GetMapping("home/sobreNosotros")
     public String sobreNosotros(Model model){
         return "sobreNosotros";
     }

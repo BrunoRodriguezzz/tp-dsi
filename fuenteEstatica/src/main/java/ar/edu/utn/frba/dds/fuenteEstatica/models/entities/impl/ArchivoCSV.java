@@ -68,15 +68,10 @@ public class ArchivoCSV implements TipoArchivo {
                 });
     }
 
-    private static LocalDate parsearFechaALocalDate(String fechaStr) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            return LocalDate.parse(fechaStr, formatter);
-        } catch (Exception e) {
-            // TODO: Catchea el controller?
-            JOptionPane.showMessageDialog(null, "Error en formato de fecha: " + fechaStr);
-            return null;
-        }
+    private static LocalDateTime parsearFechaALocalDate(String fechaStr) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate fAux = LocalDate.parse(fechaStr, formatter);
+        return fAux.atStartOfDay();
     }
 
     private CSVReader crearLectorCSV(String ruta) throws IOException {

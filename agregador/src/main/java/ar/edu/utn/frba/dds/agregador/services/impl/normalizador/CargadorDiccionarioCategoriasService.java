@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.agregador.services.impl;
+package ar.edu.utn.frba.dds.agregador.services.impl.normalizador;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.CategoriaInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.normalizador.CategoriaSinonimo;
@@ -62,35 +62,29 @@ public class CargadorDiccionarioCategoriasService implements CommandLineRunner {
   }
 
   private void procesarGrupoCategoria(String nombreGrupo, JsonNode listaCategorias) {
-    if (!listaCategorias.isArray() || listaCategorias.size() == 0) {
+    if (!listaCategorias.isArray() || listaCategorias.isEmpty()) {
       return;
     }
+    // La primera categoría del grupo será la principal
+    String tituloPrincipal = listaCategorias.get(0).asText();
 
-    try {
-      // La primera categoría del grupo será la principal
-      String tituloPrincipal = listaCategorias.get(0).asText();
+    Categoria categoriaPrincipal = new Categoria(tituloPrincipal);
+    categoriaPrincipal = categoriaRepository.save(categoriaPrincipal);
 
-      Categoria categoriaPrincipal = new Categoria(tituloPrincipal);
-      categoriaPrincipal = categoriaRepository.save(categoriaPrincipal);
+    List<CategoriaSinonimo> sinonimos = new ArrayList<>();
 
-      List<CategoriaSinonimo> sinonimos = new ArrayList<>();
-
-      // Las demás categorías serán sinónimos
-      for (int i = 1; i < listaCategorias.size(); i++) {
-        String sinonimo = listaCategorias.get(i).asText();
-        CategoriaSinonimo categoriaSinonimo = new CategoriaSinonimo(sinonimo, categoriaPrincipal);
-        sinonimos.add(categoriaSinonimo);
-      }
-
-      if (!sinonimos.isEmpty()) {
-        categoriaSinonimoRepository.saveAll(sinonimos);
-      }
-
-      System.out.println("Procesado grupo '" + nombreGrupo + "' con " +
-          (listaCategorias.size() - 1) + " sinónimos para '" + tituloPrincipal + "'");
-
-    } catch (CategoriaInvalidaException e) {
-      throw new RuntimeException("Error creando categoría para grupo '" + nombreGrupo + "': " + e.getMessage());
+    // Las demás categorías serán sinónimos
+    for (int i = 1; i < listaCategorias.size(); i++) {
+      String sinonimo = listaCategorias.get(i).asText();
+      CategoriaSinonimo categoriaSinonimo = new CategoriaSinonimo(sinonimo, categoriaPrincipal);
+      sinonimos.add(categoriaSinonimo);
     }
+
+    if (!sinonimos.isEmpty()) {
+      categoriaSinonimoRepository.saveAll(sinonimos);
+    }
+
+    System.out.println("Procesado grupo '" + nombreGrupo + "' con " +
+        (listaCategorias.size() - 1) + " sinónimos para '" + tituloPrincipal + "'");
   }
 }

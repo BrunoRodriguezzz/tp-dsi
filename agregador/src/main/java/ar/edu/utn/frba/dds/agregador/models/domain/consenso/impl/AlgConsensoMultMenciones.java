@@ -6,6 +6,8 @@ import ar.edu.utn.frba.dds.agregador.models.domain.consenso.IStratConsenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 
 public class AlgConsensoMultMenciones implements IStratConsenso {
@@ -14,12 +16,7 @@ public class AlgConsensoMultMenciones implements IStratConsenso {
   private AlgConsensoMultMenciones() {}
 
   public Hecho consensuados(List<Hecho> hechos, List<Fuente> fuentes, Hecho hecho) {
-    List<Long> idFuentes = hechos.stream()
-        .map(h -> h.getFuente().getId())
-        .distinct()
-        .toList();
-
-    if(idFuentes.size() >= 2 && comprobarAtributos(hechos, hecho)) {
+    if(hecho.getFuenteSet().size() >= 2 && comprobarAtributos(hechos, hecho)) {
       hecho.agregarConsenso(Consenso.MULTMENCIONES);
     }
 

@@ -1,16 +1,32 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.EntidadFiltro;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public class FiltroEtiqueta implements Filtro {
-  private String nombre;
+@Entity
+@DiscriminatorValue("Etiqueta")
+@NoArgsConstructor
+@Getter
+@Setter
+public class FiltroEtiqueta extends EntidadFiltro {
+  private String etiqueta;
 
-  public Boolean coincide(Hecho hecho) {
-    return hecho.getEtiquetas().stream().anyMatch(e -> e.getTitulo().equals(this.nombre));
+  public FiltroEtiqueta(String etiqueta) {
+    this.etiqueta = etiqueta;
   }
 
+  @Override
+  public Boolean coincide(Hecho hecho) {
+    return hecho.getEtiquetas() != null && hecho.getEtiquetas().contains(this.etiqueta);
+  }
+
+  @Override
   public String toDTO() {
-    return this.nombre;
+    return this.etiqueta;
   }
 }

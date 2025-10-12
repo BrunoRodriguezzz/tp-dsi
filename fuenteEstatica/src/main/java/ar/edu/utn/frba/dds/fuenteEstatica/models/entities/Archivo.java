@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import reactor.core.publisher.Flux;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -28,6 +30,9 @@ public class Archivo {
     @Convert(converter = TipoArchivoConverter.class)
     @Column(name = "tipoArchivo")
     private TipoArchivo tipoArchivo;
+
+    @Column(name = "ultima_consulta")
+    private LocalDateTime ultimaConsulta;
 
     public Flux<HechoEstatica> importarHechos(){
         return tipoArchivo.importarHechos(rutaArchivo).map(h -> {

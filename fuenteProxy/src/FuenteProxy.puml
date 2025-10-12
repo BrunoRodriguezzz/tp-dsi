@@ -91,7 +91,7 @@ package models {
         - String descripcion
         - String categoria
         - Ubicacion ubicacion
-        - LocalDate fechaHecho
+        - LocalDateTime fechaHecho
         - LocalDateTime fechaCreacion
         - LocalDateTime fechaModificacion
         - Boolean eliminado
