@@ -47,5 +47,5 @@ public interface IHechoRepository extends JpaRepository<Hecho, Long>, JpaSpecifi
             @Param("lonMin") double lonMin,
             @Param("lonMax") double lonMax);
 
-    Collection<? extends Hecho> findByCategoria(Categoria categoria);
+    List<Hecho> findByCategoria(Categoria categoria);
 }
