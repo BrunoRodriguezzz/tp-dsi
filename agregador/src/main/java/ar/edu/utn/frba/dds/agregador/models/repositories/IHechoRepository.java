@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.agregador.models.repositories;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,4 +46,6 @@ public interface IHechoRepository extends JpaRepository<Hecho, Long>, JpaSpecifi
             @Param("latMax") double latMax,
             @Param("lonMin") double lonMin,
             @Param("lonMax") double lonMax);
+
+    Collection<? extends Hecho> findByCategoria(Categoria categoria);
 }
