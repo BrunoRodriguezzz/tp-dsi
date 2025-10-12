@@ -118,7 +118,7 @@ public class UserService implements IUserService {
                     Contribuyente nuevoContribuyente = Contribuyente.builder()
                             .nombre(usuario.getNombre())
                             .apellido(usuario.getApellido())
-                            .fechaNacimiento(usuario.getFechaNacimiento())
+                            .fechaNacimiento(usuario.getFechaNacimiento().atStartOfDay())
                             .build();
 
                     hecho.setContribuyente(nuevoContribuyente);
@@ -242,7 +242,7 @@ public class UserService implements IUserService {
                 .anyMatch(usuario ->
                         usuario.getNombre().equals(contribuyente.getNombre())
                                 && usuario.getApellido().equals(contribuyente.getApellido())
-                                && usuario.getFechaNacimiento().equals(contribuyente.getFechaNacimiento()));
+                                && usuario.getFechaNacimiento().toLocalDate().equals(contribuyente.getFechaNacimiento().atStartOfDay().toLocalDate()));
 
     }
 

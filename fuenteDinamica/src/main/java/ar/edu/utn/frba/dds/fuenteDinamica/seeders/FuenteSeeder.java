@@ -1,4 +1,3 @@
-/*
 package ar.edu.utn.frba.dds.fuenteDinamica.seeders;
 
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.FuenteOutputDTO;
@@ -31,4 +30,3 @@ public class FuenteSeeder implements CommandLineRunner {
             .subscribe();
     }
 }
-*/

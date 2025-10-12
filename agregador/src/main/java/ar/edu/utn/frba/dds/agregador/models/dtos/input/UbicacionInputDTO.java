@@ -6,4 +6,7 @@ import lombok.Data;
 public class UbicacionInputDTO {
   private String latitud;
   private String longitud;
+  private String pais;
+  private String provincia;
+  private String municipio;
 }
