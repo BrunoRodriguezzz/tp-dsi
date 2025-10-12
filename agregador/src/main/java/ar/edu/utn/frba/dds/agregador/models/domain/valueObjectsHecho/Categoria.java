@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho;
 
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.ValidationException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.CategoriaInvalidaException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,12 +18,12 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String titulo;
 
-    public Categoria(String titulo) throws CategoriaInvalidaException {
+    public Categoria(String titulo) throws ValidationException {
         if(titulo == null || titulo.isBlank())
-            throw new CategoriaInvalidaException("La Categoria no puede tener un titulo vacío");
+            throw new ValidationException("La Categoria no puede tener un titulo vacío");
         this.titulo = titulo;
     }
 }

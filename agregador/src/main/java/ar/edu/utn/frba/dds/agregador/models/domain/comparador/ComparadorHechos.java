@@ -34,8 +34,8 @@ public class ComparadorHechos {
         }
 
         // TODO: Borrar cuando usemos LocalDateTime
-        LocalDateTime fecha1 = h1.getFechaAcontecimiento().atTime(12, 0);
-        LocalDateTime fecha2 = h2.getFechaAcontecimiento().atTime(12, 0);
+        LocalDateTime fecha1 = h1.getFechaAcontecimiento();
+        LocalDateTime fecha2 = h2.getFechaAcontecimiento();
 
         return this.comparadorFecha.comparar(fecha1, fecha2) &&
                 this.comparadorUbicacion.comparar(h1.getUbicacion(), h2.getUbicacion()) &&

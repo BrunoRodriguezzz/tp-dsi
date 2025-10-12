@@ -5,7 +5,6 @@ import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.adapters.IAdapImpC;
 import ar.edu.utn.frba.dds.agregador.models.dtos.external.FuenteResponseDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.ColeccionInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -56,8 +55,9 @@ public class AdapImpC implements IAdapImpC {
         .bodyToMono(new ParameterizedTypeReference<List<FuenteResponseDTO>>() {})
         .block();
     List<Hecho> respuestaFinal = new ArrayList<>();
-    respuesta.stream().map(response -> {
-      List<Hecho> hechos = FuenteResponseDTO.servicioResponseToHechos(respuesta);
+      assert respuesta != null;
+      respuesta.stream().map(response -> {
+      List<Hecho> hechos = FuenteResponseDTO.servicioResponseToHechos(respuesta, null);
       respuestaFinal.addAll(hechos);
       return hechos;
     }).toList(); // .block() me hace el codigo sincrónico para que no devuelva Mono<List<Hecho>> y devuelva List<Hecho>

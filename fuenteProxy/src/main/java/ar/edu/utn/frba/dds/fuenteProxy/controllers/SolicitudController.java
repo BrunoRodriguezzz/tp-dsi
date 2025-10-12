@@ -7,6 +7,6 @@ public class SolicitudController {
     private ISolicitudEliminacionService solicitudEliminacionService;
 
     public void send(SolicitudEliminacionDTO solicitud) {
-        solicitudEliminacionService.send(solicitud);
+        //solicitudEliminacionService.send(solicitud);
     }
 }

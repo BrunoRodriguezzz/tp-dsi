@@ -1,155 +1,155 @@
 package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.ValidationException;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consensuador;
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
-import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
-import ar.edu.utn.frba.dds.agregador.models.repositories.ICategoriaRepository;
+import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
-import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
+import ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
-import jakarta.persistence.Id;
 
 import java.util.*;
 
+import ar.edu.utn.frba.dds.agregador.services.INormalizadorService;
+import ar.edu.utn.frba.dds.agregador.services.IUbicacionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
+@Slf4j
 @Service
 public class HechoService implements IHechoService {
   @Autowired
-  private IHechoRepository hechoRepository;
-  private IFuenteService fuenteService;
-  private ICategoriaRepository categoriaRepository;
+  private IUbicacionService ubicacionService;
+  @Autowired
+  private INormalizadorService normalizadorService;
 
-  public HechoService(IFuenteService fuenteService, ICategoriaRepository categoriaRepository) {
-    this.fuenteService = fuenteService;
-    this.categoriaRepository = categoriaRepository;
+  private final IHechoRepository hechoRepository;
+  private final IFuenteRepository fuenteRepository;
+
+  public HechoService(IFuenteRepository fuenteRepository, IHechoRepository hechoRepository) {
+    this.fuenteRepository = fuenteRepository;
+    this.hechoRepository = hechoRepository;
   }
 
   @Override
-  public List<HechoOutputDTO> buscarHechos(QueryParamsFiltro params) {
-    List<Hecho> hechosProxy = this.fuenteService.buscarHechosProxy();
-    this.guardarHechos(hechosProxy);
-    List<Hecho> hechos = this.hechoRepository.findAll();
-    List<Filtro> filtrosBusqueda = params.instanciarFiltros();
-    List<Hecho> hechosFiltrados;
-    if(!filtrosBusqueda.isEmpty()) {
-      hechosFiltrados = hechos
-              .stream()
-              .filter(h -> filtrosBusqueda.stream().allMatch(f -> f.coincide(h)))
-              .toList();
-    }
-    else hechosFiltrados = hechos;
-    return HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
-  }
+  public Page<HechoOutputDTO> buscarHechos(QueryParamsFiltro params, Pageable pageable) {
+    //this.actualizarHechosProxy();
 
-  @Override
-  public List<HechoOutputDTO> buscarHechosProxy() {
-    return HechoOutputDTO.mapHechoToDTO(this.fuenteService.buscarHechosProxy());
-  }
+    Specification<Hecho> spec = HechoSpecification.conFiltros(params)
+            .and(HechoSpecification.noEliminado());
+    Page<Hecho> hechosPaginados = hechoRepository.findAll(spec, pageable);
 
-  @Override
-  public List<HechoOutputDTO> buscarHechosIndependientes() {
-    return null;
+    return hechosPaginados.map(HechoOutputDTO::HechoToDTO);
   }
-
 
   @Override
   public Hecho incorporarHecho(HechoInputDTO hechoDTO) {
-    Contribuyente contribuyente = null;
-    if(hechoDTO.getContribuyente() != null) {
-      try {
-        contribuyente = new Contribuyente(
-            hechoDTO.getContribuyente().getNombre(),
-            hechoDTO.getContribuyente().getApellido(),
-            hechoDTO.getContribuyente().getFechaNacimiento()
-        );
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-    Fuente fuente = this.fuenteService.buscarFuente(hechoDTO.getFuente());
+    Contribuyente contribuyente = crearContribuyente(hechoDTO);
+    Fuente fuente = this.fuenteRepository.findByTipoFuente(TipoFuente.DINAMICA).get(0);
     Hecho hecho = HechoInputDTO.DTOToHecho(hechoDTO, contribuyente, fuente);
-
-    Hecho hechoGuardado = this.guardarHechos(Collections.singletonList(hecho))
-            .stream()
-            .findFirst()
-            .get();
-    return hechoGuardado;
+    return this.guardarHecho(hecho);
   }
 
   @Override
   public Hecho buscarHecho(Long id) {
-    Hecho hecho = this.buscarPorID(id);
-    return hecho;
+      return this.buscarPorID(id);
   }
 
   @Override
   public Hecho guardarHecho(Hecho hecho) {
-    Hecho hechoGuardado = this.hechoRepository.save(hecho);
-    return hechoGuardado;
+      Hecho hechoNormalizado = this.normalizadorService.normalizarHecho(hecho);
+      Hecho hechoConUbicacion = this.ubicacionService.cargarUbicacion(hechoNormalizado);
+      return this.hechoRepository.save(hechoConUbicacion);
   }
 
   @Override
-  public List<Hecho> guardarHechos(List<Hecho> hechos) {
-    Map<String, Categoria> cacheCategorias = new HashMap<>();
-
-    hechos.forEach(h -> {
-      // Resolver la Fuente desde el repositorio
-      if (h.getFuente() != null && h.getFuente().getId() != null) {
-        Fuente fuenteManaged = fuenteService.findById(h.getFuente().getId());
-        if (fuenteManaged == null) {
-          throw new RuntimeException("Fuente no encontrada: " + h.getFuente().getId());
-        }
-        h.setFuente(fuenteManaged);
-      }
-
-      if (h.getId() == null) {
-        // Buscar hecho existente
-        hechoRepository.findByFuente_IdAndIdInternoFuente(h.getFuente().getId(), h.getIdInternoFuente())
-            .ifPresent(hechoExistente -> {
-              h.setId(hechoExistente.getId());
-
-              if (h.getCategoria().getId() == null) {
-                h.getCategoria().setId(hechoExistente.getCategoria().getId());
+  public Flux<Hecho> guardarHechos(Flux<Hecho> hechosFlux) {
+    return this.ubicacionService
+            .obtenerUbicacionesReactivo(
+                    this.normalizadorService.normalizarHechosReactivo(hechosFlux)
+                            .doOnError(e -> log.error("❌ Error al normalizar hechos", e))
+                            .onErrorContinue((e, h) -> log.warn("⚠️ Error procesando hecho: {}", h, e))
+            )
+            .doOnError(e -> log.error("❌ Error al obtener ubicaciones", e))
+            .onErrorResume(e -> {
+              log.error("🚨 Error general en pipeline de guardarHechos", e);
+              return Flux.empty();
+            })
+            .collectList()
+            .flatMapMany(hechosParaGuardar -> {
+              if (hechosParaGuardar.isEmpty()) {
+                log.warn("⚠️ No hay hechos para guardar (pipeline vacío o con errores).");
+                return Flux.empty();
               }
+
+              log.info("🗂 Guardando {} hechos en la base de datos...", hechosParaGuardar.size());
+              List<Hecho> guardados = this.hechoRepository.saveAll(hechosParaGuardar);
+              log.info("✅ Se guardaron {} hechos correctamente.", guardados.size());
+              return Flux.fromIterable(guardados);
             });
-
-        // Resolver categoría por título con cache
-        if (h.getCategoria() != null && h.getCategoria().getId() == null) {
-          String titulo = h.getCategoria().getTitulo();
-
-          Categoria categoria = cacheCategorias.computeIfAbsent(titulo, t ->
-              categoriaRepository.findByTitulo(t).orElseGet(() -> h.getCategoria())
-          );
-
-          h.setCategoria(categoria);
-        }
-      }
-    });
-
-    return this.hechoRepository.saveAll(hechos);
   }
 
+  @Override
+  public Hecho eliminarHecho(Long id) {
+    if (id <= 0) throw new ValidationException("El id del hecho debe ser mayor que 0");
+
+    return hechoRepository.findById(id)
+            .map(hecho -> {
+              hecho.eliminar();
+              return hechoRepository.save(hecho);
+            })
+            .orElseThrow(() -> new NotFoundException("No se ha encontrado el hecho"));
+  }
+
+  @Override
+  public HechoOutputDTO actualizarHecho(HechoInputDTO hechoDTO, Long id) {
+    if (id <= 0) throw new ValidationException("El id del hecho debe ser mayor que 0");
+
+    Hecho hechoExistente = this.buscarPorID(id);
+    hechoExistente.actualizarDesdeDTO(hechoDTO);
+    Hecho hechoGuardado = this.guardarHecho(hechoExistente);
+    return HechoOutputDTO.HechoToDTO(hechoGuardado);
+  }
 
   @Override
   public void consensuarHechos() {
     List<Hecho> hechosGuardados = this.hechoRepository.findAll();
-    List<Hecho> hechosConsensuados = Consensuador.getInstance().consensuarHechos(this.fuenteService.buscarFuentes(), hechosGuardados);
+    List<Hecho> hechosConsensuados = Consensuador.getInstance().consensuarHechos(this.fuenteRepository.findAll(), hechosGuardados);
     this.hechoRepository.saveAll(hechosConsensuados);
   }
 
   @Override
-  public List<Hecho> buscarHechosGuardadosFuente(Fuente fuente){
-    List<Hecho> hechos = this.hechoRepository.findByFuente(fuente);
-    return hechos;
+  public List<Hecho> actualizarHechosProxy() {
+    Flux<Hecho> hechos = Flux.fromIterable(
+                    this.fuenteRepository.findByTipoFuente(TipoFuente.PROXY)
+            )
+            .flatMap(Fuente::importarHechosNuevos);
+
+    Flux<Hecho> guardados = this.guardarHechos(hechos);
+
+    return guardados.collectList().block();
+  }
+
+  @Override
+  public List<Hecho> actualizarHechos(List<Fuente> fuentes) {
+    Flux<Hecho> hechos = Flux.fromIterable(fuentes)
+            .flatMap(Fuente::importarHechosNuevos);
+
+    Flux<Hecho> guardados = this.guardarHechos(hechos);
+
+    return guardados.collectList().block();
   }
 
   private Hecho buscarPorID(Long id){
@@ -160,5 +160,17 @@ public class HechoService implements IHechoService {
     else {
       throw new NotFoundException("Hecho no encontrado.");
     }
+  }
+
+  private Contribuyente crearContribuyente(HechoInputDTO hechoDTO) {
+    Contribuyente contribuyente = null;
+    if(hechoDTO.getContribuyente() != null) {
+        contribuyente = new Contribuyente(
+                hechoDTO.getContribuyente().getNombre(),
+                hechoDTO.getContribuyente().getApellido(),
+                hechoDTO.getContribuyente().getFechaNacimiento()
+        );
+    }
+    return contribuyente;
   }
 }

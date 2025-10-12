@@ -31,7 +31,6 @@ public class Fuente {
     private Boolean activo; // baja logica
 
     @Transient
-    @ManyToOne(cascade = CascadeType.ALL)
     private TipoFuente tipoFuente;
 
     @Column(nullable = false)
@@ -44,10 +43,14 @@ public class Fuente {
     @Column()
     private String ruta;
 
+    @Column
+    private LocalDateTime ultimaConsulta;
+
     public Fuente(TipoFuenteEnum tipoFuente, String nombre, String ruta) {
         this.tipoFuenteEnum = tipoFuente;
         this.nombre = nombre;
         this.ruta = ruta;
+        this.ultimaConsulta = LocalDateTime.now();
         this.contruirTipoFuente();
     }
 
