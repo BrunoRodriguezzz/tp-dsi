@@ -9,6 +9,7 @@ import ar.edu.utn.frba.dds.servicioAutenticacion.utils.JwtUtil;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -94,5 +95,15 @@ public class AuthService {
         Usuario usuario = usuarioOpt.get();
 
         return usuario;
+    }
+
+    public List<Usuario> obtenerUsuarios() {
+        List<Usuario> usuarios = usuariosRepository.findAll();
+
+        if (usuarios.isEmpty()) {
+            throw new NotFoundError("Usuarios no encontrados");
+        }
+
+        return usuarios;
     }
 }
