@@ -35,7 +35,7 @@ public class AuthApiService {
         try {
             AuthResponseDTO response = webClient
                     .post()
-                    .uri(authServiceUrl + "/auth")
+                    .uri(authServiceUrl)
                     .bodyValue(Map.of(
                             "username", username,
                             "password", password
@@ -60,7 +60,7 @@ public class AuthApiService {
     public UsuarioDTO getUsuario(String accessToken) {
         try {
             UsuarioDTO response = webApiCallerService.getWithAuth(
-                    authServiceUrl + "/auth/user/roles-permisos",
+                    authServiceUrl + "/user",
                     accessToken,
                     UsuarioDTO.class
             );
@@ -84,7 +84,7 @@ public class AuthApiService {
         return response;
     }
 
-    public UsuarioDTO actualizarAlumno(Long id, @Valid UsuarioDTO usuarioDTO) {
+    public UsuarioDTO actualizarUsuario(Long id, @Valid UsuarioDTO usuarioDTO) {
         UsuarioDTO response = webApiCallerService.put(authServiceUrl + "/user/" + id, usuarioDTO, UsuarioDTO.class);
         if (response == null) {
             throw new RuntimeException("Error al actualizar usuario en el servicio externo");

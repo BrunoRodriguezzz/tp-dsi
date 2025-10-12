@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.servicioAutenticacion.controllers;
 
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.AccessRequest;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.AuthResponseDTO;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.RefreshRequest;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.TokenResponse;
@@ -90,11 +91,23 @@ public class AuthController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<Usuario> getUsuario(Authentication authentication) {
+    public ResponseEntity<Usuario> getUsuario(@RequestHeader("Authorization") String authHeader) {
         try {
-            String username = authentication.getName();
-            Usuario response = authService.obtenerUsuario(username);
-            return ResponseEntity.ok(response);
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            String accessToken = authHeader.substring(7);
+            String username = JwtUtil.validarToken(accessToken);
+
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(JwtUtil.getKey())
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .getBody();
+
+            Usuario usuario = authService.obtenerUsuario(claims.get("username").toString());
+            return ResponseEntity.ok(usuario);
         } catch (NotFoundError e) {
             log.error("Usuario no encontrado", e);
             return ResponseEntity.notFound().build();
@@ -104,6 +117,7 @@ public class AuthController {
         }
     }
 
+    // TODO: Revisar el parametro
     @GetMapping("/users")
     public ResponseEntity<List<Usuario>> getUsuarios(Authentication authentication) {
         try {

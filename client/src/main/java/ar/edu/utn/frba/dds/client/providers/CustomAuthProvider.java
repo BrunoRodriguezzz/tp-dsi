@@ -48,7 +48,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
 
             request.getSession().setAttribute("accessToken", authResponse.getAccessToken());
             request.getSession().setAttribute("refreshToken", authResponse.getRefreshToken());
-                request.getSession().setAttribute("username", username);
+            request.getSession().setAttribute("username", username);
 
             log.info("Buscando información del usuario");
             UsuarioDTO usuario = externalAuthService.getUsuario(authResponse.getAccessToken());
