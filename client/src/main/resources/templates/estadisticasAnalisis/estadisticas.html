@@ -13,8 +13,6 @@
     </th:block>
 </head>
 
-<body>
-
 <div th:fragment="contenido" class="container-fluid px-4 py-4">
     <div class="mb-4">
         <h1>Estadísticas y Análisis</h1>
@@ -23,75 +21,251 @@
 
     <div class="row g-3 mb-4">
         <!-- Total Hechos -->
-        <div th:replace="fragments/stats :: statsCard(
-      'Total Hechos',
-      ${totalHechos},
-      'bi bi-graph-up-arrow',
-      'bg-primary bg-opacity-10',
-      'text-primary')">
+        <div th:replace="~{estadisticasAnalisis/fragments/statsCards :: statsCard(
+                'Total Hechos',
+                ${totalHechos},
+                'bi bi-graph-up-arrow',
+                'bg-primary bg-opacity-10',
+                'text-primary')}">
         </div>
 
         <!-- Colecciones -->
-        <div th:replace="fragments/stats :: statsCard(
-      'Colecciones',
-      ${totalColecciones},
-      'bi bi-pie-chart-fill',
-      'bg-success bg-opacity-10',
-      'text-success')">
+        <div th:replace="~{estadisticasAnalisis/fragments/statsCards :: statsCard(
+                'Colecciones',
+                ${totalColecciones},
+                'bi bi-pie-chart-fill',
+                'bg-success bg-opacity-10',
+                'text-success')}">
         </div>
 
         <!-- Solicitudes Spam -->
-        <div th:replace="fragments/stats :: statsCard(
-      'Solicitudes Spam',
-      ${cantSpam},
-      'bi bi-exclamation-triangle',
-      'bg-danger bg-opacity-10',
-      'text-danger')">
+        <div th:replace="~{estadisticasAnalisis/fragments/statsCards :: statsCard(
+                'Solicitudes Spam',
+                ${cantSpam},
+                'bi bi-exclamation-triangle',
+                'bg-danger bg-opacity-10',
+                'text-danger')}">
         </div>
 
         <!-- Categoría Top -->
-        <div th:replace="fragments/stats :: statsCard(
-      'Categoría Top',
-      ${categoriaTop},
-      'bi bi-bullseye',
-      'bg-warning bg-opacity-10',
-      'text-warning')">
+        <div th:replace="~{estadisticasAnalisis/fragments/statsCards :: statsCard(
+                'Categoría Top',
+                ${categoriaTop},
+                'bi bi-bullseye',
+                'bg-warning bg-opacity-10',
+                'text-warning')}">
         </div>
     </div>
 
     <div class="stats-tabs-wrapper">
         <ul class="nav nav-tabs stats-tabs" id="statisticsTabs" role="tablist">
-            <div th:replace="fragments/tabs :: tabButton(
-        'Colección por Provincia','Col/Prov','bi bi-geo-alt',
-        '#coleccion-provincia', true)"></div>
+            <th:block th:insert="~{estadisticasAnalisis/fragments/tabs :: tabButton(
+            'Colección por Provincia',
+            'Col/Prov',
+            'bi bi-geo-alt',
+            '#coleccion-provincia',
+            true)}">
+            </th:block>
 
-            <div th:replace="fragments/tabs :: tabButton(
-        'Categorías','Cat','bi bi-bullseye',
-        '#categoria-general', false)"></div>
+            <th:block th:insert="~{estadisticasAnalisis/fragments/tabs :: tabButton(
+            'Categorías',
+            'Cat',
+            'bi bi-bullseye',
+            '#categoria-general',
+            false)}">
+            </th:block>
 
-            <div th:replace="fragments/tabs :: tabButton(
-        'Cat por Provincia','Cat/Prov','bi bi-geo-alt',
-        '#categoria-provincia', false)"></div>
+            <th:block th:insert="~{estadisticasAnalisis/fragments/tabs :: tabButton(
+            'Cat por Provincia',
+            'Cat/Prov',
+            'bi bi-geo-alt',
+            '#categoria-provincia',
+            false)}">
+            </th:block>
 
-            <div th:replace="fragments/tabs :: tabButton(
-        'Cat por Hora','Cat/Hora','bi bi-clock',
-        '#categoria-hora', false)"></div>
+            <th:block th:insert="~{estadisticasAnalisis/fragments/tabs :: tabButton(
+            'Cat por Hora',
+            'Cat/Hora',
+            'bi bi-clock',
+            '#categoria-hora',
+            false)}">
+            </th:block>
 
-            <div th:replace="fragments/tabs :: tabButton(
-        'Solicitudes','Spam','bi bi-exclamation-triangle',
-        '#solicitudes-spam', false)"></div>
+            <th:block th:insert="~{estadisticasAnalisis/fragments/tabs :: tabButton(
+            'Solicitudes',
+            'Spam',
+            'bi bi-exclamation-triangle',
+            '#solicitudes-spam',
+            false)}">
+            </th:block>
         </ul>
     </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content mt-4" id="statisticsTabContent">
+
+        <!-- ========== TAB 1: Colección por Provincia ========== -->
+        <div class="tab-pane fade show active" id="coleccion-provincia" role="tabpanel">
+            <div class="card">
+                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: cardHeaderWithDropdown(
+            'bi bi-geo-alt',
+            'Distribución de Hechos por Provincia',
+            'coleccionDropdown',
+            'selectedColeccion',
+             ${colecciones}
+        )}"></div>
+
+                <div class="card-body">
+                    <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('provinciaChart')}"></div>
+
+                    <div class="bg-primary bg-opacity-10 result-box">
+                        <p class="text-primary mb-0">
+                            <strong>Resultado:</strong>
+                            En la colección "<strong th:text="${colecciones[0]}"></strong>",
+                            la mayor cantidad de hechos se concentra en
+                            <strong th:text="${resultProvincia}"></strong>
+                            con <strong th:text="${resultCantidad}"></strong> hechos reportados.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TAB 2: Categorías General ========== -->
+        <div class="tab-pane fade" id="categoria-general" role="tabpanel">
+            <div class="card">
+                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: cardHeaderSimple('bi bi-bar-chart', 'Hechos por Categoría')}"></div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('categoriaChart')}"></div>
+                        </div>
+                        <div class="col-lg-4">
+                            <h6 class="fw-bold mb-3">Ranking de Categorías</h6>
+
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem('#3B82F6', 'Infraestructura', '342', 'bg-primary')}"></div>
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem('#EF4444', 'Seguridad', '298', 'bg-danger')}"></div>
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem('#10B981', 'Medio Ambiente', '234', 'bg-success')}"></div>
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem('#F59E0B', 'Salud', '189', 'bg-warning')}"></div>
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem('#8B5CF6', 'Transporte', '156', 'bg-purple')}"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-success bg-opacity-10 result-box">
+                        <p class="text-success mb-0">
+                            <strong>Resultado:</strong>
+                            La categoría con mayor cantidad de hechos reportados es
+                            <strong th:text="${categoriaTop}"></strong>
+                            con <strong th:text="${cantidadTop}"></strong> hechos,
+                            seguida por <strong th:text="${categoriaSegunda}"></strong>
+                            con <strong th:text="${cantidadSegunda}"></strong> hechos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TAB 3: Categoría por Provincia ========== -->
+        <div class="tab-pane fade" id="categoria-provincia" role="tabpanel">
+            <div class="card">
+                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: cardHeaderWithDropdown(
+            'bi bi-geo-alt',
+            'Hechos por Provincia - Categoría Específica',
+            'categoriaProvinciaDropdown',
+            'selectedCategoriaP',
+            ${'Infraestructura,Seguridad,Medio Ambiente,Salud,Transporte'.split(',')}
+        )}"></div>
+
+                <div class="card-body">
+                    <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('categoriaProvinciaChart')}"></div>
+
+                    <div class="bg-success bg-opacity-10 result-box">
+                        <p class="text-success mb-0">
+                            <strong>Resultado:</strong>
+                            Para la categoría "<strong th:text="${resultCategoriaP}"></strong>",
+                            la provincia con mayor cantidad de hechos es
+                            <strong th:text="${resultProvinciaP}"></strong>
+                            con <strong th:text="${resultCantidadP}"></strong> hechos reportados.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TAB 4: Categoría por Hora ========== -->
+        <div class="tab-pane fade" id="categoria-hora" role="tabpanel">
+            <div class="card">
+                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: cardHeaderWithDropdown(
+            'bi bi-clock',
+            'Distribución Horaria de Hechos',
+            'categoriaHoraDropdown',
+            'selectedCategoriaH',
+            ${'Infraestructura,Seguridad,Medio Ambiente,Salud,Transporte'.split(',')}
+        )}"></div>
+
+                <div class="card-body">
+                    <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('horaChart')}"></div>
+
+                    <div class="bg-warning bg-opacity-10 result-box">
+                        <p class="text-warning-emphasis mb-0">
+                            <strong>Resultado:</strong>
+                            Los hechos de la categoría "<strong th:text="${resultCategoriaH}"></strong>"
+                            ocurren con mayor frecuencia a las
+                            <strong th:text="${resultHoraMaxima}"></strong>
+                            con <strong th:text="${resultCantidadH}"></strong> reportes,
+                            seguido por las <strong th:text="${resultHoraSegunda}"></strong>
+                            con <strong th:text="${resultCantidadSegundaH}"></strong> reportes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TAB 5: Solicitudes Spam ========== -->
+        <div class="tab-pane fade" id="solicitudes-spam" role="tabpanel">
+            <div class="card">
+                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: cardHeaderSimple('bi bi-exclamation-triangle', 'Análisis de Solicitudes de Eliminación')}"></div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('spamChart')}"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <h6 class="fw-bold mb-3">Clasificación de Solicitudes</h6>
+
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: clasificacionItem('#EF4444', 'Spam', '145', 'bg-danger')}"></div>
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: clasificacionItem('#10B981', 'No Spam', '255', 'bg-success')}"></div>
+
+                            <div class="p-3 bg-secondary bg-opacity-10 rounded">
+                                <h6 class="fw-bold mb-2">Resumen Total</h6>
+                                <p class="small mb-1">Total de solicitudes procesadas: <strong>400</strong></p>
+                                <p class="small mb-0">Porcentaje de spam: <strong>36.3%</strong></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-danger bg-opacity-10 result-box">
+                        <p class="text-danger mb-0">
+                            <strong>Resultado:</strong>
+                            De un total de <strong th:text="${totalSolicitudes}"></strong> solicitudes de eliminación,
+                            <strong th:text="${spamCantidad}"></strong> (<strong th:text="${porcentajeSpam}"></strong>)
+                            corresponden a spam, mientras que
+                            <strong th:text="${noSpamCantidad}"></strong> (<strong th:text="${porcentajeNoSpam}"></strong>)
+                            son reportes legítimos que requieren revisión.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Bootstrap JS
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    -->
+    <script src="js/estadisticasAnalisis/graficos-estadisticas.js"></script>
 </div>
-
-
-
-
-
-<!-- Bootstrap JS
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
--->
-<script src="js/estadisticas.js"></script>
-</body>
-
 </html>

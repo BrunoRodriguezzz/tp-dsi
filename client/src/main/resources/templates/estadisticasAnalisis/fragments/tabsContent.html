@@ -1,0 +1,72 @@
+<!-- ========== FRAGMENT: Card Header con Dropdown ========== -->
+<div th:fragment="cardHeaderWithDropdown(icon, title, dropdownId, selectedSpanId, dropdownItems)"
+     class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
+    <h5 class="card-title mb-3 mb-sm-0 d-flex align-items-center">
+        <i th:class="${icon} + ' me-2'"></i>
+        <span th:text="${title}">Título</span>
+    </h5>
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                th:id="${dropdownId}"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-haspopup="true">
+            <span th:id="${selectedSpanId}"></span>
+        </button>
+        <ul class="dropdown-menu" th:attr="aria-labelledby=${dropdownId}" role="menu">
+            <li th:each="item : ${dropdownItems}">
+                <button class="dropdown-item"
+                        type="button"
+                        th:attr="data-item=${item}"
+                        role="menuitem">
+                    <span th:text="${item}">Item</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- ========== FRAGMENT: Card Header SIN Dropdown ========== -->
+<div th:fragment="cardHeaderSimple(icon, title)"
+     class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
+    <h5 class="card-title mb-3 mb-sm-0 d-flex align-items-center">
+        <i th:class="${icon} + ' me-2'"></i>
+        <span th:text="${title}">Título</span>
+    </h5>
+</div>
+
+<!-- ========== FRAGMENT: Chart Container ========== -->
+<div th:fragment="chartContainer(canvasId)" class="chart-container">
+    <canvas th:id="${canvasId}"></canvas>
+</div>
+
+<!-- ========== FRAGMENT: Result Box ========== -->
+<div th:fragment="resultBox(bgClass, textClass, contenido)" th:class="${bgClass} + ' result-box'">
+    <p th:class="${textClass} + ' mb-0'">
+        <strong>Resultado:</strong>
+        <th:block th:insert="${contenido}"></th:block>
+    </p>
+</div>
+
+
+<!-- ========== FRAGMENT: Ranking Item (para Tab 2) ========== -->
+<div th:fragment="rankingItem(color, categoria, cantidad, badgeClass)"
+     class="d-flex justify-content-between align-items-center p-3 bg-light rounded mb-2">
+    <div class="d-flex align-items-center">
+        <div class="rounded-circle me-3"
+             th:style="'width: 16px; height: 16px; background-color: ' + ${color} + ';'"></div>
+        <span class="fw-medium" th:text="${categoria}">Categoría</span>
+    </div>
+    <span th:class="${badgeClass} + ' badge'" th:text="${cantidad} + ' hechos'">0 hechos</span>
+</div>
+
+<!-- ========== FRAGMENT: Clasificación Item (para Tab 5) ========== -->
+<div th:fragment="clasificacionItem(color, label, cantidad, badgeClass)"
+     class="d-flex justify-content-between align-items-center p-3 bg-light rounded mb-3">
+    <div class="d-flex align-items-center">
+        <div class="rounded-circle me-3"
+             th:style="'width: 24px; height: 24px; background-color: ' + ${color} + ';'"></div>
+        <span class="fw-medium" th:text="${label}">Label</span>
+    </div>
+    <span th:class="${badgeClass} + ' badge'" th:text="${cantidad} + ' solicitudes'">0 solicitudes</span>
+</div>

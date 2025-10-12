@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.client.services;
 
 import ar.edu.utn.frba.dds.client.dtos.EstadisticaCategoriaDTO;
+import ar.edu.utn.frba.dds.client.dtos.EstadisticaProvinciaXColeccionDTO;
 import ar.edu.utn.frba.dds.client.dtos.EstadisticaSolicitudesDTO;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -45,5 +47,9 @@ public class EstadisticaService {
 
     public EstadisticaSolicitudesDTO getCantSolicitudesSpam(){
         return this.mockService.getCantSolicitudesSpam();
+    }
+
+    public List<EstadisticaProvinciaXColeccionDTO> getRankingProvinciasPorColeccion() {
+        return this.mockService.getRankingProvinciasPorColeccion();
     }
 }
