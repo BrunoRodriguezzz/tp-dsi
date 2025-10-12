@@ -41,6 +41,9 @@ public class Fuente {
   @Column(nullable = false)
   private String nombre;
 
+  @Column
+  private LocalDateTime fechaCarga;
+
   @Column(nullable = false)
   private String path;
 

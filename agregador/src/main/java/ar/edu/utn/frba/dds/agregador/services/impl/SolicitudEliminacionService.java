@@ -21,6 +21,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -131,6 +132,14 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
     SolicitudEliminacion solicitud = this.buscarSolicitudEliminacionPorID(id);
     SolicitudEliminacionOutputDTO solicitudDTO = SolicitudEliminacionOutputDTO.SolicitudToDTO(solicitud);
     return solicitudDTO;
+  }
+
+  @Override
+  public List<SolicitudEliminacionOutputDTO> buscarTodasLasSolicitudes() {
+    List<SolicitudEliminacion> solicitudes = this.solicitudEliminacionRepository.findAll();
+    return solicitudes.stream()
+        .map(SolicitudEliminacionOutputDTO::SolicitudToDTO)
+        .toList();
   }
 
   // ---------------------------------------------------- Privados ----------------------------------------------------

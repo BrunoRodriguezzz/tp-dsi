@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.FuenteInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.FuenteOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
@@ -35,10 +36,10 @@ public class AgregadorService implements IAgregadorService {
   }
 
   @Override
-  public Fuente incorporarFuente(@RequestBody FuenteInputDTO fuente) {
+  public FuenteOutputDTO incorporarFuente(@RequestBody FuenteInputDTO fuente) {
     Fuente fuenteIncorporada = this.fuenteService.incorporarFuente(fuente);
-    this.buscarHechosFuente(fuenteIncorporada);
-    return fuenteIncorporada;
+    List<Hecho> hechos = this.buscarHechosFuente(fuenteIncorporada);
+    return FuenteOutputDTO.toOutputDTO(fuenteIncorporada, hechos.size());
   }
 
   @Override
@@ -53,11 +54,12 @@ public class AgregadorService implements IAgregadorService {
   }
 
   @Async
-  public void buscarHechosFuente(Fuente fuenteIncorporada) {
+  public List<Hecho> buscarHechosFuente(Fuente fuenteIncorporada) {
     if(fuenteIncorporada.getNombre() != null){
       Flux<Hecho> hechos = fuenteService.buscarHechosFuenteStream(fuenteIncorporada.getNombre());
-      this.hechoService.guardarHechos(hechos).blockLast();
-      this.coleccionService.incorporarHechos(hechos.collectList().block());
+      List<Hecho> hechosGuardados = this.hechoService.guardarHechos(hechos).collectList().block();
+      this.coleccionService.incorporarHechos(hechosGuardados);
+      return hechosGuardados;
     }
     else
       throw new RuntimeException("Se incorporó una fuente sin nombre, no fue posible obtener sus hechos");
