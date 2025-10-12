@@ -15,6 +15,7 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
+import ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -133,11 +135,26 @@ public class ColeccionService implements IColeccionService {
     });
 
     List<Filtro> filtrosTransitorios = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
-
     List<EntidadFiltro> filtrosGestionados = this.filtroMapper.toEntities(filtrosTransitorios);
 
     Criterio criterio = new Criterio();
     criterio.agregarFiltros(filtrosGestionados);
+
+    Specification<Hecho> spec = Specification
+            .where(HechoSpecification.noEliminado())
+            .and(HechoSpecification.conFuentes(fuentesColeccion))
+            .and(HechoSpecification.conCriterio(criterio));
+
+    List<Hecho> hechosEncontrados = this.hechoRepository.findAll(spec);
+
+    Coleccion nuevaColeccion = new Coleccion(
+            coleccionInputDTO.getNombre(),
+            coleccionInputDTO.getDescripcion(),
+            fuentesColeccion,
+            criterio
+    );
+
+    hechosEncontrados.forEach(nuevaColeccion::cargarHecho);
 
     List<Consenso> listaConsensos = new ArrayList<>();
     if (coleccionInputDTO.getConsensos() != null) {
@@ -146,18 +163,10 @@ public class ColeccionService implements IColeccionService {
               .map(Consenso::valueOf)
               .toList();
     }
+    listaConsensos.forEach(nuevaColeccion::agregarConsenso);
 
-    Coleccion coleccion = new Coleccion(
-            coleccionInputDTO.getNombre(),
-            coleccionInputDTO.getDescripcion(),
-            fuentesColeccion,
-            criterio
-    );
-
-    listaConsensos.forEach(coleccion::agregarConsenso);
-
-    this.coleccionRepository.save(coleccion);
-    return ColeccionOutputDTO.coleccionToDTO(coleccion);
+    this.coleccionRepository.save(nuevaColeccion);
+    return ColeccionOutputDTO.coleccionToDTO(nuevaColeccion);
   }
 
   @Override
