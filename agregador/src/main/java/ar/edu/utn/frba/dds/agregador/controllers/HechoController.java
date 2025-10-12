@@ -50,14 +50,6 @@ public class HechoController {
     return ResponseEntity.ok(hecho);
   }
 
-  // Incorpora nuevos hechos que le envíen las fuentes(push based)
-  @PostMapping
-  public ResponseEntity<List<String>> incorporarHecho(@RequestBody HechoInputDTO hecho) {
-    ValidadorInput.validarHechoInputDTO(hecho);
-    List<String> incorporadoEn = this.agregadorService.incorporarHecho(hecho);
-    return ResponseEntity.ok(incorporadoEn);
-  }
-
   @PutMapping("/{id}")
   public ResponseEntity<HechoOutputDTO> actualizarHecho(@RequestBody HechoInputDTO hecho, @PathVariable(name = "id") Long id) {
       HechoOutputDTO hechoActualizado = this.hechoService.actualizarHecho(hecho, id);
@@ -65,8 +57,16 @@ public class HechoController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity eliminarHecho(@PathVariable(name = "id") Long id) {
+  public ResponseEntity<Void> eliminarHecho(@PathVariable(name = "id") Long id) {
     this.agregadorService.eliminarHecho(id);
     return ResponseEntity.noContent().build();
+  }
+
+  // Incorpora nuevos hechos que le envíen las fuentes(push based)
+  @PostMapping
+  public ResponseEntity<List<String>> incorporarHecho(@RequestBody HechoInputDTO hecho) {
+    ValidadorInput.validarHechoInputDTO(hecho);
+    List<String> incorporadoEn = this.agregadorService.incorporarHecho(hecho);
+    return ResponseEntity.ok(incorporadoEn);
   }
 }

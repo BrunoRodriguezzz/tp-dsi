@@ -16,7 +16,7 @@ import java.util.List;
 public interface IColeccionService {
   // Busqueda de colecciones - hechos
   public Page<ColeccionOutputDTO> buscarColecciones(Pageable pageable);
-  public List<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params);
+  public Page<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params, Pageable pageable);
   public List<HechoOutputDTO> buscarHechosCuradosColeccion(Long id, QueryParamsFiltro params);
   public ColeccionOutputDTO buscarColeccion(Long id);
 

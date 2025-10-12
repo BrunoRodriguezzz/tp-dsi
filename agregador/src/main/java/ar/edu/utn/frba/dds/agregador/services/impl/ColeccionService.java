@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -67,15 +68,16 @@ public class ColeccionService implements IColeccionService {
     return colecciones.map(ColeccionOutputDTO::coleccionToDTO);
   }
 
-  public List<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params) {
+  public Page<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params, Pageable pageable) {
     Coleccion coleccion = this.findColecccionAux(id);
-    List<Hecho> hechosProxy = this.pedirHechosProxy(coleccion.getFuentes()
-        .stream()
-        .filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY))
-        .collect(Collectors.toList()));
+    List<Hecho> hechosProxy = this.hechoService.actualizarHechosProxy();
     coleccion.cargarHechos(hechosProxy);
     List<Hecho> hechosOutput = coleccion.consultarHechos(params.instanciarFiltros());
-    return HechoOutputDTO.mapHechoToDTO(hechosOutput);
+      return new PageImpl<HechoOutputDTO>(
+              HechoOutputDTO.mapHechoToDTO(hechosOutput),
+              pageable,
+              hechosOutput.size()
+      );
   }
 
   public List<HechoOutputDTO> buscarHechosCuradosColeccion(Long id, QueryParamsFiltro params) {
@@ -118,20 +120,6 @@ public class ColeccionService implements IColeccionService {
     return this.deleteHechoFromColeccion(hecho);
   }
 
-//  @Override
-//  public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
-//    List<Fuente> fuentesColeccion = new ArrayList<>();
-//    coleccionInputDTO.getFuentes().forEach(fuente -> {
-//      Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
-//      if(temp == null){
-//        throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
-//      }
-//      fuentesColeccion.add(temp);
-//    });
-//    Coleccion coleccion = ColeccionInputDTO.inputColeccionToColeccion(coleccionInputDTO, fuentesColeccion);
-//    this.coleccionRepository.save(coleccion);
-//    return ColeccionOutputDTO.coleccionToDTO(coleccion);
-//  }
 
   @Override
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
@@ -156,7 +144,7 @@ public class ColeccionService implements IColeccionService {
       listaConsensos = coleccionInputDTO.getConsensos()
               .stream()
               .map(Consenso::valueOf)
-              .collect(Collectors.toList());
+              .toList();
     }
 
     Coleccion coleccion = new Coleccion(
