@@ -1,0 +1,90 @@
+<html th:replace="~{layout/base :: html}">
+<head>
+    <th:block th:fragment="additional-links">
+        <link rel="stylesheet" th:href="@{/css/index.css}">
+        <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    </th:block>
+</head>
+
+<!-- class="row"-->
+<div th:fragment="contenido">
+
+    <div class="metaMapa-info">
+        <h2 class="metaMapa-info-title">MetaMapa</h2>
+        <p class="metaMapa-info-p">Sistema de código abierto para la recopilación, visualización y mapeo colaborativo de información. Diseñado para maximizar la disponibilidad y veracidad de la información, protegiendo la identidad de quienes la comparten.</p>
+        <div class="metaMapa-info-button-container">
+            <!-- TODO: agregar los th:ref con sus respectivos Controllers -->
+            <button class="btn btn-dark"><a class="nav-link active" aria-current="page" href="map.html">Explorar Mapa</a></button>
+            <button class="btn btn-outline-primary"><a class="nav-link active" aria-current="page" th:href="@{/hechos}">Ver Hechos</a></button>
+        </div>
+    </div>
+
+    <div class="purpose-container">
+        <h2>Nuestro Propósito</h2>
+        <div class="container text-center">
+            <div class="row">
+                <th:block th:replace="~{landingPage/fragments/cardProposito :: purpose-card('fa-globe', 'Transparencia', 'Maximizar la disponibilidad y veracidad de la información para rendir cuentas a la sociedad')}"></th:block>
+
+                <th:block th:replace="~{landingPage/fragments/cardProposito :: purpose-card('fa-shield', 'Privacidad', 'Proteger la identidad de quienes visitan y suben información al sistema')}"></th:block>
+
+                <th:block th:replace="~{landingPage/fragments/cardProposito :: purpose-card('fa-hands', 'Colaboración', 'Permitir que cualquier persona mayor de edad pueda contribuir con información')}"></th:block>
+
+                <th:block th:replace="~{landingPage/fragments/cardProposito :: purpose-card('fa-location-dot', 'Descentralización', 'Almacenamiento descentralizado para garantizar disponibilidad y mitigar ataques')}"></th:block>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección Hechos Destacados -->
+    <div class="hechos-destacados-section">
+        <div class="row">
+            <th:block th:replace="~{landingPage/fragments/cardsDestacados :: section-header('Hechos Destacados')}"></th:block>
+
+            <div class="hechos-destacados-container row">
+                <th:block th:each="hecho : ${hechosDestacados}"
+                          th:insert="~{landingPage/fragments/cardsDestacados :: hecho-card(${hecho})}">
+                </th:block>
+            </div>
+            <button class="btn btn-outline-primary"><a class="nav-link active" aria-current="page" th:href="@{/hechos}">Ver Todos los Hechos</a></button>
+        </div>
+    </div>
+
+    <!-- Sección Colecciones Destacadas -->
+    <div class="colecciones-destacadas-section">
+        <div class="row">
+            <th:block th:replace="~{landingPage/fragments/cardsDestacados :: section-header('Colecciones Destacadas')}"></th:block>
+
+            <div class="colecciones-destacadas-container row">
+                <th:block th:replace="~{landingPage/fragments/cardsDestacados :: coleccion-card(
+                'Protestas Sociales 2024',
+                15,
+                'Recopilación de manifestaciones y protestas sociales registradas durante el año 2024'
+            )}"></th:block>
+
+                <th:block th:replace="~{landingPage/fragments/cardsDestacados :: coleccion-card(
+                'Desarrollo Comunitario',
+                8,
+                'Iniciativas de desarrollo social y comunitario en diferentes barrios'
+            )}"></th:block>
+
+                <th:block th:replace="~{landingPage/fragments/cardsDestacados :: coleccion-card(
+                'Incidentes Ambientales',
+                12,
+                'Registro de eventos relacionados con el medio ambiente y contaminación'
+            )}"></th:block>
+            </div>
+            <button class="btn btn-outline-primary">Ver Todas las Colecciones</button>
+        </div>
+    </div>
+
+    <!-- TODO: agregar los th:ref con sus respectivos Controllers/HTTP -->
+    <div class="unete-comunidad-section">
+        <h2>Únete a la Comunidad</h2>
+        <p class="metaMapa-info-p">Contribuye con información relevante y ayuda a construir una base de datos colaborativa que beneficie a toda la sociedad.</p>
+        <div class="metaMapa-info-button-container">
+            <button class="btn btn-dark">Publicar Hecho</button>
+            <button class="btn btn-outline-primary">Conocer Más</button>
+        </div>
+    </div>
+</div>
+</html>

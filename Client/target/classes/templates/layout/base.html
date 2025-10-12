@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Metamapa - ' + ${titulo}"></title>
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <th:block th:replace="~{::additional-links}"></th:block>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" style="font-weight: 650" th:href="@{/}">MetaMapa</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="map.html">Mapa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/hechos}">Hechos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="colecciones.html">Colecciones</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="publicarHecho.html">Publicar Hecho</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/hechos/misHechos}">Mis hechos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="reportarHecho.html">Reportar Hecho</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="panelControl.html">Panel de Control</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="sobreNosotros.html" th:href="@{/sobreNosotros}">Sobre Nosotros</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="estadisticas.html">Estadisticas</a>
+                </li>
+            </ul>
+            <a href="inicioSesion.html">
+                <button class="nav-item btn btn-outline-primary">Iniciar Sesion</button>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<main class="flex-grow-1" style="width: 100%">
+     <div th:replace="~{${contenido} :: contenido}"></div>
+</main>
+
+<footer>
+    <div class="container-footer">
+        <div class="footer-content">
+            <div class="footer-metamapa">
+                <h3>MetaMapa</h3>
+                <p>Sistema de código abierto para la recopilación, visualización y mapeo colaborativo de información.</p>
+            </div>
+            <div class="footer-container-links">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="Explorar Mapa">Explorar Mapa</a></li>
+                    <li><a href="Todos los Hechos">Todos los Hechos</a></li>
+                    <li><a href="Colecciones">Colecciones</a></li>
+                    <li><a href="Publicar Hecho">Publicar Hecho</a></li>
+                    <li><a href="Sobre Nosotros">Sobre Nosotros</a></li>
+                </ul>
+            </div>
+            <div class="footer-legal">
+                <h3>Legal</h3>
+                <ul class="footer-legals">
+                    <li><a href="Información Legal">Información Legal</a></li>
+                    <li><a href="Política de Privacidad">Política de Privacidad</a></li>
+                    <li><a href="Términos de Uso">Términos de Uso</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr class="division-line"/>
+        <div class="footer-copyright">
+            <p>© MetaMapa 2025. Sistema de código abierto para el mapeo colaborativo de información.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+</body>
+</html>
