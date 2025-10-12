@@ -43,10 +43,14 @@ public class Fuente {
     @Column()
     private String ruta;
 
+    @Column
+    private LocalDateTime ultimaConsulta;
+
     public Fuente(TipoFuenteEnum tipoFuente, String nombre, String ruta) {
         this.tipoFuenteEnum = tipoFuente;
         this.nombre = nombre;
         this.ruta = ruta;
+        this.ultimaConsulta = LocalDateTime.now();
         this.contruirTipoFuente();
     }
 

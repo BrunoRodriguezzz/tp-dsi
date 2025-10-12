@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.agregador.models.domain.hechos;
 
 import ar.edu.utn.frba.dds.agregador.converters.ConsensoConverter;
 import ar.edu.utn.frba.dds.agregador.converters.OrigenConverter;
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaEliminadoException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.DescripcionInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.FechaInvalidaException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.TituloInvalidoException;
@@ -25,6 +26,7 @@ import java.time.LocalDate;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 @Getter @Setter
 @AllArgsConstructor
@@ -36,7 +38,7 @@ public class Hecho {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "hecho", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hecho", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<HechoFuente> fuenteSet;
 
     @Column(nullable = false)
@@ -45,7 +47,7 @@ public class Hecho {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(referencedColumnName = "id")
     private Categoria categoria;
 
@@ -110,8 +112,8 @@ public class Hecho {
         this.fuenteSet = new HashSet<>();
     }
 
-    public void eliminar() throws Exception {
-        if(this.estaEliminado) {throw new Exception("El hecho ya fue eliminado");}
+    public void eliminar() {
+        if(this.estaEliminado) throw new HechoYaEliminadoException("El hecho ya fue eliminado", this);
         this.estaEliminado = true;
     }
 
@@ -155,6 +157,38 @@ public class Hecho {
 
     public void agregarConsenso(Consenso consenso) {
         this.consensos.add(consenso);
+    }
+
+    public void actualizarDesdeDTO(ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO dto)  {
+        if (dto.getTitulo() != null) this.titulo = dto.getTitulo();
+        if (dto.getDescripcion() != null) this.descripcion = dto.getDescripcion();
+        if (dto.getCategoria() != null) this.categoria = new Categoria(dto.getCategoria());
+        if (dto.getUbicacion() != null) {
+            this.ubicacion = new Ubicacion(
+                Double.parseDouble(dto.getUbicacion().getLatitud()),
+                Double.parseDouble(dto.getUbicacion().getLongitud())
+            );
+        }
+        if (dto.getEtiquetas() != null) {
+            this.etiquetas = dto.getEtiquetas().stream()
+                .map(Etiqueta::new)
+                .collect(java.util.stream.Collectors.toList());
+        }
+        if (dto.getFechaAcontecimiento() != null) this.fechaAcontecimiento = dto.getFechaAcontecimiento();
+        if (dto.getOrigen() != null) this.origen = Origen.valueOf(dto.getOrigen().toUpperCase());
+        if (dto.getContribuyente() != null) {
+            this.contribuyente = new Contribuyente(
+                dto.getContribuyente().getNombre(),
+                dto.getContribuyente().getApellido(),
+                dto.getContribuyente().getFechaNacimiento()
+            );
+        }
+        if (dto.getContenidoMultimedia() != null) {
+            this.contenidoMultimedia = dto.getContenidoMultimedia().stream()
+                .map(ContenidoMultimedia::new)
+                .collect(java.util.stream.Collectors.toList());
+        }
+        // No se actualizan consensos ni estaEliminado desde el DTO por seguridad
     }
 
     public boolean equals(Hecho hecho) {

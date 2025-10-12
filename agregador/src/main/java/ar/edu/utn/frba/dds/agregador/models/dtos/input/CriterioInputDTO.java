@@ -10,7 +10,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroLatitud;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroLongitud;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroTitulo;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +40,12 @@ public class CriterioInputDTO {
                     FiltroTitulo filtroTitulo = new FiltroTitulo(criterioInputDTO.getTitulo());
                     filtros.add(filtroTitulo);
                 }
+            }
+
+            if (criterioInputDTO.getCategoria() != null) {
+                Categoria categoria = new Categoria();
+                categoria.setTitulo(criterioInputDTO.getCategoria());
+                filtros.add(new FiltroCategoria(categoria));
             }
 
             if (criterioInputDTO.getFechaAcontecimientoInicio() != null) {

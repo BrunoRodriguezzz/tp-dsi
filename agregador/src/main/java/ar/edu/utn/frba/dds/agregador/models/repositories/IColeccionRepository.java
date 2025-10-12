@@ -9,7 +9,4 @@ import java.util.List;
 
 public interface IColeccionRepository extends JpaRepository<Coleccion, Long> {
   List<Coleccion> findColeccionsByHechos(List<Hecho> hechos);
-//  public Boolean eliminarHechoDeColecciones(Hecho hecho); TODO
-//  public List<Coleccion> buscarCopiaColecciones();
-//  public Coleccion buscarCopiaColeccion(Long id);
 }

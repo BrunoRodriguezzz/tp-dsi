@@ -66,7 +66,6 @@ public class Fuente {
     this.inicializar();
   }
 
-
   public Flux<Hecho> importarHechos() {
       log.info("Importando hechos de la fuente: {}", this.nombre);
       return iAdapImpH.importarHechos(this.webClient, this)
@@ -76,12 +75,17 @@ public class Fuente {
           });
   }
 
-  public Flux<Hecho> importarHechosMismoTitulo(Hecho hecho) {
-    return iAdapImpH.importarHechosMismoTitulo(this.webClient, this, hecho);
+  public Flux<Hecho> importarHechosNuevos() {
+    log.info("Importando hechosNuevos de la fuente: {}", this.nombre);
+    return iAdapImpH.importarNuevos(this.webClient, this)
+            .onErrorResume(error -> {
+                log.error("Error en importarHechosNuevos de fuente {}: {}", this.nombre, error.getMessage());
+              return Flux.empty();
+            });
   }
 
-  public Flux<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco) {
-    return iAdapImpH.buscarNuevosHechos(ultimaFechaRefresco, this.webClient, this);
+  public Flux<Hecho> importarHechosMismoTitulo(Hecho hecho) {
+    return iAdapImpH.importarHechosMismoTitulo(this.webClient, this, hecho);
   }
 
   public Mono<Void> eliminarHecho(Hecho hecho) {

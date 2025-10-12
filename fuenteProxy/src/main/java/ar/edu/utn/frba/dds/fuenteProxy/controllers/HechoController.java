@@ -28,6 +28,12 @@ public class HechoController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/fuente/{id}")
+    public ResponseEntity<OutputFuente> getByFuente(@PathVariable("id") Long id, @RequestParam(name = "nuevos", required = false) boolean nuevos) {
+        OutputFuente response = hechoService.getByFuenteId(id, nuevos);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         hechoService.delete(id);

@@ -15,6 +15,7 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IHechoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -155,5 +156,26 @@ public class HechoService implements IHechoService {
                 .findFirst()
                 .ifPresent(h -> hechoAGuardar.setId(h.getId()));
         hechoRepository.save(hechoAGuardar);
+    }
+
+    @Override
+    public OutputFuente getByFuenteId(Long id, boolean nuevos) {
+        if(id == null || id <= 0) {
+            throw new ValidationError("ID invalido");
+        }
+
+        Fuente fuente = fuenteRepository.findById(id).orElse(null);
+        if(fuente == null) {
+            throw new NotFoundError("Archivo no encontrado");
+        }
+        List<HechoProxy> hechos;
+        if (nuevos) {
+            hechos = hechoRepository.findByIdFuenteAndFechaModificacionAfter(id, fuente.getUltimaConsulta());
+        } else {
+            hechos = this.hechoRepository.findByIdFuente(id);
+        }
+
+        fuente.setUltimaConsulta(LocalDateTime.now());
+        return UtilsDTO.toOutputFuente(fuente, hechos);
     }
 }

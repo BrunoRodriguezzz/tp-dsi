@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.usuarios;
 
+import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.ValidationException;
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.FechaInvalidaException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,11 +31,11 @@ public class Contribuyente {
     @Column
     private LocalDateTime fechaNacimiento;
 
-    public Contribuyente(String nombre, String apellido, LocalDateTime fechaNacimiento) throws FechaInvalidaException {
+    public Contribuyente(String nombre, String apellido, LocalDateTime fechaNacimiento) {
         this.nombre = nombre;
         this.apellido = apellido;
         if(fechaNacimiento == null || fechaNacimiento.isAfter(LocalDateTime.now())) {
-            throw new FechaInvalidaException("La fecha es inválida: "+fechaNacimiento);
+            throw new ValidationException("La fecha es inválida: "+fechaNacimiento);
         }
         this.fechaNacimiento = fechaNacimiento;
     }

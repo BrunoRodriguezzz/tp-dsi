@@ -40,7 +40,6 @@ public class AdapImpHDinamico implements IAdapImpH {
         });
   }
 
-  @Override
   public Flux<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco,
                                         WebClient webClient,
                                         Fuente fuente) {
@@ -94,4 +93,9 @@ public class AdapImpHDinamico implements IAdapImpH {
           return Flux.empty();
         });
   }
+
+    @Override
+    public Flux<Hecho> importarNuevos(WebClient webClient, Fuente fuente) {
+        return null;
+    }
 }

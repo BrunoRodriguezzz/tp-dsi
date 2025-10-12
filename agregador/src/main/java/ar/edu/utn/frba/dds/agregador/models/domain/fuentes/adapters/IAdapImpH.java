@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 
 public interface IAdapImpH {
     Flux<Hecho> importarHechos(WebClient webClient, Fuente fuente);
-    Flux<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco, WebClient webClient, Fuente fuente);
     Mono<Void> eliminarHecho(Hecho hecho, WebClient webClient, Fuente fuente);
     Flux<Hecho> importarHechosMismoTitulo(WebClient webClient, Fuente fuente, Hecho hechos);
+
+    Flux<Hecho> importarNuevos(WebClient webClient, Fuente fuente);
 }

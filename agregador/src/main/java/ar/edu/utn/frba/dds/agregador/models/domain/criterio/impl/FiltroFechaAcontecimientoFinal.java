@@ -1,20 +1,33 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl;
 
-import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.EntidadFiltro;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.time.LocalDateTime;
 
-import lombok.Data;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-public class FiltroFechaAcontecimientoFinal implements Filtro {
+@Entity
+@DiscriminatorValue("FechaAcontecimientoFinal")
+@NoArgsConstructor
+@Getter
+@Setter
+public class FiltroFechaAcontecimientoFinal extends EntidadFiltro {
   private LocalDateTime fechaFinal;
 
+  public FiltroFechaAcontecimientoFinal(LocalDateTime fechaFinal) {
+    this.fechaFinal = fechaFinal;
+  }
+
   public Boolean coincide(Hecho hecho) {
-    return hecho.getFechaAcontecimiento().isBefore(this.fechaFinal);
+    if (hecho.getFechaCarga() == null || fechaFinal == null) return false;
+    return !hecho.getFechaCarga().isBefore(fechaFinal);
   }
 
   public String toDTO() {
-    return this.fechaFinal.toString();
+    return fechaFinal != null ? fechaFinal.toString() : null;
   }
 }

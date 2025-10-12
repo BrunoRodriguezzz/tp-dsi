@@ -145,7 +145,7 @@ public class FuenteService implements IFuenteService {
         .flatMapMany(Flux::fromIterable)
         .flatMap(fuente -> {
           try {
-            return fuente.buscarNuevosHechos(ultimaFechaRefresco);
+            return fuente.importarHechosNuevos();
           } catch (Exception e) {
             System.err.println("Error procesando fuente " + fuente.getNombre());
             return Flux.empty();

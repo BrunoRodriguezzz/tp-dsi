@@ -3,7 +3,9 @@ package ar.edu.utn.frba.dds.agregador.services.impl;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.EntidadFiltro;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroMapper;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.HechoFuente;
@@ -13,6 +15,7 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
+import ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
@@ -26,6 +29,10 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,6 +43,8 @@ public class ColeccionService implements IColeccionService {
   private IHechoRepository hechoRepository;
   @Autowired
   private IFuenteRepository fuenteRepository;
+  @Autowired
+  private FiltroMapper filtroMapper;
 
   private final IHechoService hechoService;
   private LocalDateTime ultimaFechaRefresco;
@@ -45,27 +54,32 @@ public class ColeccionService implements IColeccionService {
     this.ultimaFechaRefresco = LocalDateTime.now().minusDays(1); // TODO: Debería persistirse
   }
 
-  public List<ColeccionOutputDTO> buscarColecciones() {
-    List <Coleccion> colecciones = this.coleccionRepository.findAll();
-    // TODO: Pedirle a la proxy solo los hechos de las fuentes que use. No todos, evitar consultas al pedo
-    List<Hecho> hechosProxy = this.pedirHechosProxy(this.fuenteRepository.findByTipoFuente(TipoFuente.PROXY));
-    List<Hecho> hechosGuardados = this.hechoService.guardarHechos(hechosProxy);
-    colecciones.forEach(coleccion -> {
-      coleccion.cargarHechos(hechosGuardados);
-    });
+  public Page<ColeccionOutputDTO> buscarColecciones(Pageable pageable) {
+    Page<Coleccion> colecciones = this.coleccionRepository.findAll(pageable);
+    List <Hecho> hechosNuevos = this.hechoService
+            .actualizarHechos(colecciones
+                    .stream()
+                    .flatMap(coleccion -> coleccion
+                            .getFuentes()
+                            .stream()
+                            .filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY))
+                            )
+                    .toList());
+    colecciones.forEach(c -> c.cargarHechos(hechosNuevos));
     // TODO: Buscar colecciones del servicio PROXY
-    return ColeccionOutputDTO.mapColeccionesToDTO(colecciones);
+    return colecciones.map(ColeccionOutputDTO::coleccionToDTO);
   }
 
-  public List<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params) {
+  public Page<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params, Pageable pageable) {
     Coleccion coleccion = this.findColecccionAux(id);
-    List<Hecho> hechosProxy = this.pedirHechosProxy(coleccion.getFuentes()
-        .stream()
-        .filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY))
-        .collect(Collectors.toList()));
+    List<Hecho> hechosProxy = this.hechoService.actualizarHechosProxy();
     coleccion.cargarHechos(hechosProxy);
     List<Hecho> hechosOutput = coleccion.consultarHechos(params.instanciarFiltros());
-    return HechoOutputDTO.mapHechoToDTO(hechosOutput);
+      return new PageImpl<HechoOutputDTO>(
+              HechoOutputDTO.mapHechoToDTO(hechosOutput),
+              pageable,
+              hechosOutput.size()
+      );
   }
 
   public List<HechoOutputDTO> buscarHechosCuradosColeccion(Long id, QueryParamsFiltro params) {
@@ -108,28 +122,62 @@ public class ColeccionService implements IColeccionService {
     return this.deleteHechoFromColeccion(hecho);
   }
 
+
   @Override
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
     List<Fuente> fuentesColeccion = new ArrayList<>();
     coleccionInputDTO.getFuentes().forEach(fuente -> {
       Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
-      if(temp == null){
+      if (temp == null) {
         throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
       }
       fuentesColeccion.add(temp);
     });
-    Coleccion coleccion = ColeccionInputDTO.inputColeccionToColeccion(coleccionInputDTO, fuentesColeccion);
-    this.coleccionRepository.save(coleccion);
-    return ColeccionOutputDTO.coleccionToDTO(coleccion);
+
+    List<Filtro> filtrosTransitorios = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
+    List<EntidadFiltro> filtrosGestionados = this.filtroMapper.toEntities(filtrosTransitorios);
+
+    Criterio criterio = new Criterio();
+    criterio.agregarFiltros(filtrosGestionados);
+
+    Specification<Hecho> spec = Specification
+            .where(HechoSpecification.noEliminado())
+            .and(HechoSpecification.conFuentes(fuentesColeccion))
+            .and(HechoSpecification.conCriterio(criterio));
+
+    List<Hecho> hechosEncontrados = this.hechoRepository.findAll(spec);
+
+    Coleccion nuevaColeccion = new Coleccion(
+            coleccionInputDTO.getNombre(),
+            coleccionInputDTO.getDescripcion(),
+            fuentesColeccion,
+            criterio
+    );
+
+    hechosEncontrados.forEach(nuevaColeccion::cargarHecho);
+
+    List<Consenso> listaConsensos = new ArrayList<>();
+    if (coleccionInputDTO.getConsensos() != null) {
+      listaConsensos = coleccionInputDTO.getConsensos()
+              .stream()
+              .map(Consenso::valueOf)
+              .toList();
+    }
+    listaConsensos.forEach(nuevaColeccion::agregarConsenso);
+
+    this.coleccionRepository.save(nuevaColeccion);
+    return ColeccionOutputDTO.coleccionToDTO(nuevaColeccion);
   }
 
   @Override
   public ColeccionOutputDTO agregarFiltrosCriterio(Long id, CriterioInputDTO criterioInputDTO) {
     List<Filtro> nuevosFiltros = CriterioInputDTO.crearFiltros(criterioInputDTO);
 
+    List<EntidadFiltro> nuevosFiltrosEntity = this.filtroMapper.toEntities(nuevosFiltros);
+
     Coleccion coleccion = this.findColecccionAux(id);
 
-    coleccion.getCriterio().getFiltros().addAll(nuevosFiltros);
+    coleccion.getCriterio().getFiltros().addAll(nuevosFiltrosEntity);
     coleccion.recalcularHechos();
 
     this.coleccionRepository.save(coleccion);
@@ -141,12 +189,16 @@ public class ColeccionService implements IColeccionService {
     Coleccion coleccion = this.findColecccionAux(id);
 
     List<Filtro> filtrosNuevos = CriterioInputDTO.crearFiltros(criterio);
-    coleccion.cambiarCriterio(new Criterio(filtrosNuevos));
+
+    List<EntidadFiltro> entidadesFiltrosNuevos = this.filtroMapper.toEntities(filtrosNuevos);
+
+    coleccion.cambiarCriterio(new Criterio(entidadesFiltrosNuevos));
 
     List<Fuente> fuentes = coleccion.getFuentes();
     List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentes);
     coleccion.cargarHechos(hechosFuentes);
     coleccion.recalcularHechos();
+
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
@@ -211,18 +263,6 @@ public class ColeccionService implements IColeccionService {
   @Override
   public void eliminarColeccion(Long id) { // TODO: Hacer baja lógica
       coleccionRepository.deleteById(id);
-  }
-
-  @Override
-  public void refrescarColecciones(){
-    List<Hecho> nuevosHechos = this.fuenteRepository.findAll()
-        .stream()
-        .map(f -> f.buscarNuevosHechos(this.ultimaFechaRefresco).toStream().toList())
-        .flatMap(Collection::stream)
-        .toList();
-    List<Hecho> hechos = this.hechoService.guardarHechos(nuevosHechos);
-    this.incorporarHechos(hechos);
-    this.ultimaFechaRefresco = LocalDateTime.now();
   }
 
   // ---------------------------------------------------- Privados ----------------------------------------------------
