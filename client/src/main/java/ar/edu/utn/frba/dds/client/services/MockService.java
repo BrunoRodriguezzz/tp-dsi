@@ -4,9 +4,7 @@ import ar.edu.utn.frba.dds.client.dtos.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MockService {
@@ -201,5 +199,45 @@ public class MockService {
         // Long cantNoSpam = (long) solicitudes.size() - cantSpam;
 
         return new EstadisticaSolicitudesDTO(LocalDateTime.now(), cantSpam, cantNoSpam);
+    }
+
+    public List<EstadisticaProvinciaXColeccionDTO> getRankingProvinciasPorColeccion() {
+        List<HechoDTO> hechos = this.obtenerHechosMockeados();
+
+        // Agrupar por colección (usamos "categoria" como colección mockeada)
+        Map<String, Map<String, Long>> agrupado = hechos.stream()
+                .collect(Collectors.groupingBy(
+                        HechoDTO::getCategoria,
+                        Collectors.groupingBy(
+                                h -> h.getUbicacion().getProvincia(),
+                                Collectors.counting()
+                        )
+                ));
+
+        // Convertir a lista de DTOs
+        List<EstadisticaProvinciaXColeccionDTO> resultado = new ArrayList<>();
+
+        for (Map.Entry<String, Map<String, Long>> entry : agrupado.entrySet()) {
+            String coleccion = entry.getKey();
+            Map<String, Long> provincias = entry.getValue();
+
+            // Ordenar provincias por cantidad descendente en LinkedHashMap
+            LinkedHashMap<String, Long> provinciasOrdenadas = provincias.entrySet().stream()
+                    .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            Map.Entry::getValue,
+                            (e1, e2) -> e1,
+                            LinkedHashMap::new
+                    ));
+
+            resultado.add(new EstadisticaProvinciaXColeccionDTO(
+                    coleccion,
+                    LocalDateTime.now(),
+                    provinciasOrdenadas
+            ));
+        }
+
+        return resultado;
     }
 }
