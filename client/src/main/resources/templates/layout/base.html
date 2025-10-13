@@ -6,7 +6,8 @@
     <title th:text="'Metamapa - ' + ${titulo}"></title>
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/components.css}">
@@ -16,7 +17,7 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
         <a class="navbar-brand" style="font-weight: 650" th:href="@{/home}">MetaMapa</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -56,9 +57,16 @@
                     <a class="nav-link" href="estadisticas.html">Estadisticas</a>
                 </li>
             </ul>
-            <a href="inicioSesion.html">
-                <button class="nav-item btn btn-outline-primary">Iniciar Sesion</button>
-            </a>
+            <div class="auth-section">
+                <div th:if="${usuarioLogueado == null}">
+                    <a href="/login" class="nav-item btn btn-outline-primary">Iniciar Sesión</a>
+                </div>
+
+                <div th:if="${usuarioLogueado != null}" class="user-info" style="display: flex; align-items: center; justify-content: space-between">
+                    <span class="nav-link" th:text="'Bienvenido, ' + ${usuarioLogueado.username}" style="margin: 1rem">Bienvenido, Usuario</span>
+                    <a href="/logout" class="nav-item btn btn-outline-primary">Cerrar Sesión</a>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
@@ -100,6 +108,6 @@
     </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

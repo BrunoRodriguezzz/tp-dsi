@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/solicitudesEliminacion")
 @CrossOrigin(origins = "http://localhost:8080")
@@ -28,7 +26,7 @@ public class SolicitudEliminacionController {
   private ISolicitudEliminacionService solicitudEliminacionService;
 
   @PostMapping
-  public ResponseEntity<SolicitudEliminacionOutputDTO> guardarSolicitud(@RequestBody SolicitudEliminacionInputDTO solicitud) {
+  public ResponseEntity guardarSolicitud(@RequestBody SolicitudEliminacionInputDTO solicitud) {
     ValidadorInput.validarSolicitudInputDTO(solicitud);
     SolicitudEliminacionOutputDTO solicitudEliminacion =
         this.solicitudEliminacionService.guardarSolicitud(
@@ -37,21 +35,18 @@ public class SolicitudEliminacionController {
     return ResponseEntity.status(HttpStatus.CREATED).body(solicitudEliminacion);
   }
 
-  @GetMapping()
-  public ResponseEntity<List<SolicitudEliminacionOutputDTO>> buscarTodasLasSolicitudes() {
-    List<SolicitudEliminacionOutputDTO> solicitudes = this.solicitudEliminacionService.buscarTodasLasSolicitudes();
-    return ResponseEntity.status(HttpStatus.OK).body(solicitudes);
-  }
-
   @GetMapping("/{id}")
-  public ResponseEntity<SolicitudEliminacionOutputDTO> buscarSolicitud(@PathVariable("id") Long id) {
+  public ResponseEntity buscarSolicitud(@PathVariable("id") Long id) {
     SolicitudEliminacionOutputDTO solicitudEliminacion = this.solicitudEliminacionService.buscarSolicitud(id);
+    if(solicitudEliminacion == null) {
+      return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
     return ResponseEntity.status(HttpStatus.OK).body(solicitudEliminacion);
   }
 
   @PatchMapping("rechazo/{id}")
   // TODO: Buscar los admins
-  public ResponseEntity<SolicitudEliminacionOutputDTO> rechazarSolicitud(@RequestBody GestionInputDTO input, @PathVariable("id") Long id) {
+  public ResponseEntity rechazarSolicitud(@RequestBody GestionInputDTO input, @PathVariable("id") Long id) {
     ValidadorInput.validarGestionInputDTO(input);
     SolicitudEliminacionOutputDTO rechazada = this.solicitudEliminacionService.rechazarSolicitud(input.getIdAdministrador(), id);
     return ResponseEntity.status(HttpStatus.OK).body(rechazada);
@@ -59,7 +54,7 @@ public class SolicitudEliminacionController {
 
   @PatchMapping("aceptacion/{id}")
   // TODO: Buscar los admins
-  public ResponseEntity<SolicitudEliminacionOutputDTO> aceptarSolicitud(@RequestBody GestionInputDTO input, @PathVariable("id") Long id) {
+  public ResponseEntity aceptarSolicitud(@RequestBody GestionInputDTO input, @PathVariable("id") Long id) {
     ValidadorInput.validarGestionInputDTO(input);
     SolicitudEliminacionOutputDTO aceptada = this.solicitudEliminacionService.aceptarSolicitud(input.getIdAdministrador(), id);
     return ResponseEntity.status(HttpStatus.OK).body(aceptada);

@@ -48,7 +48,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
 
             request.getSession().setAttribute("accessToken", authResponse.getAccessToken());
             request.getSession().setAttribute("refreshToken", authResponse.getRefreshToken());
-                request.getSession().setAttribute("username", username);
+            request.getSession().setAttribute("username", username);
 
             log.info("Buscando información del usuario");
             UsuarioDTO usuario = externalAuthService.getUsuario(authResponse.getAccessToken());
@@ -57,7 +57,11 @@ public class CustomAuthProvider implements AuthenticationProvider {
 
             log.info("Cargando roles y permisos del usuario en sesión");
             request.getSession().setAttribute("roles", usuario.getRoles());
+            request.getSession().setAttribute("id", usuario.getId());
             request.getSession().setAttribute("permisos", usuario.getPermisos());
+            request.getSession().setAttribute("nombre", usuario.getNombre());
+            request.getSession().setAttribute("apellido", usuario.getApellido());
+            request.getSession().setAttribute("fechaNacimiento", usuario.getFechaNacimiento());
 
             List<GrantedAuthority> authorities = new ArrayList<>();
             usuario.getPermisos().forEach(permiso -> {

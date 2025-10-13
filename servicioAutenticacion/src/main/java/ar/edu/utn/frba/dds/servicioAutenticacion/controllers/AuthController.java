@@ -1,8 +1,10 @@
 package ar.edu.utn.frba.dds.servicioAutenticacion.controllers;
 
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.AccessRequest;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.AuthResponseDTO;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.RefreshRequest;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.TokenResponse;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.InvalidPasswordError;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.NotFoundError;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.RegisterError;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Usuario;
@@ -32,14 +34,16 @@ public class AuthController {
 
     @PostMapping
     public ResponseEntity<AuthResponseDTO> loginApi(@RequestBody Map<String, String> credentials) {
-        try {
             String username = credentials.get("username");
             String password = credentials.get("password");
 
             // Validación básica de credenciales
-            if (username == null || username.trim().isEmpty() ||
-                    password == null || password.trim().isEmpty()) {
-                return ResponseEntity.badRequest().build();
+            if (password == null || password.trim().isEmpty()) {
+                throw new InvalidPasswordError("La contraseña no puede estar vacía");
+            }
+
+            if(username == null || username.trim().isEmpty()) {
+                throw new InvalidPasswordError("El usuario no puede estar vacío");
             }
 
             // Autenticar usuario usando el AuthService
@@ -57,11 +61,6 @@ public class AuthController {
             log.info("El usuario {} está logueado. El token generado es {}", username, accessToken);
 
             return ResponseEntity.ok(response);
-        } catch (NotFoundError e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
     }
 
     @PostMapping("/refresh")
@@ -90,11 +89,22 @@ public class AuthController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<Usuario> getUsuario(Authentication authentication) {
+    public ResponseEntity<Usuario> getUsuario(@RequestHeader("Authorization") String authHeader) {
         try {
-            String username = authentication.getName();
-            Usuario response = authService.obtenerUsuario(username);
-            return ResponseEntity.ok(response);
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+
+            String accessToken = authHeader.substring(7);
+
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(JwtUtil.getKey())
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .getBody();
+
+            Usuario usuario = authService.obtenerUsuario(claims.get("username").toString());
+            return ResponseEntity.ok(usuario);
         } catch (NotFoundError e) {
             log.error("Usuario no encontrado", e);
             return ResponseEntity.notFound().build();
@@ -104,6 +114,7 @@ public class AuthController {
         }
     }
 
+    // TODO: Revisar el parametro
     @GetMapping("/users")
     public ResponseEntity<List<Usuario>> getUsuarios(Authentication authentication) {
         try {

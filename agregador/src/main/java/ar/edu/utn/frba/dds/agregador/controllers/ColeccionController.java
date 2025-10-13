@@ -143,4 +143,15 @@ public class ColeccionController {
     coleccionService.eliminarColeccion(id);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
   }
+
+  @GetMapping("/{id}/hechos/por-consensos")
+  public ResponseEntity<List<HechoOutputDTO>> buscarHechosPorConsensos(
+      @PathVariable("id") Long id,
+      @RequestParam(name = "consensos") List<Consenso> consensos) {
+    List<HechoOutputDTO> hechos = coleccionService.buscarHechosPorConsensos(id, consensos);
+    if (hechos == null || hechos.isEmpty()) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.ok(hechos);
+  }
 }

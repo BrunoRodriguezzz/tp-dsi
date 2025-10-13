@@ -69,6 +69,9 @@ public class AuthService {
             usuario.setPassword(passwordEncoder.encode(updateUserDTO.getPassword()));
         }
 
+        usuario.setApellido(updateUserDTO.getApellido());
+        usuario.setNombre(updateUserDTO.getNombre());
+        usuario.setFechaNacimiento(updateUserDTO.getFechaNacimiento());
         usuario.setRoles(updateUserDTO.getRoles());
         usuario.setPermisos(updateUserDTO.getPermisos());
 

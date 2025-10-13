@@ -25,6 +25,9 @@ public class JwtUtil {
                 .claim("username", usuario.getUsername())
                 .claim("roles", usuario.getRoles())
                 .claim("permisos", usuario.getPermisos())
+                .claim("nombre", usuario.getNombre())
+                .claim("apellido", usuario.getApellido())
+                .claim("fechaNacimiento", usuario.getFechaNacimiento().toString())
                 .signWith(key)
                 .compact();
     }

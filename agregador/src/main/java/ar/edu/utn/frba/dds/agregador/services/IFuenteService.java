@@ -12,13 +12,21 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IFuenteService {
-  // Conseguir fuentes
-  List<FuenteOutputDTO> buscarFuentesOutput(Boolean nuevos);
-
-  // Operaciones sobre fuentes
+  List<Hecho> buscarHechos();
+  List<Hecho> buscarNuevosHechos(LocalDateTime ultimaFechaRefresco);
+  List<Hecho> buscarHechosFuente(TipoFuente tipoFuente);
+  List<Hecho> buscarHechosFuente(String nombre);
+  List<Hecho> buscarHechosProxy();
+  Fuente findById(Long id);
+  Fuente buscarFuente(String nombre);
+  List<Fuente> buscarFuentes();
   Fuente incorporarFuente(FuenteInputDTO fuenteInputDTO);
   void eliminarHecho(Hecho hecho);
+  List<FuenteOutputDTO> buscarFuentesOutput();
 
-  // Privados
+
+  Flux<Hecho> buscarHechosStream();
+  Flux<Hecho> buscarNuevosHechosStream(LocalDateTime ultimaFechaRefresco);
+  Flux<Hecho> buscarHechosFuenteStream(TipoFuente tipoFuente);
   Flux<Hecho> buscarHechosFuenteStream(String nombre);
 }

@@ -48,7 +48,6 @@ public interface IHechoRepository extends JpaRepository<Hecho, Long>, JpaSpecifi
             @Param("lonMax") double lonMax);
 
     List<Hecho> findByCategoria(Categoria categoria);
-
-    @Query("SELECT COUNT(h) FROM Hecho h JOIN h.fuenteSet hf WHERE hf.fuente.id = :fuenteId")
-    long countByFuenteId(@Param("fuenteId") Long fuenteId);
 }
+
+

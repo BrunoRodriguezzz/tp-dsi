@@ -4,11 +4,11 @@ import lombok.Data;
 
 @Data
 public class RequestLogin {
-    private String email;
+    private String usernname;
     private String password;
 
-    public RequestLogin(String email, String password) {
-        this.email = email;
+    public RequestLogin(String usernname, String password) {
+        this.usernname = usernname;
         this.password = password;
     }
 }

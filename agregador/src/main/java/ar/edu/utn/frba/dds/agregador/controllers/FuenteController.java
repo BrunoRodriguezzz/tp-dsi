@@ -11,7 +11,10 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/fuentes")
@@ -27,13 +30,14 @@ public class FuenteController {
   @PostMapping
   public ResponseEntity<FuenteOutputDTO> incorporarFuente(@RequestBody FuenteInputDTO fuente) {
     ValidadorInput.validarFuenteInputDTO(fuente);
-    FuenteOutputDTO fuenteOutputDTO = this.agregadorService.incorporarFuente(fuente);
+    Fuente fuenteGuardada = this.agregadorService.incorporarFuente(fuente);
+    FuenteOutputDTO fuenteOutputDTO = FuenteOutputDTO.toOutputDTO(fuenteGuardada);
     return ResponseEntity.status(HttpStatus.OK).body(fuenteOutputDTO);
   }
 
   @GetMapping
-  public ResponseEntity<List<FuenteOutputDTO>> buscarFuentes(@RequestParam(required = false) Boolean nuevos) {
-    List<FuenteOutputDTO> fuentes = fuenteService.buscarFuentesOutput(nuevos);
+  public ResponseEntity<List<FuenteOutputDTO>> buscarFuentes() {
+    List<FuenteOutputDTO> fuentes = fuenteService.buscarFuentesOutput();
     if (fuentes.isEmpty()) {
       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

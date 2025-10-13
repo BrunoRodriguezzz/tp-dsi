@@ -34,4 +34,5 @@ public interface IColeccionService {
   public ColeccionOutputDTO agregarFuenteAColeccion(Long id, NombreFuenteInputDTO fuenteInputDTO);
   public ColeccionOutputDTO actualizarColeccion(Long id, ColeccionInputDTO coleccion);
   public ColeccionOutputDTO agregarConsensoAColeccion(Long id, Consenso consenso);
+  List<HechoOutputDTO> buscarHechosPorConsensos(Long idColeccion, List<Consenso> consensos);
 }

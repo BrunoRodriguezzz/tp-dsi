@@ -1,0 +1,312 @@
+<html th:replace="~{layout/base :: html}">
+<head>
+    <th:block th:fragment="additional-links">
+        <link rel="stylesheet" href="css/estadisticas.css">
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </th:block>
+</head>
+
+<div th:fragment="contenido" class="container-fluid px-4 py-4">
+    <div class="mb-4">
+        <h1>Estadísticas y Análisis</h1>
+        <p>Dashboards interactivos para analizar patrones y tendencias en los datos de MetaMapa</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <!-- Total Hechos -->
+        <div th:replace="~{estadisticasAnalisis/fragments/statsCards :: statsCard(
+                'Total Hechos',
+                ${totalHechos},
+                'bi bi-graph-up-arrow',
+                'bg-primary bg-opacity-10',
+                'text-primary')}">
+        </div>
+
+        <!-- Colecciones -->
+        <div th:replace="~{estadisticasAnalisis/fragments/statsCards :: statsCard(
+                'Colecciones',
+                ${totalColecciones},
+                'bi bi-pie-chart-fill',
+                'bg-success bg-opacity-10',
+                'text-success')}">
+        </div>
+
+        <!-- Solicitudes Spam -->
+        <div th:replace="~{estadisticasAnalisis/fragments/statsCards :: statsCard(
+                'Solicitudes Spam',
+                ${cantSpam},
+                'bi bi-exclamation-triangle',
+                'bg-danger bg-opacity-10',
+                'text-danger')}">
+        </div>
+
+        <!-- Categoría Top -->
+        <div th:replace="~{estadisticasAnalisis/fragments/statsCards :: statsCard(
+                'Categoría Top',
+                ${categoriaTop},
+                'bi bi-bullseye',
+                'bg-warning bg-opacity-10',
+                'text-warning')}">
+        </div>
+    </div>
+
+    <div class="stats-tabs-wrapper">
+        <ul class="nav nav-tabs stats-tabs" id="statisticsTabs" role="tablist">
+            <th:block th:insert="~{estadisticasAnalisis/fragments/tabs :: tabButton(
+            'Colección por Provincia',
+            'Col/Prov',
+            'bi bi-geo-alt',
+            '#coleccion-provincia',
+            true)}">
+            </th:block>
+
+            <th:block th:insert="~{estadisticasAnalisis/fragments/tabs :: tabButton(
+            'Categorías',
+            'Cat',
+            'bi bi-bullseye',
+            '#categoria-general',
+            false)}">
+            </th:block>
+
+            <th:block th:insert="~{estadisticasAnalisis/fragments/tabs :: tabButton(
+            'Cat por Provincia',
+            'Cat/Prov',
+            'bi bi-geo-alt',
+            '#categoria-provincia',
+            false)}">
+            </th:block>
+
+            <th:block th:insert="~{estadisticasAnalisis/fragments/tabs :: tabButton(
+            'Cat por Hora',
+            'Cat/Hora',
+            'bi bi-clock',
+            '#categoria-hora',
+            false)}">
+            </th:block>
+
+            <th:block th:insert="~{estadisticasAnalisis/fragments/tabs :: tabButton(
+            'Solicitudes',
+            'Spam',
+            'bi bi-exclamation-triangle',
+            '#solicitudes-spam',
+            false)}">
+            </th:block>
+        </ul>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content mt-4" id="statisticsTabContent">
+
+        <!-- ========== TAB 1: Colección por Provincia ========== -->
+        <div class="tab-pane fade show active" id="coleccion-provincia" role="tabpanel">
+            <div class="card">
+                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: cardHeaderWithDropdown(
+            'bi bi-geo-alt',
+            'Distribución de Hechos por Provincia',
+            'coleccionDropdown',
+            'selectedColeccion',
+             ${colecciones},
+             'data-coleccion'
+        )}"></div>
+
+                <div class="card-body">
+                    <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('provinciaChart')}"></div>
+
+                    <div class="bg-primary bg-opacity-10 result-box">
+                        <p class="text-primary mb-0">
+                            <strong>Resultado:</strong>
+                            En la colección "<strong id="resultColeccion" th:text="${colecciones[0]}"></strong>",
+                            la mayor cantidad de hechos se concentra en
+                            <strong id="resultProvincia" th:text="${resultProvincia}"></strong>
+                            con <strong id="resultCantidad" th:text="${resultCantidad}"></strong> hechos reportados.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TAB 2: Categorías General ========== -->
+        <div class="tab-pane fade" id="categoria-general" role="tabpanel">
+            <div class="card">
+                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: cardHeaderSimple('bi bi-bar-chart', 'Hechos por Categoría')}"></div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('categoriaChart')}"></div>
+                        </div>
+                        <div class="col-lg-4">
+                            <h6 class="fw-bold mb-3">Ranking de Categorías</h6>
+                            <th:block th:each="item, iterStat : ${rankingCategorias}" th:if="${iterStat.index < 5}">
+                                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem(
+        ${iterStat.index == 0 ? '#3B82F6' :
+          (iterStat.index == 1 ? '#EF4444' :
+          (iterStat.index == 2 ? '#10B981' :
+          (iterStat.index == 3 ? '#F59E0B' : '#0dcaf0')))},
+        ${item.key},
+        ${item.value},
+        ${iterStat.index == 0 ? 'bg-primary' :
+          (iterStat.index == 1 ? 'bg-danger' :
+          (iterStat.index == 2 ? 'bg-success' :
+          (iterStat.index == 3 ? 'bg-warning' : 'bg-info')))}
+    )}"></div>
+                            </th:block>
+                        </div>
+                    </div>
+
+                    <div class="bg-success bg-opacity-10 result-box">
+                        <p class="text-success mb-0">
+                            <strong>Resultado:</strong>
+                            La categoría con mayor cantidad de hechos reportados es
+                            <strong id="categoriaTop" th:text="${categoriaTop}"></strong>
+                            con <strong id="cantidadTop" th:text="${cantidadTop}"></strong> hechos,
+                            seguida por <strong id="categoriaSegunda" th:text="${categoriaSegunda}"></strong>
+                            con <strong id="cantidadSegunda" th:text="${cantidadSegunda}"></strong> hechos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TAB 3: Categoría por Provincia ========== -->
+        <div class="tab-pane fade" id="categoria-provincia" role="tabpanel">
+            <div class="card">
+                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: cardHeaderWithDropdown(
+            'bi bi-geo-alt',
+            'Hechos por Provincia - Categoría Específica',
+            'categoriaProvinciaDropdown',
+            'selectedCategoriaP',
+            ${categorias},
+            'data-categoria-p'
+        )}"></div>
+
+                <div class="card-body">
+                    <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('categoriaProvinciaChart')}"></div>
+
+                    <div class="bg-success bg-opacity-10 result-box">
+                        <p class="text-success mb-0">
+                            <strong>Resultado:</strong>
+                            Para la categoría "<strong id="resultCategoriaP" th:text="${resultCategoriaP}"></strong>",
+                            la provincia con mayor cantidad de hechos es
+                            <strong id="resultProvinciaP" th:text="${resultProvinciaP}"></strong>
+                            con <strong id="resultCantidadP" th:text="${resultCantidadP}"></strong> hechos reportados.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TAB 4: Categoría por Hora ========== -->
+        <div class="tab-pane fade" id="categoria-hora" role="tabpanel">
+            <div class="card">
+                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: cardHeaderWithDropdown(
+            'bi bi-clock',
+            'Distribución Horaria de Hechos',
+            'categoriaHoraDropdown',
+            'selectedCategoriaH',
+            ${'Infraestructura,Seguridad,Medio Ambiente,Salud,Transporte'.split(',')},
+            'data-categoria-h'
+        )}"></div>
+
+                <div class="card-body">
+                    <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('horaChart')}"></div>
+
+                    <div class="bg-warning bg-opacity-10 result-box">
+                        <p class="text-warning-emphasis mb-0">
+                            <strong>Resultado:</strong>
+                            Los hechos de la categoría "<strong th:text="${resultCategoriaH}"></strong>"
+                            ocurren con mayor frecuencia a las
+                            <strong th:text="${resultHoraMaxima}"></strong>
+                            con <strong th:text="${resultCantidadH}"></strong> reportes,
+                            seguido por las <strong th:text="${resultHoraSegunda}"></strong>
+                            con <strong th:text="${resultCantidadSegundaH}"></strong> reportes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== TAB 5: Solicitudes Spam ========== -->
+        <div class="tab-pane fade" id="solicitudes-spam" role="tabpanel">
+            <div class="card">
+                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: cardHeaderSimple('bi bi-exclamation-triangle', 'Análisis de Solicitudes de Eliminación')}"></div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('spamChart')}"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <h6 class="fw-bold mb-3">Clasificación de Solicitudes</h6>
+
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: clasificacionItem('#EF4444', 'Spam', ${cantSpam}, 'bg-danger')}"></div>
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: clasificacionItem('#10B981', 'No Spam', ${cantNoSpam}, 'bg-success')}"></div>
+
+                            <div class="p-3 bg-secondary bg-opacity-10 rounded">
+                                <h6 class="fw-bold mb-2">Resumen Total</h6>
+                                <p class="small mb-1">Total de solicitudes procesadas: <strong th:text="${cantSpam} + ${cantNoSpam}"></strong></p>
+                                <p class="small mb-0">Porcentaje de spam: <strong th:text="(${cantSpam} / (${cantSpam} + ${cantNoSpam})) * 100 + '%'">X%</strong></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-danger bg-opacity-10 result-box">
+                        <p class="text-danger mb-0">
+                            <strong>Resultado:</strong>
+                            De un total de <strong th:text="${cantSpam} + ${cantNoSpam}"></strong> solicitudes de eliminación,
+                            <strong th:text="${cantSpam}"></strong> (<strong id="porcentajeSpam" th:text="${porcentajeSpam}"></strong>)
+                            corresponden a spam, mientras que
+                            <strong th:text="${cantNoSpam}"></strong> (<strong
+                                id="porcentajeNoSpam" th:text="${porcentajeNoSpam}"></strong>)
+                            son reportes legítimos que requieren revisión.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.datosColecciones = [[${coleccionPorProvincia}]];
+
+        // Paleta de colores
+        // Paleta secundaria "randoms"
+        const paletaExtra = [
+            "#F97316", // naranja fuerte
+            "#6366F1", // índigo
+            "#84CC16", // verde lima
+            "#D946EF", // violeta
+            "#FACC15", // amarillo
+            "#22C55E" // verde
+        ];
+
+        function generarColorDePaleta() {
+            const idx = Math.floor(Math.random() * paletaExtra.length);
+            return paletaExtra[idx];
+        }
+
+        const coloresFijos = ["#3B82F6","#EF4444","#10B981","#F59E0B","#0dcaf0"];
+        window.rankingCategorias = Object.entries([[${rankingCategorias}]]).map(([categoria, total], index) => {
+            return {
+                categoria: categoria,
+                total: total,
+                color: index < coloresFijos.length
+                    ? coloresFijos[index]
+                    : generarColorDePaleta()
+            };
+        });
+
+        window.categoriasPorProvincia = [[${categoriasPorProvincia}]];
+        window.spam = [[${cantSpam}]];
+        window.noSpam = [[${cantNoSpam}]];
+        /*]]>*/
+    </script>
+
+    <script src="js/estadisticasAnalisis/graficos-estadisticas.js"></script>
+</div>
+</html>
