@@ -61,9 +61,9 @@
                     <a href="/login" class="nav-item btn btn-outline-primary">Iniciar Sesión</a>
                 </div>
 
-                <div th:if="${usuarioLogueado != null}" class="user-info">
-                    <span class="nav-link" th:text="'Bienvenido, ' + ${usuarioLogueado}">Bienvenido, Usuario</span>
-                    <a href="/logout" class="auth-button logout-button">Cerrar Sesión</a>
+                <div th:if="${usuarioLogueado != null}" class="user-info" style="display: flex; align-items: center; justify-content: space-between">
+                    <span class="nav-link" th:text="'Bienvenido, ' + ${usuarioLogueado}" style="margin: 1rem">Bienvenido, Usuario</span>
+                    <a href="/logout" class="nav-item btn btn-outline-primary">Cerrar Sesión</a>
                 </div>
             </div>
         </div>
