@@ -47,8 +47,8 @@ class AuthServiceUnitTest {
         testUser.setId(1L);
         testUser.setUsername("testuser");
         testUser.setPassword(passwordEncoder.encode("password123"));
-        testUser.setRoles(Arrays.asList(Rol.ROL_1, Rol.ROL_2));
-        testUser.setPermisos(Arrays.asList(Permiso.PERMISO_1));
+        testUser.setRoles(Arrays.asList(Rol.CONTRIBUYENTE, Rol.ADMINISTRADOR));
+        testUser.setPermisos(Arrays.asList(Permiso.EJEMPLO));
     }
 
     @Test
@@ -144,16 +144,16 @@ class AuthServiceUnitTest {
         Usuario registerDTO = Usuario.builder()
                 .username("nuevousuario")
                 .password("password123")
-                .roles(Arrays.asList(Rol.ROL_1))
-                .permisos(Arrays.asList(Permiso.PERMISO_1, Permiso.PERMISO_2))
+                .roles(Arrays.asList(Rol.CONTRIBUYENTE))
+                .permisos(Arrays.asList(Permiso.EJEMPLO))
                 .build();
 
         Usuario usuarioGuardado = new Usuario();
         usuarioGuardado.setId(2L);
         usuarioGuardado.setUsername("nuevousuario");
         usuarioGuardado.setPassword(passwordEncoder.encode("password123"));
-        usuarioGuardado.setRoles(Arrays.asList(Rol.ROL_1));
-        usuarioGuardado.setPermisos(Arrays.asList(Permiso.PERMISO_1, Permiso.PERMISO_2));
+        usuarioGuardado.setRoles(Arrays.asList(Rol.CONTRIBUYENTE));
+        usuarioGuardado.setPermisos(Arrays.asList(Permiso.EJEMPLO));
 
         when(usuariosRepository.findByUsernameIgnoreCase("nuevousuario"))
                 .thenReturn(Optional.empty());
@@ -185,8 +185,8 @@ class AuthServiceUnitTest {
         Usuario registerDTO = Usuario.builder()
                 .username("testuser")
                 .password("password123")
-                .roles(Arrays.asList(Rol.ROL_1))
-                .permisos(Arrays.asList(Permiso.PERMISO_1))
+                .roles(Arrays.asList(Rol.CONTRIBUYENTE))
+                .permisos(Arrays.asList(Permiso.EJEMPLO))
                 .build();
 
         when(usuariosRepository.findByUsernameIgnoreCase("testuser"))
@@ -205,16 +205,16 @@ class AuthServiceUnitTest {
         Usuario updateDTO = Usuario.builder()
                 .username("usuariomodificado")
                 .password("newpassword123")
-                .roles(Arrays.asList(Rol.ROL_2))
-                .permisos(Arrays.asList(Permiso.PERMISO_2))
+                .roles(Arrays.asList(Rol.ADMINISTRADOR))
+                .permisos(Arrays.asList(Permiso.EJEMPLO))
                 .build();
 
         Usuario usuarioActualizado = new Usuario();
         usuarioActualizado.setId(1L);
         usuarioActualizado.setUsername("usuariomodificado");
         usuarioActualizado.setPassword(passwordEncoder.encode("newpassword123"));
-        usuarioActualizado.setRoles(Arrays.asList(Rol.ROL_2));
-        usuarioActualizado.setPermisos(Arrays.asList(Permiso.PERMISO_2));
+        usuarioActualizado.setRoles(Arrays.asList(Rol.ADMINISTRADOR));
+        usuarioActualizado.setPermisos(Arrays.asList(Permiso.EJEMPLO));
 
         when(usuariosRepository.findById(1L))
                 .thenReturn(Optional.of(testUser));
@@ -228,8 +228,8 @@ class AuthServiceUnitTest {
         assertThat(resultado).isNotNull();
         assertThat(resultado.getId()).isEqualTo(1L);
         assertThat(resultado.getUsername()).isEqualTo("usuariomodificado");
-        assertThat(resultado.getRoles()).containsExactly(Rol.ROL_2);
-        assertThat(resultado.getPermisos()).containsExactly(Permiso.PERMISO_2);
+        assertThat(resultado.getRoles()).containsExactly(Rol.ADMINISTRADOR);
+        assertThat(resultado.getPermisos()).containsExactly(Permiso.EJEMPLO);
 
         verify(usuariosRepository).findById(1L);
         verify(usuariosRepository).findByUsernameIgnoreCase("usuariomodificado");
@@ -241,8 +241,8 @@ class AuthServiceUnitTest {
         Usuario updateDTO = Usuario.builder()
                 .username("usuariomodificado")
                 .password(null) // No cambiar password
-                .roles(Arrays.asList(Rol.ROL_2))
-                .permisos(Arrays.asList(Permiso.PERMISO_2))
+                .roles(Arrays.asList(Rol.ADMINISTRADOR))
+                .permisos(Arrays.asList(Permiso.EJEMPLO))
                 .build();
 
         String passwordOriginal = testUser.getPassword();
@@ -267,8 +267,8 @@ class AuthServiceUnitTest {
     void modificarUsuario_ConUsuarioInexistente_DeberiaLanzarNotFoundException() {
         Usuario updateDTO = Usuario.builder()
                 .username("usuariomodificado")
-                .roles(Arrays.asList(Rol.ROL_1))
-                .permisos(Arrays.asList(Permiso.PERMISO_1))
+                .roles(Arrays.asList(Rol.CONTRIBUYENTE))
+                .permisos(Arrays.asList(Permiso.EJEMPLO))
                 .build();
 
         when(usuariosRepository.findById(999L))
@@ -290,8 +290,8 @@ class AuthServiceUnitTest {
 
         Usuario updateDTO = Usuario.builder()
                 .username("otrousuario") // Username que ya existe
-                .roles(Arrays.asList(Rol.ROL_1))
-                .permisos(Arrays.asList(Permiso.PERMISO_1))
+                .roles(Arrays.asList(Rol.CONTRIBUYENTE))
+                .permisos(Arrays.asList(Permiso.EJEMPLO))
                 .build();
 
         when(usuariosRepository.findById(1L))
@@ -313,8 +313,8 @@ class AuthServiceUnitTest {
         Usuario updateDTO = Usuario.builder()
                 .username("testuser") // Mismo username del usuario actual
                 .password("newpassword")
-                .roles(Arrays.asList(Rol.ROL_2))
-                .permisos(Arrays.asList(Permiso.PERMISO_2))
+                .roles(Arrays.asList(Rol.ADMINISTRADOR))
+                .permisos(Arrays.asList(Permiso.EJEMPLO))
                 .build();
 
         when(usuariosRepository.findById(1L))
