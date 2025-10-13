@@ -50,4 +50,3 @@ public interface IHechoRepository extends JpaRepository<Hecho, Long>, JpaSpecifi
     List<Hecho> findByCategoria(Categoria categoria);
 }
 
-
