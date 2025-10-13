@@ -1,0 +1,47 @@
+<html th:replace="~{layout/base :: html}">
+
+<head>
+    <th:block th:fragment="additional-links">
+        <link rel="stylesheet" th:ref="@{/css/fuentesRecientes.css}">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    </th:block>
+</head>
+
+<div th:fragment="contenido">
+    <main class="container">
+        <div class="page-info">
+            <a th:href="@{/panelControl}" class="link" id="link-panelDeControl">← Volver al Panel de Control</a>
+            <h2><strong>Fuentes Recientes</strong></h2>
+            <p>Supervisa las fuentes de datos creadas recientemente</p>
+        </div>
+        <div class="container-totalFuentes">
+            <div class="logo-database">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-database"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path></svg>
+            </div>
+            <div>
+                <p>Total de Fuentes Recientes</p>
+                <h4 th:text="${cantidadFuentes}"><strong>0</strong></h4>
+            </div>
+        </div>
+        <div class="container-fuentesCreadas">
+            <div class="fuentesCreadas-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-database w-4 h-4 sm:w-5 sm:h-5"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"></path></svg>
+                <h6><strong>Fuentes Creadas Recientemente</strong></h6>
+            </div>
+
+            <div class="fuentes-lista">
+                <div th:each="fuente : ${fuentes}" class="fuente-item">
+                    <div class="fuente-info">
+                        <h5 class="fuente-titulo" th:text="${fuente.nombre}">Nombre de la Fuente</h5>
+                        <div class="fuente-estado activa">Activa</div>
+                        <div class="fuente-detalles">
+                            <span class="detalle"><strong>Tipo:</strong> <span th:text="${fuente.tipoFuente}">Tipo de Fuente</span></span>
+                            <span class="detalle"><strong>Hechos:</strong> <span th:text="${fuente.cantidadHechos}">0</span></span>
+                            <span class="detalle"><strong>Creada:</strong> <span th:text="${#dates.format(fuente.fechaCreacion, 'yyyy-MM-dd')}">Fecha</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

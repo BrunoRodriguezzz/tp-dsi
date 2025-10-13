@@ -1,13 +1,101 @@
 package ar.edu.utn.frba.dds.client.services;
 
+import ar.edu.utn.frba.dds.client.dtos.ContribuyenteDTO;
+import ar.edu.utn.frba.dds.client.dtos.FuenteDTO;
 import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.UbicacionDTO;
+import ar.edu.utn.frba.dds.client.dtos.solicitud.ResolucionDTO;
+import ar.edu.utn.frba.dds.client.dtos.solicitud.SolicitudDTO;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
 public class MockService {
+    public List<SolicitudDTO> obtenerSolicitudesMockeadas() {
+        return Arrays.asList(
+            SolicitudDTO.builder()
+                .id(1L)
+                .hecho(this.obtenerHechoPorId(1L))
+                .fundamento("El hecho reportado es de interés comunitario y merece ser verificado.")
+                .fechaCreacion(LocalDate.of(2024, 3, 20).atStartOfDay())
+                .contribuyente(null)
+                .estado("PENDIENTE")
+                .resolucion(null)
+                .build(),
+            SolicitudDTO.builder()
+                .id(2L)
+                .hecho(this.obtenerHechoPorId(2L))
+                .fundamento("Se solicita revisión del hecho debido a la falta de detalles en la descripción.")
+                .fechaCreacion(LocalDate.of(2024, 3, 18).atStartOfDay())
+                .contribuyente(this.MockContribuyenteDTO())
+                .estado("APROBADA")
+                .resolucion(MockResolucionDTO())
+                .build(),
+            SolicitudDTO.builder()
+                .id(3L)
+                .hecho(this.obtenerHechoPorId(3L))
+                .fundamento("El hecho parece relevante para la comunidad educativa y debe ser verificado.")
+                .fechaCreacion(LocalDate.of(2024, 3, 15).atStartOfDay())
+                .contribuyente(this.MockContribuyenteDTO())
+                .estado("RECHAZADA")
+                .resolucion(MockResolucionDTO())
+                .build()
+        );
+    }
+
+    public List<FuenteDTO> obtenerFuentesMockeadas() {
+        return Arrays.asList(
+            FuenteDTO.builder()
+                .id(1L)
+                .nombre("Secretaría de Cultura de San Telmo")
+                .tipoFuente("MANUAL")
+                .cantidadHechos(5)
+                .build(),
+            FuenteDTO.builder()
+                .id(2L)
+                .nombre("Policía de Córdoba - Sistema de Emergencias")
+                .tipoFuente("DATASET")
+                .cantidadHechos(8)
+                .build(),
+            FuenteDTO.builder()
+                .id(3L)
+                .nombre("Diario La Capital")
+                .tipoFuente("PROXY")
+                .cantidadHechos(12)
+                .build(),
+            FuenteDTO.builder()
+                .id(4L)
+                .nombre("María González - Vecina del barrio")
+                .tipoFuente("CONTRIBUYENTE")
+                .cantidadHechos(3)
+                .build(),
+            FuenteDTO.builder()
+                .id(5L)
+                .nombre("Liga Deportiva Municipal")
+                .tipoFuente("MANUAL")
+                .cantidadHechos(7)
+                .build(),
+            FuenteDTO.builder()
+                .id(6L)
+                .nombre("ONG Verde Tucumán")
+                .tipoFuente("CONTRIBUYENTE")
+                .cantidadHechos(4)
+                .build(),
+            FuenteDTO.builder()
+                .id(7L)
+                .nombre("Portal de Noticias Mar del Plata Hoy")
+                .tipoFuente("PROXY")
+                .cantidadHechos(6)
+                .build(),
+            FuenteDTO.builder()
+                .id(8L)
+                .nombre("Ministerio de Salud de Salta - Boletín Epidemiológico")
+                .tipoFuente("DATASET")
+                .cantidadHechos(10)
+                .build()
+        );
+    }
 
     public List<HechoDTO> obtenerHechosMockeados() {
         return Arrays.asList(
@@ -22,7 +110,7 @@ public class MockService {
                     .latitud("-34.6206")
                     .longitud("-58.3731")
                     .build())
-                .fechaAcontecimiento(LocalDate.of(2024, 3, 15))
+                .fechaAcontecimiento(LocalDate.of(2024, 3, 15).atStartOfDay())
                 .etiquetas(Arrays.asList("tango", "música", "cultura", "barrio"))
                 .fuente("Secretaría de Cultura de San Telmo")
                 .origen("MANUAL")
@@ -39,7 +127,7 @@ public class MockService {
                     .latitud("-31.4231")
                     .longitud("-64.4965")
                     .build())
-                .fechaAcontecimiento(LocalDate.of(2024, 2, 28))
+                .fechaAcontecimiento(LocalDate.of(2024, 2, 28).atStartOfDay())
                 .etiquetas(Arrays.asList("accidente", "tránsito", "emergencia"))
                 .fuente("Policía de Córdoba - Sistema de Emergencias")
                 .origen("DATASET")
@@ -56,7 +144,7 @@ public class MockService {
                     .latitud("-32.9468")
                     .longitud("-60.6393")
                     .build())
-                .fechaAcontecimiento(LocalDate.of(2024, 4, 10))
+                .fechaAcontecimiento(LocalDate.of(2024, 4, 10).atStartOfDay())
                 .etiquetas(Arrays.asList("educación", "biblioteca", "inauguración", "comunidad"))
                 .fuente("Diario La Capital")
                 .origen("PROXY")
@@ -73,7 +161,7 @@ public class MockService {
                     .latitud("-32.9267")
                     .longitud("-68.8545")
                     .build())
-                .fechaAcontecimiento(LocalDate.of(2024, 1, 22))
+                .fechaAcontecimiento(LocalDate.of(2024, 1, 22).atStartOfDay())
                 .etiquetas(Arrays.asList("protesta", "trabajo", "derechos", "sindical"))
                 .fuente("María González - Vecina del barrio")
                 .origen("CONTRIBUYENTE")
@@ -90,7 +178,7 @@ public class MockService {
                     .latitud("-34.9206")
                     .longitud("-57.9544")
                     .build())
-                .fechaAcontecimiento(LocalDate.of(2024, 5, 8))
+                .fechaAcontecimiento(LocalDate.of(2024, 5, 8).atStartOfDay())
                 .etiquetas(Arrays.asList("fútbol", "juvenil", "deporte", "torneo"))
                 .fuente("Liga Deportiva Municipal")
                 .origen("MANUAL")
@@ -107,7 +195,7 @@ public class MockService {
                     .latitud("-26.8241")
                     .longitud("-65.2226")
                     .build())
-                .fechaAcontecimiento(LocalDate.of(2024, 3, 5))
+                .fechaAcontecimiento(LocalDate.of(2024, 3, 5).atStartOfDay())
                 .etiquetas(Arrays.asList("limpieza", "medio ambiente", "plaza", "comunidad"))
                 .fuente("ONG Verde Tucumán")
                 .origen("CONTRIBUYENTE")
@@ -124,7 +212,7 @@ public class MockService {
                     .latitud("-38.0055")
                     .longitud("-57.5426")
                     .build())
-                .fechaAcontecimiento(LocalDate.of(2024, 4, 20))
+                .fechaAcontecimiento(LocalDate.of(2024, 4, 20).atStartOfDay())
                 .etiquetas(Arrays.asList("rock", "música", "concierto", "nacional"))
                 .fuente("Portal de Noticias Mar del Plata Hoy")
                 .origen("PROXY")
@@ -141,7 +229,7 @@ public class MockService {
                     .latitud("-24.7821")
                     .longitud("-65.4232")
                     .build())
-                .fechaAcontecimiento(LocalDate.of(2024, 2, 14))
+                .fechaAcontecimiento(LocalDate.of(2024, 2, 14).atStartOfDay())
                 .etiquetas(Arrays.asList("vacunación", "salud", "gratuita", "campaña"))
                 .fuente("Ministerio de Salud de Salta - Boletín Epidemiológico")
                 .origen("DATASET")
@@ -152,6 +240,57 @@ public class MockService {
         return this.obtenerHechosMockeados()
             .stream()
             .filter(hecho -> hecho.getId().equals(id))
-            .findFirst().get();
+            .findFirst().orElse(null);
+    }
+
+    public List<HechoDTO> obtenerHechosPendientesMockeados() {
+        return Arrays.asList(
+            HechoDTO.builder()
+                .id(101L)
+                .titulo("Corte de luz en barrio San Martín")
+                .descripcion("Interrupción del suministro eléctrico desde las 22:00 por trabajos de mantenimiento.")
+                .categoria("Servicios Públicos")
+                .ubicacion(UbicacionDTO.builder()
+                    .provincia("Buenos Aires")
+                    .municipio("San Martín")
+                    .latitud("-34.5747")
+                    .longitud("-58.5516")
+                    .build())
+                .fechaAcontecimiento(LocalDate.of(2025, 10, 10).atStartOfDay())
+                .etiquetas(Arrays.asList("corte de luz", "mantenimiento", "servicio"))
+                .fuente("Empresa de Energía Metropolitana")
+                .origen("MANUAL")
+                .build(),
+            HechoDTO.builder()
+                .id(102L)
+                .titulo("Feria de emprendedores locales")
+                .descripcion("Evento con más de 50 stands de emprendedores y artesanos en la plaza principal.")
+                .categoria("Comercial")
+                .ubicacion(UbicacionDTO.builder()
+                    .provincia("Córdoba")
+                    .municipio("Villa Allende")
+                    .latitud("-31.2945")
+                    .longitud("-64.2956")
+                    .build())
+                .fechaAcontecimiento(LocalDate.of(2025, 10, 11).atStartOfDay())
+                .etiquetas(Arrays.asList("feria", "emprendedores", "artesanos", "evento"))
+                .fuente("Municipalidad de Villa Allende")
+                .origen("MANUAL")
+                .build()
+        );
+    }
+
+    // Métodos mock para contribuyente y resolución
+    private ContribuyenteDTO MockContribuyenteDTO() {
+        return ContribuyenteDTO.builder()
+            .nombre("Mockeado Contribuyente")
+            .build();
+    }
+
+    private ResolucionDTO MockResolucionDTO() {
+        return ResolucionDTO.builder()
+            .administrador(this.MockContribuyenteDTO())
+            .fechaResolucion(LocalDate.of(2024, 4, 1).atStartOfDay())
+            .build();
     }
 }

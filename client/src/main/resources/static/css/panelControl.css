@@ -1,0 +1,139 @@
+.col {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 10px;
+    padding: 0.2rem 0.4rem;
+}
+
+.metricas-container {
+    gap: 1rem;
+    width: 100%;
+}
+
+.contenidos-metricas {
+    font-size: small;
+}
+
+.valor-metrica {
+    font-weight: bold;
+    font-size: medium;
+}
+
+.contenidos-metricas p {
+    margin: 0;
+    width: 9rem;
+}
+
+h1 {
+    margin-top: 7rem;
+}
+
+.accesos-container svg {
+    margin-bottom: 0.8rem;
+}
+
+/* Metricas */
+.metricas-container svg {
+    margin-right: 1rem;
+    padding: 2px;
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
+}
+
+/* Accesos */
+
+.accesos-container {
+    margin-top: 2rem;
+}
+
+.accesos-container svg {
+    width: 70px;
+    height: 70px;
+    padding: 15px;
+    border-radius: 100%;
+}
+
+/* logos */
+.blue {
+    color: var(--color-blue-600);
+    background-color: var(--color-blue-100);
+}
+
+.green {
+    color: var(--color-green-600);
+    background-color: var(--color-green-100);
+}
+
+.red {
+    color: var(--color-red-600);
+    background-color: var(--color-red-100);
+}
+
+.violet {
+    color: var(--color-violet-600);
+    background-color: var(--color-violet-100);
+}
+
+/* Links */
+a {
+    text-decoration: none;
+}
+
+#link-hechos-pendientes {
+    color: var(--color-blue-600);
+}
+
+#link-fuentes {
+    color: var(--color-green-600);
+}
+
+#link-solicitudes {
+    color: var(--color-red-600);
+}
+
+#link-csv {
+    color: var(--color-violet-600);
+}
+
+/* Cartas */
+.card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card {
+    margin-bottom: 2rem;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.card {
+    transition: all 0.3s ease; /* suaviza animaciones */
+}
+
+.card-body svg {
+    padding: 8px;
+    border-radius: 30%;
+}
+
+.card:hover .blue {
+    background-color: #cde0f8;
+}
+
+.card:hover .green {
+    background-color: #c9f8d9;
+}
+
+.card:hover .red {
+    background-color: #ffd8d8;
+}
+
+.card:hover .violet {
+    background-color: #d8cfff;
+}
