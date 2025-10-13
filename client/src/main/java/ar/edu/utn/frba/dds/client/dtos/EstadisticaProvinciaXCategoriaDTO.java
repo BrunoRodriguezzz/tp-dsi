@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class EstadisticaProvinciaXColeccionDTO {
-    private String coleccion;
+@AllArgsConstructor
+public class EstadisticaProvinciaXCategoriaDTO {
+
+    private String categoria;
     private Map<String, Long> provinciasConHechos;
+
 }
-// TODO: ponerle un OutputDTO al servicio de estadísticas para que me lo mande así
