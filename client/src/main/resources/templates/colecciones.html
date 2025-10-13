@@ -8,6 +8,7 @@
         <link rel="stylesheet" th:href="@{/css/styles.css}">
         <link rel="stylesheet" th:href="@{/css/components.css}">
         <link rel="stylesheet" th:href="@{/css/coleccion.css}">
+        <link rel="stylesheet" th:href="@{/css/colecciones.css}">
         <link rel="stylesheet" th:href="@{/css/header.css}">
         <link rel="stylesheet" th:href="@{/css/footer.css}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -31,19 +32,15 @@
                 </div>
             </div>
             <div class="colecciones-container">
-                <div class="row">
-                    <div class="col" th:each="coleccion : ${colecciones}">
-                        <div class="coleccion-card">
-                            <h3 th:text="${coleccion.titulo}">Nombre Colección</h3>
-                            <p class="coleccion-cantidad-hechos" th:text="${coleccion.cantidadHechos} + ' hechos registrados'">0 hechos registrados</p>
-                            <p th:text="${coleccion.descripcion}">Descripción de la colección</p>
-                            <p>Algoritmos de Consenso:</p>
-                            <div class="etiquetas-algoritmos-container">
-                                <p class="etiqueta-algoritmo-consenso" th:each="consenso : ${coleccion.consensos}" th:text="${consenso}">Algoritmo</p>
-                            </div>
-                            <a th:href="@{/hechos/coleccion/{id}(id=${coleccion.id})}" class="link-coleccion">Ver Colección →</a>
-                        </div>
+                <div class="coleccion-card" th:each="coleccion : ${colecciones}">
+                    <h3 th:text="${coleccion.titulo}">Nombre Colección</h3>
+                    <p class="coleccion-cantidad-hechos" th:text="${coleccion.cantidadHechos} + ' hechos registrados'">0 hechos registrados</p>
+                    <p th:text="${coleccion.descripcion}">Descripción de la colección</p>
+                    <p>Algoritmos de Consenso:</p>
+                    <div class="etiquetas-algoritmos-container">
+                        <p class="etiqueta-algoritmo-consenso" th:each="consenso : ${coleccion.consensos}" th:text="${consenso}">Algoritmo</p>
                     </div>
+                    <a th:href="@{/coleccion/{id}(id=${coleccion.id})}" class="link-coleccion">Ver Colección →</a>
                 </div>
             </div>
         </main>

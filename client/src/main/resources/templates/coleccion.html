@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${coleccion.titulo}">Coleccion</title>
+    <title th:text="${coleccion != null} ? coleccion.titulo : 'Colección no encontrada'">Coleccion</title>
     <th:block th:fragment="additional-links">
         <link rel="stylesheet" th:href="@{/css/styles.css}">
         <link rel="stylesheet" th:href="@{/css/components.css}">
@@ -17,94 +17,124 @@
     </th:block>
 </head>
 <body>
+    <div th:fragment="contenido">
     <a th:href="@{/}" href="index.html">Volver al inicio</a>
     <main class="container">
-        <div class="titulo-descripcion">
-            <div class="colecciones-titulo-descripcion-container">
-                <h2 th:text="${coleccion.titulo}">Título Colección</h2>
-                <p th:text="${coleccion.descripcion}">Descripción de la colección</p>
-            </div>
-            <div class="titulos-buttons">
-                <button class="btn btn-filtro" onclick="document.querySelector('.filtros-container').style.display = (document.querySelector('.filtros-container').style.display === 'none' ? 'block' : 'none')">Mostrar filtros</button>
-                <a th:href="@{/editarColeccion/{id}(id=${coleccion.id})}">
-                    <button class="nav-item btn btn-outline-primary">Modificar Colección</button>
-                </a>
-            </div>
+        <div th:if="${coleccion == null}">
+            <h2>Colección no encontrada</h2>
+            <p>La colección solicitada no existe.</p>
         </div>
-
-        <div class="modos-navegacion-container">
-            <div class="modo-navegacion-container curado">
-                <div class="modo-navegacion-i-titulo">
-                    <i class="fa-solid fa-shield"></i>
-                    <h5>Navegando en modo Curado</h5>
+        <div th:if="${coleccion != null}">
+            <div class="titulo-descripcion">
+                <div class="colecciones-titulo-descripcion-container">
+                    <h2 th:text="${coleccion.titulo}">Título Colección</h2>
+                    <p th:text="${coleccion.descripcion}">Descripción de la colección</p>
+                </div>
+                <div class="titulos-buttons">
+                    <button class="btn btn-filtro" onclick="document.querySelector('.filtros-container').style.display = (document.querySelector('.filtros-container').style.display === 'none' ? 'block' : 'none')">Mostrar filtros</button>
+                    <a th:if="${coleccion.id != null}" th:href="@{'/editarColeccion/' + ${coleccion.id}}" class="nav-item btn btn-outline-primary">Modificar Colección</a>
                 </div>
             </div>
-            <div class="modo-navegacion-container irrestricto">
-                <div class="modo-navegacion-i-titulo">
-                    <i class="fa-solid fa-shield"></i>
-                    <h5>Navegando en modo Irrestricto</h5>
-                </div>
-            </div>
-        </div>
 
-        <div class="parrafos-modos-navegacion">
-            <p>Algoritmos:</p>
-            <div class="modos-navegacion-container" id="algoritmos">
-                <p class="etiqueta-algoritmo-consenso" th:each="consenso : ${coleccion.consensos}" th:text="${consenso}">Algoritmo</p>
-            </div>
-        </div>
-
-        <div class="filtros-container" style="display: none;">
-            <h5>Filtros</h5>
-            <div class="filtros-grid">
-                <div class="form-group" th:each="filtro : ${coleccion.criterio.filtros}">
-                    <label th:for="${filtro.nombre}" th:text="${filtro.nombre}">Categoría</label>
-                    <input th:id="${filtro.nombre}" type="text" th:placeholder="${filtro.detalle}" readonly>
-                </div>
-                <div class="form-group wide">
-                    <label>&nbsp;</label>
-                    <button onclick="window.location.reload()">Limpiar Filtros</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="hechos-container">
-            <div class="row">
-                <div class="col" th:each="hecho : ${coleccion.hechos}">
-                    <div class="hecho-card">
-                        <div class="hecho-card-mas-opciones">
-                            <div class="titulo-mas-descripcion">
-                                <h2 class="titulo-Hecho" th:text="${hecho.titulo}">Título Hecho</h2>
-                                <p class="descripcion" th:text="${hecho.descripcion}">Descripción del hecho</p>
-                            </div>
-                            <div class="opciones">
-                                <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Categoría</p>
-                                <a th:href="@{/verDetalle-hecho/{id}(id=${hecho.id})}" class="btn btn-dark"><span>Ver Detalle</span></a>
-                                <a th:href="@{/reportarHecho}" class="btn btn-red config-opciones">Reportar</a>
-                            </div>
-                        </div>
-                        <div class="informacion-general">
-                            <div class="fecha-ubicacion-fuente encolumnar">
-                                <p class="info-fecha-ubicacion-fuente"><b>Fecha: </b><span th:text="${hecho.fechaAcontecimiento}">2024-01-15</span></p>
-                                <p class="info-fecha-ubicacion-fuente"><b>Ubicación: </b><span th:text="${hecho.ubicacion}">Plaza de Mayo, Buenos Aires</span></p>
-                                <p class="info-fecha-ubicacion-fuente"><b>Fuente: </b><span th:text="${hecho.fuente}">Reportes ciudadanos</span></p>
-                            </div>
-                            <div class="etiquetas">
-                                <p class="titulo-etiqueta etiqueta-interes" th:each="etiqueta : ${hecho.etiquetas}" th:text="${etiqueta}">etiqueta</p>
-                            </div>
-                            <div class="ultima-linea">
-                                <div class="fechaPublicacion">
-                                    <i class="fa-regular fa-calendar"></i>
-                                    <p class="alineacion">Publicado: <span th:text="${hecho.fechaPublicacion}">2024-01-16</span></p>
-                                </div>
-                            </div>
-                        </div>
+            <div class="modos-navegacion-container">
+                <div class="modo-navegacion-container curado">
+                    <div class="modo-navegacion-i-titulo">
+                        <i class="fa-solid fa-shield"></i>
+                        <h5>Navegando en modo Curado</h5>
                     </div>
                 </div>
+                <div class="modo-navegacion-container irrestricto">
+                    <div class="modo-navegacion-i-titulo">
+                        <i class="fa-solid fa-shield"></i>
+                        <h5>Navegando en modo Irrestricto</h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="parrafos-modos-navegacion">
+                <p>Algoritmos:</p>
+                <div class="modos-navegacion-container" id="algoritmos">
+                    <p class="etiqueta-algoritmo-consenso" th:each="consenso : ${coleccion.consensos}" th:text="${consenso}">Algoritmo</p>
+                </div>
+            </div>
+
+            <div class="filtros-container" style="display: none;">
+                <h5>Filtros</h5>
+                <div class="filtros-grid">
+                    <div class="form-group" th:each="filtro : ${coleccion.criterio.filtros}">
+                        <label th:for="${filtro.nombre}" th:text="${filtro.nombre}">Categoría</label>
+                        <input th:id="${filtro.nombre}" type="text" th:placeholder="${filtro.detalle}" readonly>
+                    </div>
+                    <div class="form-group wide">
+                        <label>&nbsp;</label>
+                        <button onclick="window.location.reload()">Limpiar Filtros</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hechos-container" id="hechos-container">
+                <!-- Los hechos se cargarán dinámicamente por JS -->
             </div>
         </div>
     </main>
     <script th:src="@{/js/coleccion.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            var coleccionId = /*[[${coleccion != null} ? coleccion.id : 0]]*/ 0;
+            if (coleccionId === 0) return;
+            fetch('/coleccion/' + coleccionId + '/hechos')
+                .then(response => response.json())
+                .then(hechos => {
+                    const container = document.getElementById('hechos-container');
+                    if (!hechos || hechos.length === 0) {
+                        container.innerHTML = '<p>No hay hechos para esta colección.</p>';
+                        return;
+                    }
+                    let html = '<div class="row">';
+                    hechos.forEach(hecho => {
+                        html += `
+                        <div class="col">
+                            <div class="hecho-card">
+                                <div class="hecho-card-mas-opciones">
+                                    <div class="titulo-mas-descripcion">
+                                        <h2 class="titulo-Hecho">${hecho.titulo || ''}</h2>
+                                        <p class="descripcion">${hecho.descripcion || ''}</p>
+                                    </div>
+                                    <div class="opciones">
+                                        <p class="etiqueta-categoria config-categoria distancia-opciones">${hecho.categoria || ''}</p>
+                                        <a href="/verDetalle-hecho/${hecho.id}" class="btn btn-dark"><span>Ver Detalle</span></a>
+                                        <a href="/reportarHecho" class="btn btn-red config-opciones">Reportar</a>
+                                    </div>
+                                </div>
+                                <div class="informacion-general">
+                                    <div class="fecha-ubicacion-fuente encolumnar">
+                                        <p class="info-fecha-ubicacion-fuente"><b>Fecha: </b><span>${hecho.fechaAcontecimiento || ''}</span></p>
+                                        <p class="info-fecha-ubicacion-fuente"><b>Ubicación: </b><span>${hecho.ubicacion || ''}</span></p>
+                                        <p class="info-fecha-ubicacion-fuente"><b>Fuente: </b><span>${hecho.fuente || ''}</span></p>
+                                    </div>
+                                    <div class="etiquetas">
+                                        ${(hecho.etiquetas || []).map(etiqueta => `<p class="titulo-etiqueta etiqueta-interes">${etiqueta}</p>`).join('')}
+                                    </div>
+                                    <div class="ultima-linea">
+                                        <div class="fechaPublicacion">
+                                            <i class="fa-regular fa-calendar"></i>
+                                            <p class="alineacion">Publicado: <span>${hecho.fechaPublicacion || ''}</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                    html += '</div>';
+                    container.innerHTML = html;
+                })
+                .catch(() => {
+                    document.getElementById('hechos-container').innerHTML = '<p>Error al cargar los hechos.</p>';
+                });
+        });
+        /*]]>*/
+    </script>
+    </div>
 </body>
 </html>
-

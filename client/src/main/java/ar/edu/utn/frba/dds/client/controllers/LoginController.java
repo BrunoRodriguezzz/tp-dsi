@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Usuario;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,9 +42,8 @@ public class LoginController {
                            Model model,
                            RedirectAttributes redirectAttributes) {
         try {
-            // TODO: ESTO ESTÁ HARDCODEADO, DEFINIR DÓNDE PONER LOS ROLES Y CUÁLES
-            usuario.setRoles(List.of(Rol.ROL_1));
-            usuario.setPermisos(List.of(Permiso.PERMISO_2));
+            usuario.setRoles(List.of(Rol.CONTRIBUYENTE));
+            usuario.setPermisos(new ArrayList<>());
 
             UsuarioDTO usuarioCreado = authApiService.crearUsuario(usuario);
 

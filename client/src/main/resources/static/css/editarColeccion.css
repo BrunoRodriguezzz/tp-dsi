@@ -1,40 +1,235 @@
-.form-coleccion {
-    margin: 0 auto;
-    max-width: 40rem;
+body {
+    background: #f4f6fa;
+    font-family: 'Inter', Arial, sans-serif;
+}
+
+.container {
+    max-width: 700px;
+    margin: 40px auto 0 auto;
+    padding: 0 1rem;
+}
+
+.outer-form {
+    background: transparent;
+    box-shadow: none;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.outer-form h2 {
+    font-size: 2.3rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
     text-align: left;
-    border: 1px solid var(--color-gray-300);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+}
+
+.outer-form p {
+    color: #6c757d;
+    font-size: 1.1rem;
+    text-align: left;
+    margin-bottom: 2.2rem;
+}
+
+.form-section {
+    background: #fff !important;
+    border: 1.5px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    padding: 2rem 2rem 1.5rem 2rem !important;
+    margin-bottom: 2rem !important;
+    max-width: 100%;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+.form-section h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.1rem;
+    color: #222;
+    margin-top: 0;
+}
+
+.form-section p {
+    color: #8a8a8a;
+    font-size: 1.02rem;
+    margin-bottom: 0.7rem;
+    margin-top: 0;
+    font-weight: 400;
+}
+
+.form-group {
+    margin-bottom: 1.1rem;
+}
+
+.form-group h6 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+}
+
+input.form-control, textarea.form-control, select.form-select {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+    background: #f8fafc;
+    margin-bottom: 0.2rem;
+    transition: border-color 0.2s;
+    width: 100%;
+}
+
+input.form-control:focus, textarea.form-control:focus, select.form-select:focus {
+    border-color: #4f8cff;
+    outline: none;
+    background: #fff;
+}
+
+.etiquetas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.titulo-etiqueta {
+    display: flex;
+    align-items: center;
+    background: #e6f0fa;
+    color: #2563eb;
+    border-radius: 16px;
+    padding: 0.3rem 0.9rem 0.3rem 0.9rem;
+    font-size: 0.97rem;
+    font-weight: 500;
+    margin: 0;
+    gap: 0.5rem;
+}
+
+.titulo-etiqueta button {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-size: 1rem;
+    margin-left: 0.3rem;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.titulo-etiqueta button:hover {
+    background: #dbeafe;
 }
 
 .botones-formulario {
     display: flex;
-    gap: 1rem;
+    gap: 1.2rem;
     justify-content: center;
-    max-width: 40rem;
+    max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 1.5rem;
+}
+
+.btn.btn-dark {
+    background: #2563eb;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.08rem;
+    padding: 0.7rem 2.2rem;
+    transition: background 0.2s;
+}
+
+.btn.btn-dark:hover {
+    background: #174ea6;
 }
 
 .btn-cancelar {
-    color: #000 !important;
-    border-color: #dee2e6 !important;
+    color: #2563eb !important;
+    border-color: #b6c6e3 !important;
+    background: #f8fafc !important;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 1.08rem;
+    padding: 0.7rem 2.2rem;
+    transition: background 0.2s, border-color 0.2s;
 }
 
 .btn-cancelar:hover {
-    color: #000 !important;
-    background-color: #f8f9fa !important;
-    border-color: #adb5bd !important;
+    color: #174ea6 !important;
+    background: #e6f0fa !important;
+    border-color: #2563eb !important;
 }
 
-.btn-cancelar:focus,
-.btn-cancelar:active {
-    color: #000 !important;
-    background-color: #e9ecef !important;
-    border-color: #adb5bd !important;
-}
-
-.etiquetas{
+.fuentes-list {
+    margin-top: 0.5rem;
     display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.fuente-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 0.3rem 0.9rem 0.3rem 0.9rem;
+    font-size: 1rem;
+    color: #222;
+    min-height: 36px;
+    box-shadow: none;
+    transition: box-shadow 0.2s;
+}
+
+.fuente-item:hover {
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.06);
+}
+
+.fuente-remove {
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    color: #222;
+    font-size: 1.1rem;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    margin-left: 0.7rem;
+    box-shadow: none;
+}
+
+.fuente-remove:hover {
+    background: #f1f5f9;
+    border-color: #2563eb;
+    color: #2563eb;
+}
+
+/* Eliminar chips azules para etiquetas de fuentes */
+.etiquetas, .titulo-etiqueta, .etiqueta-interes {
+    display: none !important;
+}
+
+@media (max-width: 700px) {
+    .container {
+        max-width: 98vw;
+        padding: 0 0.3rem;
+    }
+    .form-section, .botones-formulario {
+        max-width: 100%;
+        padding: 1.1rem;
+    }
 }

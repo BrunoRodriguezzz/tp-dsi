@@ -17,4 +17,3 @@ public class ColeccionDTO {
     private List<String> fuentes;
     private List<String> consensos;
 }
-

@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
 import ar.edu.utn.frba.dds.client.dtos.ColeccionDTO;
+import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
 import ar.edu.utn.frba.dds.client.services.ColeccionService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/hechos")
 @RequiredArgsConstructor
 public class ColeccionController {
   private final Logger LOGGER = LogManager.getLogger(ColeccionController.class);
@@ -51,5 +52,18 @@ public class ColeccionController {
     ColeccionDTO coleccion = coleccionService.obtenerColeccionPorId(id);
     model.addAttribute("coleccion", coleccion);
     return "coleccion";
+  }
+
+  @GetMapping("/coleccion/{id}/hechos")
+  @ResponseBody
+  public List<HechoDTO> hechosDeColeccion(@PathVariable Long id) {
+    return coleccionService.obtenerHechosPorColeccionId(id);
+  }
+
+  @GetMapping("/editarColeccion/{id}")
+  public String editarColeccion(@PathVariable Long id, Model model) {
+    ColeccionDTO coleccion = coleccionService.obtenerColeccionPorId(id);
+    model.addAttribute("coleccion", coleccion);
+    return "editarColeccion";
   }
 }

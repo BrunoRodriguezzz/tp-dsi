@@ -92,4 +92,9 @@ public class ColeccionService {
         .findFirst()
         .orElse(null);
   }
+
+  public List<HechoDTO> obtenerHechosPorColeccionId(Long coleccionId) {
+    // En este mock, simplemente devolvemos todos los hechos, pero podrías filtrar por coleccionId si lo deseas
+    return mockService.obtenerHechosMockeados();
+  }
 }
