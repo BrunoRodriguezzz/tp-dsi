@@ -57,10 +57,11 @@ public class CustomAuthProvider implements AuthenticationProvider {
 
             log.info("Cargando roles y permisos del usuario en sesión");
             request.getSession().setAttribute("roles", usuario.getRoles());
+            request.getSession().setAttribute("id", usuario.getId());
             request.getSession().setAttribute("permisos", usuario.getPermisos());
             request.getSession().setAttribute("nombre", usuario.getNombre());
             request.getSession().setAttribute("apellido", usuario.getApellido());
-            request.getSession().setAttribute("fechaNaciento", usuario.getFechaNacimiento());
+            request.getSession().setAttribute("fechaNacimiento", usuario.getFechaNacimiento());
 
             List<GrantedAuthority> authorities = new ArrayList<>();
             usuario.getPermisos().forEach(permiso -> {

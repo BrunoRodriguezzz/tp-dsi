@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Rol;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Usuario;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -64,13 +65,26 @@ public class LoginController {
 
     // Método para proporcionar el usuario logueado a todas las vistas
     @ModelAttribute("usuarioLogueado")
-    public String usuarioLogueado(HttpSession session) {
+    public UsuarioDTO usuarioLogueado(HttpSession session) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         if(request.getSession().getAttribute("username") == null) {
             return null;
         }
 
-        return request.getSession().getAttribute("username").toString();
+        String username = request.getSession().getAttribute("username").toString();
+        String id = request.getSession().getAttribute("id").toString();
+        String nombre = request.getSession().getAttribute("nombre").toString();
+        String apellido = request.getSession().getAttribute("apellido").toString();
+        String fechaNacimiento = request.getSession().getAttribute("fechaNacimiento").toString();
+        UsuarioDTO usuario = UsuarioDTO.builder()
+            .username(username)
+            .id(Long.parseLong(id))
+            .nombre(nombre)
+            .apellido(apellido)
+            .fechaNacimiento(LocalDate.parse(fechaNacimiento))
+            .build();
+
+        return usuario;
     }
 }

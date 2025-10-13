@@ -63,7 +63,7 @@
                 </div>
 
                 <div th:if="${usuarioLogueado != null}" class="user-info" style="display: flex; align-items: center; justify-content: space-between">
-                    <span class="nav-link" th:text="'Bienvenido, ' + ${usuarioLogueado}" style="margin: 1rem">Bienvenido, Usuario</span>
+                    <span class="nav-link" th:text="'Bienvenido, ' + ${usuarioLogueado.username}" style="margin: 1rem">Bienvenido, Usuario</span>
                     <a href="/logout" class="nav-item btn btn-outline-primary">Cerrar Sesión</a>
                 </div>
             </div>

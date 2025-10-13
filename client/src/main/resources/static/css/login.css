@@ -2,6 +2,10 @@ body {
     background-color: whitesmoke;
 }
 
+main {
+    margin: 3rem 0;
+}
+
 .sesion-container {
     display: flex;
     flex-direction: column;
@@ -20,7 +24,7 @@ h3 {
 }
 
 h2 {
-    margin-top: 7rem;
+    margin-top: 1rem;
 }
 
 #leyenda {
