@@ -59,4 +59,11 @@ public class ColeccionController {
   public List<HechoDTO> hechosDeColeccion(@PathVariable Long id) {
     return coleccionService.obtenerHechosPorColeccionId(id);
   }
+
+  @GetMapping("/editarColeccion/{id}")
+  public String editarColeccion(@PathVariable Long id, Model model) {
+    ColeccionDTO coleccion = coleccionService.obtenerColeccionPorId(id);
+    model.addAttribute("coleccion", coleccion);
+    return "editarColeccion";
+  }
 }

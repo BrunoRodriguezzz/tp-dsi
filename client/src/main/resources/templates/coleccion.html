@@ -32,9 +32,7 @@
                 </div>
                 <div class="titulos-buttons">
                     <button class="btn btn-filtro" onclick="document.querySelector('.filtros-container').style.display = (document.querySelector('.filtros-container').style.display === 'none' ? 'block' : 'none')">Mostrar filtros</button>
-                    <a th:href="@{/editarColeccion/{id}(id=${coleccion.id})}">
-                        <button class="nav-item btn btn-outline-primary">Modificar Colección</button>
-                    </a>
+                    <a th:if="${coleccion.id != null}" th:href="@{'/editarColeccion/' + ${coleccion.id}}" class="nav-item btn btn-outline-primary">Modificar Colección</a>
                 </div>
             </div>
 
