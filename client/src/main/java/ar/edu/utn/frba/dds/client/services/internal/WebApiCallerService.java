@@ -127,6 +127,16 @@ public class WebApiCallerService {
         );
     }
 
+    public <T> T postWithoutToken(String url, Object body, Class<T> responseType) {
+        return webClient
+                        .post()
+                        .uri(url)
+                        .bodyValue(body)
+                        .retrieve()
+                        .bodyToMono(responseType)
+                        .block();
+    }
+
     /**
      * Ejecuta una llamada HTTP PUT
      */

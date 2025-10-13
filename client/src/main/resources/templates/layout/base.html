@@ -56,9 +56,16 @@
                     <a class="nav-link" href="estadisticas.html">Estadisticas</a>
                 </li>
             </ul>
-            <a href="inicioSesion.html">
-                <button class="nav-item btn btn-outline-primary">Iniciar Sesion</button>
-            </a>
+            <div class="auth-section">
+                <div th:if="${usuarioLogueado == null}">
+                    <a href="/login" class="nav-item btn btn-outline-primary">Iniciar Sesión</a>
+                </div>
+
+                <div th:if="${usuarioLogueado != null}" class="user-info">
+                    <span class="nav-link" th:text="'Bienvenido, ' + ${usuarioLogueado}">Bienvenido, Usuario</span>
+                    <a href="/logout" class="auth-button logout-button">Cerrar Sesión</a>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
