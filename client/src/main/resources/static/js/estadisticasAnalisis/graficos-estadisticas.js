@@ -154,6 +154,19 @@ function crearGraficoDonut(canvas, datos, opciones = {}) {
     });
 }
 
+function encontrarEnPosicion(datos, posicion = 0) {
+    if (Array.isArray(datos.values) && Array.isArray(datos.labels)) {
+        if (posicion >= 0 && posicion < datos.values.length) {
+            return {
+                valor: datos.values[posicion],
+                indice: posicion,
+                label: datos.labels[posicion]
+            };
+        }
+    }
+    return null;
+}
+
 function encontrarMaximo(datos) {
     if (Array.isArray(datos.values)) {
         const maxValor = Math.max(...datos.values);
@@ -279,7 +292,7 @@ const datosCategoriaHora = {
 // Datos para Tab 5 (Solicitudes Spam)
 const datosSpam = {
     labels: ['Spam', 'No Spam'],
-    values: [145, 255],
+    values: [window.spam, window.noSpam],
     colors: ['#EF4444', '#10B981']
 };
 
@@ -290,43 +303,63 @@ const datosSpam = {
 const EstadisticasApp = {
     tab1: {
         chart: null,
-        datos: datosColecciones,
+        datos: window.datosColecciones || datosColecciones,
         
         inicializar() {
             const canvas = document.getElementById('provinciaChart');
             if (!canvas) return;
-            
+
+            if (!this.datos || Object.keys(this.datos).length === 0) return;
             const [coleccionInicial] = Object.keys(this.datos);
             const datosIniciales = this.datos[coleccionInicial];
-            
+
+            console.log("Colección: ", coleccionInicial);
+            console.log("Labels:", Object.keys(datosIniciales));
+            console.log("Values:", Object.values(datosIniciales));
+
+            this.chart = crearGraficoBarras(canvas, {
+                labels: Object.keys(datosIniciales),
+                values: Object.values(datosIniciales)
+            });
+
+            /*
             this.chart = crearGraficoBarras(canvas, {
                 labels: datosIniciales.provincias,
                 values: datosIniciales.valores
             });
-            
+            */
             actualizarElementoTexto('selectedColeccion', coleccionInicial);
             this.actualizarResultado(coleccionInicial);
         },
         
         actualizar(coleccion) {
             const datos = this.datos[coleccion];
+            console.log("Datos: ", datos);
+            console.log("Valores: ", datos.valores)
             if (!datos || !this.chart) return;
             
             // Actualizar gráfico
-            this.chart.data.datasets[0].data = datos.valores;
+            //this.chart.data.datasets[0].data = datos.valores;
+            this.chart.data.datasets[0].data = Object.values(datos);
+            this.chart.data.labels = Object.keys(datos);
             this.chart.update();
             
             // Actualizar resultado
             this.actualizarResultado(coleccion);
         },
-        
+
         actualizarResultado(coleccion) {
             const datos = this.datos[coleccion];
+            const resultado = encontrarEnPosicion({
+                labels: Object.keys(datos),
+                values: Object.values(datos)
+            });
+            /*
             const resultado = encontrarMaximo({
                 labels: datos.provincias,
                 values: datos.valores
             });
-            
+             */
             actualizarElementoTexto('selectedColeccion', coleccion);
             actualizarElementoTexto('resultColeccion', coleccion);
             actualizarElementoTexto('resultProvincia', resultado.label);
@@ -336,26 +369,42 @@ const EstadisticasApp = {
     
     tab2: {
         chart: null,
-        datos: datosCategorias,
+        datos: window.rankingCategorias || datosCategorias,
         
         inicializar() {
             const canvas = document.getElementById('categoriaChart');
             if (!canvas) return;
             
-            this.chart = crearGraficoPie(canvas, this.datos);
+            this.chart = crearGraficoPie(canvas,
+                {
+                    labels: this.datos.map(item => item.categoria),
+                    values: this.datos.map(item => item.total),
+                    colors: this.datos.map(item => item.color)
+                });
             this.actualizarRanking();
             this.actualizarResultado();
         },
         
         actualizarRanking() {
-            // El ranking ya está hardcodeado en el HTML
             console.log('Ranking actualizado para Tab 2');
         },
         
         actualizarResultado() {
-            const resultado = encontrarMaximo(this.datos);
-            const segundoMayor = encontrarSegundoMaximo(this.datos);
-            
+            // const resultado = encontrarMaximo(this.datos);
+            const resultado = encontrarEnPosicion({
+                labels: this.datos.map(item => item.categoria),
+                values: this.datos.map(item => item.total)
+            });
+            const segundoMayor = encontrarEnPosicion({
+                    labels: this.datos.map(item => item.categoria),
+                    values: this.datos.map(item => item.total)
+            }, 1);
+
+            actualizarElementoTexto('categoriaTop', resultado.label);
+            actualizarElementoTexto('cantidadTop', resultado.valor);
+            actualizarElementoTexto('categoriaSegunda', segundoMayor.label);
+            actualizarElementoTexto('cantidadSegunda', segundoMayor.valor);
+
             console.log(`Mayor: ${resultado.label} con ${resultado.valor} hechos`);
             console.log(`Segundo: ${segundoMayor.label} con ${segundoMayor.valor} hechos`);
         }
@@ -363,33 +412,52 @@ const EstadisticasApp = {
 
     tab3: {
         chart: null,
-        datos: datosCategoriaPorProvincia,
+        datos: window.categoriasPorProvincia || datosCategoriaPorProvincia,
         
         inicializar() {
             const canvas = document.getElementById('categoriaProvinciaChart');
             if (!canvas) return;
-            
+            console.log(this.datos);
+
+            // Tomar el primer objeto del array
+            const categoriaInicial = this.datos[0];
+
+            // Extraer nombre de la categoría
+            const nombreCategoria = categoriaInicial.categoria;
+
+            // Extraer provincias y valores
+            const provincias = Object.keys(categoriaInicial.provinciasConHechos);
+            const valores = Object.values(categoriaInicial.provinciasConHechos);
+
+            /*
             const [categoriaInicial] = Object.keys(this.datos);
             const datosIniciales = this.datos[categoriaInicial];
-            
+
+            console.log("Categoria Inicial: ", categoriaInicial);
+            console.log("datosIniciales: ", datosIniciales);
+
+             */
             this.chart = crearGraficoBarras(canvas, {
-                labels: datosIniciales.provincias,
-                values: datosIniciales.valores
+                labels: provincias,
+                values: valores
             }, {
                 backgroundColor: '#10B981',
                 borderColor: '#059669'
             });
-            
-            actualizarElementoTexto('selectedCategoriaP', categoriaInicial);
-            this.actualizarResultado(categoriaInicial);
+
+            actualizarElementoTexto('selectedCategoriaP', nombreCategoria);
+            this.actualizarResultado(nombreCategoria);
         },
         
         actualizar(categoria) {
-            const datos = this.datos[categoria];
+            const datos = this.datos.find(d => d.categoria === categoria);
             if (!datos || !this.chart) return;
-            
+            console.log("Datos:", datos);
+            console.log("Data: ", Object.values(datos.provinciasConHechos));
+            console.log("Labels: ", Object.keys(datos.provinciasConHechos));
             // Actualizar gráfico
-            this.chart.data.datasets[0].data = datos.valores;
+            this.chart.data.datasets[0].data = Object.values(datos.provinciasConHechos);
+            this.chart.data.labels = Object.keys(datos.provinciasConHechos);
             this.chart.update();
             
             // Actualizar resultado
@@ -397,10 +465,10 @@ const EstadisticasApp = {
         },
         
         actualizarResultado(categoria) {
-            const datos = this.datos[categoria];
-            const resultado = encontrarMaximo({
-                labels: datos.provincias,
-                values: datos.valores
+            const datos = this.datos.find(d => d.categoria === categoria);
+            const resultado = encontrarEnPosicion({
+                labels: Object.keys(datos.provinciasConHechos),
+                values: Object.values(datos.provinciasConHechos)
             });
             
             actualizarElementoTexto('selectedCategoriaP', categoria);
@@ -481,7 +549,9 @@ const EstadisticasApp = {
             const total = this.datos.values.reduce((a, b) => a + b, 0);
             const spam = this.datos.values[0];
             const porcentajeSpam = Math.round((spam / total) * 100);
-            
+
+            actualizarElementoTexto('porcentajeSpam', porcentajeSpam + '%');
+            actualizarElementoTexto('porcentajeNoSpam', 100-porcentajeSpam + '%');
             console.log(`Total solicitudes: ${total}`);
             console.log(`Spam: ${spam} (${porcentajeSpam}%)`);
         }
@@ -495,10 +565,10 @@ const EstadisticasApp = {
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar todos los tabs
     EstadisticasApp.tab1.inicializar();
-    // EstadisticasApp.tab2.inicializar();
-    // EstadisticasApp.tab3.inicializar();
+    EstadisticasApp.tab2.inicializar();
+    EstadisticasApp.tab3.inicializar();
     // EstadisticasApp.tab4.inicializar();
-    // EstadisticasApp.tab5.inicializar();
+    EstadisticasApp.tab5.inicializar();
 });
 
 // Event listeners para todos los dropdowns estandarizados
@@ -506,6 +576,7 @@ document.addEventListener('click', function(e) {
     // Tab 1: Colección por Provincia
     if (e.target.matches('[data-coleccion]')) {
         const coleccion = e.target.getAttribute('data-coleccion');
+        console.log("NUEVA: ", coleccion)
         EstadisticasApp.tab1.actualizar(coleccion);
     }
     

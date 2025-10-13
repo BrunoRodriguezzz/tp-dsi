@@ -4,10 +4,6 @@
         <link rel="stylesheet" href="css/estadisticas.css">
         <!-- Bootstrap Icons -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-        <!-- Bootstrap CSS
-         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-              integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-         -->
         <!-- Chart.js -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </th:block>
@@ -112,7 +108,8 @@
             'Distribución de Hechos por Provincia',
             'coleccionDropdown',
             'selectedColeccion',
-             ${colecciones}
+             ${colecciones},
+             'data-coleccion'
         )}"></div>
 
                 <div class="card-body">
@@ -121,10 +118,10 @@
                     <div class="bg-primary bg-opacity-10 result-box">
                         <p class="text-primary mb-0">
                             <strong>Resultado:</strong>
-                            En la colección "<strong th:text="${colecciones[0]}"></strong>",
+                            En la colección "<strong id="resultColeccion" th:text="${colecciones[0]}"></strong>",
                             la mayor cantidad de hechos se concentra en
-                            <strong th:text="${resultProvincia}"></strong>
-                            con <strong th:text="${resultCantidad}"></strong> hechos reportados.
+                            <strong id="resultProvincia" th:text="${resultProvincia}"></strong>
+                            con <strong id="resultCantidad" th:text="${resultCantidad}"></strong> hechos reportados.
                         </p>
                     </div>
                 </div>
@@ -143,12 +140,20 @@
                         </div>
                         <div class="col-lg-4">
                             <h6 class="fw-bold mb-3">Ranking de Categorías</h6>
-
-                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem('#3B82F6', 'Infraestructura', '342', 'bg-primary')}"></div>
-                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem('#EF4444', 'Seguridad', '298', 'bg-danger')}"></div>
-                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem('#10B981', 'Medio Ambiente', '234', 'bg-success')}"></div>
-                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem('#F59E0B', 'Salud', '189', 'bg-warning')}"></div>
-                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem('#8B5CF6', 'Transporte', '156', 'bg-purple')}"></div>
+                            <th:block th:each="item, iterStat : ${rankingCategorias}" th:if="${iterStat.index < 5}">
+                                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem(
+        ${iterStat.index == 0 ? '#3B82F6' :
+          (iterStat.index == 1 ? '#EF4444' :
+          (iterStat.index == 2 ? '#10B981' :
+          (iterStat.index == 3 ? '#F59E0B' : '#0dcaf0')))},
+        ${item.key},
+        ${item.value},
+        ${iterStat.index == 0 ? 'bg-primary' :
+          (iterStat.index == 1 ? 'bg-danger' :
+          (iterStat.index == 2 ? 'bg-success' :
+          (iterStat.index == 3 ? 'bg-warning' : 'bg-info')))}
+    )}"></div>
+                            </th:block>
                         </div>
                     </div>
 
@@ -156,10 +161,10 @@
                         <p class="text-success mb-0">
                             <strong>Resultado:</strong>
                             La categoría con mayor cantidad de hechos reportados es
-                            <strong th:text="${categoriaTop}"></strong>
-                            con <strong th:text="${cantidadTop}"></strong> hechos,
-                            seguida por <strong th:text="${categoriaSegunda}"></strong>
-                            con <strong th:text="${cantidadSegunda}"></strong> hechos.
+                            <strong id="categoriaTop" th:text="${categoriaTop}"></strong>
+                            con <strong id="cantidadTop" th:text="${cantidadTop}"></strong> hechos,
+                            seguida por <strong id="categoriaSegunda" th:text="${categoriaSegunda}"></strong>
+                            con <strong id="cantidadSegunda" th:text="${cantidadSegunda}"></strong> hechos.
                         </p>
                     </div>
                 </div>
@@ -174,7 +179,8 @@
             'Hechos por Provincia - Categoría Específica',
             'categoriaProvinciaDropdown',
             'selectedCategoriaP',
-            ${'Infraestructura,Seguridad,Medio Ambiente,Salud,Transporte'.split(',')}
+            ${categorias},
+            'data-categoria-p'
         )}"></div>
 
                 <div class="card-body">
@@ -183,10 +189,10 @@
                     <div class="bg-success bg-opacity-10 result-box">
                         <p class="text-success mb-0">
                             <strong>Resultado:</strong>
-                            Para la categoría "<strong th:text="${resultCategoriaP}"></strong>",
+                            Para la categoría "<strong id="resultCategoriaP" th:text="${resultCategoriaP}"></strong>",
                             la provincia con mayor cantidad de hechos es
-                            <strong th:text="${resultProvinciaP}"></strong>
-                            con <strong th:text="${resultCantidadP}"></strong> hechos reportados.
+                            <strong id="resultProvinciaP" th:text="${resultProvinciaP}"></strong>
+                            con <strong id="resultCantidadP" th:text="${resultCantidadP}"></strong> hechos reportados.
                         </p>
                     </div>
                 </div>
@@ -201,7 +207,8 @@
             'Distribución Horaria de Hechos',
             'categoriaHoraDropdown',
             'selectedCategoriaH',
-            ${'Infraestructura,Seguridad,Medio Ambiente,Salud,Transporte'.split(',')}
+            ${'Infraestructura,Seguridad,Medio Ambiente,Salud,Transporte'.split(',')},
+            'data-categoria-h'
         )}"></div>
 
                 <div class="card-body">
@@ -235,13 +242,13 @@
                         <div class="col-lg-6">
                             <h6 class="fw-bold mb-3">Clasificación de Solicitudes</h6>
 
-                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: clasificacionItem('#EF4444', 'Spam', '145', 'bg-danger')}"></div>
-                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: clasificacionItem('#10B981', 'No Spam', '255', 'bg-success')}"></div>
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: clasificacionItem('#EF4444', 'Spam', ${cantSpam}, 'bg-danger')}"></div>
+                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: clasificacionItem('#10B981', 'No Spam', ${cantNoSpam}, 'bg-success')}"></div>
 
                             <div class="p-3 bg-secondary bg-opacity-10 rounded">
                                 <h6 class="fw-bold mb-2">Resumen Total</h6>
-                                <p class="small mb-1">Total de solicitudes procesadas: <strong>400</strong></p>
-                                <p class="small mb-0">Porcentaje de spam: <strong>36.3%</strong></p>
+                                <p class="small mb-1">Total de solicitudes procesadas: <strong th:text="${cantSpam} + ${cantNoSpam}"></strong></p>
+                                <p class="small mb-0">Porcentaje de spam: <strong th:text="(${cantSpam} / (${cantSpam} + ${cantNoSpam})) * 100 + '%'">X%</strong></p>
                             </div>
                         </div>
                     </div>
@@ -249,10 +256,11 @@
                     <div class="bg-danger bg-opacity-10 result-box">
                         <p class="text-danger mb-0">
                             <strong>Resultado:</strong>
-                            De un total de <strong th:text="${totalSolicitudes}"></strong> solicitudes de eliminación,
-                            <strong th:text="${spamCantidad}"></strong> (<strong th:text="${porcentajeSpam}"></strong>)
+                            De un total de <strong th:text="${cantSpam} + ${cantNoSpam}"></strong> solicitudes de eliminación,
+                            <strong th:text="${cantSpam}"></strong> (<strong id="porcentajeSpam" th:text="${porcentajeSpam}"></strong>)
                             corresponden a spam, mientras que
-                            <strong th:text="${noSpamCantidad}"></strong> (<strong th:text="${porcentajeNoSpam}"></strong>)
+                            <strong th:text="${cantNoSpam}"></strong> (<strong
+                                id="porcentajeNoSpam" th:text="${porcentajeNoSpam}"></strong>)
                             son reportes legítimos que requieren revisión.
                         </p>
                     </div>
@@ -262,10 +270,43 @@
 
     </div>
 
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.datosColecciones = [[${coleccionPorProvincia}]];
 
-    <!-- Bootstrap JS
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    -->
+        // Paleta de colores
+        // Paleta secundaria "randoms"
+        const paletaExtra = [
+            "#F97316", // naranja fuerte
+            "#6366F1", // índigo
+            "#84CC16", // verde lima
+            "#D946EF", // violeta
+            "#FACC15", // amarillo
+            "#22C55E" // verde
+        ];
+
+        function generarColorDePaleta() {
+            const idx = Math.floor(Math.random() * paletaExtra.length);
+            return paletaExtra[idx];
+        }
+
+        const coloresFijos = ["#3B82F6","#EF4444","#10B981","#F59E0B","#0dcaf0"];
+        window.rankingCategorias = Object.entries([[${rankingCategorias}]]).map(([categoria, total], index) => {
+            return {
+                categoria: categoria,
+                total: total,
+                color: index < coloresFijos.length
+                    ? coloresFijos[index]
+                    : generarColorDePaleta()
+            };
+        });
+
+        window.categoriasPorProvincia = [[${categoriasPorProvincia}]];
+        window.spam = [[${cantSpam}]];
+        window.noSpam = [[${cantNoSpam}]];
+        /*]]>*/
+    </script>
+
     <script src="js/estadisticasAnalisis/graficos-estadisticas.js"></script>
 </div>
 </html>

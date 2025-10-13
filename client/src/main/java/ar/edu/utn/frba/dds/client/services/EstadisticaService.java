@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.client.services;
 
 import ar.edu.utn.frba.dds.client.dtos.EstadisticaCategoriaDTO;
+import ar.edu.utn.frba.dds.client.dtos.EstadisticaProvinciaXCategoriaDTO;
 import ar.edu.utn.frba.dds.client.dtos.EstadisticaProvinciaXColeccionDTO;
 import ar.edu.utn.frba.dds.client.dtos.EstadisticaSolicitudesDTO;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,20 +29,20 @@ public class EstadisticaService {
         this.mockService = new MockService();
     }
 
-    public EstadisticaCategoriaDTO getCategoriaTop(){
-        Map<String, Long> categorias = this.mockService.getCategoriaTop();
+    public EstadisticaCategoriaDTO getCategorias(){
+        return new EstadisticaCategoriaDTO(this.mockService.getCategorias());
+    }
 
-        // Ordenar por cantidad descendente y limitar a 30 (mantengo LinkedHashMap para orden predecible)
-        Map<String, Long> ordenadoLimitado = categorias.entrySet().stream()
-                .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
-                .limit(30)
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (a, b) -> a,
-                        LinkedHashMap::new
-                ));
-        return new EstadisticaCategoriaDTO(ordenadoLimitado);
+    public List<EstadisticaProvinciaXCategoriaDTO> getCategoriasPorProvincias(){
+        Map<String, Map<String, Long>> categoriasPorProvincia = this.mockService.getCategoriasPorProvincia();
+
+        return categoriasPorProvincia.entrySet().stream()
+                .map(entry -> new EstadisticaProvinciaXCategoriaDTO(
+                        entry.getKey(),     // la categoría
+                        entry.getValue()    // el mapa de provincias y sus cantidades
+                ))
+                .collect(Collectors.toList());
+
     }
 
     public EstadisticaSolicitudesDTO getCantSolicitudesSpam(){
