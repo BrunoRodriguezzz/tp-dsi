@@ -23,11 +23,13 @@ public class APIController {
             @RequestParam(required = false) Boolean enviado,
             @RequestParam(required = false) LocalDateTime dateTimeGT,
             @RequestParam(required = false) String titulo){
+        List<HechoOutputDTO> hechos = apiService.buscarHechos(enviado,dateTimeGT);
 
         if (titulo == null || titulo.isEmpty()){
-            return this.apiService.buscarHechos(enviado,dateTimeGT);
+            return hechos;
         }else{
-            return this.apiService.hechosDeIgualTitulo(enviado,dateTimeGT,titulo);
+            return hechos.stream().filter(h -> h.getTitulo().equals(titulo)).toList();
+            //TODO: El controller no deberia tener logica, pasarlo al service
         }
     }
 }

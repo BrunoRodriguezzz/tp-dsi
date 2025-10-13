@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -18,7 +17,7 @@ public class HechoEliminarInputDTO {
     private String                descripcion;
     private String                categoria;
     private UbicacionInputDTO     ubicacion;
-    private LocalDateTime         fechaAcontecimiento;
+    private LocalDate             fechaAcontecimiento;
     private ContribuyenteInputDTO contribuyente;
     private String                fuente;
     private String                origen;

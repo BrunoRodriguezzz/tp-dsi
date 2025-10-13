@@ -31,7 +31,7 @@ public class Hecho {
     @Column(name = "descripcion", nullable = false, columnDefinition = "TEXT")
     private String descripcion;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "categoria_id", referencedColumnName = "id")
     private Categoria categoria;
 
@@ -39,12 +39,12 @@ public class Hecho {
     @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     private List<ContenidoMultimedia> contenidoMultimedia;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "ubicacion_id", referencedColumnName = "id")
     private Ubicacion ubicacion;
 
     @Column(name = "fecha_acontecimiento",nullable = false)
-    private LocalDateTime fechaAcontecimiento;
+    private LocalDate fechaAcontecimiento;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(

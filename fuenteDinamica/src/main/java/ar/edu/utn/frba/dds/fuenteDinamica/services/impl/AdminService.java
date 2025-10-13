@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
-import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorNotFound;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoEliminarInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
@@ -35,38 +34,31 @@ public class AdminService implements IAdminService {
 
         Hecho hecho = this.dinamicaRepository.buscarPorID(hechoRevisado.getId());
 
-        if(hecho != null){
-            List<Etiqueta> etiquetas = hechoRevisado
-                    .getEtiquetas()
-                    .stream()
-                    .map(this::convertirEtiqueta)
-                    .collect(Collectors.toList());
+        List<Etiqueta> etiquetas = hechoRevisado
+                .getEtiquetas()
+                .stream()
+                .map(this::convertirEtiqueta)
+                .collect(Collectors.toList());
 
-            hecho.setEtiquetas(etiquetas);
-            hecho.setEstadoHecho(hechoRevisado.getEstadoHecho());
-            hecho.setSugerenciaDeCambio(hechoRevisado.getSugerenciaDeCambio());
+        hecho.setEtiquetas(etiquetas);
+        hecho.setEstadoHecho(hechoRevisado.getEstadoHecho());
+        hecho.setSugerenciaDeCambio(hechoRevisado.getSugerenciaDeCambio());
 
-            this.dinamicaRepository.guardar(hecho);
+        this.dinamicaRepository.guardar(hecho);
 
-            this.enviarHecho(hecho);
+        this.enviarHecho(hecho);
 
-            return HechoOutputDTO.convertir(hecho);
-        }else{
-            throw new ErrorNotFound("No se encontro un hecho con el id " + Long.toString(hechoRevisado.getId()) + ".");
-        }
+        return HechoOutputDTO.convertir(hecho);
     }
 
     @Override
-    public void eliminar(Long id) {
+    public void eliminar(HechoEliminarInputDTO hechoAEliminar, Long id) {
 
         Hecho hechoOriginal = this.dinamicaRepository.buscarPorID(id);
 
-        if(hechoOriginal != null){
-            hechoOriginal.setEstaEliminado(true);
-            this.dinamicaRepository.guardar(hechoOriginal);
-        }else{
-            throw new ErrorNotFound("No se encontro un hecho con el id " + Long.toString(id) + ".");
-        }
+        hechoOriginal.setEstaEliminado(true);
+
+        this.dinamicaRepository.guardar(hechoOriginal);
     }
 
     private void enviarHecho(Hecho hecho){
@@ -87,6 +79,7 @@ public class AdminService implements IAdminService {
         } catch (Exception e) {
             System.err.println("Fallo el envio del Hecho");
             e.printStackTrace();
+            // acá podrías agregar lógica extra de reintentos o flags
         }
     }
 

@@ -72,7 +72,7 @@ public class Hecho {
     @Convert(converter = OrigenConverter.class)
     private Origen origen;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")
     private Contribuyente contribuyente;
 

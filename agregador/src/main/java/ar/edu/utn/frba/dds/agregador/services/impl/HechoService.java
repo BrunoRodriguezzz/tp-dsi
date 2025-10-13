@@ -70,7 +70,8 @@ public class HechoService implements IHechoService {
   @Override
   public Hecho guardarHecho(Hecho hecho) {
       Hecho hechoNormalizado = this.normalizadorService.normalizarHecho(hecho);
-      return this.hechoRepository.save(hechoNormalizado);
+      Hecho hechoConUbicacion = this.ubicacionService.cargarUbicacion(hechoNormalizado);
+      return this.hechoRepository.save(hechoConUbicacion);
   }
 
   @Override

@@ -35,14 +35,6 @@ public class APIService implements IAPIService {
                 .toList();
     }
 
-    @Override
-    public List<HechoOutputDTO> hechosDeIgualTitulo(Boolean enviado,LocalDateTime filtro,String titulo){
-        return this.buscarHechos(enviado,filtro)
-                .stream()
-                .filter(h -> h.getTitulo().equals(titulo))
-                .toList();
-    }
-
     private HechoOutputDTO hechoOutputDTO(Hecho hecho){
         return HechoOutputDTO.convertir(hecho);
     }

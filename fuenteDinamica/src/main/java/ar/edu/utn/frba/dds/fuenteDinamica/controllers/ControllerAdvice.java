@@ -1,6 +1,9 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.controllers;
 
-import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.*;
+import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoNoAutorizado;
+import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoProhibido;
+import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorDeTiempo;
+import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorTipoDeDatos;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.ErrorDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,14 +47,5 @@ public class ControllerAdvice {
                 .error(excepcion.getMessage())
                 .build();
         return new ResponseEntity<>(error, HttpStatus.REQUEST_TIMEOUT);
-    }
-
-    @ExceptionHandler(value = ErrorNotFound.class)
-    public ResponseEntity<ErrorDTO> ErrorRecursoNoEncontrado(RuntimeException excepcion){
-        ErrorDTO error = ErrorDTO
-                .builder()
-                .error(excepcion.getMessage())
-                .build();
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }

@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +20,7 @@ public class SolicitudOutputDTO {
     private String        categoria;
     private List<String>  contenidoMultimedia;
     private Ubicacion     ubicacion;
-    private LocalDateTime fechaAcontecimiento;
+    private LocalDate     fechaAcontecimiento;
     private String        sugerenciaDeCambio;
 
     public static SolicitudOutputDTO convertir(Hecho hecho){
