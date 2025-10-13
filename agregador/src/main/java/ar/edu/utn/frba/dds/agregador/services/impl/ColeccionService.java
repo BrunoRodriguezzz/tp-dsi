@@ -347,4 +347,14 @@ public class ColeccionService implements IColeccionService {
         .flatMap(Collection::stream)
         .collect(Collectors.toList());
   }
+
+  @Override
+  public List<HechoOutputDTO> buscarHechosPorConsensos(Long idColeccion, List<Consenso> consensos) {
+        Coleccion coleccion = this.findColecccionAux(idColeccion);
+        List<Hecho> hechosColeccion = coleccion.getHechos();
+        List<Hecho> hechosFiltrados = hechosColeccion.stream()
+            .filter(h -> h.getConsensos() != null && h.getConsensos().stream().anyMatch(consensos::contains))
+            .toList();
+        return HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
+    }
 }

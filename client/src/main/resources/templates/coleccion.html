@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" th:replace="~{layout/base :: html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${coleccion.titulo}">Coleccion</title>
+    <th:block th:fragment="additional-links">
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+        <link rel="stylesheet" th:href="@{/css/components.css}">
+        <link rel="stylesheet" th:href="@{/css/coleccion.css}">
+        <link rel="stylesheet" th:href="@{/css/header.css}">
+        <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
+        <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    </th:block>
+</head>
+<body>
+    <a th:href="@{/}" href="index.html">Volver al inicio</a>
+    <main class="container">
+        <div class="titulo-descripcion">
+            <div class="colecciones-titulo-descripcion-container">
+                <h2 th:text="${coleccion.titulo}">Título Colección</h2>
+                <p th:text="${coleccion.descripcion}">Descripción de la colección</p>
+            </div>
+            <div class="titulos-buttons">
+                <button class="btn btn-filtro" onclick="document.querySelector('.filtros-container').style.display = (document.querySelector('.filtros-container').style.display === 'none' ? 'block' : 'none')">Mostrar filtros</button>
+                <a th:href="@{/editarColeccion/{id}(id=${coleccion.id})}">
+                    <button class="nav-item btn btn-outline-primary">Modificar Colección</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="modos-navegacion-container">
+            <div class="modo-navegacion-container curado">
+                <div class="modo-navegacion-i-titulo">
+                    <i class="fa-solid fa-shield"></i>
+                    <h5>Navegando en modo Curado</h5>
+                </div>
+            </div>
+            <div class="modo-navegacion-container irrestricto">
+                <div class="modo-navegacion-i-titulo">
+                    <i class="fa-solid fa-shield"></i>
+                    <h5>Navegando en modo Irrestricto</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="parrafos-modos-navegacion">
+            <p>Algoritmos:</p>
+            <div class="modos-navegacion-container" id="algoritmos">
+                <p class="etiqueta-algoritmo-consenso" th:each="consenso : ${coleccion.consensos}" th:text="${consenso}">Algoritmo</p>
+            </div>
+        </div>
+
+        <div class="filtros-container" style="display: none;">
+            <h5>Filtros</h5>
+            <div class="filtros-grid">
+                <div class="form-group" th:each="filtro : ${coleccion.criterio.filtros}">
+                    <label th:for="${filtro.nombre}" th:text="${filtro.nombre}">Categoría</label>
+                    <input th:id="${filtro.nombre}" type="text" th:placeholder="${filtro.detalle}" readonly>
+                </div>
+                <div class="form-group wide">
+                    <label>&nbsp;</label>
+                    <button onclick="window.location.reload()">Limpiar Filtros</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="hechos-container">
+            <div class="row">
+                <div class="col" th:each="hecho : ${coleccion.hechos}">
+                    <div class="hecho-card">
+                        <div class="hecho-card-mas-opciones">
+                            <div class="titulo-mas-descripcion">
+                                <h2 class="titulo-Hecho" th:text="${hecho.titulo}">Título Hecho</h2>
+                                <p class="descripcion" th:text="${hecho.descripcion}">Descripción del hecho</p>
+                            </div>
+                            <div class="opciones">
+                                <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Categoría</p>
+                                <a th:href="@{/verDetalle-hecho/{id}(id=${hecho.id})}" class="btn btn-dark"><span>Ver Detalle</span></a>
+                                <a th:href="@{/reportarHecho}" class="btn btn-red config-opciones">Reportar</a>
+                            </div>
+                        </div>
+                        <div class="informacion-general">
+                            <div class="fecha-ubicacion-fuente encolumnar">
+                                <p class="info-fecha-ubicacion-fuente"><b>Fecha: </b><span th:text="${hecho.fechaAcontecimiento}">2024-01-15</span></p>
+                                <p class="info-fecha-ubicacion-fuente"><b>Ubicación: </b><span th:text="${hecho.ubicacion}">Plaza de Mayo, Buenos Aires</span></p>
+                                <p class="info-fecha-ubicacion-fuente"><b>Fuente: </b><span th:text="${hecho.fuente}">Reportes ciudadanos</span></p>
+                            </div>
+                            <div class="etiquetas">
+                                <p class="titulo-etiqueta etiqueta-interes" th:each="etiqueta : ${hecho.etiquetas}" th:text="${etiqueta}">etiqueta</p>
+                            </div>
+                            <div class="ultima-linea">
+                                <div class="fechaPublicacion">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <p class="alineacion">Publicado: <span th:text="${hecho.fechaPublicacion}">2024-01-16</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script th:src="@{/js/coleccion.js}"></script>
+</body>
+</html>
+

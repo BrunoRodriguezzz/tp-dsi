@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
-import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.client.dtos.ColeccionDTO;
+import ar.edu.utn.frba.dds.client.services.ColeccionService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/hechos")
 @RequiredArgsConstructor
 public class ColeccionController {
-  private final Logger LOGGER = LogManager.getLogger(HechoController.class);
+  private final Logger LOGGER = LogManager.getLogger(ColeccionController.class);
+  private final ColeccionService coleccionService;
 
 //  @GetMapping
 //  public String listarHechos(Model model) {
@@ -35,5 +37,19 @@ public class ColeccionController {
 //    model.addAttribute("titulo", hecho.getTitulo());
 //    return "hecho";
 //  }
-}
 
+  @GetMapping("/colecciones")
+  public String listarColecciones(Model model) {
+    List<ColeccionDTO> colecciones = coleccionService.obtenerColecciones();
+    LOGGER.info("Colecciones mockeadas: {}", colecciones);
+    model.addAttribute("colecciones", colecciones);
+    return "colecciones";
+  }
+
+  @GetMapping("/coleccion/{id}")
+  public String verDetalleColeccion(@PathVariable Long id, Model model) {
+    ColeccionDTO coleccion = coleccionService.obtenerColeccionPorId(id);
+    model.addAttribute("coleccion", coleccion);
+    return "coleccion";
+  }
+}
