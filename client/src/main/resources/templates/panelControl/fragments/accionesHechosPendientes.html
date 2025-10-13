@@ -1,17 +1,25 @@
 <!-- Fragmento para las acciones los hechos pendientes -->
 <th:block th:fragment="accionesHechosPendientes(hechoId)">
     <div class="hecho-acciones">
-        <a th:href="@{'/hechos/aprobar/' + ${hechoId}}" class="btn btn-aprobar">
-            <i class="fas fa-check"></i> Aprobar
-        </a>
-        <a th:href="@{'/hechos/modificar/' + ${hechoId}}" class="btn btn-modificar">
-            <i class="fas fa-edit"></i> Modificar
-        </a>
-        <a th:href="@{'/hechos/rechazar/' + ${hechoId}}" class="btn btn-rechazar">
-            <i class="fas fa-times"></i> Rechazar
-        </a>
-        <a th:href="@{'/hechos/' + ${hechoId}}" class="btn btn-ver">
-            <i class="fas fa-eye"></i> Ver
-        </a>
+        <form th:action="@{'/hechos/aprobar/' + ${hechoId}}" th:method="post" style="display:inline;">
+            <button type="submit" class="btn btn-aprobar">
+                <i class="fas fa-check"></i> Aprobar
+            </button>
+        </form>
+        <form th:action="@{'/hechos/modificar/' + ${hechoId}}" th:method="post" style="display:inline;">
+            <button type="submit" class="btn btn-modificar">
+                <i class="fas fa-edit"></i> Modificar
+            </button>
+        </form>
+        <form th:action="@{'/hechos/rechazar/' + ${hechoId}}" th:method="post" style="display:inline;">
+            <button type="submit" class="btn btn-rechazar">
+                <i class="fas fa-times"></i> Rechazar
+            </button>
+        </form>
+        <form th:action="@{'/hechos/' + ${hechoId}}" th:method="get" style="display:inline;">
+            <button type="submit" class="btn btn-ver">
+                <i class="fas fa-eye"></i> Ver
+            </button>
+        </form>
     </div>
 </th:block>

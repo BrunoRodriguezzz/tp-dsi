@@ -2,52 +2,50 @@
 
 <head>
     <th:block th:fragment="additional-links">
-        <link rel="stylesheet" th:ref="@{/css/hechosPendientes.css}">
+        <link rel="stylesheet" th:href="@{/css/panelControl/hechosPendientes.css}">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     </th:block>
 </head>
 
-<div th:fragment="contenido">
-    <main class="container">
-        <div class="page-info">
-            <a th:href="@{/panelControl}" class="link" id="link-panelDeControl">← Volver al Panel de Control</a>
-            <h2><strong>Hechos Pendientes</strong></h2>
-            <p>Gestiona y aprueba los hechos que están esperando revisión</p>
+<div th:fragment="contenido" class="container main-container">
+    <div class="page-info">
+        <a th:href="@{/panelControl}" class="link" id="link-panelDeControl">← Volver al Panel de Control</a>
+        <h2><strong>Hechos Pendientes</strong></h2>
+        <p>Gestiona y aprueba los hechos que están esperando revisión</p>
+    </div>
+    <div class="container-totalPendientes">
+        <div class="logo-tiempo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock w-6 h-6 text-blue-600"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         </div>
-        <div class="container-totalPendientes">
-            <div class="logo-tiempo">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock w-6 h-6 text-blue-600"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            </div>
-            <div>
-                <p>Total de Hechos Pendientes</p>
-                <h4 th:text="${cantidadHechos}"><strong>0</strong></h4>
-            </div>
+        <div>
+            <p>Total de Hechos Pendientes</p>
+            <h4 th:text="${cantidadHechos}"><strong>0</strong></h4>
         </div>
-        <div class="container-hechosAprobacion">
-            <div class="hechosAprobacion-header">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock w-4 h-4 sm:w-5 sm:h-5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                <h6><strong>Hechos Esperando Aprobación</strong></h6>
-            </div>
-            <div class="hechos-lista">
-                <div th:each="hecho : ${hechos}" class="hecho-item">
-                    <div class="hecho-info">
-                        <h5 class="hecho-titulo" th:text="${hecho.titulo}">Título del Hecho</h5>
-                        <div class="hecho-detalles">
-                            <span class="detalle"><strong>Categoría:</strong> <span th:text="${hecho.categoria}">Categoría</span></span>
-                            <span class="detalle"><strong>Autor:</strong>
-                                <span th:text="${hecho.contribuyente != null ? hecho.contribuyente.nombre : 'Desconocido'}">Autor</span>
-                            </span>
-                            <span class="detalle"><strong>Enviado:</strong>
-                                <span th:text="${hecho.fechaCarga != null ? #dates.format(hecho.fechaCarga, 'yyyy-MM-dd') : 'Sin fecha'}">Fecha</span>
-                            </span>
-                        </div>
-                        <p class="hecho-ubicacion"><strong>Ubicación:</strong>
-                            <span th:text="${hecho.ubicacion != null ? hecho.ubicacion.municipio + ', ' + hecho.ubicacion.provincia : 'Sin ubicación'}">Ubicación del Hecho</span>
-                        </p>
-                        <th:block th:replace="panelControl/fragments/accionesHechosPendientes :: accionesHechosPendientes(${hecho.id})"/>
+    </div>
+    <div class="container-hechosAprobacion">
+        <div class="hechosAprobacion-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock w-4 h-4 sm:w-5 sm:h-5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <h6><strong>Hechos Esperando Aprobación</strong></h6>
+        </div>
+        <div class="hechos-lista">
+            <div th:each="hecho : ${hechos}" class="hecho-item">
+                <div class="hecho-info">
+                    <h5 class="hecho-titulo" th:text="${hecho.titulo}">Título del Hecho</h5>
+                    <div class="hecho-detalles">
+                        <span class="detalle"><strong>Categoría:</strong> <span th:text="${hecho.categoria}">Categoría</span></span>
+                        <span class="detalle"><strong>Autor:</strong>
+                            <span th:text="${hecho.contribuyente != null ? hecho.contribuyente.nombre : 'Desconocido'}">Autor</span>
+                        </span>
+                        <span class="detalle"><strong>Enviado:</strong>
+                            <span th:text="${hecho.fechaCarga != null ? #dates.format(hecho.fechaCarga, 'yyyy-MM-dd') : 'Sin fecha'}">Fecha</span>
+                        </span>
                     </div>
+                    <p class="hecho-ubicacion"><strong>Ubicación:</strong>
+                        <span th:text="${hecho.ubicacion != null ? hecho.ubicacion.municipio + ', ' + hecho.ubicacion.provincia : 'Sin ubicación'}">Ubicación del Hecho</span>
+                    </p>
                 </div>
+                <th:block th:replace="panelControl/fragments/accionesHechosPendientes :: accionesHechosPendientes(${hecho.id})"/>
             </div>
         </div>
-    </main>
+    </div>
 </div>

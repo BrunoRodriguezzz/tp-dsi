@@ -1,7 +1,11 @@
 body {
-    padding: 2rem;
     background-color: var(--color-white);
     min-height: 100vh;
+}
+
+.main-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 .link {

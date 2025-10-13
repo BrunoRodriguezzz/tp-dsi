@@ -59,7 +59,7 @@ public class PanelControlController {
         List<SolicitudDTO> solicitudes = this.solicitudesService.obtenerSolicitudes();
         model.addAttribute("titulo", "Solicitudes");
         model.addAttribute("solicitudes", solicitudes);
-        model.addAttribute("cantidadSolicitudes", solicitudes.size());
+        model.addAttribute("cantidadSolicitudes", solicitudes.stream().filter(s -> s.getEstado().equals("PENDIENTE")).count());
         return "panelControl/solicitudes";
     }
 }

@@ -2,75 +2,67 @@
 
 <head>
     <th:block th:fragment="additional-links">
-        <link rel="stylesheet" th:ref="@{/css/solicitudes.css}">
+        <link rel="stylesheet" th:href="@{/css/panelControl/solicitudes.css}">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     </th:block>
 </head>
 
-<div th:fragment="contenido">
-    <div class="container">
-        <a th:href="@{/panelControl}" class="link" id="link-panelDeControl">← Volver al Panel de Control</a>
-        <h2><strong>Solicitudes de Eliminación</strong></h2>
-        <p>Revisa y procesa las solicitudes de eliminación de hechos</p>
-        <div class="container-totalSolicitudes">
-            <div class="logo-alerta">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="m12 17 .01 0"></path></svg>
-            </div>
-            <div>
-                <p>Solicitudes Pendientes</p>
-                <h4 th:text="${cantidadSolicitudes}"><strong>0</strong></h4>
-            </div>
+<div class="container main-contenedor" th:fragment="contenido">
+    <a th:href="@{/panelControl}" class="link" id="link-panelDeControl">← Volver al Panel de Control</a>
+    <h2><strong>Solicitudes de Eliminación</strong></h2>
+    <p>Revisa y procesa las solicitudes de eliminación de hechos</p>
+    <div class="container-totalSolicitudes">
+        <div class="logo-alerta">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="m12 17 .01 0"></path></svg>
         </div>
-        <div class="container-filtro">
-            <div class="filtro-solicitudes">
-                <select class="form-select filtro-select" id="filtroSolicitudes">
-                    <option value="todas" selected>Todas las solicitudes</option>
-                    <option value="pendientes">Pendientes</option>
-                    <option value="rechazadas">Rechazadas</option>
-                    <option value="aprobadas">Aprobadas</option>
-                </select>
-                <span class="filtro-contador">3 solicitudes mostradas</span>
-            </div>
+        <div>
+            <p>Solicitudes Pendientes</p>
+            <h4 th:text="${cantidadSolicitudes}"><strong>0</strong></h4>
         </div>
-        <div class="container-solicitudes">
-            <section th:each="solicitud : ${solicitudes}">
-                <div class="solicitud-card" th:attr="data-estado=${solicitud.estado.toLowerCase()}">
-                    <div class="solicitud-card">
-                        <div class="solicitud-header">
-                            <h3 class="solicitud-titulo" th:text="'Solicitud número: ' + ${solicitud.id}">Sin título</h3>
-                            <div th:class="${'solicitud-estado ' + solicitud.estado.toLowerCase()}" th:text="${solicitud.estado}">-</div>
-                        </div>
-                        <div class="solicitud-fecha">
-                            <span><strong>Fecha:</strong> <span th:text="${solicitud.fecha}">-</span></span>
-                        </div>
-
-                        <div class="solicitud-seccion">
-                            <h4>Hecho Reportado:</h4>
-                            <p class="hecho-nombre" th:text="${solicitud.hecho.titulo}">El hecho no tiene título</p>
-                        </div>
-
-                        <div class="solicitud-seccion">
-                            <h4>Motivo:</h4>
-                            <p class="motivo-descripcion" th:text="${solicitud.fundamento}">No hay fundamento</p>
-                        </div>
-
-                        <div class="solicitud-seccion">
-                            <h4>Usuario:</h4>
-                            <p class="contacto-info" th:text="${solicitud.contribuyente.nombre}">No hay un usuario asociado</p>
-                        </div>
-
-                        <div class="solicitud-acciones">
-                            <button class="btn btn-aprobar-full">
-                                Aprobar Eliminación
-                            </button>
-                            <button class="btn btn-rechazar-full">
-                                Rechazar Solicitud
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-        <script th:src="@{/js/filtroSolicitudes.js}"></script>
     </div>
+    <div class="container-filtro">
+        <div class="filtro-solicitudes">
+            <select class="form-select filtro-select" id="filtroSolicitudes">
+                <option value="todas" selected>Todas las solicitudes</option>
+                <option value="pendiente">Pendientes</option>
+                <option value="rechazada">Rechazadas</option>
+                <option value="aprobada">Aprobadas</option>
+            </select>
+            <span class="filtro-contador">0 solicitudes mostradas</span>
+        </div>
+    </div>
+    <div class="container-solicitudes">
+        <section th:each="solicitud : ${solicitudes}">
+            <div class="solicitud-card" th:attr="data-estado=${solicitud.estado.toLowerCase()}">
+                <div class="solicitud-header">
+                    <h3 class="solicitud-titulo" th:text="'Solicitud número: ' + ${solicitud.id}">Sin título</h3>
+                    <div th:class="${'solicitud-estado ' + solicitud.estado.toLowerCase()}" th:text="${solicitud.estado}">-</div>
+                </div>
+                <div class="solicitud-fecha">
+                    <span><strong>Fecha:</strong> <span th:text="${solicitud.fechaCreacion}">-</span></span>
+                </div>
+                <div class="solicitud-seccion">
+                    <h4>Hecho Reportado:</h4>
+                    <p class="hecho-nombre" th:text="${solicitud.hecho.titulo}">El hecho no tiene título</p>
+                </div>
+                <div class="solicitud-seccion">
+                    <h4>Motivo:</h4>
+                    <p class="motivo-descripcion" th:text="${solicitud.fundamento}">No hay fundamento</p>
+                </div>
+                <div class="solicitud-seccion">
+                    <h4>Usuario:</h4>
+                    <p class="contacto-info" th:text="${solicitud.contribuyente?.nombre}">No hay un usuario asociado</p>
+                </div>
+                <div class="solicitud-acciones" th:if="${solicitud.estado.toLowerCase() == 'pendiente'}">
+                    <button class="btn btn-aprobar-full">
+                        Aprobar Eliminación
+                    </button>
+                    <button class="btn btn-rechazar-full">
+                        Rechazar Solicitud
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script th:src="@{/js/filtroSolicitudes.js}"></script>
 </div>
