@@ -7,6 +7,8 @@ import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ContenidoMultimedia;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Etiqueta;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Origen;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.Pais;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.ProvinciaMapper;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.ubicacion.Ubicacion;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,6 +45,9 @@ public class HechoInputDTO {
           hechoDTO.getFechaAcontecimiento(),
           Origen.valueOf(hechoDTO.getOrigen().toUpperCase())
       );
+      hecho.getUbicacion().setPais(Pais.ARGENTINA);
+      hecho.getUbicacion().setProvincia(ProvinciaMapper.map(hechoDTO.getUbicacion().getProvincia()));
+      hecho.getUbicacion().setMunicipio(hechoDTO.getUbicacion().getMunicipio());
       hecho.agregarFuente(fuente, hechoDTO.getId());
       hecho.setEstaEliminado(false);
       if(contribuyente != null) {

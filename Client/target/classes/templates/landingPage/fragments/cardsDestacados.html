@@ -1,0 +1,46 @@
+<!-- Fragmento para tarjetas de hechos destacados -->
+<th:block th:fragment="hecho-card(hecho)">
+    <div class="col">
+        <div class="hecho-destacado-card card">
+            <div class="hecho-destacado-card-body card-body">
+                <div class="titulo-etiqueta">
+                    <h5 class="card-title" th:text="${hecho.titulo}"></h5>
+                    <p class="etiqueta-categoria" th:text="${hecho.categoria}"></p>
+                </div>
+                <p class="card-text"><strong>Fecha: </strong><span th:text="${hecho.fechaAcontecimiento}"></span></p>
+                <p class="card-text">
+                    <strong>Ubicación: </strong>
+                    <span th:text="${hecho.ubicacion.provincia != null ? hecho.ubicacion.provincia : 'N/A'}"></span>,
+                    <span th:text="${hecho.ubicacion.municipio != null ? hecho.ubicacion.municipio : 'N/A'}"></span>
+                </p>
+                <div style="display: flex; gap: 0.5rem">
+                    <p th:each="etiqueta : ${hecho.etiquetas}" class="etiqueta-interes" th:text="${etiqueta}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<!-- Fragmento para tarjetas de colecciones -->
+<div th:fragment="coleccion-card(titulo, cantidad, descripcion)" class="col">
+    <div class="coleccion-destacada-card card">
+        <div class="coleccion-destacada-card-body card-body">
+            <h5 class="card-title" th:text="${titulo}"></h5>
+            <p class="card-subtitle" th:text="${cantidad} + ' hechos registrados'"></p>
+            <p class="card-text" th:text="${descripcion}"></p>
+        </div>
+    </div>
+</div>
+
+<!-- Fragmento para header de sección -->
+<div th:fragment="section-header(titulo)" class="col-12 header-carusel">
+    <h2 th:text="${titulo}"></h2>
+    <div>
+        <button class="btn btn-carusel">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <button class="btn btn-carusel">
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+</div>

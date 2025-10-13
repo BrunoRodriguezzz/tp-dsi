@@ -28,7 +28,7 @@ public class AdminController {
     // Eliminacion del hecho de manera directa
 
     @PatchMapping("/eliminacion/{id}")
-    public void eliminarHecho(@RequestBody HechoEliminarInputDTO hecho, @PathVariable Long id){
-        this.adminService.eliminar(hecho,id);
+    public void eliminarHecho(@PathVariable Long id){
+        this.adminService.eliminar(id);
     }
 }

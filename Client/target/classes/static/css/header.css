@@ -1,0 +1,94 @@
+.division-line {
+    border: none;
+    height: 0.1vh;
+    width: 90%;
+    max-width: 1350px;
+    background-color: black;
+    margin: 10px auto 2% auto;
+}
+
+.container-header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.logo {
+    margin-top: 20px;
+}
+
+.navbar {
+    align-items: center;
+    background-color: white !important;
+    border-bottom: 0.1rem solid rgba(128, 128, 128, 0.4);
+    font-size: small;
+}
+
+.navbar ul {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    list-style: none;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: black;
+}
+
+@media (max-width: 991.98px) { 
+  .navbar-nav {
+    flex-direction: column !important;
+    width: 100%;
+    background-color: var(--color-white);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .navbar-nav .nav-item {
+    margin-bottom: 0.25rem;
+  }
+
+  .navbar-nav .nav-link {
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+  }
+
+  .navbar-nav .nav-link:hover {
+    background-color: #f8f9fa;
+  }
+
+  .navbar-nav .btn {
+    margin-top: 0.75rem;
+    align-self: center;
+    width: fit-content;
+  }
+}
+
+
+.navbar-toggler {
+  border: none !important;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none !important;
+}
+
+.navbar-toggler:hover {
+  background-color: var(--color-gray-50);
+}
+
+.navbar-toggler-icon { /* con esto se hace el movimiento giratorio del iconito */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  transition: transform 0.2s ease;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+  transform: rotate(90deg);
+}
