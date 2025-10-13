@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas;
+package ar.edu.utn.frba.dds.servicioAutenticacion;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

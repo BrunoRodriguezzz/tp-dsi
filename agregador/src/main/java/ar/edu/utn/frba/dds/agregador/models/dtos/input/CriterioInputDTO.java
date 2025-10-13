@@ -10,7 +10,8 @@ import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroLatitud;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroLongitud;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroTitulo;
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
@@ -18,10 +19,10 @@ import lombok.Data;
 @Data
 public class CriterioInputDTO {
     String titulo;
-    LocalDate fechaAcontecimientoInicio;
-    LocalDate fechaAcontecimientoFin;
-    LocalDate fechaCargaInicio;
-    LocalDate fechaCargaFin;
+    LocalDateTime fechaAcontecimientoInicio;
+    LocalDateTime fechaAcontecimientoFin;
+    LocalDateTime fechaCargaInicio;
+    LocalDateTime fechaCargaFin;
     String latitud;
     String longitud;
     String categoria;
@@ -39,6 +40,12 @@ public class CriterioInputDTO {
                     FiltroTitulo filtroTitulo = new FiltroTitulo(criterioInputDTO.getTitulo());
                     filtros.add(filtroTitulo);
                 }
+            }
+
+            if (criterioInputDTO.getCategoria() != null) {
+                Categoria categoria = new Categoria();
+                categoria.setTitulo(criterioInputDTO.getCategoria());
+                filtros.add(new FiltroCategoria(categoria));
             }
 
             if (criterioInputDTO.getFechaAcontecimientoInicio() != null) {
@@ -66,12 +73,12 @@ public class CriterioInputDTO {
             }
 
             if (criterioInputDTO.getLatitud() != null) {
-                FiltroLatitud filtroLatitud = new FiltroLatitud(criterioInputDTO.getLatitud());
+                FiltroLatitud filtroLatitud = new FiltroLatitud(Double.parseDouble(criterioInputDTO.getLatitud()));
                 filtros.add(filtroLatitud);
             }
 
             if (criterioInputDTO.getLongitud() != null) {
-                FiltroLongitud filtroLongitud = new FiltroLongitud(criterioInputDTO.getLatitud());
+                FiltroLongitud filtroLongitud = new FiltroLongitud(Double.parseDouble(criterioInputDTO.getLongitud()));
                 filtros.add(filtroLongitud);
             }
 

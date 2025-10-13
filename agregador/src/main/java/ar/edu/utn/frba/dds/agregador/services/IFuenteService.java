@@ -29,6 +29,4 @@ public interface IFuenteService {
   Flux<Hecho> buscarNuevosHechosStream(LocalDateTime ultimaFechaRefresco);
   Flux<Hecho> buscarHechosFuenteStream(TipoFuente tipoFuente);
   Flux<Hecho> buscarHechosFuenteStream(String nombre);
-
-
 }

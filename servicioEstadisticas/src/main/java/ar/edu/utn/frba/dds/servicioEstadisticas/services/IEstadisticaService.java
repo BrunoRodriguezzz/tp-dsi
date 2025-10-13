@@ -1,13 +1,13 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.services;
+package ar.edu.utn.frba.dds.servicioAutenticacion.services;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaCategoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaHoraXCategoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaSolicitudes;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.utils.EstadisticaCombinacion;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaCategoria;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaHoraXCategoria;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaSolicitudes;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.utils.EstadisticaCombinacion;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Provincia;
 
 import java.time.LocalTime;
 import java.util.List;

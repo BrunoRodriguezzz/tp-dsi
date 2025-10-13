@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models;
+package ar.edu.utn.frba.dds.servicioAutenticacion.domain.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

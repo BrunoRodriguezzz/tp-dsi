@@ -56,7 +56,7 @@ public class HechoController {
         return "reportarHecho";
     }
 
-    @PostMapping("/reportarHecho")
+    @PostMapping("/reporte")
     public String reportarHecho(@RequestParam Long id,
                                 @RequestParam String motivo,
                                 @RequestParam String descripcion,
@@ -67,6 +67,35 @@ public class HechoController {
         LOGGER.info("Motivo: {}", motivo);
         LOGGER.info("Descripcion: {}", descripcion);
         LOGGER.info("Contacto: {}", contacto);
+
+        return "redirect:/hechos";
+    }
+
+    @GetMapping("/publicacion")
+    public String publicacionHecho(Model model){
+        model.addAttribute("titulo", "Publicar Hecho");
+        return "publicarHecho";
+    }
+
+    @PostMapping("/publicacion")
+    public String publicarHecho(
+            @RequestParam (required = false) Long idContribuyente,
+            @RequestParam String titulo,
+            @RequestParam String descripcion,
+            @RequestParam String categoria,
+            @RequestParam String fechaAcontecimiento,
+            @RequestParam String provincia,
+            @RequestParam String latitud,
+            @RequestParam String longitud) {
+
+        LOGGER.info("Id del usuario: {}", idContribuyente);
+        LOGGER.info("Titulo: {}", titulo);
+        LOGGER.info("Descripcion del hecho: {}", descripcion);
+        LOGGER.info("Categoria: {}", categoria);
+        LOGGER.info("Fecha del acontecimiento: {}", fechaAcontecimiento);
+        LOGGER.info("Provincia: {}", provincia);
+        LOGGER.info("Latitud: {}", latitud);
+        LOGGER.info("Longitud: {}", longitud);
 
         return "redirect:/hechos";
     }

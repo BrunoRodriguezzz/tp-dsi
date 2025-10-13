@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.agregador.models.domain.colecciones;
 
 import ar.edu.utn.frba.dds.agregador.converters.OrigenConverter;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroMapper;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Criterio;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.Filtro;
@@ -27,8 +28,9 @@ public class Coleccion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "fuente_interno_id")
+    @Column(name = "fuente_interno_id")
     private Long idInternoFuente;
+
     @Column(nullable = false)
     private String titulo;
     @Column
@@ -40,9 +42,10 @@ public class Coleccion {
             joinColumns = @JoinColumn(name = "coleccion_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "fuente_id", referencedColumnName = "id")
     )
-    private List<Fuente> fuentes;
+    private List<Fuente> fuentes = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "criterio_id")
     private Criterio criterio;
 
     @ElementCollection(fetch = FetchType.LAZY)
@@ -51,8 +54,8 @@ public class Coleccion {
             joinColumns = @JoinColumn(name = "coleccion_id", referencedColumnName = "id")
     )
     @Column(name = "consenso")
-    @Convert(converter = OrigenConverter.class)
-    private List<Consenso> consensos;
+    @Enumerated(EnumType.STRING) // estaba esto --> @Convert(converter = OrigenConverter.class)
+    private List<Consenso> consensos = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -60,7 +63,7 @@ public class Coleccion {
             joinColumns = @JoinColumn(name = "coleccion_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     )
-    private List<Hecho> hechos;
+    private List<Hecho> hechos = new ArrayList<>();
 
     public Coleccion(String titulo, String descripcion, List<Fuente> fuentes, Criterio criterio) {
         if (titulo == null || titulo.isEmpty()) {
@@ -100,6 +103,7 @@ public class Coleccion {
 
     public void cambiarCriterio(Criterio criterio) {
         this.setCriterio(criterio);
+        this.recalcularHechos();
     }
 
     public boolean cargarHecho(Hecho hecho) {
@@ -122,26 +126,21 @@ public class Coleccion {
     }
 
     public List<Hecho> consultarHechosCurados() {
-        if(this.hechos == null){
-            return new ArrayList<>();
-        }
         return this.filtrarCurados(this.hechos);
     }
 
     private List<Hecho> filtrarCurados(List<Hecho> hechos) {
-        List<Hecho> filtrados = hechos.stream().filter(h ->
-            {
+        return hechos.stream().filter(h -> {
                 if(h.getConsensos().isEmpty()){
                     return false;
                 }
                 else
-                return h.getConsensos().stream().allMatch(consensoHecho ->
+                    return h.getConsensos().stream().allMatch(consensoHecho ->
                     this.consensos.stream().anyMatch(consensoInterno ->
                         consensoInterno.equals(consensoHecho))
                 );
             }
         ).collect(Collectors.toList());
-        return filtrados;
     }
 
     // Consultas de Hechos
@@ -153,12 +152,13 @@ public class Coleccion {
     }
 
     public List<Hecho> consultarHechos(List<Filtro> filtros) {
-        List<Hecho> hechosQueCumplenFiltrosUsuario = this.aplicarFiltros(filtros);
-        return hechosQueCumplenFiltrosUsuario;
+        return this.aplicarFiltros(filtros);
     }
 
     public void agregarFiltroACriterio(Filtro filtro){
-        this.criterio.agregarFiltro(filtro);
+        FiltroMapper filtroMapper = new FiltroMapper();
+        this.criterio.agregarFiltro(filtroMapper.toEntity(filtro));
+        this.recalcularHechos();
     }
 
     public List<Hecho> recalcularHechos(){
@@ -169,24 +169,28 @@ public class Coleccion {
 
     // Auxiliares a consultas de Hechos
     private List<Hecho> filtrarHechosSegunCriterioYFuentes(List<Hecho> hechos) {
-        List<Long> idsFuentes = this.getFuentes().stream()
-            .map(Fuente::getId)
-            .toList();
+        List<Long> IDfuentes = this.getFuentes()
+                .stream()
+                .map(Fuente::getId)
+                .toList();
 
         return hechos.stream()
             .filter(hecho ->
                 this.cumpleCriterioColeccion(hecho) &&
                     !hecho.getEstaEliminado() &&
-                    idsFuentes.contains(hecho.getFuente().getId())
+                    hecho.getFuenteSet()
+                            .stream()
+                            .map(hechoFuente -> hechoFuente.getFuente().getId())
+                            .anyMatch(IDfuentes::contains)
             )
             .collect(Collectors.toList());
     }
 
-    private Boolean cumpleCriterioColeccion(Hecho hecho){
-    if(this.criterio == null){ //Si no tengo criterio, lo cumple
+    private Boolean cumpleCriterioColeccion(Hecho hecho) {
+    if(this.criterio == null) { //Si no tengo criterio, lo cumple
         return true;
     }
-        return this.criterio.cumpleCriterio(hecho);
+        return this.criterio.coincideCon(hecho);
     }
 
     private List<Hecho> aplicarFiltros(List<Filtro> filtros) {

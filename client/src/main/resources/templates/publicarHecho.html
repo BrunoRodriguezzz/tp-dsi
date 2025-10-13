@@ -1,0 +1,89 @@
+<html lang="en" th:replace="~{layout/base :: html}">
+<th:block th:fragment="additional-links">
+    <link rel="stylesheet" th:href="@{/css/publicarHecho.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+</th:block>
+<div style="padding-top: 5rem" th:fragment="contenido">
+    <div class="outer-form">
+        <h2><strong>Publicar Hecho</strong></h2>
+        <p>Comparte información relevante para la comunidad de forma colaborativa</p>
+    </div>
+    <form th:action="@{/hechos/publicacion}" method="post" class="form-hecho">
+        <div class="header-form">
+            <h3><strong>Información del Hecho</strong></h3>
+            <p>Completa todos los campos para registrar un nuevo hecho en el sistema</p>
+        </div>
+        <div class="form-title">
+            <h6>Titulo</h6>
+            <input type="text" class="form-control" placeholder="Titulo descriptivo del hecho" id="titleInput" name="titulo">
+        </div>
+        <div class="form-desc">
+            <h6>Descripcion</h6>
+            <textarea class="form-control" placeholder="Describe los detalles del hecho" id="descripcionInput" name="descripcion" rows="4"></textarea>
+        </div>
+        <div class="form-category">
+            <h6>Categoria</h6>
+            <select class="form-select" id="categoriaSelect" name="categoria">
+                <option value="" disabled selected hidden>Seleccionar categoría</option>
+                <option value="Protesta Social">Protesta Social</option>
+                <option value="Desarrollo Social">Desarrollo Social</option>
+                <option value="Medio Ambiente">Medio Ambiente</option>
+                <option value="Seguridad">Seguridad</option>
+                <option value="Educacion">Educación</option>
+                <option value="Salud">Salud</option>
+                <option value="Infraestructura">Infraestructura</option>
+            </select>
+        </div>
+        <div class="form-fechaAcontecimiento">
+            <h6>Fecha del Acontecimiento</h6>
+            <input type="date" class="form-control" id="fechaInput" name="fechaAcontecimiento">
+        </div>
+        <div class="form-category">
+            <h6>Provincia</h6>
+            <select class="form-select" id="provinciaSelect" name="provincia">
+                <option value="" disabled selected hidden>Seleccionar categoría</option>
+                <option value="Buenos Aires">Buenos Aires</option>
+                <option value="Catamarca">Catamarca</option>
+                <option value="Chaco">Chaco</option>
+                <option value="Chubut">Chubut</option>
+                <option value="Córdoba">Córdoba</option>
+                <option value="Corrientes">Corrientes</option>
+                <option value="Entre Ríos">Entre Ríos</option>
+                <option value="Formosa">Formosa</option>
+                <option value="Jujuy">Jujuy</option>
+                <option value="La Pampa">La Pampa</option>
+                <option value="La Rioja">La Rioja</option>
+                <option value="Mendoza">Mendoza</option>
+                <option value="Misiones">Misiones</option>
+                <option value="Neuquén">Neuquén</option>
+                <option value="Río Negro">Río Negro</option>
+                <option value="Salta">Salta</option>
+                <option value="San Juan">San Juan</option>
+                <option value="San Luis">San Luis</option>
+                <option value="Santa Cruz">Santa Cruz</option>
+                <option value="Santa Fe">Santa Fe</option>
+                <option value="Santiago del Estero">Santiago del Estero</option>
+                <option value="Tierra del Fuego">Tierra del Fuego</option>
+                <option value="Tucumán">Tucumán</option>
+                <option value="Ciudad Autónoma de Buenos Aires">Ciudad Autónoma de Buenos Aires</option>
+            </select>
+        </div>
+        <div class="form-title">
+            <h6>Municipio</h6>
+            <input type="text" class="form-control" placeholder="Nombre del municipio" id="municipioInput" name="municipio">
+        </div>
+        <input type="hidden" id="latInput" name="latitud">
+        <input type="hidden" id="lngInput" name="longitud">
+        <input type="hidden" id="idContribuyente" name="idContribuyente">
+        <div id="geocoder" class="mb-3" style="width: 100%"></div>
+        <div id="map" class="map"></div>
+        <script th:src="@{/js/mapa.js}"></script>
+        <button type="submit" class="btn btn-dark" style="width: 100%">Publicar Hecho</button>
+    </form>
+</div>
+</html>

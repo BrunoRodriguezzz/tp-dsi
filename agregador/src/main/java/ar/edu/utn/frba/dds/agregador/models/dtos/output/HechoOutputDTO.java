@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos.output;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Data;
@@ -13,11 +13,11 @@ public class HechoOutputDTO {
   private String descripcion;
   private String categoria;
   private UbicacionOutputDTO ubicacion;
-  private LocalDate fechaAcontecimiento;
+  private LocalDateTime fechaAcontecimiento;
   private ContribuyenteOutputDTO contribuyente;
   private String fuente;
   private String origen;
-  private LocalDate fechaCarga;
+  private LocalDateTime fechaCarga;
 
   public static HechoOutputDTO HechoToDTO(Hecho hecho) {
     HechoOutputDTO hechoDTO = new HechoOutputDTO();
@@ -32,12 +32,14 @@ public class HechoOutputDTO {
     if(hecho.getContribuyente() != null){
       hechoDTO.setContribuyente(ContribuyenteOutputDTO.ContribuyenteToDTO(hecho.getContribuyente()));
     }
-
     else{
       hechoDTO.setContribuyente(null);
     }
 
-    hechoDTO.setFuente(hecho.getFuente().getNombre()); // TODO: Revisar si devolver el nombre y ya o el objeto
+    hecho.getFuenteSet()
+            .stream()
+            .findFirst()
+            .ifPresent(f -> hechoDTO.setFuente(f.getFuente().getNombre()));
     hechoDTO.setOrigen(hecho.getOrigen().name());
     return hechoDTO;
   }
@@ -46,10 +48,8 @@ public class HechoOutputDTO {
     if(hechos == null){
       return null;
     }
-    List<HechoOutputDTO> hechosDTO =
-        hechos.stream()
-            .map(HechoOutputDTO::HechoToDTO)
-            .collect(Collectors.toList());
-    return hechosDTO;
+      return hechos.stream()
+          .map(HechoOutputDTO::HechoToDTO)
+          .collect(Collectors.toList());
   }
 }

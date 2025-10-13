@@ -1,0 +1,86 @@
+<html lang="en" th:replace="~{layout/base :: html}">
+<head>
+    <th:block th:fragment="additional-links">
+        <link rel="stylesheet" th:href="@{/css/login.css}">
+        <link rel="stylesheet" th:href="@{/css/index.css}">
+        <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link rel="stylesheet" th:href="@{/css/header.css}">
+        <link rel="stylesheet" th:href="@{/css/components.css}">
+    </th:block>
+</head>
+
+<div th:fragment="contenido">
+    <div class="container sesion-container">
+        <h2>MetaMapa</h2>
+        <h1>Iniciar Sesion</h1>
+        <p id="leyenda">Accede a tu cuenta para contribuir</p>
+        <div id="login-form" class="container sesion-container">
+            <h3>Bienvenido de vuelta</h3>
+            <p>Ingresa tus credenciales</p>
+            <form th:action="@{/login}" method="post" class="sesion-form">
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div class="input">
+                    <label for="login-username">Nombre de usuario*</label>
+                    <input type="text" id="login-username" name="username" placeholder="Ingrese su nombre de usuario aquí" required>
+                </div>
+                <div class="input">
+                    <label for="login-password">Contraseña*</label>
+                    <input type="password" name="password" id="login-password" placeholder="······" required>
+                </div>
+                <button type="submit" class="btn btn-dark">Iniciar Sesion</button>
+            </form>
+            <hr>
+            <a href="" id="show-register">¿No tienes cuenta? Regístrate aquí</a>
+            <a href="index.html" class="ultimo"> ← Volver al inicio</a>
+        </div>
+
+        <div id="register-form" class="container sesion-container" style="display: none;">
+            <h3>Crear nueva cuenta</h3>
+            <p>Completa los datos para registrarte</p>
+            <form th:action="@{/register}" th:object="${usuario}" method="post" class="sesion-form">
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+                <div class="input-name-surname">
+                    <div class="input">
+                        <label for="name">Nombre *</label>
+                        <input type="text" th:field="*{nombre}" id="name" placeholder="Tu nombre" required>
+                    </div>
+                    <div class="input">
+                        <label for="surname">Apellido *</label>
+                        <input type="text" th:field="*{apellido}" id="surname" placeholder="Tu apellido" required>
+                    </div>
+                </div>
+
+                <div class="input">
+                    <label for="fechaNacimiento">Fecha de nacimiento *</label>
+                    <input type="date" th:field="*{fechaNacimiento}" id="fechaNacimiento" placeholder="2000-08-01" required>
+                </div>
+
+                <div class="input">
+                    <label for="register-username">Nombre de usuario *</label>
+                    <input type="text" th:field="*{username}" id="register-username" placeholder="MyUsername123" required>
+                </div>
+
+                <div class="input">
+                    <label for="register-password">Contraseña *</label>
+                    <input type="password" th:field="*{password}" id="register-password" placeholder="······" required>
+                    <p>Mínimo 8 caracteres, incluye mayúsculas, minúsculas y números</p>
+                </div>
+
+<!--                <div class="input">-->
+<!--                    <label for="register-second-password">Repetir contraseña *</label>-->
+<!--                    <input type="password" th:field="*{secondPassword}" id="register-second-password" placeholder="······" required>-->
+<!--                </div>-->
+
+                <button type="submit" class="btn btn-dark">Crear cuenta</button>
+            </form>
+            <hr>
+            <a href="" id="show-login">¿Ya tienes cuenta? Inicia sesión aquí</a>
+            <a href="index.html" class="ultimo">← Volver al inicio</a>
+        </div>
+    </div>
+
+    <script th:src="@{/js/login.js}"></script>
+</div>
+</html>

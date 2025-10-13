@@ -1,6 +1,6 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos;
+package ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Coleccion;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Coleccion;
 import lombok.Data;
 
 import java.util.List;

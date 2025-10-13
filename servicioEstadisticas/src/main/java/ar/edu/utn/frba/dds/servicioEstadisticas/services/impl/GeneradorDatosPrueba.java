@@ -1,13 +1,13 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
+package ar.edu.utn.frba.dds.servicioAutenticacion.services.impl;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.AdministradorInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ContribuyenteInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ResolucionSolicitudEliminacionInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.UbicacionInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.AdministradorInputDTO;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.ContribuyenteInputDTO;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.HechoInputDTO;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.ResolucionSolicitudEliminacionInputDTO;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.SolicitudEliminacionInputDTO;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.UbicacionInputDTO;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Provincia;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -1,5 +1,5 @@
 
-package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones;
+package ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones;
 
 import jakarta.persistence.*;
 import lombok.Data;

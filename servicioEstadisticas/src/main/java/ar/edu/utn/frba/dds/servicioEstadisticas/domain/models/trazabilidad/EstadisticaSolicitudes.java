@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad;
+package ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;

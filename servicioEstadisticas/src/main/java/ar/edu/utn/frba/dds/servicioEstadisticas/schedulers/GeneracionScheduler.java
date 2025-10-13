@@ -1,6 +1,6 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.schedulers;
+package ar.edu.utn.frba.dds.servicioAutenticacion.schedulers;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticaService;
+import ar.edu.utn.frba.dds.servicioAutenticacion.services.IEstadisticaService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

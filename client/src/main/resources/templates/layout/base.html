@@ -19,7 +19,7 @@
 <body class="d-flex flex-column min-vh-100">
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand" style="font-weight: 650" th:href="@{/}">MetaMapa</a>
+        <a class="navbar-brand" style="font-weight: 650" th:href="@{/home}">MetaMapa</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -27,7 +27,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/}">Home</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/home}">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="map.html">Mapa</a>
@@ -39,7 +39,7 @@
                     <a class="nav-link" href="colecciones.html">Colecciones</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="publicarHecho.html">Publicar Hecho</a>
+                    <a class="nav-link" th:href="@{/hechos/publicacion}">Publicar Hecho</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/hechos/misHechos}">Mis hechos</a>
@@ -51,15 +51,22 @@
                     <a class="nav-link" href="panelControl.html">Panel de Control</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="sobreNosotros.html" th:href="@{/sobreNosotros}">Sobre Nosotros</a>
+                    <a class="nav-link" href="sobreNosotros.html" th:href="@{/home/sobreNosotros}">Sobre Nosotros</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="estadisticas.html">Estadisticas</a>
                 </li>
             </ul>
-            <a href="inicioSesion.html">
-                <button class="nav-item btn btn-outline-primary">Iniciar Sesion</button>
-            </a>
+            <div class="auth-section">
+                <div th:if="${usuarioLogueado == null}">
+                    <a href="/login" class="nav-item btn btn-outline-primary">Iniciar Sesión</a>
+                </div>
+
+                <div th:if="${usuarioLogueado != null}" class="user-info" style="display: flex; align-items: center; justify-content: space-between">
+                    <span class="nav-link" th:text="'Bienvenido, ' + ${usuarioLogueado}" style="margin: 1rem">Bienvenido, Usuario</span>
+                    <a href="/logout" class="nav-item btn btn-outline-primary">Cerrar Sesión</a>
+                </div>
+            </div>
         </div>
     </div>
 </nav>

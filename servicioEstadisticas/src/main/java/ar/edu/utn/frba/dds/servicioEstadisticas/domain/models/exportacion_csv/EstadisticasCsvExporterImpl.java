@@ -1,13 +1,13 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.exportacion_csv;
+package ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.exportacion_csv;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.HoraDelDia;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaCategoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaHoraXCategoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaSolicitudes;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.HoraDelDia;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Provincia;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaCategoria;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaHoraXCategoria;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaSolicitudes;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 import java.io.FileWriter;

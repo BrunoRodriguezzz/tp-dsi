@@ -1,6 +1,6 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories;
+package ar.edu.utn.frba.dds.servicioAutenticacion.domain.repositories;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Categoria;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

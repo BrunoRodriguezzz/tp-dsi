@@ -1,10 +1,10 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
+package ar.edu.utn.frba.dds.servicioAutenticacion.services.impl;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.SolicitudEliminacion;
-import ar.edu.utn.frba.dds.servicioEstadisticas.services.IImportadorService;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.HechoInputDTO;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.SolicitudEliminacionInputDTO;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.SolicitudEliminacion;
+import ar.edu.utn.frba.dds.servicioAutenticacion.services.IImportadorService;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

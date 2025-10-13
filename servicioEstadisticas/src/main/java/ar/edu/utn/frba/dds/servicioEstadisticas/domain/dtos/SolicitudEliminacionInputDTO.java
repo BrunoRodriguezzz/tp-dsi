@@ -1,8 +1,8 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos;
+package ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.EstadoSolicitudEliminacion;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Hecho;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.SolicitudEliminacion;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.EstadoSolicitudEliminacion;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Hecho;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.SolicitudEliminacion;
 import lombok.Data;
 
 import java.time.LocalDateTime;

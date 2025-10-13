@@ -1,9 +1,9 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.utils;
+package ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.utils;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Coleccion;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.HoraDelDia;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Coleccion;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.HoraDelDia;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Provincia;
 import lombok.Data;
 
 import java.util.Objects;

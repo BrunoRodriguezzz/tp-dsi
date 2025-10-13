@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos.external;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import java.util.ArrayList;
@@ -12,18 +13,26 @@ public class FuenteResponseDTO {
   private String nombre;
   private List<HechoInputDTO> hechos;
 
-  public static List<Hecho> servicioResponseToHechos(List<FuenteResponseDTO> servicioResponse) {
+  public static List<Hecho> servicioResponseToHechos(List<FuenteResponseDTO> servicioResponse, Fuente fuente) {
     List<Hecho> hechos = new ArrayList<>();
-    servicioResponse.forEach(fuente -> {
-      List<Hecho> hechosEnFuente = fuente
+    servicioResponse.forEach(fuenteResponseDTO -> {
+      List<Hecho> hechosEnFuente = fuenteResponseDTO
           .getHechos()
           .stream().map(h -> {
-            Hecho hecho = HechoInputDTO.DTOToHecho(h);
+            Hecho hecho = HechoInputDTO.DTOToHecho(h, null, fuente);
             return hecho;
           })
           .toList();
       hechos.addAll(hechosEnFuente);
     });
     return hechos;
+  }
+
+  public static List<Hecho> toHechos(FuenteResponseDTO response, Fuente fuente) {
+      return response
+              .getHechos()
+              .stream()
+              .map(hechoInputDTO -> HechoInputDTO.DTOToHecho(hechoInputDTO, null, fuente))
+              .toList();
   }
 }

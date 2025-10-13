@@ -1,7 +1,7 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad;
+package ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad;
 
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.HoraDelDia;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.HoraDelDia;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;

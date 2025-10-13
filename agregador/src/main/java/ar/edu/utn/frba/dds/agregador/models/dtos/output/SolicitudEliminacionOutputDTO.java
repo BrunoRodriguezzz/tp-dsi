@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.models.dtos.output;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.SolicitudEliminacion;
-import ar.edu.utn.frba.dds.agregador.models.dtos.UtilsDTO;
+
 import java.time.LocalDateTime;
 import lombok.Data;
 

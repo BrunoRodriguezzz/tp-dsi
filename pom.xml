@@ -17,7 +17,9 @@
     <module>fuenteProxy</module>
     <module>fuenteDinamica</module>
     <module>fuenteEstatica</module>
+    <module>servicioAutenticacion</module>
     <module>servicioEstadisticas</module>
+
     <module>domain</module>
     <module>client</module>
   </modules>

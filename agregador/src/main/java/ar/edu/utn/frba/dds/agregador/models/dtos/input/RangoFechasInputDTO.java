@@ -2,10 +2,10 @@ package ar.edu.utn.frba.dds.agregador.models.dtos.input;
 
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class RangoFechasInputDTO {
-    private LocalDate fechaInicio;
-    private LocalDate fechaFin;
+    private LocalDateTime fechaInicio;
+    private LocalDateTime fechaFin;
 }

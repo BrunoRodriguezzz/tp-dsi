@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalDateTime;
 
 @Getter
@@ -42,7 +42,7 @@ public class HechoProxy {
     private Ubicacion ubicacion;
 
     @Column(nullable = false)
-    private LocalDate fechaHecho;
+    private LocalDateTime fechaHecho;
 
     @Column(nullable = false)
     private LocalDateTime fechaCreacion;
