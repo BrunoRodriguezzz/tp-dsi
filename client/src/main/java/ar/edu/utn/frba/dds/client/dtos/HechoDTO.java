@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -17,7 +18,9 @@ public class HechoDTO {
     private String descripcion;
     private String categoria;
     private UbicacionDTO ubicacion;
-    private LocalDate fechaAcontecimiento;
+    private ContribuyenteDTO contribuyente;
+    private LocalDateTime fechaAcontecimiento;
+    private LocalDateTime fechaCarga;
     private List<String> etiquetas;
     private String origen;
     private String fuente;

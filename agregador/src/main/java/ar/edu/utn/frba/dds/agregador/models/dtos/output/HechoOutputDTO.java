@@ -15,6 +15,7 @@ public class HechoOutputDTO {
   private UbicacionOutputDTO ubicacion;
   private LocalDateTime fechaAcontecimiento;
   private ContribuyenteOutputDTO contribuyente;
+  // TODO: Agregar etiquetas
   private String fuente;
   private String origen;
   private LocalDateTime fechaCarga;
