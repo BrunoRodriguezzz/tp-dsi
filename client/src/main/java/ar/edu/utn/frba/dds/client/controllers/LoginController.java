@@ -2,7 +2,6 @@ package ar.edu.utn.frba.dds.client.controllers;
 
 import ar.edu.utn.frba.dds.client.dtos.auth.UsuarioDTO;
 import ar.edu.utn.frba.dds.client.services.AuthApiService;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Permiso;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Rol;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Usuario;
 import jakarta.servlet.http.HttpServletRequest;

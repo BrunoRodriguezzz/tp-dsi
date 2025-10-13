@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos;
+package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos;
 
 
 

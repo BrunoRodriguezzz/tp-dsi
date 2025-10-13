@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.servicioAutenticacion.controllers;
 
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.AccessRequest;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.AuthResponseDTO;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.RefreshRequest;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.TokenResponse;

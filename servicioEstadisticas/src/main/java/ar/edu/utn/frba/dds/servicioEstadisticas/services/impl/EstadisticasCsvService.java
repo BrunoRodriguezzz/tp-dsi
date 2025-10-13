@@ -1,13 +1,12 @@
-package ar.edu.utn.frba.dds.servicioAutenticacion.services.impl;
+package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
 
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.exportacion_csv.IEstadisticasCsvExporter;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaCategoria;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaHoraXCategoria;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad.EstadisticaSolicitudes;
-import ar.edu.utn.frba.dds.servicioAutenticacion.services.IEstadisticasCsvService;
-import org.springframework.beans.factory.annotation.Autowired;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.exportacion_csv.IEstadisticasCsvExporter;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaCategoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaHoraXCategoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaSolicitudes;
+import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticasCsvService;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
@@ -17,7 +16,6 @@ public class EstadisticasCsvService implements IEstadisticasCsvService {
 
   private final IEstadisticasCsvExporter csvExporter;
 
-  @Autowired
   public EstadisticasCsvService(IEstadisticasCsvExporter csvExporter) {
     this.csvExporter = csvExporter;
   }

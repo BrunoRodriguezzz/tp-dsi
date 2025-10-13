@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones;
+package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones;
 
 public enum Provincia {
     BUENOS_AIRES {public String getValue() {return "Buenos Aires";}},

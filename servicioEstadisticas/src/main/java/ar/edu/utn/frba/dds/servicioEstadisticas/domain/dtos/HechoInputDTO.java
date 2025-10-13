@@ -1,7 +1,7 @@
-package ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos;
+package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos;
 
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Categoria;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Hecho;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Hecho;
 import lombok.Data;
 
 import java.time.LocalDateTime;

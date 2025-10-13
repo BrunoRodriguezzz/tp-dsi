@@ -1,8 +1,8 @@
-package ar.edu.utn.frba.dds.servicioAutenticacion.services;
+package ar.edu.utn.frba.dds.servicioEstadisticas.services;
 
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.ColeccionInputDTO;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.HechoInputDTO;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dtos.SolicitudEliminacionInputDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

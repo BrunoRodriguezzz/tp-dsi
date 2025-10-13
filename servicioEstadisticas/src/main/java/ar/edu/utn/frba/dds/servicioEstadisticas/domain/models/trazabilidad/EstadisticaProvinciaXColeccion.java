@@ -1,14 +1,11 @@
-package ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.trazabilidad;
+package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad;
 
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Coleccion;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones.Provincia;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Coleccion;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
 import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

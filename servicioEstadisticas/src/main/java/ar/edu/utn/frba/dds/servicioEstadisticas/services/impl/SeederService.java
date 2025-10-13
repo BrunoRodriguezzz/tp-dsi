@@ -1,9 +1,9 @@
-package ar.edu.utn.frba.dds.servicioAutenticacion.services.impl;
+package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
 
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.repositories.ICategoriaRepository;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.repositories.IColeccionRepository;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.repositories.IEstadisticaCombinacionRepository;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.repositories.ISolicitudRepository;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.ICategoriaRepository;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.IColeccionRepository;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.IEstadisticaCombinacionRepository;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.ISolicitudRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

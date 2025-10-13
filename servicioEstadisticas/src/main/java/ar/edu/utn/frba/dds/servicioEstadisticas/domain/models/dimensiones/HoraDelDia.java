@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.dimensiones;
+package ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
