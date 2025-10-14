@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.client.dtos.solicitud;
 
 import ar.edu.utn.frba.dds.client.dtos.ContribuyenteDTO;
-import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import lombok.Builder;
 import lombok.Data;
 

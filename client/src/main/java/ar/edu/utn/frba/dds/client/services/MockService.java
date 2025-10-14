@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.client.dtos.*;
 import ar.edu.utn.frba.dds.client.dtos.estadisticas.EstadisticaHoraXCategoriaDTO;
 import ar.edu.utn.frba.dds.client.dtos.estadisticas.EstadisticaProvinciaXColeccionDTO;
 import ar.edu.utn.frba.dds.client.dtos.estadisticas.EstadisticaSolicitudesDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.solicitud.ResolucionDTO;
 import ar.edu.utn.frba.dds.client.dtos.solicitud.SolicitudDTO;
 

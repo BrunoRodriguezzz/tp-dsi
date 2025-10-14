@@ -18,7 +18,7 @@ public class AdminController {
 
     // Gestion del hecho (aceptacion, sugerir cambios o rechazar)
 
-    @PatchMapping("/gestion")
+    @PostMapping("/gestion")
     public HechoOutputDTO gestionarHecho(@RequestBody HechoRevisadoInputDTO hechoRevisado){
 
         return this.adminService.gestionarHecho(hechoRevisado);

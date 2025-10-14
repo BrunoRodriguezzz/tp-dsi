@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
 import ar.edu.utn.frba.dds.client.dtos.ColeccionDTO;
-import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.services.ColeccionService;
 import ar.edu.utn.frba.dds.client.services.HechoService;
 import org.springframework.beans.factory.annotation.Autowired;
