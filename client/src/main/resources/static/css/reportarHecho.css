@@ -1,3 +1,4 @@
+/* Copiado desde el CSS original de reportarHecho */
 .input {
     display: flex;
     flex-direction: column;
@@ -43,3 +44,4 @@ textarea {
 h1 {
     margin-top: 7rem;
 }
+

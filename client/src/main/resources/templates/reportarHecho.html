@@ -1,17 +1,33 @@
-<html lang="en" th:replace="~{layout/base :: html}">
-<th:block th:fragment="additional-links">
-    <link rel="stylesheet" th:href="@{/css/reportarHecho.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
-</th:block>
-<div th:fragment="contenido">
+<!DOCTYPE html>
+<html lang="es" th:replace="~{layout/base :: html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportar hecho</title>
+    <th:block th:fragment="additional-links">
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+        <link rel="stylesheet" th:href="@{/css/components.css}">
+        <link rel="stylesheet" th:href="@{/css/header.css}">
+        <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link rel="stylesheet" th:href="@{/css/reportarHecho.css}">
+        <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    </th:block>
+</head>
+<body>
+    <div th:fragment="contenido">
     <main class="container">
+        <a th:href="@{/}">Volver al inicio</a>
         <h1>Solicitar Eliminación de Hecho</h1>
         <p>Reporta contenido inapropiado o solicita la eliminación de información incorrecta</p>
-        <form th:action="@{/hechos/reporte}" method="post" class="form-report">
+        <form th:action="@{/reportarHecho}" method="post" class="form-report">
             <h2>Información de la Solicitud</h2>
             <p>Completa todos los campos para procesar tu solicitud de eliminación</p>
             <div class="input">
-                <input type="text" th:value="${hecho.titulo}" readonly>
+                <label for="hecho">Hecho a Eliminar *</label>
+                <select name="hecho" id="hecho">
+                    <option th:each="hecho : ${hechos}" th:value="${hecho.id}" th:text="${hecho.titulo}">Hecho</option>
+                </select>
             </div>
             <div class="input">
                 <label for="motivo">Motivo de Eliminacion *</label>
@@ -30,13 +46,14 @@
                 <p>Proporciona evidencia o argumentos específicos para respaldar tu solicitud</p>
             </div>
             <div class="input">
-                <label for="contacto">Informacion de Contacto</label>
+                <label for="contacto">Información de Contacto</label>
                 <input type="email" name="contacto" id="contacto" placeholder="tu@email.com (opcional)">
                 <p>Opcional: para recibir actualizaciones sobre tu solicitud</p>
             </div>
-            <input type="hidden" name="id" th:value="${hecho.id}"/>
-            <button type="submit" class="btn btn-dark" id="btn_enviar">Enviar solicitud de eliminación</button>
+            <button type="submit" class="btn btn-dark">Enviar solicitud de eliminación</button>
         </form>
     </main>
-</div>
+    </div>
+</body>
 </html>
+
