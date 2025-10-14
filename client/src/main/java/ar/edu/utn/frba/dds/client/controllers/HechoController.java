@@ -112,4 +112,12 @@ public class HechoController {
 
         return "redirect:/hechos";
     }
+
+    @GetMapping("/modificacion/{id}")
+    public String modificacionHecho(@PathVariable Long id,Model model){
+        HechoDTO hecho = dinamicaService.buscarHechoId(id);
+        model.addAttribute("hecho", hecho);
+        model.addAttribute("titulo", "Modificacion");
+        return "modificarHecho";
+    }
 }

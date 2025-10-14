@@ -87,4 +87,22 @@ public class DinamicaService {
         }
     }
 
+    public HechoDTO buscarHechoId(Long idHecho){
+        HechoDTO hecho = null;
+        try{
+            hecho = this.webApiCallerService.get(this.dinamicaUrl + "/hechos/" + idHecho, HechoDTO.class);
+        }catch (Exception e) {
+             hecho = HechoDTO.builder()
+                    .id(1L)
+                    .titulo("Manifestación por derechos laborales")
+                    .descripcion("Gran manifestación en el centro de la ciudad exigiendo mejores condiciones laborales y aumento salarial para trabajadores del sector público.")
+                    .categoria("Protesta Social")
+                    .fechaAcontecimiento(LocalDate.of(2024,1,15).atStartOfDay())
+                    .ubicacion(UbicacionDTO.builder().municipio("Plaza De Mayo").provincia("Buenos Aires").build())
+                    .origen("Contribuyentes")
+                    .fuente("Fuente Dinamica")
+                    .build();
+        }
+        return hecho;
+    }
 }
