@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.client.dtos;
+package ar.edu.utn.frba.dds.client.dtos.estadisticas;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
