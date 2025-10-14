@@ -1,5 +1,4 @@
-/*Botones*/
-.btn-outline-light { 
+.btn-outline-light {
   color: var(--color-black);
   border-color: var(--color-black);
 }
@@ -26,7 +25,6 @@
     border-color: black;
 }
 
-/* Card */
 .card.hecho-destacado-card{
   width: 100%;
   max-width: 28rem;
@@ -83,7 +81,6 @@
   color: black;
 }
 
-/* Carusel */
 
 .header-carusel {
   display: flex;

@@ -2,9 +2,9 @@ main {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 1200px; /* ancho máximo para desktop */
-    margin: 0 auto;   /* centra en la pantalla */
-    padding: 0 1.5rem; /* margen uniforme izquierda y derecha */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
     justify-content: start;
     align-items: start;
 }
@@ -443,7 +443,7 @@ body {
     }
 
     .filtros-grid {
-        grid-template-columns: 1fr; /* filtros en columna */
+        grid-template-columns: 1fr;
     }
 
     .opciones {

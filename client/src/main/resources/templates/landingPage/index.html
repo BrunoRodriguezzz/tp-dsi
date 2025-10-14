@@ -7,7 +7,6 @@
     </th:block>
 </head>
 
-<!-- class="row"-->
 <div th:fragment="contenido">
 
     <div class="metaMapa-info">
@@ -25,17 +24,13 @@
         <div class="container text-center">
             <div class="row">
                 <th:block th:replace="~{landingPage/fragments/cardProposito :: purpose-card('fa-globe', 'Transparencia', 'Maximizar la disponibilidad y veracidad de la información para rendir cuentas a la sociedad')}"></th:block>
-
                 <th:block th:replace="~{landingPage/fragments/cardProposito :: purpose-card('fa-shield', 'Privacidad', 'Proteger la identidad de quienes visitan y suben información al sistema')}"></th:block>
-
                 <th:block th:replace="~{landingPage/fragments/cardProposito :: purpose-card('fa-hands', 'Colaboración', 'Permitir que cualquier persona mayor de edad pueda contribuir con información')}"></th:block>
-
                 <th:block th:replace="~{landingPage/fragments/cardProposito :: purpose-card('fa-location-dot', 'Descentralización', 'Almacenamiento descentralizado para garantizar disponibilidad y mitigar ataques')}"></th:block>
             </div>
         </div>
     </div>
 
-    <!-- Sección Hechos Destacados -->
     <div class="hechos-destacados-section">
         <div class="row">
             <th:block th:replace="~{landingPage/fragments/cardsDestacados :: section-header('Hechos Destacados')}"></th:block>
@@ -72,7 +67,6 @@
         </div>
     </div>
 
-    <!-- Sección Colecciones Destacadas -->
     <div class="colecciones-destacadas-section">
         <div class="row">
             <th:block th:replace="~{landingPage/fragments/cardsDestacados :: section-header('Colecciones Destacadas')}"></th:block>
