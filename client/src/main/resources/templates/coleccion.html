@@ -7,9 +7,9 @@
     <th:block th:fragment="additional-links">
         <link rel="stylesheet" th:href="@{/css/styles.css}">
         <link rel="stylesheet" th:href="@{/css/components.css}">
-        <link rel="stylesheet" th:href="@{/css/coleccion.css}">
         <link rel="stylesheet" th:href="@{/css/header.css}">
         <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link rel="stylesheet" th:href="@{/css/coleccion.css}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
         <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
@@ -32,56 +32,67 @@
                 </div>
                 <div class="titulos-buttons">
                     <button class="btn btn-filtro" onclick="document.querySelector('.filtros-container').style.display = (document.querySelector('.filtros-container').style.display === 'none' ? 'block' : 'none')">Mostrar filtros</button>
-                    <a th:if="${coleccion.id != null}" th:href="@{'/editarColeccion/' + ${coleccion.id}}" class="nav-item btn btn-outline-primary">Modificar Colección</a>
+                    <a th:if="${coleccion.id != null}" th:href="@{'/editarColeccion/' + ${coleccion.id}}">
+                        <button class="nav-item btn btn-outline-primary">Modificar Colección</button>
+                    </a>
                 </div>
             </div>
 
-            <div class="modos-navegacion-container">
-                <div class="modo-navegacion-container curado">
-                    <div class="modo-navegacion-i-titulo">
-                        <i class="fa-solid fa-shield"></i>
-                        <h5>Navegando en modo Curado</h5>
-                    </div>
-                </div>
-                <div class="modo-navegacion-container irrestricto">
-                    <div class="modo-navegacion-i-titulo">
-                        <i class="fa-solid fa-shield"></i>
-                        <h5>Navegando en modo Irrestricto</h5>
-                    </div>
-                </div>
+            <div class="modos-navegacion-container" id="modos-navegacion">
+                <button type="button" class="modo-navegacion-btn curado active" data-modo="curado">Modo Curado</button>
+                <button type="button" class="modo-navegacion-btn irrestricto" data-modo="irrestricto">Modo Irrestricto</button>
             </div>
 
             <div class="parrafos-modos-navegacion">
                 <p>Algoritmos:</p>
                 <div class="modos-navegacion-container" id="algoritmos">
-                    <p class="etiqueta-algoritmo-consenso" th:each="consenso : ${coleccion.consensos}" th:text="${consenso}">Algoritmo</p>
+                    <button type="button" class="etiqueta-algoritmo-consenso filtro-algoritmo" th:each="consenso : ${coleccion.consensos}" th:text="${consenso}" th:data-algoritmo="${consenso}">Algoritmo</button>
                 </div>
             </div>
 
             <div class="filtros-container" style="display: none;">
                 <h5>Filtros</h5>
                 <div class="filtros-grid">
-                    <div class="form-group" th:each="filtro : ${coleccion.criterio.filtros}">
-                        <label th:for="${filtro.nombre}" th:text="${filtro.nombre}">Categoría</label>
-                        <input th:id="${filtro.nombre}" type="text" th:placeholder="${filtro.detalle}" readonly>
+                    <div class="form-group">
+                        <label for="categoria">Categoría</label>
+                        <select id="categoria" class="form-select">
+                            <option>Todas las categorías</option>
+                            <option>Opción 1</option>
+                            <option>Opción 2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha-desde">Fecha Desde</label>
+                        <input type="date" id="fecha-desde" class="form-control" placeholder="dd/mm/aaaa">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha-hasta">Fecha Hasta</label>
+                        <input type="date" id="fecha-hasta" class="form-control" placeholder="dd/mm/aaaa">
+                    </div>
+                    <div class="form-group wide">
+                        <label for="ubicacion">Ubicación</label>
+                        <input type="text" id="ubicacion" class="form-control" placeholder="Buscar por ubicación...">
+                    </div>
+                    <div class="form-group wide">
+                        <label for="fuente">Fuente</label>
+                        <input type="text" id="fuente" class="form-control" placeholder="Buscar por fuente...">
                     </div>
                     <div class="form-group wide">
                         <label>&nbsp;</label>
-                        <button onclick="window.location.reload()">Limpiar Filtros</button>
+                        <button type="button" class="btn btn-outline-secondary w-100" id="limpiar-filtros">Limpiar Filtros</button>
                     </div>
                 </div>
             </div>
 
             <div class="hechos-container" id="hechos-container">
-                <!-- Los hechos se cargarán dinámicamente por JS -->
+                <!-- Los hechos se cargan dinámicamente por JS -->
             </div>
         </div>
     </main>
     <script th:src="@{/js/coleccion.js}"></script>
     <script th:inline="javascript">
-        /*<![CDATA[*/
         document.addEventListener('DOMContentLoaded', function() {
-            var coleccionId = /*[[${coleccion != null} ? coleccion.id : 0]]*/ 0;
+            var coleccionId = /*[[${coleccion.id}]]*/ 0;
             if (coleccionId === 0) return;
             fetch('/coleccion/' + coleccionId + '/hechos')
                 .then(response => response.json())
@@ -103,7 +114,7 @@
                                     </div>
                                     <div class="opciones">
                                         <p class="etiqueta-categoria config-categoria distancia-opciones">${hecho.categoria || ''}</p>
-                                        <a href="/verDetalle-hecho/${hecho.id}" class="btn btn-dark"><span>Ver Detalle</span></a>
+                                        <a th:href="@{'/verDetalle/' + ${hecho.id}}" class="btn btn-dark"><span>Ver Detalle</span></a>
                                         <a href="/reportarHecho" class="btn btn-red config-opciones">Reportar</a>
                                     </div>
                                 </div>

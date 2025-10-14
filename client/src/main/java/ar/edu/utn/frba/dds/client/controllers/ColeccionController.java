@@ -42,7 +42,6 @@ public class ColeccionController {
   @GetMapping("/colecciones")
   public String listarColecciones(Model model) {
     List<ColeccionDTO> colecciones = coleccionService.obtenerColecciones();
-    LOGGER.info("Colecciones mockeadas: {}", colecciones);
     model.addAttribute("colecciones", colecciones);
     return "colecciones";
   }

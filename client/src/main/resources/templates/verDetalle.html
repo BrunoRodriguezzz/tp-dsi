@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es" th:replace="~{layout/base :: html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${hecho != null} ? hecho.titulo : 'Hecho no encontrado'">MetaMapa - Detalles del Hecho</title>
+    <th:block th:fragment="additional-links">
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+        <link rel="stylesheet" th:href="@{/css/components.css}">
+        <link rel="stylesheet" th:href="@{/css/header.css}">
+        <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+        <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link rel="stylesheet" th:href="@{/css/verDetalle.css}">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </th:block>
+</head>
+<body>
+    <div th:fragment="contenido">
+    <div class="container-responsive">
+        <div class="container-navegador">
+            <nav class="config-nav">
+                <a th:href="@{/}" class="boton-navegacion">Home</a>
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.5rem;"></i>
+                <a class="boton-navegacion">Hechos</a>
+                <i class="fa-solid fa-chevron-right" style="font-size: 0.5rem;"></i>
+                <span th:text="${hecho.titulo}">Título del Hecho</span>
+            </nav>
+            <div class="etiquetas-mas-botones">
+                <div class="etiqueta-mas-hecho">
+                    <div class="etiquetas">
+                        <p class="etiqueta-categoria" th:text="${hecho.categoria}">Categoría</p>
+                        <p class="etiqueta-verificado" th:if="${hecho.verificado}">Verificado</p>
+                    </div>
+                    <div>
+                        <h1 class="titulo-hecho" th:text="${hecho.titulo}">Título del Hecho</h1>
+                        <p class="descripcion-breve" th:text="${hecho.descripcionBreve}">Descripción breve</p>
+                    </div>
+                </div>
+                <div class="botones">
+                    <a th:href="@{/reportarHecho}" class="btn btn-red">Reportar</a>
+                    <a th:href="@{/coleccion/} + ${hecho.coleccionId}" class="btn btn-grey">Volver a Hechos</a>
+                </div>
+            </div>
+        </div>
+        <div class="cuadros-grid">
+            <div class="bloques columna-1">
+                <div class="texto-mas-icono">
+                    <i class="fa-regular fa-file-lines" style="font-size: 1.3rem;"></i>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 0rem;">Descripción completa</h2>
+                </div>
+                <p style="opacity: 0.8;" th:text="${hecho.descripcionCompleta}">Descripción completa</p>
+            </div>
+            <div class="bloques columna-2">
+                <div>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Información</h2>
+                </div>
+                <div class="texto-mas-icono" style="align-items: start;">
+                    <i class="fa-regular fa-calendar" style="font-size: 1.3rem; padding-top: 0.2rem;"></i>
+                    <div>
+                        <p style="margin-bottom: 0rem; font-size: 0.9rem; font-weight: 600">Fecha</p>
+                        <p style="margin-bottom: 0rem; font-size: 0.8rem;" th:text="${hecho.fecha}">Fecha</p>
+                        <p style="margin-bottom: 0rem; font-size: 0.8rem;" th:text="${hecho.horario}">Horario</p>
+                    </div>
+                </div>
+                <div class="texto-mas-icono" style="align-items: start;">
+                    <i class="fa-solid fa-location-dot" style="font-size: 1.3rem; padding-top: 0.2rem;"></i>
+                    <div>
+                        <p style="margin-bottom: 0rem; font-size: 0.9rem; font-weight: 600">Ubicación</p>
+                        <p style="margin-bottom: 0rem; font-size: 0.8rem;" th:text="${hecho.ubicacion}">Ubicación</p>
+                        <p style="margin-bottom: 0rem; font-size: 0.8rem;" th:text="${hecho.coordenadas}">Coordenadas</p>
+                    </div>
+                </div>
+                <div class="texto-mas-icono" style="align-items: start;">
+                    <div>
+                        <p style="margin-bottom: 0rem; font-size: 0.9rem; font-weight: 600">Fuente</p>
+                        <p style="margin-bottom: 0rem; font-size: 0.8rem;" th:text="${hecho.fuente}">Fuente</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bloques columna-1">
+                <div class="texto-mas-icono">
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 1.3rem;"></i>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 0rem;">Medios Relacionados</h2>
+                </div>
+                <div>
+                    <a class="boton-medios" th:each="medio : ${hecho.medios}" th:href="${medio.url}" target="_blank">
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 1rem;"></i>
+                            <p style="font-size: 1rem; margin-bottom: 0rem;" th:text="${medio.nombre}">Medio Relacionado</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="bloques columna-2">
+                <div class="texto-mas-icono" style="font-size: 1.7rem; align-items: start;">
+                    <i class="fa-solid fa-tag"></i>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Etiquetas</h2>
+                </div>
+                <div style="display: flex; gap: 0.3rem; flex-wrap: wrap;">
+                    <p class="etiqueta-categoria config-etiquetas" th:each="etiqueta : ${hecho.etiquetas}" th:text="${etiqueta}">Etiqueta</p>
+                </div>
+            </div>
+            <div class="bloques columna-2">
+                <h2 style="font-size: 1.4rem; margin-bottom: 1rem; text-align: center;">Ubicación en Mapa</h2>
+                <div class="bloques" style="margin-bottom: 1rem;">
+                    <p style="margin-bottom: 0rem; text-align: center;">Mapa Interactivo</p>
+                </div>
+                <div style="display: flex; justify-content: center;">
+                    <a th:href="@{/map}" class="btn btn-primary btn-dark">Ver en Mapa Principal</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
+

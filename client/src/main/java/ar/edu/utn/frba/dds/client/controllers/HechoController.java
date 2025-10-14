@@ -41,6 +41,15 @@ public class HechoController {
         return "hecho";
     }
 
+    @GetMapping("/verDetalle/{id}")
+    public String verDetalleHechoNuevo(@PathVariable Long id, Model model) {
+        HechoDTO hecho = hechoService.obtenerHechoPorId(id);
+        LOGGER.info("Mostrando {} hecho.", id);
+        model.addAttribute("hecho", hecho);
+        model.addAttribute("titulo", hecho.getTitulo());
+        return "verDetalle";
+    }
+
     @GetMapping("/misHechos")
     public String mostrarMisHechos(@RequestParam(required = false) Long id, Model model){
         List<HechoDTO> hechos = this.dinamicaService.mostrarMisHechos(id);
