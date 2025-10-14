@@ -97,6 +97,13 @@ public class RepositoryService implements IRepositoryService {
         return hechosSolicitados;
     }
 
+    @Override
+    public List<Hecho> buscarTodosDeUnUsuario(Long idUsuario){
+
+        return this.dinamicaRepository.findAllByContribuyente_IdUsuario(idUsuario);
+
+    }
+
     private Boolean estadoAceptado(Hecho hecho){
 
         return (hecho.getEstadoHecho() == EstadoHecho.ACEPTADA) || (hecho.getEstadoHecho() == EstadoHecho.ACEPTADA_CON_SUGERENCIA);

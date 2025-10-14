@@ -218,3 +218,24 @@ body{
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
+
+.estado-pendiente {
+    background-color: #fff3cd; /* amarillo claro */
+    color: #856404; /* marrón oscuro */
+    border: 1px solid #856404;
+    border-radius: 7px;
+}
+
+.estado-rechazado {
+    background-color: #f8d7da; /* rojo claro */
+    color: #721c24; /* rojo oscuro */
+    border: 1px solid #721c24;
+    border-radius: 7px;
+}
+
+.estado-aprobado {
+    background-color: #d4edda; /* verde claro */
+    color: #155724; /* verde oscuro */
+    border: 1px solid #155724;
+    border-radius: 7px;
+}

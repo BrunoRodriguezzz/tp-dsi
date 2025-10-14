@@ -25,6 +25,7 @@ public class HechoOutputDTO {
     private List<String>  etiquetas;
     private String        origen;
     private String        fuente;
+    private EstadoHecho   estado;
 
     public static HechoOutputDTO convertir(Hecho hecho){
         return HechoOutputDTO
@@ -41,6 +42,7 @@ public class HechoOutputDTO {
                 .origen(hecho.getOrigen())
                 .fuente(hecho.getFuente())
                 .fechaCarga(hecho.getFechaGuardado())
+                .estado(hecho.getEstadoHecho())
                 .build();
     }
 }

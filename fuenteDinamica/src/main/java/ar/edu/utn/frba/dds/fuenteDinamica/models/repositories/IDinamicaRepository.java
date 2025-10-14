@@ -7,5 +7,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IDinamicaRepository extends JpaRepository<Hecho,Long> {
-
+    List<Hecho> findAllByContribuyente_IdUsuario(Long idUsuario);
 }

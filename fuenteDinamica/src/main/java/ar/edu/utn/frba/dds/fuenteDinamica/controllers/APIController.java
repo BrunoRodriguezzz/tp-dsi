@@ -30,4 +30,9 @@ public class APIController {
             return this.apiService.hechosDeIgualTitulo(enviado,dateTimeGT,titulo);
         }
     }
+
+    @GetMapping("/hechos/{idUsuario}")
+    public List<HechoOutputDTO> buscarHecho(@PathVariable Long idUsuario){
+        return this.apiService.hechosDeUsuario(idUsuario);
+    }
 }
