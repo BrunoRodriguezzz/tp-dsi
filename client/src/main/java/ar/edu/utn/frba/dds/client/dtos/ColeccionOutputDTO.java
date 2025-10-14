@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ColeccionDTO {
+public class ColeccionOutputDTO {
     private Long id;
     private String titulo;
     private String descripcion;

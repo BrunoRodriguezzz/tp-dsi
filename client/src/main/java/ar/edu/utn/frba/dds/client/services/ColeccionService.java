@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.client.services;
 
-import ar.edu.utn.frba.dds.client.dtos.ColeccionDTO;
+import ar.edu.utn.frba.dds.client.dtos.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.CriterioDTO;
 import ar.edu.utn.frba.dds.client.dtos.FiltroDTO;
@@ -43,7 +43,7 @@ public class ColeccionService {
     return hecho;
   }
 
-  public List<ColeccionDTO> obtenerColecciones() {
+  public List<ColeccionOutputDTO> obtenerColecciones() {
         FiltroDTO filtro1 = new FiltroDTO();
         filtro1.setNombre("Año");
         filtro1.setDetalle("2024");
@@ -65,8 +65,8 @@ public class ColeccionService {
         criterio2.setFiltros(filtros2);
 
         // Colecciones adicionales mockeadas
-        List<ColeccionDTO> colecciones = new ArrayList<>(Arrays.asList(
-            new ColeccionDTO(
+        List<ColeccionOutputDTO> colecciones = new ArrayList<>(Arrays.asList(
+            new ColeccionOutputDTO(
                 1L,
                 "Protestas Sociales 2024",
                 "Recopilación de manifestaciones y protestas sociales registradas durante el año 2024, incluyendo marchas por derechos laborales, estudiantes y civiles.",
@@ -75,7 +75,7 @@ public class ColeccionService {
                 Arrays.asList("Página12", "Clarín", "La Nación"),
                 Arrays.asList("Multiples Menciones", "Mayoría Simple", "Mayoría Absoluta")
             ),
-            new ColeccionDTO(
+            new ColeccionOutputDTO(
                 2L,
                 "Movimientos Ambientales",
                 "Hechos relacionados con protestas y acciones por el medio ambiente.",
@@ -87,7 +87,7 @@ public class ColeccionService {
         ));
         // Agrego colecciones extra para probar el carousel
         for (long i = 3; i <= 8; i++) {
-            colecciones.add(new ColeccionDTO(
+            colecciones.add(new ColeccionOutputDTO(
                 i,
                 "Colección Mock " + i,
                 "Descripción de la colección mock número " + i,
@@ -100,7 +100,7 @@ public class ColeccionService {
         return colecciones;
     }
 
-  public ColeccionDTO obtenerColeccionPorId(Long id) {
+  public ColeccionOutputDTO obtenerColeccionPorId(Long id) {
     return this.obtenerColecciones().stream()
         .filter(c -> c.getId().equals(id))
         .findFirst()
