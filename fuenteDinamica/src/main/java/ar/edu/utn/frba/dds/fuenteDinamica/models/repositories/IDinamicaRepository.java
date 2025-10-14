@@ -8,9 +8,4 @@ import java.util.List;
 
 public interface IDinamicaRepository extends JpaRepository<Hecho,Long> {
 
-/*    public Hecho       buscarPorID (Long ID);
-    public void        guardar(Hecho hecho);
-    public List<Hecho> mostrarTodos(LocalDateTime filtro);
-    public List<Hecho> mostrarEnviados(Boolean enviado,LocalDateTime filtro);
-    public void        guardarCambios(Hecho hechoOriginal, Hecho hechoCambiado);*/
 }

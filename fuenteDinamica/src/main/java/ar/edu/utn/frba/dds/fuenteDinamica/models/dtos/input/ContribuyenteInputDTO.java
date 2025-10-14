@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class ContribuyenteInputDTO {
-  private String nombre;
-  private String apellido;
-  private LocalDate fechaNacimiento;
+    private String nombre;
+    private String apellido;
+    private LocalDate fechaNacimiento;
 }

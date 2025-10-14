@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.client.services;
 
 import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.client.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.client.dtos.UbicacionDTO;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
 import org.springframework.beans.factory.annotation.Value;
@@ -107,5 +108,9 @@ public class DinamicaService {
                     .build();
         }
         return hecho;
+    }
+
+    public void enviarHecho(HechoInputDTO hecho){
+        this.webApiCallerService.post(this.dinamicaUrl + "/solicitud", hecho, HechoDTO.class);
     }
 }

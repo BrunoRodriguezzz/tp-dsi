@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
@@ -19,8 +20,8 @@ public class HechoOutputDTO {
     private String        categoria;
     private List<String>  contenidoMultimedia;
     private Ubicacion     ubicacion;
-    private LocalDate     fechaAcontecimiento;
-    private LocalDate     fechaCarga;
+    private LocalDateTime fechaAcontecimiento;
+    private LocalDateTime fechaCarga;
     private List<String>  etiquetas;
     private String        origen;
     private String        fuente;
@@ -39,7 +40,7 @@ public class HechoOutputDTO {
                 .etiquetas(hecho.getEtiquetas().stream().map(EtiquetaOutputDTO::convertir).toList())
                 .origen(hecho.getOrigen())
                 .fuente(hecho.getFuente())
-                .fechaCarga(hecho.getFechaGuardado().toLocalDate())
+                .fechaCarga(hecho.getFechaGuardado())
                 .build();
     }
 }

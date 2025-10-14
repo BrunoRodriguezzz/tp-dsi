@@ -23,59 +23,72 @@ public class UserController {
 
     @PostMapping("/solicitud")
     public SolicitudOutputDTO solicitudCrearHecho(@RequestBody HechoInputDTO hecho){
-        if(verificarEdadNecesaria(hecho)) {
-            if(verificarTiposDeDatos(hecho)) {
-                return userService.crear(hecho);
-            }else{
-                throw new ErrorTipoDeDatos("Error de ingreso de datos en: " + tipoDeDatoErroneo(hecho) + ". No puede haber campos vacios.");
-            }
+
+        if(this.verificarTiposDeDatos(hecho)) {
+            return userService.crear(hecho);
         }else{
-            throw new ErrorAccesoProhibido("No cumple con la mayoria de edad.");
+            throw new ErrorTipoDeDatos("Error de ingreso de datos en: " + this.tipoDeDatoErroneo(hecho) + ". No puede haber campos vacios.");
         }
+
     }
 
     // Solicitud de modificar un hecho
 
     @PatchMapping("/modificacion")
     public SolicitudOutputDTO actualizarHecho(@RequestBody HechoModificadoInputDTO hecho){
-        if(verificarUsuarioRegistrado(hecho)){
-            if(verificarTiempoParaActualizar(hecho)){
-                return userService.actualizar(hecho);
-            }else{
-                throw new ErrorDeTiempo("El plazo para modificar el hecho se termino.");
-            }
+
+        HechoInputDTO hechoParaValidarInput = HechoInputDTO.convertirModAInput(hecho);
+
+        if(this.verificarTiposDeDatos(hechoParaValidarInput)){
+            return this.userService.actualizar(hecho);
         }else{
-            throw new ErrorAccesoNoAutorizado("Usuario no registrado.");
+            throw new ErrorTipoDeDatos("Error de ingreso de datos en: " + this.tipoDeDatoErroneo(hechoParaValidarInput) + ". No puede haber campos vacios.");
         }
     }
 
-    // Verificadores necesarios
-
-    private Boolean verificarEdadNecesaria(HechoInputDTO hechoSolicitado){
-
-        return this.userService.verificarEdadNecesaria(hechoSolicitado);
-    }
-
-    private Boolean verificarUsuarioRegistrado(HechoModificadoInputDTO hechoParaActualizar){
-
-        return this.userService.verificarUsuarioRegistrado(hechoParaActualizar);
-    }
+    // Verificaciones de la capa de Controllers
 
     private Boolean verificarTiposDeDatos(HechoInputDTO hecho){
 
-        return this.userService.verificarTiposDeDatos(hecho);
+        return hecho.getNombreUsuario() != null
+                && hecho.getApellidoUsuario() != null
+                && hecho.getFechaNacimientoUsuario() != null
+                && hecho.getTitulo() != null
+                && hecho.getDescripcion() != null
+                && hecho.getCategoria() != null
+//                && hecho.getContenidoMultimedia() != null
+                && hecho.getLatitud() != null
+                && hecho.getLongitud() != null
+                && hecho.getFechaAcontecimiento() != null;
 
     }
 
     private String tipoDeDatoErroneo(HechoInputDTO hecho){
 
-        return this.userService.tipoDeDatoErroneo(hecho);
+        String datoErroneo = "";
 
-    }
+        if(hecho.getNombreUsuario() == null)
+            datoErroneo = "Nombre de Usuario";
+        if(hecho.getApellidoUsuario() == null)
+            datoErroneo = "Apellido de Usuario";
+        if(hecho.getFechaNacimientoUsuario() == null)
+            datoErroneo = "Fecha de Nacimiento";
+        if(hecho.getTitulo() == null || hecho.getTitulo().isEmpty())
+            datoErroneo = "Titulo";
+        if(hecho.getDescripcion() == null || hecho.getDescripcion().isEmpty())
+            datoErroneo = "Descripcion";
+        if(hecho.getCategoria() == null || hecho.getCategoria().isEmpty())
+            datoErroneo = "Categoria";
+//        if(hecho.getContenidoMultimedia() == null)
+//            datoErroneo = "Contenido Multimedia";
+        if(hecho.getLatitud() == null)
+            datoErroneo = "Latitud";
+        if(hecho.getLongitud() == null)
+            datoErroneo = "Longitud";
+        if(hecho.getFechaAcontecimiento() == null)
+            datoErroneo = "Fecha de Acontecimiento";
 
-    private Boolean verificarTiempoParaActualizar(HechoModificadoInputDTO hecho) {
-
-        return this.userService.verificarTiempoParaActualizar(hecho);
+        return datoErroneo;
 
     }
 }

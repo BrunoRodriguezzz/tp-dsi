@@ -79,12 +79,15 @@
         </div>
         <input type="hidden" id="latInput" name="latitud">
         <input type="hidden" id="lngInput" name="longitud">
-        <input type="hidden" id="idContribuyente" name="idContribuyente">
+        <input type="hidden" id="idContribuyente" name="idUsuario" th:value="${usuarioLogueado.id}">
+        <input type="hidden" id="nombre" name="nombreUsuario" th:value="${usuarioLogueado.nombre}">
+        <input type="hidden" id="apellido" name="apellidoUsuario" th:value="${usuarioLogueado.apellido}">
+        <input type="hidden" id="fechaNac" name="fechaNacimientoUsuario" th:value="${usuarioLogueado.fechaNacimiento}">
         <div id="geocoder" class="mb-3" style="width: 100%"></div>
         <div id="map" class="map"></div>
         <div class="form-title">
             <h6>Contenido Multimedia</h6>
-            <input type="file" class="form-control" id="multimediaInput" name="multimedia">
+<!--            <input type="file" class="form-control" id="multimediaInput" name="multimedia">-->
         </div>
         <script th:src="@{/js/mapa.js}"></script>
         <button type="submit" class="btn btn-dark" style="width: 100%">Publicar Hecho</button>
