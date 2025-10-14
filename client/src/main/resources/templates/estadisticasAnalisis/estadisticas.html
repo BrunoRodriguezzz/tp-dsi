@@ -207,7 +207,7 @@
             'Distribución Horaria de Hechos',
             'categoriaHoraDropdown',
             'selectedCategoriaH',
-            ${'Infraestructura,Seguridad,Medio Ambiente,Salud,Transporte'.split(',')},
+            ${horariosCategorias},
             'data-categoria-h'
         )}"></div>
 
@@ -217,12 +217,12 @@
                     <div class="bg-warning bg-opacity-10 result-box">
                         <p class="text-warning-emphasis mb-0">
                             <strong>Resultado:</strong>
-                            Los hechos de la categoría "<strong th:text="${resultCategoriaH}"></strong>"
+                            Los hechos de la categoría "<strong id="resultCategoriaH" th:text="${resultCategoriaH}"></strong>"
                             ocurren con mayor frecuencia a las
-                            <strong th:text="${resultHoraMaxima}"></strong>
-                            con <strong th:text="${resultCantidadH}"></strong> reportes,
-                            seguido por las <strong th:text="${resultHoraSegunda}"></strong>
-                            con <strong th:text="${resultCantidadSegundaH}"></strong> reportes.
+                            <strong id = "resultHoraMaxima" th:text="${resultHoraMaxima}"></strong>
+                            con <strong id = "resultCantidadH" th:text="${resultCantidadH}"></strong> reportes,
+                            seguido por las <strong id = "resultHoraSegunda" th:text="${resultHoraSegunda}"></strong>
+                            con <strong id = "resultCantidadSegundaH" th:text="${resultCantidadSegundaH}"></strong> reportes.
                         </p>
                     </div>
                 </div>
@@ -304,6 +304,7 @@
         window.categoriasPorProvincia = [[${categoriasPorProvincia}]];
         window.spam = [[${cantSpam}]];
         window.noSpam = [[${cantNoSpam}]];
+        window.horariosPorCategoria = [[${horariosPorCategoria}]];
         /*]]>*/
     </script>
 

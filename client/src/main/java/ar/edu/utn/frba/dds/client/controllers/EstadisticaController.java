@@ -1,9 +1,6 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
-import ar.edu.utn.frba.dds.client.dtos.EstadisticaCategoriaDTO;
-import ar.edu.utn.frba.dds.client.dtos.EstadisticaProvinciaXCategoriaDTO;
-import ar.edu.utn.frba.dds.client.dtos.EstadisticaProvinciaXColeccionDTO;
-import ar.edu.utn.frba.dds.client.dtos.EstadisticaSolicitudesDTO;
+import ar.edu.utn.frba.dds.client.dtos.estadisticas.*;
 import ar.edu.utn.frba.dds.client.services.EstadisticaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,11 +29,10 @@ public class EstadisticaController {
         model.addAttribute("cantSpam", cantSpam.getSolicitudes_spam());
         model.addAttribute("cantNoSpam", cantSpam.getSolicitudes_spam());
         model.addAttribute("totalHechos",categorias.getCategoriasConHechos().values().stream().reduce(0L,Long::sum));
-        // TODO: me falta este (me confundí, este creo que lo tuve que haber calculado con provinciaXColección, pero bueno)
-        model.addAttribute("totalColecciones",89);
 
         // Tab Content de "Colección por Provincia"
         List<EstadisticaProvinciaXColeccionDTO> estadisticasProvinciasPorColeccion = this.estadisticaService.getRankingProvinciasPorColeccion().stream().limit(8).toList();
+        model.addAttribute("totalColecciones",estadisticasProvinciasPorColeccion.size());
         model.addAttribute("colecciones", estadisticasProvinciasPorColeccion.stream().map(EstadisticaProvinciaXColeccionDTO::getColeccion).distinct().toList());
 
         Map<String, Map<String, Long>> coleccionPorProvincia =
@@ -81,6 +77,13 @@ public class EstadisticaController {
                 .collect(Collectors.toList()));
         model.addAttribute("categoriasPorProvincia",categoriasPorProvincia);
 
+        // Tab "Distribución Horaria de Hechos"
+        List<EstadisticaHoraXCategoriaDTO> horariosPorCategoria = this.estadisticaService.getHorariosPorCategoria();
+        model.addAttribute("horariosCategorias", horariosPorCategoria
+                .stream()
+                .map(EstadisticaHoraXCategoriaDTO::getCategoria)
+                .toList());
+        model.addAttribute("horariosPorCategoria",horariosPorCategoria);
         return "estadisticasAnalisis/estadisticas";
     }
 }

@@ -480,18 +480,19 @@ const EstadisticasApp = {
 
     tab4: {
         chart: null,
-        datos: datosCategoriaHora,
+        datos: window.horariosPorCategoria || datosCategoriaHora,
         
         inicializar() {
             const canvas = document.getElementById('horaChart');
             if (!canvas) return;
-            
-            const [categoriaInicial] = Object.keys(this.datos);
-            const datosIniciales = this.datos[categoriaInicial];
+            console.log("Datos:", this.datos);
+            const categoriaInicial = this.datos[0].categoria;
+            // const [categoriaInicial] = Object.keys(this.datos);
+            // const datosIniciales = this.datos[categoriaInicial];
             
             this.chart = crearGraficoLinea(canvas, {
-                labels: datosIniciales.horas,
-                values: datosIniciales.valores
+                labels: Object.keys(this.datos[0].horasConHechos),
+                values: Object.values(this.datos[0].horasConHechos)
             }, {
                 backgroundColor: 'rgba(245, 158, 11, 0.1)',
                 borderColor: '#F59E0B'
@@ -502,11 +503,12 @@ const EstadisticasApp = {
         },
         
         actualizar(categoria) {
-            const datos = this.datos[categoria];
+            const datos = this.datos.find(h=>h.categoria === categoria);
             if (!datos || !this.chart) return;
             
             // Actualizar gráfico
-            this.chart.data.datasets[0].data = datos.valores;
+            this.chart.data.datasets[0].data = Object.values(datos.horasConHechos);
+            this.chart.data.labels = Object.keys(datos.horasConHechos);
             this.chart.update();
             
             // Actualizar resultado
@@ -514,15 +516,15 @@ const EstadisticasApp = {
         },
         
         actualizarResultado(categoria) {
-            const datos = this.datos[categoria];
-            const resultado = encontrarMaximo({
-                labels: datos.horas,
-                values: datos.valores
+            const datos = this.datos.find(h=>h.categoria === categoria);
+            const resultado = encontrarEnPosicion({
+                labels: Object.keys(datos.horasConHechos),
+                values: Object.values(datos.horasConHechos)
             });
-            const segundoMaximo = encontrarSegundoMaximo({
-                labels: datos.horas,
-                values: datos.valores
-            });
+            const segundoMaximo = encontrarEnPosicion({
+                labels: Object.keys(datos.horasConHechos),
+                values: Object.values(datos.horasConHechos)
+            }, 1);
             
             actualizarElementoTexto('selectedCategoriaH', categoria);
             actualizarElementoTexto('resultCategoriaH', categoria);
@@ -567,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function() {
     EstadisticasApp.tab1.inicializar();
     EstadisticasApp.tab2.inicializar();
     EstadisticasApp.tab3.inicializar();
-    // EstadisticasApp.tab4.inicializar();
+    EstadisticasApp.tab4.inicializar();
     EstadisticasApp.tab5.inicializar();
 });
 

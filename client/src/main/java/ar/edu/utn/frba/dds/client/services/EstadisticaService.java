@@ -1,9 +1,6 @@
 package ar.edu.utn.frba.dds.client.services;
 
-import ar.edu.utn.frba.dds.client.dtos.EstadisticaCategoriaDTO;
-import ar.edu.utn.frba.dds.client.dtos.EstadisticaProvinciaXCategoriaDTO;
-import ar.edu.utn.frba.dds.client.dtos.EstadisticaProvinciaXColeccionDTO;
-import ar.edu.utn.frba.dds.client.dtos.EstadisticaSolicitudesDTO;
+import ar.edu.utn.frba.dds.client.dtos.estadisticas.*;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -51,5 +48,9 @@ public class EstadisticaService {
 
     public List<EstadisticaProvinciaXColeccionDTO> getRankingProvinciasPorColeccion() {
         return this.mockService.getRankingProvinciasPorColeccion();
+    }
+
+    public List<EstadisticaHoraXCategoriaDTO> getHorariosPorCategoria(){
+        return this.mockService.getHorariosPorCategoria(this.mockService.getCategorias());
     }
 }
