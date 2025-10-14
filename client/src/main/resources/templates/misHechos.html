@@ -24,7 +24,7 @@
                     <div class="opciones">
                         <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Sin Categoria</p>
                         <a  class="btn btn-primary btn-dark config-opciones" th:href="@{/hechos/{id}(id=${hecho.id})}">Ver Detalles</a>
-                        <a  class="btn btn-white config-opciones" th:href="@{/hechos/modificacion/{id}(id=${hecho.id})}">Modificar Hecho</a>
+                        <a  class="btn btn-white config-opciones" th:href="@{/modificarHecho/{id}(id=${hecho.id})}">Modificar Hecho</a>
                         <a  class="btn btn-red config-opciones" th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}">Reportar</a>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                     <div class="ultima-linea">
                         <div class="fechaPublicacion">
                             <i class="fa-regular fa-calendar"></i>
-                            <p class="alineacion">Publicado: 2024-01-16</p>
+                            <p class="alineacion" th:text="|Publicado: ${hecho.fechaCarga}|">Sin Fecha</p>
                         </div>
                         <div class="tiempoRestante">
                             <i class="fa-regular fa-clock"></i>

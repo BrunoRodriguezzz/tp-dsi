@@ -82,42 +82,4 @@ public class HechoController {
         return "redirect:/hechos";
     }
 
-    @GetMapping("/publicacion")
-    public String publicacionHecho(Model model){
-        model.addAttribute("titulo", "Publicar Hecho");
-        return "publicarHecho";
-    }
-
-    @PostMapping("/publicacion")
-    public String publicarHecho(
-            @RequestParam (required = false) Long idContribuyente,
-            @RequestParam String titulo,
-            @RequestParam String descripcion,
-            @RequestParam String categoria,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaAcontecimiento,
-            @RequestParam String municipio,
-            @RequestParam String provincia,
-            @RequestParam Double latitud,
-            @RequestParam Double longitud) {
-
-        LOGGER.info("Id del usuario: {}", idContribuyente);
-        LOGGER.info("Titulo: {}", titulo);
-        LOGGER.info("Descripcion del hecho: {}", descripcion);
-        LOGGER.info("Categoria: {}", categoria);
-        LOGGER.info("Fecha del acontecimiento: {}", fechaAcontecimiento);
-        LOGGER.info("Municipio: {}", municipio);
-        LOGGER.info("Provincia: {}", provincia);
-        LOGGER.info("Latitud: {}", latitud);
-        LOGGER.info("Longitud: {}", longitud);
-
-        return "redirect:/hechos";
-    }
-
-    @GetMapping("/modificacion/{id}")
-    public String modificacionHecho(@PathVariable Long id,Model model){
-        HechoDTO hecho = dinamicaService.buscarHechoId(id);
-        model.addAttribute("hecho", hecho);
-        model.addAttribute("titulo", "Modificacion");
-        return "modificarHecho";
-    }
 }

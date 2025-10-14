@@ -13,7 +13,7 @@
         <h2><strong>Publicar Hecho</strong></h2>
         <p>Comparte información relevante para la comunidad de forma colaborativa</p>
     </div>
-    <form th:action="@{/hechos/publicacion}" method="post" class="form-hecho">
+    <form th:action="@{/publicarHecho}" method="post" class="form-hecho" onsubmit="mostrarMensaje()">
         <div class="header-form">
             <h3><strong>Información del Hecho</strong></h3>
             <p>Completa todos los campos para registrar un nuevo hecho en el sistema</p>
@@ -46,7 +46,7 @@
         <div class="form-category">
             <h6>Provincia</h6>
             <select class="form-select" id="provinciaSelect" name="provincia">
-                <option value="" disabled selected hidden>Seleccionar categoría</option>
+                <option value="" disabled selected hidden>Seleccionar provincia</option>
                 <option value="Buenos Aires">Buenos Aires</option>
                 <option value="Catamarca">Catamarca</option>
                 <option value="Chaco">Chaco</option>
