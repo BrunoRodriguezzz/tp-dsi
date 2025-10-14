@@ -44,47 +44,61 @@ public class ColeccionService {
   }
 
   public List<ColeccionDTO> obtenerColecciones() {
-    FiltroDTO filtro1 = new FiltroDTO();
-    filtro1.setNombre("Año");
-    filtro1.setDetalle("2024");
-    FiltroDTO filtro2 = new FiltroDTO();
-    filtro2.setNombre("Tipo");
-    filtro2.setDetalle("Protesta social");
-    ArrayList<FiltroDTO> filtros1 = new ArrayList<>();
-    filtros1.add(filtro1);
-    filtros1.add(filtro2);
-    CriterioDTO criterio1 = new CriterioDTO();
-    criterio1.setFiltros(filtros1);
+        FiltroDTO filtro1 = new FiltroDTO();
+        filtro1.setNombre("Año");
+        filtro1.setDetalle("2024");
+        FiltroDTO filtro2 = new FiltroDTO();
+        filtro2.setNombre("Tipo");
+        filtro2.setDetalle("Protesta social");
+        ArrayList<FiltroDTO> filtros1 = new ArrayList<>();
+        filtros1.add(filtro1);
+        filtros1.add(filtro2);
+        CriterioDTO criterio1 = new CriterioDTO();
+        criterio1.setFiltros(filtros1);
 
-    FiltroDTO filtro3 = new FiltroDTO();
-    filtro3.setNombre("Tema");
-    filtro3.setDetalle("Medio ambiente");
-    ArrayList<FiltroDTO> filtros2 = new ArrayList<>();
-    filtros2.add(filtro3);
-    CriterioDTO criterio2 = new CriterioDTO();
-    criterio2.setFiltros(filtros2);
+        FiltroDTO filtro3 = new FiltroDTO();
+        filtro3.setNombre("Tema");
+        filtro3.setDetalle("Medio ambiente");
+        ArrayList<FiltroDTO> filtros2 = new ArrayList<>();
+        filtros2.add(filtro3);
+        CriterioDTO criterio2 = new CriterioDTO();
+        criterio2.setFiltros(filtros2);
 
-    return Arrays.asList(
-      new ColeccionDTO(
-        1L,
-        "Protestas Sociales 2024",
-        "Recopilación de manifestaciones y protestas sociales registradas durante el año 2024, incluyendo marchas por derechos laborales, estudiantes y civiles.",
-        15L,
-        criterio1,
-        Arrays.asList("Página12", "Clarín", "La Nación"),
-        Arrays.asList("Multiples Menciones", "Mayoría Simple", "Mayoría Absoluta")
-      ),
-      new ColeccionDTO(
-        2L,
-        "Movimientos Ambientales",
-        "Hechos relacionados con protestas y acciones por el medio ambiente.",
-        8L,
-        criterio2,
-        Arrays.asList("Greenpeace", "Infobae"),
-        Arrays.asList("Multiples Menciones", "Mayoría Simple")
-      )
-    );
-  }
+        // Colecciones adicionales mockeadas
+        List<ColeccionDTO> colecciones = new ArrayList<>(Arrays.asList(
+            new ColeccionDTO(
+                1L,
+                "Protestas Sociales 2024",
+                "Recopilación de manifestaciones y protestas sociales registradas durante el año 2024, incluyendo marchas por derechos laborales, estudiantes y civiles.",
+                15L,
+                criterio1,
+                Arrays.asList("Página12", "Clarín", "La Nación"),
+                Arrays.asList("Multiples Menciones", "Mayoría Simple", "Mayoría Absoluta")
+            ),
+            new ColeccionDTO(
+                2L,
+                "Movimientos Ambientales",
+                "Hechos relacionados con protestas y acciones por el medio ambiente.",
+                8L,
+                criterio2,
+                Arrays.asList("Greenpeace", "Infobae"),
+                Arrays.asList("Multiples Menciones", "Mayoría Simple")
+            )
+        ));
+        // Agrego colecciones extra para probar el carousel
+        for (long i = 3; i <= 8; i++) {
+            colecciones.add(new ColeccionDTO(
+                i,
+                "Colección Mock " + i,
+                "Descripción de la colección mock número " + i,
+                5L + i,
+                criterio1,
+                Arrays.asList("Fuente " + i),
+                Arrays.asList("Algoritmo X", "Algoritmo Y")
+            ));
+        }
+        return colecciones;
+    }
 
   public ColeccionDTO obtenerColeccionPorId(Long id) {
     return this.obtenerColecciones().stream()

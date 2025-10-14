@@ -1,6 +1,8 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
+import ar.edu.utn.frba.dds.client.dtos.ColeccionDTO;
 import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.client.services.ColeccionService;
 import ar.edu.utn.frba.dds.client.services.HechoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,12 +15,16 @@ import java.util.List;
 public class HomeController {
     @Autowired
     private HechoService hechoService;
+    @Autowired
+    private ColeccionService coleccionService;
 
     @GetMapping("/home")
     public String home(Model model){
         model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
-        List<HechoDTO> hechosDestacados = this.hechoService.obtenerHechos().stream().limit(3).toList();
+        List<HechoDTO> hechosDestacados = this.hechoService.obtenerHechos().stream().limit(9).toList();
+        List<ColeccionDTO> coleccionesDestacadas = this.coleccionService.obtenerColecciones().stream().limit(9).toList();
         model.addAttribute("hechosDestacados", hechosDestacados);
+        model.addAttribute("coleccionesDestacadas", coleccionesDestacadas);
         return "landingPage/index";
     }
 
