@@ -34,13 +34,13 @@
     </a>
 </div>
 
-<div th:fragment="section-header(titulo)" class="col-12 header-carusel">
+<div th:fragment="section-header(titulo, carouselId)" class="col-12 header-carusel">
     <h2 th:text="${titulo}"></h2>
     <div>
-        <button class="btn btn-carusel">
+        <button class="btn btn-carusel" type="button" th:attr="data-bs-target=${'#' + carouselId}" data-bs-slide="prev">
             <i class="fa-solid fa-arrow-left"></i>
         </button>
-        <button class="btn btn-carusel">
+        <button class="btn btn-carusel" type="button" th:attr="data-bs-target=${'#' + carouselId}" data-bs-slide="next">
             <i class="fa-solid fa-arrow-right"></i>
         </button>
     </div>

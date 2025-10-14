@@ -32,75 +32,51 @@
     </div>
 
     <div class="hechos-destacados-section">
-        <div class="row">
-            <th:block th:replace="~{landingPage/fragments/cardsDestacados :: section-header('Hechos Destacados')}"></th:block>
-            <div id="hechosCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="8000">
-                <div class="carousel-inner">
-                    <th:block th:with="chunkSize=3">
-                        <th:block th:each="slideIdx : ${#numbers.sequence(0, (hechosDestacados.size() - 1) / chunkSize)}">
-                            <div class="carousel-item" th:classappend="${slideIdx == 0} ? 'active'">
-                                <div class="row justify-content-center">
-                                    <th:block th:each="hecho, iterStat : ${hechosDestacados}">
-                                        <th:block th:if="${iterStat.index} >= ${slideIdx * chunkSize} and ${iterStat.index} < ${(slideIdx + 1) * chunkSize}">
-                                            <div class="col-md-4 d-flex align-items-stretch">
-                                                <th:block th:insert="~{landingPage/fragments/cardsDestacados :: hecho-card(${hecho})}"></th:block>
-                                            </div>
-                                        </th:block>
+        <th:block th:replace="~{landingPage/fragments/cardsDestacados :: section-header('Hechos Destacados', 'hechosCarousel')}"></th:block>
+        <div id="hechosCarousel" class="carousel carousel-dark slide">
+            <div class="carousel-inner">
+                <th:block th:with="chunkSize=3">
+                    <th:block th:each="slideIdx : ${#numbers.sequence(0, (hechosDestacados.size() - 1) / chunkSize)}">
+                        <div class="carousel-item" th:classappend="${slideIdx == 0} ? 'active'">
+                            <div class="row justify-content-center">
+                                <th:block th:each="hecho, iterStat : ${hechosDestacados}">
+                                    <th:block th:if="${iterStat.index} >= ${slideIdx * chunkSize} and ${iterStat.index} < ${(slideIdx + 1) * chunkSize}">
+                                        <div class="col-md-4 d-flex align-items-stretch">
+                                            <th:block th:insert="~{landingPage/fragments/cardsDestacados :: hecho-card(${hecho})}"></th:block>
+                                        </div>
                                     </th:block>
-                                </div>
+                                </th:block>
                             </div>
-                        </th:block>
+                        </div>
                     </th:block>
-                </div>
-                <th:block th:if="${hechosDestacados.size()} > 3">
-                    <button class="carousel-control-prev" type="button" data-bs-target="#hechosCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Anterior</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#hechosCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Siguiente</span>
-                    </button>
                 </th:block>
             </div>
-            <button class="btn btn-outline-primary mt-3"><a class="nav-link active" aria-current="page" th:href="@{/hechos}">Ver Todos los Hechos</a></button>
         </div>
+        <button class="btn btn-outline-primary mt-3"><a class="nav-link active" aria-current="page" th:href="@{/hechos}">Ver Todos los Hechos</a></button>
     </div>
 
     <div class="colecciones-destacadas-section">
-        <div class="row">
-            <th:block th:replace="~{landingPage/fragments/cardsDestacados :: section-header('Colecciones Destacadas')}"></th:block>
-            <div id="coleccionesCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="8000">
-                <div class="carousel-inner">
-                    <th:block th:with="chunkSize=3">
-                        <th:block th:each="slideIdx : ${#numbers.sequence(0, (coleccionesDestacadas.size() - 1) / chunkSize)}">
-                            <div class="carousel-item" th:classappend="${slideIdx == 0} ? 'active'">
-                                <div class="row justify-content-center">
-                                    <th:block th:each="coleccion, iterStat : ${coleccionesDestacadas}">
-                                        <th:block th:if="${iterStat.index} >= ${slideIdx * chunkSize} and ${iterStat.index} < ${(slideIdx + 1) * chunkSize}">
-                                            <div class="col-md-4 d-flex align-items-stretch">
-                                                <th:block th:replace="~{landingPage/fragments/cardsDestacados :: coleccion-card(${coleccion.id}, ${coleccion.titulo}, ${coleccion.cantidadHechos}, ${coleccion.descripcion})}"></th:block>
-                                            </div>
-                                        </th:block>
+        <th:block th:replace="~{landingPage/fragments/cardsDestacados :: section-header('Colecciones Destacadas', 'coleccionesCarousel')}"></th:block>
+        <div id="coleccionesCarousel" class="carousel carousel-dark slide">
+            <div class="carousel-inner">
+                <th:block th:with="chunkSize=3">
+                    <th:block th:each="slideIdx : ${#numbers.sequence(0, (coleccionesDestacadas.size() - 1) / chunkSize)}">
+                        <div class="carousel-item" th:classappend="${slideIdx == 0} ? 'active'">
+                            <div class="row justify-content-center">
+                                <th:block th:each="coleccion, iterStat : ${coleccionesDestacadas}">
+                                    <th:block th:if="${iterStat.index} >= ${slideIdx * chunkSize} and ${iterStat.index} < ${(slideIdx + 1) * chunkSize}">
+                                        <div class="col-md-4 d-flex align-items-stretch">
+                                            <th:block th:replace="~{landingPage/fragments/cardsDestacados :: coleccion-card(${coleccion.id}, ${coleccion.titulo}, ${coleccion.cantidadHechos}, ${coleccion.descripcion})}"></th:block>
+                                        </div>
                                     </th:block>
-                                </div>
+                                </th:block>
                             </div>
-                        </th:block>
+                        </div>
                     </th:block>
-                </div>
-                <th:block th:if="${coleccionesDestacadas.size()} > 3">
-                    <button class="carousel-control-prev" type="button" data-bs-target="#coleccionesCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Anterior</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#coleccionesCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Siguiente</span>
-                    </button>
                 </th:block>
             </div>
-            <button class="btn btn-outline-primary mt-3"><a class="nav-link active" aria-current="page" th:href="@{/colecciones}">Ver Todas las Colecciones</a></button>
         </div>
+        <button class="btn btn-outline-primary mt-3"><a class="nav-link active" aria-current="page" th:href="@{/colecciones}">Ver Todas las Colecciones</a></button>
     </div>
 
     <!-- TODO: agregar los th:ref con sus respectivos Controllers/HTTP -->
@@ -119,16 +95,16 @@
         if (hechosCarousel) {
             var carousel1 = new bootstrap.Carousel(hechosCarousel, {
                 interval: 8000,
-                ride: 'carousel',
-                pause: false
+                ride: false,
+                pause: 'hover'
             });
         }
         var coleccionesCarousel = document.getElementById('coleccionesCarousel');
         if (coleccionesCarousel) {
             var carousel2 = new bootstrap.Carousel(coleccionesCarousel, {
                 interval: 8000,
-                ride: 'carousel',
-                pause: false
+                ride: false,
+                pause: 'hover'
             });
         }
     });
