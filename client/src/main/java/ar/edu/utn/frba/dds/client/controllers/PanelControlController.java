@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.client.dtos.solicitud.SolicitudDTO;
 import ar.edu.utn.frba.dds.client.services.FuenteService;
 import ar.edu.utn.frba.dds.client.services.HechoService;
 import ar.edu.utn.frba.dds.client.services.SolicitudesService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ public class PanelControlController {
         this.solicitudesService = solicitudesService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping
     public String panelControl(Model model) {
         // TODO: Conseguir hechos pendientes de la dinámica
@@ -36,6 +38,7 @@ public class PanelControlController {
         return "panelControl/index";
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     @GetMapping("/hechosPendientes")
     public String panelControlHechos(Model model) {
         List<HechoDTO> hechos = this.hechoService.obtenerHechosPendientes();
@@ -46,6 +49,7 @@ public class PanelControlController {
     }
 
     @GetMapping("/fuentes")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     public String panelControlFuentes(Model model) {
         List<FuenteDTO> fuentes = this.fuenteService.obtenerFuentesNuevas();
         model.addAttribute("titulo", "Fuentes Nuevas");
@@ -55,6 +59,7 @@ public class PanelControlController {
     }
 
     @GetMapping("/solicitudes")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
     public String panelControlSolicitudes(Model model) {
         List<SolicitudDTO> solicitudes = this.solicitudesService.obtenerSolicitudes();
         model.addAttribute("titulo", "Solicitudes");

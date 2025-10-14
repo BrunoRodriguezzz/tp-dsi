@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +51,7 @@ public class HechoController {
         return "verDetalle";
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR') or hasAnyRole('CONTRIBUYENTE')")
     @GetMapping("/misHechos")
     public String mostrarMisHechos(@RequestParam(required = false) Long id, Model model){
         List<HechoDTO> hechos = this.dinamicaService.mostrarMisHechos(id);

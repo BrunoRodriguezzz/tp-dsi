@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +48,7 @@ public class ColeccionController {
     return "editarColeccion";
   }
 
+  @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
   @GetMapping("/nuevaColeccion")
   public String nuevaColeccion(Model model) {
     return "nuevaColeccion";
