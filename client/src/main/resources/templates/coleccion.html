@@ -17,15 +17,15 @@
     </th:block>
 </head>
 <body>
-    <div th:fragment="contenido">
-    <a th:href="@{/}" href="index.html">Volver al inicio</a>
+<div th:fragment="contenido">
     <main class="container">
         <div th:if="${coleccion == null}">
             <h2>Colección no encontrada</h2>
             <p>La colección solicitada no existe.</p>
         </div>
+
         <div th:if="${coleccion != null}">
-            <div class="titulo-descripcion">
+            <div class="titulo-descripcion" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; margin-bottom: 1.5rem;">
                 <div class="colecciones-titulo-descripcion-container">
                     <h2 th:text="${coleccion.titulo}">Título Colección</h2>
                     <p th:text="${coleccion.descripcion}">Descripción de la colección</p>
@@ -38,13 +38,13 @@
                 </div>
             </div>
 
-            <div class="modos-navegacion-container" id="modos-navegacion">
-                <button type="button" class="modo-navegacion-btn curado active" data-modo="curado">Modo Curado</button>
-                <button type="button" class="modo-navegacion-btn irrestricto" data-modo="irrestricto">Modo Irrestricto</button>
+            <div class="modos-navegacion-container" id="modos-navegacion" style="margin-bottom: 0.5rem;">
+                <button type="button" class="modo-navegacion-btn curado active" data-modo="curado">Navegando en modo Curado</button>
+                <button type="button" class="modo-navegacion-btn irrestricto" data-modo="irrestricto">Navegando en modo Irrestricto</button>
             </div>
 
-            <div class="parrafos-modos-navegacion">
-                <p>Algoritmos:</p>
+            <div class="parrafos-modos-navegacion" style="margin-bottom: 1.2rem;">
+                <span style="font-weight: 500;">Algoritmos:</span>
                 <div class="modos-navegacion-container" id="algoritmos">
                     <button type="button" class="etiqueta-algoritmo-consenso filtro-algoritmo" th:each="consenso : ${coleccion.consensos}" th:text="${consenso}" th:data-algoritmo="${consenso}">Algoritmo</button>
                 </div>
@@ -84,11 +84,10 @@
                 </div>
             </div>
 
-            <div class="hechos-container" id="hechos-container">
-
-            </div>
+            <div class="hechos-container" id="hechos-container"></div>
         </div>
     </main>
+
     <script th:src="@{/js/coleccion.js}"></script>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function() {
@@ -102,50 +101,43 @@
                         container.innerHTML = '<p>No hay hechos para esta colección.</p>';
                         return;
                     }
-                    let html = '<div class="row">';
+                    let html = '';
                     hechos.forEach(hecho => {
                         html += `
-                        <div class="col">
-                            <div class="hecho-card">
-                                <div class="hecho-card-mas-opciones">
-                                    <div class="titulo-mas-descripcion">
-                                        <h2 class="titulo-Hecho">${hecho.titulo || ''}</h2>
-                                        <p class="descripcion">${hecho.descripcion || ''}</p>
-                                    </div>
-                                    <div class="opciones">
-                                        <p class="etiqueta-categoria config-categoria distancia-opciones">${hecho.categoria || ''}</p>
-                                        <a th:href="@{'/verDetalle/' + ${hecho.id}}" class="btn btn-dark"><span>Ver Detalle</span></a>
-                                        <a href="/reportarHecho" class="btn btn-red config-opciones">Reportar</a>
-                                    </div>
+                        <div class="hecho-card">
+                            <div class="card-col-izq">
+                                <div class="card-header">${hecho.titulo || ''}</div>
+                                <div class="card-desc">${hecho.descripcion || ''}</div>
+                                <div class="card-info-row">
+                                    <p><b>Fecha:</b> ${hecho.fechaAcontecimiento || ''}</p>
+                                    <p><b>Ubicación:</b> ${hecho.ubicacion || ''}</p>
+                                    <p><b>Fuente:</b> ${hecho.fuente || ''}</p>
                                 </div>
-                                <div class="informacion-general">
-                                    <div class="fecha-ubicacion-fuente encolumnar">
-                                        <p class="info-fecha-ubicacion-fuente"><b>Fecha: </b><span>${hecho.fechaAcontecimiento || ''}</span></p>
-                                        <p class="info-fecha-ubicacion-fuente"><b>Ubicación: </b><span>${hecho.ubicacion || ''}</span></p>
-                                        <p class="info-fecha-ubicacion-fuente"><b>Fuente: </b><span>${hecho.fuente || ''}</span></p>
-                                    </div>
-                                    <div class="etiquetas">
-                                        ${(hecho.etiquetas || []).map(etiqueta => `<p class="titulo-etiqueta etiqueta-interes">${etiqueta}</p>`).join('')}
-                                    </div>
-                                    <div class="ultima-linea">
-                                        <div class="fechaPublicacion">
-                                            <i class="fa-regular fa-calendar"></i>
-                                            <p class="alineacion">Publicado: <span>${hecho.fechaPublicacion || ''}</span></p>
-                                        </div>
-                                    </div>
+                                <div class="card-etiquetas">
+                                    ${(hecho.etiquetas || []).map(etiqueta => `<span class="card-etiqueta">${etiqueta}</span>`).join('')}
+                                </div>
+                                <div class="card-footer">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <span>Publicado: ${hecho.fechaPublicacion || ''}</span>
+                                </div>
+                            </div>
+                            <div class="card-col-der">
+                                <span class="card-categoria">${hecho.categoria || ''}</span>
+                                <div class="card-botones">
+                                    <a th:href="@{'/verDetalle/' + ${hecho.id}}" class="btn btn-dark">Ver Detalle</a>
+                                    <a href="/reportarHecho" class="btn btn-red">Reportar</a>
                                 </div>
                             </div>
                         </div>`;
                     });
-                    html += '</div>';
                     container.innerHTML = html;
                 })
                 .catch(() => {
                     document.getElementById('hechos-container').innerHTML = '<p>Error al cargar los hechos.</p>';
                 });
         });
-        /*]]>*/
     </script>
-    </div>
+    <th:block th:fragment="additional-scripts"></th:block>
+</div>
 </body>
 </html>
