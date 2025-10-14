@@ -1,6 +1,6 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
-import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.services.DinamicaService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;

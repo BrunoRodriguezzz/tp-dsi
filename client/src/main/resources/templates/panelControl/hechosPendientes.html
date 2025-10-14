@@ -44,7 +44,7 @@
                         <span th:text="${hecho.ubicacion != null ? hecho.ubicacion.municipio + ', ' + hecho.ubicacion.provincia : 'Sin ubicación'}">Ubicación del Hecho</span>
                     </p>
                 </div>
-                <th:block th:replace="panelControl/fragments/accionesHechosPendientes :: accionesHechosPendientes(${hecho.id})"/>
+                <th:block th:replace="panelControl/fragments/accionesHechosPendientes :: accionesHechosPendientes(${hecho.id}, ${usuarioLogueado.id})"/>
             </div>
         </div>
     </div>

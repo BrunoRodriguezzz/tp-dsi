@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
 import ar.edu.utn.frba.dds.client.dtos.FuenteDTO;
-import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.solicitud.SolicitudDTO;
 import ar.edu.utn.frba.dds.client.services.FuenteService;
 import ar.edu.utn.frba.dds.client.services.HechoService;

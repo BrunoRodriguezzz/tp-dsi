@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.dds.client.services;
 
 import ar.edu.utn.frba.dds.client.dtos.ColeccionDTO;
-import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.CriterioDTO;
 import ar.edu.utn.frba.dds.client.dtos.FiltroDTO;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;

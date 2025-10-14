@@ -1,12 +1,14 @@
 package ar.edu.utn.frba.dds.client.services;
 
-import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDinamicaDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,5 +43,25 @@ public class HechoService {
 
     public List<HechoDTO> obtenerHechosPendientes() {
         return this.mockService.obtenerHechosPendientesMockeados();
+    }
+
+    public void gestionarHecho(@Valid HechoRevisadoForm form) {
+        HechoDinamicaDTO dto = HechoDinamicaDTO.builder()
+                .idAdministrador(form.getIdAdministrador())
+                .id(form.getId())
+                .etiquetas(form.getEtiquetas() != null ? List.of(form.getEtiquetas().split(",")) : List.of())
+                .estadoHecho(form.getEstadoHecho())
+                .sugerenciaDeCambio(form.getSugerenciaDeCambio())
+                .build();
+
+        WebClient.create("http://localhost:8081")
+                        .post()
+                .uri("/api/fuenteDinamica/gestion")
+                .bodyValue(dto)
+                .retrieve()
+                .onStatus(httpStatusCode -> httpStatusCode.is4xxClientError() || httpStatusCode.is5xxServerError(),
+                        clientResponse -> clientResponse.bodyToMono(String.class).map(RuntimeException::new))
+                .bodyToMono(Void.class)
+                .block();
     }
 }

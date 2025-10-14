@@ -1,17 +1,18 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
-import ar.edu.utn.frba.dds.client.dtos.HechoDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
 import ar.edu.utn.frba.dds.client.services.DinamicaService;
 import ar.edu.utn.frba.dds.client.services.HechoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -82,4 +83,11 @@ public class HechoController {
         return "redirect:/hechos";
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PostMapping("/gestionar")
+    public String gestionarHecho(@Valid @ModelAttribute HechoRevisadoForm form) {
+        this.hechoService.gestionarHecho(form);
+        LOGGER.info("Hecho {} gestionado por el administrador {}.", form.getId(), form.getIdAdministrador());
+        return "redirect:/panelControl/hechosPendientes";
+    }
 }
