@@ -20,9 +20,7 @@ public class AdminController {
 
     @PostMapping("/gestion")
     public HechoOutputDTO gestionarHecho(@RequestBody HechoRevisadoInputDTO hechoRevisado){
-
         return this.adminService.gestionarHecho(hechoRevisado);
-
     }
 
     // Eliminacion del hecho de manera directa

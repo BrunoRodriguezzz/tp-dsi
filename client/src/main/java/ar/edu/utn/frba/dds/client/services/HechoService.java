@@ -54,14 +54,21 @@ public class HechoService {
                 .sugerenciaDeCambio(form.getSugerenciaDeCambio())
                 .build();
 
-        WebClient.create("http://localhost:8081")
-                        .post()
-                .uri("/api/fuenteDinamica/gestion")
-                .bodyValue(dto)
-                .retrieve()
-                .onStatus(httpStatusCode -> httpStatusCode.is4xxClientError() || httpStatusCode.is5xxServerError(),
-                        clientResponse -> clientResponse.bodyToMono(String.class).map(RuntimeException::new))
-                .bodyToMono(Void.class)
-                .block();
+        System.out.println("[LOG] Enviando a fuenteDinamica: " + dto);
+
+        try {
+            WebClient.create("http://localhost:8081")
+                    .post()
+                    .uri("/api/fuenteDinamica/gestion")
+                    .bodyValue(dto)
+                    .retrieve()
+                    .onStatus(httpStatusCode -> httpStatusCode.is4xxClientError() || httpStatusCode.is5xxServerError(),
+                            clientResponse -> clientResponse.bodyToMono(String.class).map(RuntimeException::new))
+                    .bodyToMono(Void.class)
+                    .block();
+        } catch (Exception e) {
+            System.err.println("[ERROR] Falló la comunicación con fuenteDinamica: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

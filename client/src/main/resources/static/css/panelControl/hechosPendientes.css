@@ -8,6 +8,10 @@ body {
     padding-bottom: 1rem;
 }
 
+form {
+    margin-bottom: 0;
+}
+
 .link {
     display: inline-flex;
     align-items: center;
