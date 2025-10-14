@@ -48,7 +48,7 @@ public class ColeccionController {
     return "editarColeccion";
   }
 
-  @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
   @GetMapping("/nuevaColeccion")
   public String nuevaColeccion(Model model) {
     return "nuevaColeccion";

@@ -31,7 +31,7 @@ public class SecurityConfig {
                             "/coleccion/**",
                             "/editarColeccion/**",
                             "/publicarHecho/**",
-                            "/reportarHecho",
+                            "/reportarHecho/**",
                             "/hechos/**",
                             "/home/**",
                             "/css/**",

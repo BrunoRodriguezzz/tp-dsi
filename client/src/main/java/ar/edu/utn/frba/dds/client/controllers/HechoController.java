@@ -51,7 +51,7 @@ public class HechoController {
         return "verDetalle";
     }
 
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR') or hasAnyRole('CONTRIBUYENTE')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CONTRIBUYENTE')")
     @GetMapping("/misHechos")
     public String mostrarMisHechos(@RequestParam(required = false) Long id, Model model){
         List<HechoDTO> hechos = this.dinamicaService.mostrarMisHechos(id);

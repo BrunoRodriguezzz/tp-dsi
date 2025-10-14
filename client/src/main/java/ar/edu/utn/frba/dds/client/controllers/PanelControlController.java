@@ -27,7 +27,7 @@ public class PanelControlController {
         this.solicitudesService = solicitudesService;
     }
 
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
     public String panelControl(Model model) {
         // TODO: Conseguir hechos pendientes de la dinámica
@@ -38,7 +38,7 @@ public class PanelControlController {
         return "panelControl/index";
     }
 
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/hechosPendientes")
     public String panelControlHechos(Model model) {
         List<HechoDTO> hechos = this.hechoService.obtenerHechosPendientes();
@@ -49,7 +49,7 @@ public class PanelControlController {
     }
 
     @GetMapping("/fuentes")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public String panelControlFuentes(Model model) {
         List<FuenteDTO> fuentes = this.fuenteService.obtenerFuentesNuevas();
         model.addAttribute("titulo", "Fuentes Nuevas");
@@ -59,7 +59,7 @@ public class PanelControlController {
     }
 
     @GetMapping("/solicitudes")
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public String panelControlSolicitudes(Model model) {
         List<SolicitudDTO> solicitudes = this.solicitudesService.obtenerSolicitudes();
         model.addAttribute("titulo", "Solicitudes");

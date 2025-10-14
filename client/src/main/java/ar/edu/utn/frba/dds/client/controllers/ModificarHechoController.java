@@ -19,7 +19,7 @@ public class ModificarHechoController {
     private final DinamicaService dinamicaService;
     private final Logger LOGGER = LogManager.getLogger(HechoController.class);
 
-    @PreAuthorize("hasAnyRole('ADMINISTRADOR') or hasAnyRole('CONTRIBUYENTE')")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CONTRIBUYENTE')")
     @GetMapping("/{id}")
     public String modificacionHecho(@PathVariable Long id, Model model){
         HechoDTO hecho = dinamicaService.buscarHechoId(id);

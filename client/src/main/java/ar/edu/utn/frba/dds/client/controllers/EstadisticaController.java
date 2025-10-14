@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.client.controllers;
 import ar.edu.utn.frba.dds.client.dtos.estadisticas.*;
 import ar.edu.utn.frba.dds.client.services.EstadisticaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ public class EstadisticaController {
     @Autowired
     private EstadisticaService estadisticaService;
 
+    @PreAuthorize("hasRole('ADMINSITRADOR')")
     @GetMapping
     public String getEstadisticasGenerales(Model model){
         model.addAttribute("titulo", "Estadisticas y Análisis");
