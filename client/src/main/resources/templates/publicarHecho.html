@@ -1,4 +1,5 @@
 <html lang="en" th:replace="~{layout/base :: html}">
+
 <th:block th:fragment="additional-links">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -8,7 +9,8 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
 </th:block>
-<div style="padding-top: 5rem; padding-bottom: 1rem" th:fragment="contenido">
+
+<div class="container" style="padding-top: 1rem; padding-bottom: 1rem" th:fragment="contenido">
     <div class="outer-form">
         <h2><strong>Publicar Hecho</strong></h2>
         <p>Comparte información relevante para la comunidad de forma colaborativa</p>

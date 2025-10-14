@@ -4,6 +4,11 @@ body{
     justify-content: center;
 }
 
+main {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
 .container-responsive{
     width: 100%;
     padding-left: 1rem;
@@ -160,9 +165,7 @@ body{
 .cuadros-grid {
     display: grid;
     gap: 1rem;
-    max-width: 1000px;
     margin: 0 auto;
-    padding: 1rem;
 }
 
 /* En mobile: una columna, orden natural */

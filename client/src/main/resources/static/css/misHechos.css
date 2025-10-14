@@ -32,10 +32,8 @@ body{
 .container-principal{
     display:block;
     justify-content: center;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    margin-left: auto;
-    margin-right: auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 /* Container para encabezado*/
@@ -179,6 +177,8 @@ body{
 
 .ultima-linea{
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 0.75rem;
     gap:0.8rem;
 }
@@ -238,4 +238,29 @@ body{
     color: #155724; /* verde oscuro */
     border: 1px solid #155724;
     border-radius: 7px;
+}
+
+.acciones {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.data-hecho {
+    display: flex;
+    gap: 1rem;
+}
+
+.icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+@media (max-width: 768px) {
+    .ultima-linea {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
 }
