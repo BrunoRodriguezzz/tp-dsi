@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.client.dtos.solicitud.SolicitudDTO;
 import ar.edu.utn.frba.dds.client.services.FuenteService;
 import ar.edu.utn.frba.dds.client.services.HechoService;
 import ar.edu.utn.frba.dds.client.services.SolicitudesService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ public class PanelControlController {
         this.solicitudesService = solicitudesService;
     }
 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
     public String panelControl(Model model) {
         // TODO: Conseguir hechos pendientes de la dinámica

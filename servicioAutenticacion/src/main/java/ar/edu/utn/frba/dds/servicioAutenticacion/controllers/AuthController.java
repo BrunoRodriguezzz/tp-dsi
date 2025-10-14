@@ -130,25 +130,25 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDTO> registrarUsuario(@Valid @RequestBody Usuario usuario) {
-            // Validación básica de credenciales
-            if (usuario.getUsername() == null || usuario.getUsername().trim().isEmpty() ||
-                    usuario.getPassword() == null || usuario.getPassword().trim().isEmpty()) {
-                throw new RegisterError("El nombre y la contraseña no pueden estar vacíos");
-            }
+        // Validación básica de credenciales
+        if (usuario.getUsername() == null || usuario.getUsername().trim().isEmpty() ||
+                usuario.getPassword() == null || usuario.getPassword().trim().isEmpty()) {
+            throw new RegisterError("El nombre y la contraseña no pueden estar vacíos");
+        }
 
-            Usuario usuarioCreado = authService.registrarUsuario(usuario);
+        Usuario usuarioCreado = authService.registrarUsuario(usuario);
 
-            String accessToken = authService.generarAccessToken(usuarioCreado);
-            String refreshToken = authService.generarRefreshToken(usuarioCreado);
+        String accessToken = authService.generarAccessToken(usuarioCreado);
+        String refreshToken = authService.generarRefreshToken(usuarioCreado);
 
-            AuthResponseDTO response = AuthResponseDTO.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .build();
+        AuthResponseDTO response = AuthResponseDTO.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
 
-            log.info("El usuario {} está logueado. El token generado es {}", usuarioCreado.getUsername(), accessToken);
+        log.info("El usuario {} está logueado. El token generado es {}", usuarioCreado.getUsername(), accessToken);
 
-            return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/user/{id}")
