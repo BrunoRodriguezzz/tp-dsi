@@ -15,14 +15,11 @@ btnFiltro.addEventListener("click", () => {
 });
 });
 
-// --- CÓDIGO UNIFICADO Y ROBUSTO PARA FILTRADO Y MODOS ---
-
 let hechosOriginales = [];
 let modoActual = 'curado';
 let algoritmoSeleccionado = null;
 
 function getAlgoritmos(hecho) {
-    // Soporta tanto 'algoritmos' como 'consensos' como nombre de la propiedad
     return Array.isArray(hecho.algoritmos) ? hecho.algoritmos : (Array.isArray(hecho.consensos) ? hecho.consensos : []);
 }
 
@@ -117,7 +114,6 @@ window.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Cargar hechos y guardar copia original
     var coleccionId = window.coleccionId || (typeof COLECCION_ID !== 'undefined' ? COLECCION_ID : 0);
     if (coleccionId === 0) return;
     fetch('/coleccion/' + coleccionId + '/hechos')
@@ -130,7 +126,6 @@ window.addEventListener('DOMContentLoaded', function() {
             filtrarHechos();
         });
 
-    // Modo de navegación
     document.querySelectorAll('.modo-navegacion-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             modoActual = btn.dataset.modo;
@@ -139,7 +134,6 @@ window.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Filtro por algoritmo de consenso
     document.querySelectorAll('.filtro-algoritmo').forEach(btn => {
         btn.addEventListener('click', function() {
             if (algoritmoSeleccionado === btn.dataset.algoritmo) {

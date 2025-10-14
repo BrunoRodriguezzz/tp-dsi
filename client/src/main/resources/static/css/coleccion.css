@@ -475,7 +475,6 @@ body {
     }
 }
 
-/* Eliminar cualquier grid o encolumnado que afecte el layout de las cards */
 .encolumnar, .row, .grid, .cards-grid {
     display: block !important;
     grid-template-columns: none !important;

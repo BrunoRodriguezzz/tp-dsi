@@ -1,69 +1,88 @@
 <!DOCTYPE html>
-<html lang="es" th:replace="~{layout/base :: html}">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Colecciones</title>
-    <th:block th:fragment="additional-links">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" th:href="@{/css/styles.css}">
-        <link rel="stylesheet" th:href="@{/css/components.css}">
-        <link rel="stylesheet" th:href="@{/css/header.css}">
-        <link rel="stylesheet" th:href="@{/css/footer.css}">
-        <link rel="stylesheet" th:href="@{/css/colecciones.css}">
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    </th:block>
+    <link rel="stylesheet" th:href="@{/css/colecciones.css}">
 </head>
 <body>
-<div th:fragment="contenido">
-    <main class="contenedor-principal">
-        <div class="d-flex justify-content-between align-items-start flex-wrap mb-4 titulo-descripcion-opciones">
-            <div class="colecciones-titulo-descripcion-container">
-                <h1 class="fw-bold mb-2">Colecciones</h1>
-                <p class="subtitulo">Explora las diferentes colecciones de hechos organizados por temática</p>
+<div class="container">
+
+    <header class="header-section">
+        <div class="header-bar" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+            <div class="header-titles" style="display: flex; flex-direction: column; align-items: flex-start;">
+                <h1 style="margin-bottom: 0.3rem;">Colecciones</h1>
+                <p class="subtitulo" style="margin: 0;">Explora las diferentes colecciones de hechos organizados por temática</p>
             </div>
-            <div class="colecciones-opciones text-end">
-                <div class="modo-navegacion-container d-flex align-items-center justify-content-end mb-3">
-                    <div class="d-flex align-items-center me-3">
-                        <i class="fa-solid fa-globe text-secondary me-2"></i>
-                        <span class="label-modo">Irrestricto</span>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="modo-toggle">
-                    </div>
-                    <div class="d-flex align-items-center ms-3">
-                        <i class="fa-solid fa-shield text-primary me-2"></i>
-                        <span class="label-modo">Curado</span>
-                    </div>
+            <div style="display: flex; align-items: center; gap: 1.2rem;">
+                <div class="modo-container">
+                    <span>Irrestricto</span>
+                    <label class="switch">
+                        <input id="modoToggle" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <span>Curado</span>
                 </div>
-                <a th:href="@{/nuevaColeccion}">
-                    <button class="boton-nueva">+ Nueva Colección</button>
-                </a>
+                <button class="btn-nueva" th:onclick="'window.location.href=\'' + @{/nuevaColeccion} + '\''">
+                    + Nueva Colección
+                </button>
             </div>
         </div>
-
-        <div class="modo-actual" id="texto-modo">
-            <i class="icono-escudo">🛡️</i> Navegando en modo Irrestricto
-        </div>
-        <p class="descripcion-modo" id="descripcion-modo">
-            Se muestran todos los hechos disponibles, incluyendo contenido no verificado.
-        </p>
-
-        <div id="colecciones-container">
-            <div class="card" th:each="coleccion : ${colecciones}">
-                <h3 th:text="${coleccion.titulo}">Título Colección</h3>
-                <p class="hechos" th:text="${coleccion.cantidadHechos} + ' hechos registrados'">0 hechos registrados</p>
-                <p class="descripcion" th:text="${coleccion.descripcion}">Descripción de la colección</p>
-                <p class="algoritmos-titulo">Algoritmos de Consenso:</p>
-                <div class="algoritmos">
-                    <span class="algoritmo tag-azul" th:each="consenso : ${coleccion.consensos}" th:text="${consenso}">Consenso</span>
-                </div>
-                <a th:href="@{/coleccion/{id}(id=${coleccion.id})}" class="ver-link">Ver colección →</a>
+        <div style="display: flex; flex-direction: column; align-items: center; margin-top: 2rem;">
+            <div id="modoEstado" class="modo-estado irrestricto">
+                <i class="icon">🟦</i>
+                <span>Navegando en modo Irrestricto</span>
             </div>
+            <p id="descripcionModo" class="descripcion-modo" style="text-align: center;">Se muestran todos los hechos disponibles, incluyendo contenido no verificado.</p>
+        </div>
+    </header>
+
+    <main class="colecciones-grid">
+        <div class="tarjeta" th:each="coleccion : ${colecciones}">
+            <h2 th:text="${coleccion.titulo}">Nombre Colección</h2>
+            <p class="hechos" th:text="${coleccion.cantidadHechos + ' hechos registrados'}">10 hechos registrados</p>
+            <p class="descripcion" th:text="${coleccion.descripcion}">Descripción de la colección.</p>
+            <p><strong>Algoritmos de Consenso:</strong></p>
+            <div class="chips">
+                <span th:each="alg : ${coleccion.consensos}"
+                      th:text="${alg}"
+                      th:classappend="
+                        ${alg} == 'Multiples Menciones' ? 'chip chip-celeste' :
+                        (${alg} == 'Mayoría Simple' ? 'chip chip-verde' :
+                        (${alg} == 'Mayoría Absoluta' ? 'chip chip-morado' : 'chip'))">
+                    Algoritmo
+                </span>
+            </div>
+            <a class="ver-link" th:href="@{'/coleccion/' + ${coleccion.id}}">Ver colección →</a>
         </div>
     </main>
+
 </div>
+
 <script th:src="@{/js/colecciones.js}"></script>
+<script>
+    const modoToggle = document.getElementById('modoToggle');
+    const descripcionModo = document.getElementById('descripcionModo');
+    if (modoToggle && descripcionModo) {
+        modoToggle.addEventListener('change', function() {
+            const modoEstado = document.getElementById('modoEstado');
+            if (this.checked) {
+                descripcionModo.textContent = 'Solo se muestran hechos verificados y validados por la comunidad';
+                if (modoEstado) {
+                    modoEstado.classList.remove('irrestricto');
+                    modoEstado.classList.add('curado');
+                    modoEstado.innerHTML = '<i class="icon">🟩</i><span>Navegando en modo Curado</span>';
+                }
+            } else {
+                descripcionModo.textContent = 'Se muestran todos los hechos disponibles, incluyendo contenido no verificado.';
+                if (modoEstado) {
+                    modoEstado.classList.remove('curado');
+                    modoEstado.classList.add('irrestricto');
+                    modoEstado.innerHTML = '<i class="icon">🟦</i><span>Navegando en modo Irrestricto</span>';
+                }
+            }
+        });
+    }
+</script>
 </body>
 </html>
