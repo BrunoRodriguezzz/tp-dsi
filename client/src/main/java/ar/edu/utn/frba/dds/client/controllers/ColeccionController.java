@@ -20,25 +20,6 @@ public class ColeccionController {
   private final Logger LOGGER = LogManager.getLogger(ColeccionController.class);
   private final ColeccionService coleccionService;
 
-//  @GetMapping
-//  public String listarHechos(Model model) {
-//    model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
-//    List<HechoDTO> hechos = this.hechoService.obtenerHechos();
-//    model.addAttribute("hechos", hechos);
-//    model.addAttribute("cantidad", hechos.size());
-//    LOGGER.info("Mostrando {} hechos.", hechos.size());
-//    return "hechos";
-//  }
-//
-//  @GetMapping("/{id}")
-//  public String verDetalleHecho(@PathVariable Long id, Model model) {
-//    HechoDTO hecho = hechoService.obtenerHechoPorId(id);
-//    LOGGER.info("Mostrando {} hecho.", id);
-//    model.addAttribute("hecho", hecho);
-//    model.addAttribute("titulo", hecho.getTitulo());
-//    return "hecho";
-//  }
-
   @GetMapping("/colecciones")
   public String listarColecciones(Model model) {
     List<ColeccionDTO> colecciones = coleccionService.obtenerColecciones();
@@ -64,5 +45,10 @@ public class ColeccionController {
     ColeccionDTO coleccion = coleccionService.obtenerColeccionPorId(id);
     model.addAttribute("coleccion", coleccion);
     return "editarColeccion";
+  }
+
+  @GetMapping("/nuevaColeccion")
+  public String nuevaColeccion(Model model) {
+    return "nuevaColeccion";
   }
 }

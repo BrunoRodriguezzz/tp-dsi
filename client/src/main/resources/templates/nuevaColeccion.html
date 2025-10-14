@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" th:replace="~{layout/base :: html}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Colección</title>
+    <th:block th:fragment="additional-links">
+        <link rel="stylesheet" th:href="@{/css/styles.css}">
+        <link rel="stylesheet" th:href="@{/css/components.css}">
+        <link rel="stylesheet" th:href="@{/css/colecciones.css}">
+        <link rel="stylesheet" th:href="@{/css/header.css}">
+        <link rel="stylesheet" th:href="@{/css/footer.css}">
+        <link rel="stylesheet" th:href="@{/css/nuevaColeccion.css}">
+        <link rel="stylesheet" th:href="@{/css/publicarHecho.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
+        <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    </th:block>
+</head>
+<body>
+    <div th:fragment="contenido">
+        <a th:href="@{/}" class="btn btn-link">Volver al inicio</a>
+        <div class="outer-form">
+            <h2><strong>Crear Nueva Colección</strong></h2>
+            <p>Define una nueva colección de hechos con criterios específicos de filtrado</p>
+        </div>
+        <form class="form-coleccion" th:action="@{/nuevaColeccion}" method="post">
+            <div class="header-form">
+                <h3><strong>Información Básica</strong></h3>
+                <p>Define el título y descripción de tu colección</p>
+            </div>
+            <div class="form-title">
+                <h6>Título de la Colección</h6>
+                <input type="text" class="form-control" placeholder="Ej: Protestas Sociales 2024" id="titleInput" name="titulo" required>
+            </div>
+            <div class="form-desc">
+                <h6>Descripción</h6>
+                <textarea class="form-control" placeholder="Describe el propósito y alcance de esta colección..." id="descripcionInput" name="descripcion" rows="4" required></textarea>
+            </div>
+            <div class="header-form">
+                <h3><strong>Fuentes</strong></h3>
+                <p>Selecciona las fuentes de datos que alimentarán esta colección</p>
+            </div>
+            <div class="form-title">
+                <h6>Buscar Fuentes</h6>
+                <input type="text" class="form-control" placeholder="Buscar fuentes disponibles..." id="fuenteInput" name="fuente">
+            </div>
+            <div class="botones-formulario mt-4">
+                <button type="submit" class="btn btn-dark">Crear Colección</button>
+                <a th:href="@{/colecciones}" class="btn btn-outline-secondary btn-cancelar">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
