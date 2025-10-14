@@ -1,0 +1,40 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Error 403 - Acceso Denegado</title>
+  <link rel="stylesheet" th:href="@{/css/e403.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
+</head>
+
+<body>
+<div class="container-responsive">
+  <div class="container-navegador">
+    <div class="config-nav">
+      <a class="boton-navegacion" th:href="@{/home}">Inicio</a>
+    </div>
+  </div>
+
+  <div class="cuadros-grid">
+    <div class="bloques columna-1">
+      <div class="texto-mas-icono">
+        <h1 class="titulo-hecho">403 - Acceso denegado</h1>
+      </div>
+      <p class="descripcion-breve">No tiene permisos para realizar esta acción o acceder a esta página.</p>
+      <img src="https://images3.memedroid.com/images/UPLOADED821/659233d12ed88.jpeg" alt="STOP">
+      <div class="botones">
+        <a class="btn-grey" th:href="@{/home}">Volver al menú principal</a>
+      </div>
+    </div>
+
+    <div class="bloques columna-2">
+      <div class="config-etiquetas etiqueta-verificado">
+        Error de autorización
+      </div>
+      <div class="descripcion-breve">
+        Si cree que esto es un error, contacte con el administrador del sistema.
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
