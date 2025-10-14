@@ -20,7 +20,6 @@
 </head>
 <body>
     <div th:fragment="contenido">
-        <a th:href="@{/}" class="btn btn-link">Volver al inicio</a>
         <div class="outer-form">
             <h2><strong>Crear Nueva Colección</strong></h2>
             <p>Define una nueva colección de hechos con criterios específicos de filtrado</p>
@@ -43,8 +42,63 @@
                 <p>Selecciona las fuentes de datos que alimentarán esta colección</p>
             </div>
             <div class="form-title">
-                <h6>Buscar Fuentes</h6>
-                <input type="text" class="form-control" placeholder="Buscar fuentes disponibles..." id="fuenteInput" name="fuente">
+                <div id="fuentesContainer" class="mb-2"></div>
+                <div id="fuentesLoading" class="mb-2" style="display:none; color: #007bff;">Cargando fuentes...</div>
+            </div>
+            <div class="header-form">
+                <h3><strong>Criterios de Filtrado</strong></h3>
+                <p>Define los criterios para filtrar los hechos de la colección</p>
+            </div>
+            <div class="form-group">
+                <h6>Categoría</h6>
+                <input type="text" class="form-control" placeholder="Ej: Accidente de avión" id="categoriaInput" name="criterio.categoria">
+            </div>
+            <div class="form-group">
+                <h6>Fecha de carga (inicio)</h6>
+                <input type="datetime-local" class="form-control" id="fechaCargaInicioInput" name="criterio.fechaCargaInicio">
+            </div>
+            <div class="form-group">
+                <h6>Fecha de carga (fin)</h6>
+                <input type="datetime-local" class="form-control" id="fechaCargaFinInput" name="criterio.fechaCargaFin">
+            </div>
+            <div class="form-group">
+                <h6>Fecha de acontecimiento (inicio)</h6>
+                <input type="datetime-local" class="form-control" id="fechaAcontecimientoInicioInput" name="criterio.fechaAcontecimientoInicio">
+            </div>
+            <div class="form-group">
+                <h6>Fecha de acontecimiento (fin)</h6>
+                <input type="datetime-local" class="form-control" id="fechaAcontecimientoFinInput" name="criterio.fechaAcontecimientoFin">
+            </div>
+            <div class="form-group">
+                <h6>Título</h6>
+                <input type="text" class="form-control" placeholder="Filtrar por título..." id="criterioTituloInput" name="criterio.titulo">
+            </div>
+            <div class="form-group">
+                <h6>Latitud</h6>
+                <input type="number" step="any" class="form-control" placeholder="Ej: -34.6037" id="latitudInput" name="criterio.latitud">
+            </div>
+            <div class="form-group">
+                <h6>Longitud</h6>
+                <input type="number" step="any" class="form-control" placeholder="Ej: -58.3816" id="longitudInput" name="criterio.longitud">
+            </div>
+            <div class="header-form">
+                <h3><strong>Consensos</strong></h3>
+                <p>Selecciona los consensos requeridos para la colección</p>
+            </div>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="consensos" value="ABSOLUTO" id="consenso_absoluto">
+                    <label class="form-check-label" for="consenso_absoluto">Absoluto</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="consensos" value="MULTMENCIONES" id="consenso_multmenciones">
+                    <label class="form-check-label" for="consenso_multmenciones">Multmenciones</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="consensos" value="MAYSIMPLE" id="consenso_maysimple">
+                    <label class="form-check-label" for="consenso_maysimple">Mayoría simple</label>
+                </div>
+                <small class="form-text text-muted">Podés seleccionar uno o más consensos.</small>
             </div>
             <div class="botones-formulario mt-4">
                 <button type="submit" class="btn btn-dark">Crear Colección</button>
@@ -52,6 +106,56 @@
             </div>
         </form>
     </div>
+    <th:block th:fragment="additional-scripts">
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const container = document.getElementById('fuentesContainer');
+                const loading = document.getElementById('fuentesLoading');
+                container.style.display = 'none';
+                loading.style.display = 'block';
+                fetch('/colecciones/fuentes')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('HTTP status ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        container.innerHTML = '';
+                        if (!Array.isArray(data)) {
+                            container.innerHTML = '<p class="text-danger">Respuesta inesperada del servidor.</p>';
+                        } else if (data.length === 0) {
+                            container.innerHTML = '<p>No hay fuentes disponibles.</p>';
+                        } else {
+                            data.forEach(fuente => {
+                                const div = document.createElement('div');
+                                div.className = 'form-check fade-in';
+                                div.innerHTML = `
+                                    <input class="form-check-input" type="checkbox" name="fuentes" value="${fuente.nombre}" id="fuente_${fuente.id}">
+                                    <label class="form-check-label" for="fuente_${fuente.id}">${fuente.nombre}</label>
+                                `;
+                                container.appendChild(div);
+                            });
+                        }
+                        loading.style.display = 'none';
+                        container.style.display = 'block';
+                    })
+                    .catch((err) => {
+                        container.innerHTML = `<p class="text-danger">Error al obtener fuentes: ${err.message}</p>`;
+                        loading.style.display = 'none';
+                        container.style.display = 'block';
+                    });
+            });
+        </script>
+    </th:block>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </body>
 </html>
-

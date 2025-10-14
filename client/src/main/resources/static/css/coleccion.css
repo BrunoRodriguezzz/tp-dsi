@@ -436,7 +436,6 @@ body {
     margin-top: 2.5rem !important;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
     main {
         padding: 0 1rem;
