@@ -32,9 +32,7 @@ public class DinamicaService {
     public List<HechoDTO> mostrarMisHechos(Long id){
         try{
 
-            List<HechoDTO> misHechos = this.webApiCallerService.getList(this.dinamicaUrl + "/hechos/" + id, HechoDTO.class);
-
-            return misHechos;
+            return this.webApiCallerService.getList(this.dinamicaUrl + "/hechos/" + id, HechoDTO.class);
 
         } catch (Exception e) {
 

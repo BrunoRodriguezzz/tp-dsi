@@ -32,7 +32,6 @@ public class AdminService implements IAdminService {
 
     @Override
     public HechoOutputDTO gestionarHecho(HechoRevisadoInputDTO hechoRevisado){
-
         Hecho hecho = this.dinamicaRepository.buscarPorID(hechoRevisado.getId());
 
         if(hecho != null){

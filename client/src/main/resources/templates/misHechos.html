@@ -23,14 +23,16 @@
                     </div>
                     <div class="opciones">
                         <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Sin Categoria</p>
-                        <p th:class="'etiqueta-categoria config-categoria distancia-opciones ' +
-                             (${hecho.estado} == 'PENDIENTE_DE_REVISION' ? 'estado-pendiente' :
-                              (${hecho.estado} == 'RECHAZADO' ? 'estado-rechazado' :
-                              (${hecho.estado} == 'APROBADO' ? 'estado-aprobado' : '')))"
-                                           th:text="${hecho.estado} == 'PENDIENTE_DE_REVISION' ? 'Pendiente de Revisión' :
-                            (${hecho.estado} == 'RECHAZADO' ? 'Rechazado' :
-                            (${hecho.estado} == 'APROBADO' ? 'Aprobado' : 'Sin Estado'))">
-                            Sin Estado
+                        <p th:switch="${hecho.estado}"
+                           class="etiqueta-categoria config-categoria distancia-opciones"
+                           th:classappend="${hecho.estado == 'PENDIENTE_DE_REVISION'} ? 'estado-pendiente' :
+                                           (${hecho.estado == 'RECHAZADA'} ? 'estado-rechazado' :
+                                           (${hecho.estado == 'ACEPTADA' or hecho.estado == 'ACEPTADA_CON_SUGERENCIA'} ? 'estado-aprobado' : ''))">
+                            <span th:case="'PENDIENTE_DE_REVISION'">Pendiente de Revisión</span>
+                            <span th:case="'RECHAZADA'">Rechazado</span>
+                            <span th:case="'ACEPTADA'">Aprobado</span>
+                            <span th:case="'ACEPTADA_CON_SUGERENCIA'">Aprobado con Sugerencia</span>
+                            <span th:case="*">Sin Estado</span>
                         </p>
                         <a  class="btn btn-primary btn-dark config-opciones" th:href="@{/hechos/{id}(id=${hecho.id})}">Ver Detalles</a>
                         <a  class="btn btn-white config-opciones" th:href="@{/modificarHecho/{id}(id=${hecho.id})}">Modificar Hecho</a>

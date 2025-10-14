@@ -55,6 +55,7 @@ public class HechoController {
     @GetMapping("/misHechos")
     public String mostrarMisHechos(@RequestParam(required = false) Long id, Model model){
         List<HechoDTO> hechos = this.dinamicaService.mostrarMisHechos(id);
+        hechos.forEach(h -> LOGGER.info("Mostrando estado del hecho: {}.", h.getEstado()));
         model.addAttribute("hechos", hechos);
         model.addAttribute("cantidad", hechos.size());
         model.addAttribute("titulo", "Mis Hechos");
