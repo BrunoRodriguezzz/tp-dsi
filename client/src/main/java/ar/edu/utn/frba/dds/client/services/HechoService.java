@@ -41,34 +41,4 @@ public class HechoService {
         return mockService.obtenerHechoPorId(id);
     }
 
-    public List<HechoDTO> obtenerHechosPendientes() {
-        return this.mockService.obtenerHechosPendientesMockeados();
-    }
-
-    public void gestionarHecho(@Valid HechoRevisadoForm form) {
-        HechoDinamicaDTO dto = HechoDinamicaDTO.builder()
-                .idAdministrador(form.getIdAdministrador())
-                .id(form.getId())
-                .etiquetas(form.getEtiquetas() != null ? List.of(form.getEtiquetas().split(",")) : List.of())
-                .estadoHecho(form.getEstadoHecho())
-                .sugerenciaDeCambio(form.getSugerenciaDeCambio())
-                .build();
-
-        System.out.println("[LOG] Enviando a fuenteDinamica: " + dto);
-
-        try {
-            WebClient.create("http://localhost:8081")
-                    .post()
-                    .uri("/api/fuenteDinamica/gestion")
-                    .bodyValue(dto)
-                    .retrieve()
-                    .onStatus(httpStatusCode -> httpStatusCode.is4xxClientError() || httpStatusCode.is5xxServerError(),
-                            clientResponse -> clientResponse.bodyToMono(String.class).map(RuntimeException::new))
-                    .bodyToMono(Void.class)
-                    .block();
-        } catch (Exception e) {
-            System.err.println("[ERROR] Falló la comunicación con fuenteDinamica: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 }

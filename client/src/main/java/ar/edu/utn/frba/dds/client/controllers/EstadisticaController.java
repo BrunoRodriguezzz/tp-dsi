@@ -19,7 +19,7 @@ public class EstadisticaController {
     @Autowired
     private EstadisticaService estadisticaService;
 
-    @PreAuthorize("hasRole('ADMINSITRADOR')")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
     public String getEstadisticasGenerales(Model model){
         model.addAttribute("titulo", "Estadisticas y Análisis");

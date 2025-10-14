@@ -104,6 +104,11 @@ public class RepositoryService implements IRepositoryService {
 
     }
 
+    @Override
+    public List<Hecho> buscarPendientes() {
+        return this.dinamicaRepository.findByEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
+    }
+
     private Boolean estadoAceptado(Hecho hecho){
 
         return (hecho.getEstadoHecho() == EstadoHecho.ACEPTADA) || (hecho.getEstadoHecho() == EstadoHecho.ACEPTADA_CON_SUGERENCIA);

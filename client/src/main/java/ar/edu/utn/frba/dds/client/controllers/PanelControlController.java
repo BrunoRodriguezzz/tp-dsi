@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.client.controllers;
 import ar.edu.utn.frba.dds.client.dtos.FuenteDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.solicitud.SolicitudDTO;
+import ar.edu.utn.frba.dds.client.services.DinamicaService;
 import ar.edu.utn.frba.dds.client.services.FuenteService;
 import ar.edu.utn.frba.dds.client.services.HechoService;
 import ar.edu.utn.frba.dds.client.services.SolicitudesService;
@@ -20,11 +21,13 @@ public class PanelControlController {
     private final HechoService hechoService;
     private final FuenteService fuenteService;
     private final SolicitudesService solicitudesService;
+    private final DinamicaService dinamicaService;
 
-    public PanelControlController(HechoService hechoService, FuenteService fuenteService, SolicitudesService solicitudesService) {
+    public PanelControlController(HechoService hechoService, FuenteService fuenteService, SolicitudesService solicitudesService, DinamicaService dinamicaService) {
         this.hechoService = hechoService;
         this.fuenteService = fuenteService;
         this.solicitudesService = solicitudesService;
+        this.dinamicaService = dinamicaService;
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
@@ -41,15 +44,15 @@ public class PanelControlController {
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/hechosPendientes")
     public String panelControlHechos(Model model) {
-        List<HechoDTO> hechos = this.hechoService.obtenerHechosPendientes();
+        List<HechoDTO> hechos = this.dinamicaService.obtenerHechosPendientes();
         model.addAttribute("titulo", "Hechos Pendientes");
         model.addAttribute("hechos", hechos);
         model.addAttribute("cantidadHechos", hechos.size());
         return "panelControl/hechosPendientes";
     }
 
-    @GetMapping("/fuentes")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @GetMapping("/fuentes")
     public String panelControlFuentes(Model model) {
         List<FuenteDTO> fuentes = this.fuenteService.obtenerFuentesNuevas();
         model.addAttribute("titulo", "Fuentes Nuevas");
@@ -58,8 +61,8 @@ public class PanelControlController {
         return "panelControl/fuentes";
     }
 
-    @GetMapping("/solicitudes")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @GetMapping("/solicitudes")
     public String panelControlSolicitudes(Model model) {
         List<SolicitudDTO> solicitudes = this.solicitudesService.obtenerSolicitudes();
         model.addAttribute("titulo", "Solicitudes");

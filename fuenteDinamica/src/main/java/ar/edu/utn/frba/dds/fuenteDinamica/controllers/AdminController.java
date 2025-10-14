@@ -6,7 +6,10 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/fuenteDinamica")
@@ -21,6 +24,12 @@ public class AdminController {
     @PostMapping("/gestion")
     public HechoOutputDTO gestionarHecho(@RequestBody HechoRevisadoInputDTO hechoRevisado){
         return this.adminService.gestionarHecho(hechoRevisado);
+    }
+
+    @GetMapping("/pendientes")
+    public ResponseEntity<List<HechoOutputDTO>> obtenerPendientes() {
+        List<HechoOutputDTO> hechosPendientes = this.adminService.obtenerHechosPendientes();
+        return ResponseEntity.ok(hechosPendientes);
     }
 
     // Eliminacion del hecho de manera directa

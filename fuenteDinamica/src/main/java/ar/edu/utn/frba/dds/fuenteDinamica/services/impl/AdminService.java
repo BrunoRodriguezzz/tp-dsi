@@ -69,6 +69,15 @@ public class AdminService implements IAdminService {
         }
     }
 
+    @Override
+    public List<HechoOutputDTO> obtenerHechosPendientes() {
+        return this.dinamicaRepository
+                .buscarPendientes()
+                .stream()
+                .map(HechoOutputDTO::convertir)
+                .toList();
+    }
+
     private void enviarHecho(Hecho hecho){
         HechoOutputDTO hechoParaEnviar = HechoOutputDTO.convertir(hecho);
 

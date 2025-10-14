@@ -85,9 +85,9 @@ public class HechoController {
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @PostMapping("/gestionar")
+    @PostMapping("/gestion")
     public String gestionarHecho(@Valid @ModelAttribute HechoRevisadoForm form) {
-        this.hechoService.gestionarHecho(form);
+        this.dinamicaService.gestionarHecho(form);
         LOGGER.info("Hecho {} gestionado por el administrador {}.", form.getId(), form.getIdAdministrador());
         return "redirect:/panelControl/hechosPendientes";
     }

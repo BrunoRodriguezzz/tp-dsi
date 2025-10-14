@@ -37,7 +37,7 @@
                             <span th:text="${hecho.contribuyente != null ? hecho.contribuyente.nombre : 'Desconocido'}">Autor</span>
                         </span>
                         <span class="detalle"><strong>Enviado:</strong>
-                            <span th:text="${hecho.fechaCarga != null ? #dates.format(hecho.fechaCarga, 'yyyy-MM-dd') : 'Sin fecha'}">Fecha</span>
+                            <span th:text="${hecho.fechaCarga != null ? hecho.fechaCarga.toString().substring(0, 10) : 'Sin fecha'}">Fecha</span>
                         </span>
                     </div>
                     <p class="hecho-ubicacion"><strong>Ubicación:</strong>

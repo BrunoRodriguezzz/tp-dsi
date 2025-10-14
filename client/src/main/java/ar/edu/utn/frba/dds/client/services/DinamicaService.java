@@ -3,7 +3,10 @@ package ar.edu.utn.frba.dds.client.services;
 import ar.edu.utn.frba.dds.client.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.client.dtos.UbicacionDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDinamicaDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -112,5 +115,73 @@ public class DinamicaService {
 
     public void enviarHecho(HechoInputDTO hecho){
         this.webApiCallerService.post(this.dinamicaUrl + "/solicitud", hecho, HechoDTO.class);
+    }
+
+    public void gestionarHecho(HechoRevisadoForm form) {
+        HechoDinamicaDTO dto = HechoDinamicaDTO.builder()
+                .idAdministrador(form.getIdAdministrador())
+                .id(form.getId())
+                .etiquetas(form.getEtiquetas() != null ? List.of(form.getEtiquetas().split(",")) : List.of())
+                .estadoHecho(form.getEstadoHecho())
+                .sugerenciaDeCambio(form.getSugerenciaDeCambio())
+                .build();
+
+        System.out.println("[LOG] Enviando a fuenteDinamica: " + dto);
+
+        try {
+            WebClient.create("http://localhost:8081")
+                    .post()
+                    .uri("/api/fuenteDinamica/gestion")
+                    .bodyValue(dto)
+                    .retrieve()
+                    .onStatus(httpStatusCode -> httpStatusCode.is4xxClientError() || httpStatusCode.is5xxServerError(),
+                            clientResponse -> clientResponse.bodyToMono(String.class).map(RuntimeException::new))
+                    .bodyToMono(Void.class)
+                    .block();
+        } catch (Exception e) {
+            System.err.println("[ERROR] Falló la comunicación con fuenteDinamica: " + e.getMessage());
+        }
+    }
+
+    public List<HechoDTO> obtenerHechosPendientes() {
+        try {
+            return this.webApiCallerService.getList(this.dinamicaUrl + "/pendientes", HechoDTO.class);
+        } catch (Exception e) {
+            System.err.println("[ERROR] Falló la obtención de hechos pendientes desde fuenteDinamica: " + e.getMessage());
+            // Mock de hechos pendientes si la fuente dinámica no responde
+            List<HechoDTO> hechosPendientes = new ArrayList<>();
+
+            List<String> etiquetas1 = List.of("pendiente", "social", "urgente");
+            HechoDTO hecho1 = HechoDTO.builder()
+                    .id(101L)
+                    .titulo("Corte de calle por manifestación")
+                    .descripcion("Manifestación espontánea que genera corte de tránsito en el centro.")
+                    .categoria("Protesta Social")
+                    .fechaAcontecimiento(LocalDate.of(2024,2,10).atStartOfDay())
+                    .fechaCarga(LocalDate.of(2024,2,11).atStartOfDay())
+                    .ubicacion(UbicacionDTO.builder().municipio("Centro").provincia("Buenos Aires").build())
+                    .etiquetas(etiquetas1)
+                    .origen("Contribuyentes")
+                    .fuente("Fuente Dinamica")
+                    .build();
+            hechosPendientes.add(hecho1);
+
+            List<String> etiquetas2 = List.of("pendiente", "seguridad", "relevante");
+            HechoDTO hecho2 = HechoDTO.builder()
+                    .id(102L)
+                    .titulo("Operativo policial pendiente de aprobación")
+                    .descripcion("Operativo policial en revisión por el área de seguridad.")
+                    .categoria("Seguridad")
+                    .fechaAcontecimiento(LocalDate.of(2024,2,12).atStartOfDay())
+                    .fechaCarga(LocalDate.of(2024,2,13).atStartOfDay())
+                    .ubicacion(UbicacionDTO.builder().municipio("Microcentro").provincia("Buenos Aires").build())
+                    .etiquetas(etiquetas2)
+                    .origen("Contribuyentes")
+                    .fuente("Fuente Dinamica")
+                    .build();
+            hechosPendientes.add(hecho2);
+
+            return hechosPendientes;
+        }
     }
 }

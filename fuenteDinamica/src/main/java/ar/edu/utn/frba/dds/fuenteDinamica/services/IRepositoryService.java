@@ -13,4 +13,6 @@ public interface IRepositoryService {
     public List<Hecho> mostrarTodos(LocalDateTime filtro);
     public List<Hecho> mostrarEnviados(Boolean enviado,LocalDateTime filtro);
     public List<Hecho> buscarTodosDeUnUsuario(Long idUsuario);
+
+    List<Hecho> buscarPendientes();
 }
