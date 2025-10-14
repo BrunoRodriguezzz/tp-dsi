@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/solicitudesEliminacion")
-@CrossOrigin(origins = "http://localhost:8080")
 public class SolicitudEliminacionController {
   @Autowired
   private ISolicitudEliminacionService solicitudEliminacionService;

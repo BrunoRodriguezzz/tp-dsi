@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/hechos")
-@CrossOrigin(origins = "http://localhost:8082")
 public class HechoController {
   @Autowired
   private IHechoService hechoService;

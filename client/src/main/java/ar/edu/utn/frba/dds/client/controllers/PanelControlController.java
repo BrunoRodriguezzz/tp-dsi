@@ -62,4 +62,10 @@ public class PanelControlController {
         model.addAttribute("cantidadSolicitudes", solicitudes.stream().filter(s -> s.getEstado().equals("PENDIENTE")).count());
         return "panelControl/solicitudes";
     }
+
+    @GetMapping("/importarCSV")
+    public String panelControlImportarCSV(Model model) {
+        model.addAttribute("titulo", "Importar CSV");
+        return "panelControl/importarCSV";
+    }
 }

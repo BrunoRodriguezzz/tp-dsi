@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/colecciones")
-@CrossOrigin(origins = "http://localhost:8080")
 public class ColeccionController {
   @Autowired
   private IColeccionService coleccionService;
