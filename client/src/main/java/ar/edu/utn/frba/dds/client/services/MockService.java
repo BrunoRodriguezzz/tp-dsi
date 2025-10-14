@@ -1,11 +1,15 @@
 package ar.edu.utn.frba.dds.client.services;
 
 import ar.edu.utn.frba.dds.client.dtos.*;
+import ar.edu.utn.frba.dds.client.dtos.estadisticas.EstadisticaHoraXCategoriaDTO;
+import ar.edu.utn.frba.dds.client.dtos.estadisticas.EstadisticaProvinciaXColeccionDTO;
+import ar.edu.utn.frba.dds.client.dtos.estadisticas.EstadisticaSolicitudesDTO;
 import ar.edu.utn.frba.dds.client.dtos.solicitud.ResolucionDTO;
 import ar.edu.utn.frba.dds.client.dtos.solicitud.SolicitudDTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1149,6 +1153,117 @@ public class MockService {
                     coleccion,
                     provinciasOrdenadas
             ));
+        }
+
+        return resultado;
+    }
+
+    public List<EstadisticaHoraXCategoriaDTO> getHorariosPorCategoria(Map<String, Long> categorias) {
+        // Plantillas: listas de 9 horarios (cada elemento representa 1 hecho).
+        Map<String, List<LocalTime>> plantillas = new HashMap<>();
+
+        plantillas.put("Social", Arrays.asList(
+                LocalTime.of(6,0), LocalTime.of(6,0),   // pico a la madrugada
+                LocalTime.of(14,0), LocalTime.of(14,0), // pico tarde
+                LocalTime.of(9,0), LocalTime.of(18,0),
+                LocalTime.of(20,0), LocalTime.of(22,0),
+                LocalTime.of(11,0)
+        ));
+
+        plantillas.put("Educación", Arrays.asList(
+                LocalTime.of(9,0), LocalTime.of(9,0),
+                LocalTime.of(11,0), LocalTime.of(11,0),
+                LocalTime.of(10,0), LocalTime.of(13,0),
+                LocalTime.of(14,0), LocalTime.of(15,0),
+                LocalTime.of(16,0)
+        ));
+
+        plantillas.put("Salud", Arrays.asList(
+                LocalTime.of(0,0), LocalTime.of(0,0),  // 2 a medianoche (incluye el original)
+                LocalTime.of(6,0),
+                LocalTime.of(9,30),
+                LocalTime.of(11,15),
+                LocalTime.of(14,0),
+                LocalTime.of(16,45),
+                LocalTime.of(18,0),
+                LocalTime.of(20,30)
+        ));
+
+        plantillas.put("Deportes", Arrays.asList(
+                LocalTime.of(18,0), LocalTime.of(18,0),
+                LocalTime.of(19,0), LocalTime.of(20,0),
+                LocalTime.of(17,0), LocalTime.of(16,0),
+                LocalTime.of(9,0), LocalTime.of(10,0),
+                LocalTime.of(11,0)
+        ));
+
+        plantillas.put("Seguridad", Arrays.asList(
+                LocalTime.of(8,0), LocalTime.of(8,0),
+                LocalTime.of(12,0), LocalTime.of(14,0),
+                LocalTime.of(16,0), LocalTime.of(18,0),
+                LocalTime.of(20,0), LocalTime.of(22,0),
+                LocalTime.of(23,0)
+        ));
+
+        plantillas.put("Entretenimiento", Arrays.asList(
+                LocalTime.of(20,0), LocalTime.of(20,0),
+                LocalTime.of(21,0), LocalTime.of(22,0),
+                LocalTime.of(23,0), LocalTime.of(19,0),
+                LocalTime.of(18,30), LocalTime.of(17,30),
+                LocalTime.of(15,0)
+        ));
+
+        plantillas.put("Cultural", Arrays.asList(
+                LocalTime.of(19,0), LocalTime.of(19,0),
+                LocalTime.of(20,30), LocalTime.of(21,0),
+                LocalTime.of(18,30), LocalTime.of(17,0),
+                LocalTime.of(11,0), LocalTime.of(15,0),
+                LocalTime.of(10,0)
+        ));
+
+        plantillas.put("Medio Ambiente", Arrays.asList(
+                LocalTime.of(8,0), LocalTime.of(8,0),
+                LocalTime.of(9,0), LocalTime.of(10,0),
+                LocalTime.of(11,0), LocalTime.of(14,0),
+                LocalTime.of(15,0), LocalTime.of(16,0),
+                LocalTime.of(17,0)
+        ));
+
+        // Pool por defecto (si recibís una categoría inesperada)
+        List<LocalTime> defecto = Arrays.asList(
+                LocalTime.of(9,0), LocalTime.of(11,0), LocalTime.of(14,0),
+                LocalTime.of(16,0), LocalTime.of(18,0), LocalTime.of(20,0),
+                LocalTime.of(8,0), LocalTime.of(10,0), LocalTime.of(19,0)
+        );
+
+        List<EstadisticaHoraXCategoriaDTO> resultado = new ArrayList<>();
+
+        for (Map.Entry<String, Long> e : categorias.entrySet()) {
+            String categoria = e.getKey();
+            long total = e.getValue() == null ? 0L : e.getValue();
+
+            // Obtener plantilla (lista de horarios con longitud 9). Si total != 9, adaptamos:
+            List<LocalTime> plantilla = plantillas.getOrDefault(categoria, defecto);
+
+            // Si el total esperado es distinto de plantilla.size(), ajustamos sencillamente:
+            // - si total < plantilla.size(): tomamos los primeros 'total' elementos de la plantilla
+            // - si total > plantilla.size(): repetimos la plantilla en ciclo hasta alcanzar total
+            List<LocalTime> asignados = new ArrayList<>();
+            if (total <= plantilla.size()) {
+                for (int i = 0; i < total; i++) asignados.add(plantilla.get(i));
+            } else {
+                // ciclo
+                for (int i = 0; i < total; i++) asignados.add(plantilla.get(i % plantilla.size()));
+            }
+
+            // Contar por LocalTime
+            Map<LocalTime, Long> horasConHechos = asignados.stream()
+                    .collect(Collectors.groupingBy(t -> t, LinkedHashMap::new, Collectors.counting()));
+
+            EstadisticaHoraXCategoriaDTO dto = new EstadisticaHoraXCategoriaDTO();
+            dto.setCategoria(categoria);
+            dto.setHorasConHechos(horasConHechos);
+            resultado.add(dto);
         }
 
         return resultado;
