@@ -4,13 +4,16 @@ import ar.edu.utn.frba.dds.client.dtos.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.CriterioDTO;
 import ar.edu.utn.frba.dds.client.dtos.FiltroDTO;
+import ar.edu.utn.frba.dds.client.dtos.hecho.PaginadoHechoDTO;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class ColeccionService {
@@ -18,6 +21,9 @@ public class ColeccionService {
   private final WebApiCallerService webApiCallerService;
   private final String hechoServiceUrl;
   private final MockService mockService;
+
+  @Autowired
+  private HechoService hechoService;
 
   public ColeccionService(
       WebApiCallerService webApiCallerService,
@@ -107,8 +113,12 @@ public class ColeccionService {
         .orElse(null);
   }
 
+  // TODO: esto llama a todos los hechos del agrgador, no a los de una coleccion en particular
   public List<HechoDTO> obtenerHechosPorColeccionId(Long coleccionId) {
-    // En este mock, simplemente devolvemos todos los hechos, pero podrías filtrar por coleccionId si lo deseas
-    return mockService.obtenerHechosMockeados();
+    PaginadoHechoDTO paginado = hechoService.obtenerHechosAgregador();
+    if (paginado != null && paginado.getContent() != null) {
+      return paginado.getContent();
+    }
+    return List.of();
   }
 }

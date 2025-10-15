@@ -49,7 +49,11 @@ public class ColeccionController {
 
   @GetMapping("/coleccion/{id}")
   public String verDetalleColeccion(@PathVariable Long id, Model model) {
-    ColeccionOutputDTO coleccion = coleccionService.obtenerColeccionPorId(id);
+    ColeccionOutputDTO coleccion = webClient.get()
+        .uri("/colecciones/" + id)
+        .retrieve()
+        .bodyToMono(ColeccionOutputDTO.class)
+        .block();
     model.addAttribute("coleccion", coleccion);
     return "coleccion";
   }

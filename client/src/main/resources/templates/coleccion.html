@@ -38,17 +38,46 @@
                 </div>
             </div>
 
-            <div class="modos-navegacion-container" id="modos-navegacion" style="margin-bottom: 0.5rem;">
-                <button type="button" class="modo-navegacion-btn curado active" data-modo="curado">Navegando en modo Curado</button>
-                <button type="button" class="modo-navegacion-btn irrestricto" data-modo="irrestricto">Navegando en modo Irrestricto</button>
-            </div>
-
             <div class="parrafos-modos-navegacion" style="margin-bottom: 1.2rem;">
                 <span style="font-weight: 500;">Algoritmos:</span>
-                <div class="modos-navegacion-container" id="algoritmos">
-                    <button type="button" class="etiqueta-algoritmo-consenso filtro-algoritmo" th:each="consenso : ${coleccion.consensos}" th:text="${consenso}" th:data-algoritmo="${consenso}">Algoritmo</button>
+                <div class="modos-navegacion-container" id="algoritmos" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+                    <span th:each="consenso : ${coleccion.consensos}"
+                          th:text="${consenso == 'ABSOLUTO' ? 'Mayoría Absoluta' : (consenso == 'MULTMENCIONES' ? 'Múltiples Menciones' : (consenso == 'MAYSIMPLE' ? 'Mayoría Simple' : consenso))}"
+                          th:classappend="
+                            ${consenso} == 'MULTMENCIONES' ? 'chip chip-celeste' :
+                            (${consenso} == 'MAYSIMPLE' ? 'chip chip-verde' :
+                            (${consenso} == 'ABSOLUTO' ? 'chip chip-morado' : 'chip'))">
+                        Algoritmo
+                    </span>
                 </div>
             </div>
+            <style>
+                .chip {
+                    display: inline-block;
+                    padding: 0.35em 1em;
+                    font-size: 0.95em;
+                    font-weight: 500;
+                    border-radius: 16px;
+                    background: #e0e0e0;
+                    color: #333;
+                    margin: 0 0.2em 0.2em 0;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+                    border: none;
+                    transition: background 0.2s, color 0.2s;
+                }
+                .chip-celeste {
+                    background: #e3f2fd;
+                    color: #1976d2;
+                }
+                .chip-verde {
+                    background: #e8f5e9;
+                    color: #388e3c;
+                }
+                .chip-morado {
+                    background: #ede7f6;
+                    color: #7b1fa2;
+                }
+            </style>
 
             <div class="filtros-container" style="display: none;">
                 <h5>Filtros</h5>

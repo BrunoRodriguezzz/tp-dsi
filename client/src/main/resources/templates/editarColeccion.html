@@ -37,65 +37,14 @@
                     </div>
                 </div>
                 <div class="form-section">
-                    <h3><strong>Fuentes</strong></h3>
-                    <p>Selecciona las fuentes de datos que alimentarán esta colección</p>
-                    <div class="form-group">
-                        <h6>Buscar Fuentes</h6>
-                        <input type="text" class="form-control" placeholder="Buscar fuentes disponibles..." id="titleFuentesInput" name="titulo">
-                    </div>
-                    <div class="fuentes-list">
-                        <div class="fuente-item">
-                            <span>trabajo</span>
-                            <button type="button" class="fuente-remove">×</button>
-                        </div>
-                        <div class="fuente-item">
-                            <span>trabajo</span>
-                            <button type="button" class="fuente-remove">×</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-section">
                     <h3><strong>Algoritmo de Consenso</strong></h3>
-                    <p>Selecciona los algoritmos que determinarán la validez de los hechos en esta colección</p>
-                    <!-- Aquí puedes agregar los campos de algoritmos si los hay -->
-                </div>
-                <div class="form-section">
-                    <h3><strong>Criterios de Filtrado</strong></h3>
-                    <p>Define qué hechos se incluirán automáticamente en esta colección. Los filtros se aplicarán automáticamente si ingresas valores.</p>
+                    <p>Selecciona el algoritmo de consenso para la colección</p>
                     <div class="form-group">
-                        <h6>Filtrar por Título</h6>
-                        <input type="text" class="form-control" placeholder="Palabras clave en el titulo..." id="titleInput" name="titulo">
-                        <p>Si especificas palabras clave, solo se incluirán hechos que las contengan en el título</p>
-                    </div>
-                    <div class="form-group">
-                        <h6>Filtrar por Categoría</h6>
-                        <select class="form-select" id="categoriaSelect" name="categoria">
-                            <option value="" disabled selected hidden>Todas las categorias</option>
-                            <option value="Protesta Social">Protesta Social</option>
-                            <option value="Desarrollo Social">Desarrollo Social</option>
-                            <option value="Medio Ambiente">Medio Ambiente</option>
-                            <option value="Seguridad">Seguridad</option>
-                            <option value="Educacion">Educación</option>
-                            <option value="Salud">Salud</option>
-                            <option value="Infraestructura">Infraestructura</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <h6>Fecha Desde</h6>
-                        <input type="date" class="form-control" id="fechaDesdeInput" name="fechaAcontecimientoDesde">
-                    </div>
-                    <div class="form-group">
-                        <h6>Fecha Hasta</h6>
-                        <input type="date" class="form-control" id="fechaHastaInput" name="fechaAcontecimientoHasta">
-                    </div>
-                    <div class="form-group">
-                        <h6>Filtrar por Etiquetas</h6>
-                        <input type="text" class="form-control" placeholder="trabajo, derechos, manifestación (separadas por comas)" id="etiquetasInput" name="etiquetas">
-                        <p>Los hechos que contengan cualquiera de estas etiquetas serán incluidos</p>
+                        <input type="text" class="form-control" placeholder="Algoritmo de consenso" id="consensoInput" name="consenso">
                     </div>
                 </div>
                 <div class="botones-formulario">
-                    <button type="submit" class="btn btn-dark px-5 py-2">Crear Colección</button>
+                    <button type="submit" class="btn btn-dark px-5 py-2">Guardar Cambios</button>
                     <a th:href="@{/colecciones}" class="btn btn-outline-secondary px-5 py-2 btn-cancelar">Cancelar</a>
                 </div>
             </form>

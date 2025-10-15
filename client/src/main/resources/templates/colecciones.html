@@ -50,9 +50,9 @@
                     <span th:each="alg : ${coleccion.consensos}"
                           th:text="${alg}"
                           th:classappend="
-                            ${alg} == 'Multiples Menciones' ? 'chip chip-celeste' :
-                            (${alg} == 'Mayoría Simple' ? 'chip chip-verde' :
-                            (${alg} == 'Mayoría Absoluta' ? 'chip chip-morado' : 'chip'))">
+                            ${alg} == 'MULTMENCIONES' ? 'chip chip-celeste' :
+                            (${alg} == 'MAYSIMPLE' ? 'chip chip-verde' :
+                            (${alg} == 'ABSOLUTO' ? 'chip chip-morado' : 'chip'))">
                         Algoritmo
                     </span>
                 </div>

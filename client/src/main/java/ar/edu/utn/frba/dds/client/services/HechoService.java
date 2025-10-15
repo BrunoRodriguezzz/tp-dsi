@@ -49,7 +49,13 @@ public class HechoService {
     }
 
     public HechoDTO obtenerHechoPorId(Long id) {
-        return mockService.obtenerHechoPorId(id);
+//        return mockService.obtenerHechoPorId(id);
+
+        try {
+            return this.webApiCallerService.get(this.agregadorURL + "/hechos/" + id, HechoDTO.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
