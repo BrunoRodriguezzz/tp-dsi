@@ -50,6 +50,7 @@ public class HechoController {
         return "verDetalle";
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR','CONTRIBUYENTE')")
     @GetMapping("/misHechos")
     public String mostrarMisHechos(@SessionAttribute("id") Long id, Model model){
         LOGGER.info("El id de la sesion es: {}.", id);

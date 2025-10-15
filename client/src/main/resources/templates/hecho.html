@@ -4,6 +4,13 @@
     <link rel="stylesheet" th:href="@{/css/index.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </th:block>
 <div th:fragment="contenido" class="container">
             <div class="container-navegador">
@@ -98,18 +105,34 @@
                         <i class="fa-solid fa-tag"></i>
                         <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Etiquetas</h2>
                     </div>
-                    <div style="display: flex; gap: 0.3rem; flex-wrap: wrap;" th:each="etiqueta, iterStat: ${hecho?.etiquetas}" th:if="${iterStat.index < 3}">
-                        <p class="etiqueta-categoria config-etiquetas" th:text="${etiqueta}">Sin etiqueta</p>
+                    <div style="display: flex; gap: 0.3rem; flex-wrap: wrap;">
+                        <p class="etiqueta-categoria config-etiquetas"
+                           th:each="etiqueta, iterStat: ${hecho?.etiquetas}"
+                           th:if="${iterStat.index < 3}"
+                           th:text="${etiqueta}">Sin etiqueta</p>
+                    </div>
+                </div>
+                <div class="bloques columna-1">
+                    <div class="texto-mas-icono">
+                        <i class="fa-solid fa-image" style="font-size: 1.3rem;"></i>
+                        <h2 style="font-size: 1.5rem; margin-bottom: 0rem;">Contenido Multimedia</h2>
                     </div>
                 </div>
                 <div class="bloques columna-2">
                     <h2 style="font-size: 1.4rem; margin-bottom: 1rem; text-align: center;">Ubicación en Mapa</h2>
-                    <div class="bloques" style="margin-bottom: 1rem;">
-                        <p style="margin-bottom: 0rem; text-align: center;">Mapa Interactivo</p>
-                    </div>
+                    <div id="map" style="height: 400px; border: 1px solid #ccc; margin-bottom: 1rem;"></div>
                     <div style="display: flex; justify-content: center;">
                         <a href="map.html" class="btn btn-primary btn-dark">Ver en Mapa Principal</a>
                     </div>
                 </div>
             </div>
+    <script th:src="@{/js/mapaDetalle.js}"></script>
+    <th:block th:if="${hecho.ubicacion.latitud != null and hecho.ubicacion.longitud != null}">
+        <script th:inline="javascript">
+            mostrarMapaDelHecho({
+                lat: [[${hecho.ubicacion.latitud}]],
+                lng: [[${hecho.ubicacion.longitud}]]
+            });
+        </script>
+    </th:block>
 </div>

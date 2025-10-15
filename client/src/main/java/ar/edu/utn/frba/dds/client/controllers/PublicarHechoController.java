@@ -36,8 +36,6 @@ public class PublicarHechoController {
 
         hecho.setContenidoMultimedia(mult);
 
-        //
-
         this.dinamicaService.enviarHecho(hecho);
 
         return "redirect:/hechos";
