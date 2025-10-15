@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IDinamicaRepository;
@@ -107,6 +108,13 @@ public class RepositoryService implements IRepositoryService {
     @Override
     public List<Hecho> buscarPendientes() {
         return this.dinamicaRepository.findByEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
+    }
+
+    @Override
+    public Hecho buscarPendientesPorID(Long id) {
+        return this.dinamicaRepository
+                .findByEstadoHechoAndId(EstadoHecho.PENDIENTE_DE_REVISION, id)
+                .orElse(null);
     }
 
     private Boolean estadoAceptado(Hecho hecho){

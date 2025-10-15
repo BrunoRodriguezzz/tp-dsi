@@ -78,6 +78,26 @@ main {
     background-color: rgb(218, 255, 218);
 }
 
+.etiqueta-pendiente {
+    border: solid 1px rgb(243, 229, 100);
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 15px;
+    color: black;
+    background-color: rgb(255, 252, 218);
+}
+
+.etiqueta-rechazado {
+    border: solid 1px rgb(243, 100, 100);
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 15px;
+    color: black;
+    background-color: rgb(255, 218, 218);
+}
+
 .botones{
     display:flex;
     justify-content: space-between;

@@ -32,6 +32,13 @@ public class AdminController {
         return ResponseEntity.ok(hechosPendientes);
     }
 
+    @GetMapping("/pendientes/{id}")
+    public ResponseEntity<HechoOutputDTO> obtenerPendiente(@PathVariable(name = "id") Long id) {
+        HechoOutputDTO hechoPendiente = this.adminService.obtenerHechoPendiente(id);
+        return ResponseEntity.ok(hechoPendiente);
+    }
+
+
     // Eliminacion del hecho de manera directa
 
     @PatchMapping("/eliminacion/{id}")

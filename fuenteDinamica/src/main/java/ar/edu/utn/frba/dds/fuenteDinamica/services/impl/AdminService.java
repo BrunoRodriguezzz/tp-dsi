@@ -51,7 +51,7 @@ public class AdminService implements IAdminService {
 
             return HechoOutputDTO.convertir(hecho);
         }else{
-            throw new ErrorNotFound("No se encontro un hecho con el id " + Long.toString(hechoRevisado.getId()) + ".");
+            throw new ErrorNotFound("No se encontro un hecho con el id " + hechoRevisado.getId() + ".");
         }
     }
 
@@ -64,7 +64,7 @@ public class AdminService implements IAdminService {
             hechoOriginal.setEstaEliminado(true);
             this.dinamicaRepository.guardar(hechoOriginal);
         }else{
-            throw new ErrorNotFound("No se encontro un hecho con el id " + Long.toString(id) + ".");
+            throw new ErrorNotFound("No se encontro un hecho con el id " + id + ".");
         }
     }
 
@@ -75,6 +75,17 @@ public class AdminService implements IAdminService {
                 .stream()
                 .map(HechoOutputDTO::convertir)
                 .toList();
+    }
+
+    @Override
+    public HechoOutputDTO obtenerHechoPendiente(Long id) {
+        Hecho hecho = this.dinamicaRepository.buscarPendientesPorID(id);
+
+        if(hecho == null) {
+            throw new ErrorNotFound("No se encontro un hecho pendiente con el id " + id + ".");
+        }
+
+        return HechoOutputDTO.convertir(hecho);
     }
 
     private void enviarHecho(Hecho hecho){

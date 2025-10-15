@@ -182,4 +182,14 @@ public class DinamicaService {
             return hechosPendientes;
         }
     }
+
+    public HechoDTO buscarPendienteID(Long id) {
+        try {
+            return this.webApiCallerService.get(this.dinamicaUrl + "/pendientes/" + id, HechoDTO.class);
+        }
+        catch (Exception e) {
+            System.out.println("[ERROR] " + e.getMessage());
+            return null;
+        }
+    }
 }

@@ -12,4 +12,5 @@ public interface IAdminService {
     public void           eliminar(Long id);
 
     List<HechoOutputDTO> obtenerHechosPendientes();
+    HechoOutputDTO obtenerHechoPendiente(Long id);
 }

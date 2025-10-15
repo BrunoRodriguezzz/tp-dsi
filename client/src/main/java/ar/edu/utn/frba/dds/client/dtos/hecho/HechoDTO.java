@@ -26,4 +26,5 @@ public class HechoDTO {
     private String estado;
     private String origen;
     private String fuente;
+    private Boolean verificado;
 }

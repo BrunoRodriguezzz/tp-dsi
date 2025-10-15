@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 
 import java.time.LocalDateTime;
@@ -15,4 +16,6 @@ public interface IRepositoryService {
     public List<Hecho> buscarTodosDeUnUsuario(Long idUsuario);
 
     List<Hecho> buscarPendientes();
+
+    Hecho buscarPendientesPorID(Long id);
 }

@@ -16,14 +16,15 @@
                 </nav>
                 <div class="etiquetas-mas-botones">
                     <div class="etiqueta-mas-hecho">
-                        <div class="etiquetas">
-                            <p class="etiqueta-categoria" th:text="|${hecho.getCategoria()}|">Sin Categoria</p>
-<!--                            TODO: Verificado-->
-                            <p class="etiqueta-verificado">Verificado</p>
+                        <div class="etiquetas" th:switch="${hecho.estado}">
+                            <p class="etiqueta-categoria" th:text="|${hecho?.getCategoria()}|">Sin Categoria</p>
+                            <p th:case="'ACEPTADA'" class="etiqueta-verificado">Verificado</p>
+                            <p th:case="'PENDIENTE_DE_REVISION'" class="etiqueta-pendiente">Pendiente</p>
+                            <p th:case="'RECHAZADO'" class="etiqueta-rechazado">Rechazado</p>
                         </div>
                         <div>
-                            <h1 class="titulo-hecho"  th:text="|${hecho.getTitulo()}|">Sin título</h1>
-                            <p class="descripcion-breve" th:text="|${hecho.getDescripcion()}|">Sin descripción</p>
+                            <h1 class="titulo-hecho"  th:text="|${hecho?.getTitulo()}|">Sin título</h1>
+                            <p class="descripcion-breve" th:text="|${hecho?.getDescripcion()}|">Sin descripción</p>
                         </div>
                     </div>
                     <div class="botones">
@@ -38,7 +39,7 @@
                         <i class="fa-regular fa-file-lines" style="font-size: 1.3rem;"></i>
                         <h2 style="font-size: 1.5rem; margin-bottom: 0rem;">Descripción completa</h2>
                     </div>
-                    <p style="opacity: 0.8;" th:text="|${hecho.getDescripcion()}|">Sin descripción</p>
+                    <p style="opacity: 0.8;" th:text="|${hecho?.getDescripcion()}|">Sin descripción</p>
                 </div>
                 <div class="bloques columna-2">
                     <div>
@@ -48,21 +49,20 @@
                         <i class="fa-regular fa-calendar" style="font-size: 1.3rem; padding-top: 0.2rem;"></i>
                         <div>
                             <p style="margin-bottom: 0rem; font-size: 0.9rem; font-weight: 600">Fecha</p>
-                            <p style="margin-bottom: 0rem; font-size: 0.8rem;"  th:text="|${hecho.getFechaAcontecimiento()}|">Sin fecha</p>
+                            <p style="margin-bottom: 0rem; font-size: 0.8rem;"  th:text="|${hecho?.getFechaAcontecimiento()}|">Sin fecha</p>
                         </div>
                     </div>
                     <div class="texto-mas-icono" style="align-items: start;">
                         <i class="fa-solid fa-location-dot" style="font-size: 1.3rem; padding-top: 0.2rem;"></i>
                         <div>
                             <p style="margin-bottom: 0rem; font-size: 0.9rem; font-weight: 600">Ubicación</p>
-                            <p style="margin-bottom: 0rem; font-size: 0.8rem;" th:text="|${hecho.getUbicacion().getProvincia()}, ${hecho.getUbicacion().getMunicipio()}|">Sin ubicación</p>
-                            <p style="margin-bottom: 0rem; font-size: 0.8rem;" th:text="|${hecho.getUbicacion().getLatitud()}, ${hecho.getUbicacion().getLongitud()}|">Sin Coordenadas</p>
+                            <p style="margin-bottom: 0rem; font-size: 0.8rem;" th:text="|${hecho.getUbicacion()?.getProvincia()}, ${hecho?.getUbicacion()?.getMunicipio()}|">Sin ubicación</p>
                         </div>
                     </div>
                     <div class="texto-mas-icono" style="align-items: start;">
                         <div>
                             <p style="margin-bottom: 0rem; font-size: 0.9rem; font-weight: 600">Fuente</p>
-                            <p style="margin-bottom: 0rem; font-size: 0.8rem;" th:text="|${hecho.getFuente()}|">Sin fuente</p>
+                            <p style="margin-bottom: 0rem; font-size: 0.8rem;" th:text="|${hecho?.getFuente()}|">Sin fuente</p>
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                         <i class="fa-solid fa-tag"></i>
                         <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Etiquetas</h2>
                     </div>
-                    <div style="display: flex; gap: 0.3rem; flex-wrap: wrap;" th:each="etiqueta, iterStat: ${hecho.etiquetas}" th:if="${iterStat.index < 3}">
+                    <div style="display: flex; gap: 0.3rem; flex-wrap: wrap;" th:each="etiqueta, iterStat: ${hecho?.etiquetas}" th:if="${iterStat.index < 3}">
                         <p class="etiqueta-categoria config-etiquetas" th:text="${etiqueta}">Sin etiqueta</p>
                     </div>
                 </div>

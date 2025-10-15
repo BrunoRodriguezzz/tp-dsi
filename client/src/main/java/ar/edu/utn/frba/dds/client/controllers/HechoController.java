@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
 import ar.edu.utn.frba.dds.client.services.DinamicaService;
 import ar.edu.utn.frba.dds.client.services.HechoService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -12,8 +13,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -37,7 +40,6 @@ public class HechoController {
     @GetMapping("/{id}")
     public String verDetalleHecho(@PathVariable Long id, Model model) {
         HechoDTO hecho = hechoService.obtenerHechoPorId(id);
-        LOGGER.info("Mostrando {} hecho.", id);
         model.addAttribute("hecho", hecho);
         model.addAttribute("titulo", hecho.getTitulo());
         return "hecho";
@@ -53,7 +55,8 @@ public class HechoController {
     }
 
     @GetMapping("/misHechos")
-    public String mostrarMisHechos(@RequestParam(required = false) Long id, Model model){
+    public String mostrarMisHechos(@SessionAttribute("id") Long id, Model model){
+        LOGGER.info("El id de la sesion es: {}.", id);
         List<HechoDTO> hechos = this.dinamicaService.mostrarMisHechos(id);
         hechos.forEach(h -> LOGGER.info("Mostrando estado del hecho: {}.", h.getEstado()));
         model.addAttribute("hechos", hechos);
@@ -91,5 +94,19 @@ public class HechoController {
         this.dinamicaService.gestionarHecho(form);
         LOGGER.info("Hecho {} gestionado por el administrador {}.", form.getId(), form.getIdAdministrador());
         return "redirect:/panelControl/hechosPendientes";
+    }
+
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @GetMapping("/pendientes/{id}")
+    public String verDetalleHechoPendiente(@PathVariable Long id, Model model) {
+        HechoDTO hecho = this.dinamicaService.buscarPendienteID(id);
+
+        if (hecho != null) {
+            model.addAttribute("hecho", hecho);
+            model.addAttribute("titulo", hecho.getTitulo());
+            return "hecho";
+        } else {
+            return "redirect:/panelControl";
+        }
     }
 }
