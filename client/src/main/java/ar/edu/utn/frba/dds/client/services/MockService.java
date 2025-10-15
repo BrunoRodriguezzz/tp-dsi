@@ -1225,6 +1225,25 @@ public class MockService {
             ));
         }
 
+        // Ordenar la lista de DTOs por la suma total de hechos de cada colección (descendente)
+        resultado.sort((dto1, dto2) -> {
+            long sumaDto1 = dto1.getProvinciasConHechos().values().stream()
+                    .mapToLong(Long::longValue)
+                    .sum();
+            long sumaDto2 = dto2.getProvinciasConHechos().values().stream()
+                    .mapToLong(Long::longValue)
+                    .sum();
+            return Long.compare(sumaDto2, sumaDto1); // Descendente
+        });
+
+        System.out.println("\n=== DESPUÉS DEL SORT ===");
+        for (EstadisticaProvinciaXColeccionDTO dto : resultado) {
+            long suma = dto.getProvinciasConHechos().values().stream()
+                    .mapToLong(Long::longValue)
+                    .sum();
+            System.out.println(dto.getColeccion() + " = " + suma);
+        }
+
         return resultado;
     }
 
