@@ -33,7 +33,7 @@ public class PanelControlController {
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
     public String panelControl(Model model) {
-        // TODO: Conseguir hechos pendientes de la dinámica
+        model.addAttribute("cantidadHechosPendientes", dinamicaService.obtenerHechosPendientes().size());
         model.addAttribute("titulo", "Panel de Control");
         model.addAttribute("cantidadHechos", hechoService.obtenerHechos().size());
         model.addAttribute("cantidadFuentes", fuenteService.obtenerFuentesNuevas().size());

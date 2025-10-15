@@ -19,7 +19,7 @@ import java.util.List;
 public class PublicarHechoController {
 
     private final DinamicaService dinamicaService;
-    private final Logger LOGGER = LogManager.getLogger(HechoController.class);
+    private final Logger LOGGER = LogManager.getLogger(PublicarHechoController.class);
 
     @GetMapping
     public String publicacionHecho(Model model){
@@ -30,7 +30,7 @@ public class PublicarHechoController {
     @PostMapping
     public String publicarHecho(@ModelAttribute HechoInputDTO hecho) {
 
-        //TODO: Necesario por ahora
+        LOGGER.info("ID del usuario: {}", hecho.getIdUsuario());
 
         List<String> mult = new ArrayList<>();
 

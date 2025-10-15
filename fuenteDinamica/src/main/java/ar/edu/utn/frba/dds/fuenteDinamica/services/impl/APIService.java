@@ -45,7 +45,11 @@ public class APIService implements IAPIService {
 
     @Override
     public List<HechoOutputDTO> hechosDeUsuario(Long idUsuario){
-        return this.dinamicaRepository.buscarTodosDeUnUsuario(idUsuario).stream().map(this::hechoOutputDTO).toList();
+        //return this.dinamicaRepository.buscarTodosDeUnUsuario(idUsuario).stream().map(this::hechoOutputDTO).toList();
+        return this.dinamicaRepository.buscarTodosDeUnContribuyente(idUsuario)
+                .stream()
+                .map(this::hechoOutputDTO)
+                .toList();
     }
 
     private HechoOutputDTO hechoOutputDTO(Hecho hecho){

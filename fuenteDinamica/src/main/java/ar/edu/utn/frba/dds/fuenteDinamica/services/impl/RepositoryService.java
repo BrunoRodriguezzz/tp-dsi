@@ -100,9 +100,12 @@ public class RepositoryService implements IRepositoryService {
 
     @Override
     public List<Hecho> buscarTodosDeUnUsuario(Long idUsuario){
-
         return this.dinamicaRepository.findAllByContribuyente_IdUsuario(idUsuario);
+    }
 
+    @Override
+    public List<Hecho> buscarTodosDeUnContribuyente(Long idContribuyente) {
+        return this.dinamicaRepository.findByContribuyente_Id(idContribuyente);
     }
 
     @Override

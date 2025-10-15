@@ -16,6 +16,6 @@ public interface IRepositoryService {
     public List<Hecho> buscarTodosDeUnUsuario(Long idUsuario);
 
     List<Hecho> buscarPendientes();
-
     Hecho buscarPendientesPorID(Long id);
+    List<Hecho> buscarTodosDeUnContribuyente(Long idContribuyente);
 }

@@ -15,4 +15,6 @@ public interface IDinamicaRepository extends JpaRepository<Hecho,Long> {
     List<Hecho> findByEstadoHecho(EstadoHecho estadoHecho);
 
     Optional<Hecho> findByEstadoHechoAndId(EstadoHecho estadoHecho, Long id);
+
+    List<Hecho> findByContribuyente_Id(Long contribuyenteId);
 }
