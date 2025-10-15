@@ -85,13 +85,13 @@ public class ColeccionController {
   }
 
   @PostMapping("/nuevaColeccion")
-  public String crearColeccion(@RequestParam String titulo,
+  public String crearColeccion(@RequestParam String nombre,
                             @RequestParam String descripcion,
                             @RequestParam(required = false) List<String> fuentes,
                             @ModelAttribute CriterioInputDTO criterio,
                             @RequestParam(required = false) List<String> consensos) {
     ColeccionInputDTO coleccionInputDTO = new ColeccionInputDTO();
-    coleccionInputDTO.setTitulo(titulo);
+    coleccionInputDTO.setNombre(nombre);
     coleccionInputDTO.setDescripcion(descripcion);
     coleccionInputDTO.setCriterio(criterio);
     if (fuentes != null) {
