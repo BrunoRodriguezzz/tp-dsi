@@ -1,48 +1,168 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" th:replace="~{layout/base :: html}">
+
+<th:block th:fragment="additional-links">
     <meta charset="UTF-8">
     <title>Mapa con múltiples puntos - Mapbox</title>
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/mapa.css}">
-</head>
-<body>
-<h1>Mapa con múltiples ubicaciones</h1>
+</th:block>
+<div th:fragment="contenido" class="container">
+    <div id="map"></div>
 
-<div id="map"></div>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.js"></script>
 
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.js"></script>
+    <script th:inline="javascript">
+        const mapboxToken = /*[[${mapboxToken}]]*/ '';
+        const hechos = /*[[${hechos}]]*/ [];
 
-<script th:inline="javascript">
-    const mapboxToken = /*[[${mapboxToken}]]*/ '';
-    const puntos = /*[[${puntos}]]*/ [];
+        mapboxgl.accessToken = mapboxToken;
 
-    mapboxgl.accessToken = mapboxToken;
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: hechos.length > 0 ? [hechos[0].ubicacion.longitud, hechos[0].ubicacion.latitud] : [0,0],
+            zoom: 5
+        });
 
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: puntos.length > 0 ? [puntos[0].lng, puntos[0].lat] : [0,0], // centrado en el primer punto si existe
-        zoom: 5
-    });
+        map.addControl(new mapboxgl.NavigationControl());
 
-    // Agrega controles
-    map.addControl(new mapboxgl.NavigationControl());
+        map.on('load', () => {
+            if (hechos.length === 0) return;
 
-    // Agrega marcadores
-    puntos.forEach(p => {
-        new mapboxgl.Marker()
-            .setLngLat([p.lng, p.lat])
-            .setPopup(new mapboxgl.Popup().setHTML(`<strong>${p.nombre}</strong>`))
-            .addTo(map);
-    });
+            const geojsonData = {
+                type: 'FeatureCollection',
+                features: hechos.map(h => ({
+                    type: 'Feature',
+                    properties: {
+                        id: h.id,
+                        titulo: h.titulo
+                    },
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [h.ubicacion.longitud, h.ubicacion.latitud]
+                    }
+                }))
+            };
 
-    // Ajusta el mapa para mostrar todos los puntos
-    if (puntos.length > 0) {
-        const bounds = new mapboxgl.LngLatBounds();
-        puntos.forEach(p => bounds.extend([p.lng, p.lat]));
-        map.fitBounds(bounds, { padding: 50 });
-    }
-</script>
-</body>
+            map.addSource('hechos', {
+                type: 'geojson',
+                data: geojsonData,
+                cluster: true,
+                clusterMaxZoom: 14,
+                clusterRadius: 50
+            });
+
+            map.addLayer({
+                id: 'clusters',
+                type: 'circle',
+                source: 'hechos',
+                filter: ['has', 'point_count'],
+                paint: {
+                    'circle-color': [
+                        'step',
+                        ['get', 'point_count'],
+                        '#000000',
+                        100,
+                        '#f1f075',
+                        750,
+                        '#f28cb1'
+                    ],
+                    'circle-radius': [
+                        'step',
+                        ['get', 'point_count'],
+                        20,
+                        100,
+                        30,
+                        750,
+                        40
+                    ]
+                }
+            });
+
+            map.addLayer({
+                id: 'cluster-count',
+                type: 'symbol',
+                source: 'hechos',
+                filter: ['has', 'point_count'],
+                layout: {
+                    'text-field': '{point_count_abbreviated}',
+                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                    'text-size': 12
+                },
+                paint: {
+                    'text-color': '#ffffff'
+                }
+            });
+
+            map.addLayer({
+                id: 'unclustered-point',
+                type: 'circle',
+                source: 'hechos',
+                filter: ['!', ['has', 'point_count']],
+                paint: {
+                    'circle-color': '#ff8000',
+                    'circle-radius': 8,
+                    'circle-stroke-width': 1,
+                    'circle-stroke-color': '#fff'
+                }
+            });
+
+            map.on('click', 'clusters', (e) => {
+                const features = map.queryRenderedFeatures(e.point, {
+                    layers: ['clusters']
+                });
+                const clusterId = features[0].properties.cluster_id;
+                map.getSource('hechos').getClusterExpansionZoom(
+                    clusterId,
+                    (err, zoom) => {
+                        if (err) return;
+                        map.easeTo({
+                            center: features[0].geometry.coordinates,
+                            zoom: zoom
+                        });
+                    }
+                );
+            });
+
+            map.on('click', 'unclustered-point', (e) => {
+                const coordinates = e.features[0].geometry.coordinates.slice();
+                const properties = e.features[0].properties;
+
+                const popupContent = `
+                    <div class="popup-content">
+                        <strong>${properties.titulo}</strong>
+                        <br>
+                        <a href="/hechos/${properties.id}"
+                           style="margin-top: 10px; padding: 5px 10px; text-decoration: none; background-color: #343a40; color: white; border-radius: 4px; display: inline-block; font-size: 12px;">
+                           Ver Detalles
+                        </a>
+                    </div>
+                `;
+
+                new mapboxgl.Popup()
+                    .setLngLat(coordinates)
+                    .setHTML(popupContent)
+                    .addTo(map);
+            });
+
+            map.on('mouseenter', 'clusters', () => {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            map.on('mouseleave', 'clusters', () => {
+                map.getCanvas().style.cursor = '';
+            });
+            map.on('mouseenter', 'unclustered-point', () => {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            map.on('mouseleave', 'unclustered-point', () => {
+                map.getCanvas().style.cursor = '';
+            });
+
+            const bounds = new mapboxgl.LngLatBounds();
+            hechos.forEach(h => bounds.extend([h.ubicacion.longitud, h.ubicacion.latitud]));
+            map.fitBounds(bounds, { padding: 50 });
+        });
+    </script>
+</div>
 </html>

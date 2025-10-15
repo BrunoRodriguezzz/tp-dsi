@@ -1,5 +1,9 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
+import ar.edu.utn.frba.dds.client.services.HechoService;
+import ar.edu.utn.frba.dds.client.services.MockService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,20 +13,17 @@ import java.util.Map;
 
 @Controller
 public class MapaController {
+    private final HechoService hechoService;
+    @Autowired
+    public MapaController(HechoService hechoService) {
+        this.hechoService = hechoService;
+    }
 
     @GetMapping("/mapa")
     public String mostrarMapa(Model model) {
-
-        // Lista de puntos: nombre, latitud y longitud
-        List<Map<String, Object>> puntos = List.of(
-                Map.of("nombre", "Madrid", "lat", 40.4168, "lng", -3.7038),
-                Map.of("nombre", "Barcelona", "lat", 41.3851, "lng", 2.1734),
-                Map.of("nombre", "Valencia", "lat", 39.4699, "lng", -0.3763)
-        );
-
-        model.addAttribute("puntos", puntos);
-        model.addAttribute("mapboxToken", "pk.eyJ1IjoiZmVybmFuZG8xN2EiLCJhIjoiY21nbnk3MDg2MXpteTJucHJsdDllNzZuZCJ9.KuFr7I-l2wBE6ONQk3GpGw"); // ← pon tu token aquí
-
+        List<HechoDTO> hechos = hechoService.obtenerHechosAgregador().getContent();
+        model.addAttribute("hechos", hechos);
+        model.addAttribute("mapboxToken", "pk.eyJ1IjoiZmVybmFuZG8xN2EiLCJhIjoiY21nbnk3MDg2MXpteTJucHJsdDllNzZuZCJ9.KuFr7I-l2wBE6ONQk3GpGw");
         return "mapa";
     }
 }
