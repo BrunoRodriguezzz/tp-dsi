@@ -32,4 +32,9 @@ public class HomeController {
     public String sobreNosotros(Model model){
         return "sobreNosotros";
     }
+
+    @GetMapping("/privacidad")
+    public String privacidad(Model model){
+        return "privacidad";
+    }
 }

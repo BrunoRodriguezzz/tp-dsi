@@ -1,0 +1,112 @@
+<html th:replace="~{layout/base :: html}">
+
+<head>
+    <th:block th:fragment="additional-links">
+        <link rel="stylesheet" th:href="@{/css/privacidad.css}">
+    </th:block>
+</head>
+
+<div th:fragment="contenido">
+    <main class="container">
+        <div class="privacidad-hero">
+            <h1>Política de Privacidad</h1>
+            <p class="privacidad-intro">En MetaMapa, tu privacidad y la protección de tus datos son fundamentales para nosotros. Conoce cómo protegemos tu información y garantizamos la veracidad de los datos en nuestra plataforma.</p>
+        </div>
+
+        <div class="row privacidad-cards-container">
+            <div class="col-sm-6 mb-4">
+                <div class="card privacidad-card">
+                    <div class="card-body">
+                        <svg class="blue" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>
+                        <h2>Protección de Datos</h2>
+                        <p>Implementamos medidas de seguridad avanzadas para proteger tu información personal. Todos los datos se almacenan de forma encriptada y solo accedemos a ellos cuando es estrictamente necesario para el funcionamiento de la plataforma.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-sm-6 mb-4">
+                <div class="card privacidad-card">
+                    <div class="card-body">
+                        <svg class="green" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
+                        <h2>Verificación de Información</h2>
+                        <p>Cada hecho publicado en MetaMapa pasa por un riguroso proceso de verificación. Nuestro equipo de moderadores revisa las fuentes, valida la información y garantiza la calidad de los contenidos antes de su publicación.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 mb-4">
+                <div class="card privacidad-card">
+                    <div class="card-body">
+                        <svg class="violet" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <h2>Consenso Comunitario</h2>
+                        <p>Fomentamos un sistema de consenso donde la comunidad puede reportar información inexacta. Los usuarios pueden proponer correcciones y mejoras, creando un entorno colaborativo de construcción de conocimiento verificado.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 mb-4">
+                <div class="card privacidad-card">
+                    <div class="card-body">
+                        <svg class="red" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><circle cx="12" cy="16" r="1"></circle><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <h2>Transparencia Total</h2>
+                        <p>Creemos en la transparencia absoluta. Todas las fuentes de información son públicas y verificables. Los usuarios pueden acceder al historial de cambios y ver quién contribuyó con cada dato, manteniendo la trazabilidad completa.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="privacidad-sections">
+            <section class="privacidad-section">
+                <h3>¿Qué datos recopilamos?</h3>
+                <ul class="privacidad-list">
+                    <li><strong>Información de cuenta:</strong> Nombre de usuario, email y fecha de registro.</li>
+                    <li><strong>Contenido generado:</strong> Hechos publicados, comentarios y evaluaciones.</li>
+                    <li><strong>Datos de ubicación:</strong> Solo cuando publicas hechos geolocalizados (opcional).</li>
+                    <li><strong>Información técnica:</strong> Dirección IP, tipo de navegador y preferencias de uso.</li>
+                </ul>
+            </section>
+
+            <section class="privacidad-section">
+                <h3>¿Cómo protegemos tu información?</h3>
+                <ul class="privacidad-list">
+                    <li><strong>Encriptación:</strong> Todos los datos sensibles se almacenan con encriptación AES-256.</li>
+                    <li><strong>Acceso limitado:</strong> Solo el personal autorizado puede acceder a la información de usuarios.</li>
+                    <li><strong>Auditorías regulares:</strong> Realizamos revisiones de seguridad periódicas.</li>
+                    <li><strong>Servidores seguros:</strong> Utilizamos infraestructura de hosting con certificaciones de seguridad.</li>
+                </ul>
+            </section>
+
+            <section class="privacidad-section">
+                <h3>Control de la Calidad de la Información</h3>
+                <ul class="privacidad-list">
+                    <li><strong>Moderación previa:</strong> Todos los hechos son revisados antes de su publicación.</li>
+                    <li><strong>Fuentes verificables:</strong> Exigimos referencias y fuentes válidas para cada publicación.</li>
+                    <li><strong>Sistema de reportes:</strong> Los usuarios pueden reportar información inexacta o inapropiada.</li>
+                    <li><strong>Historial de cambios:</strong> Mantenemos un registro completo de todas las modificaciones.</li>
+                </ul>
+            </section>
+
+            <section class="privacidad-section">
+                <h3>Tus Derechos</h3>
+                <ul class="privacidad-list">
+                    <li><strong>Acceso:</strong> Puedes solicitar una copia de todos tus datos almacenados.</li>
+                    <li><strong>Rectificación:</strong> Puedes corregir información incorrecta en tu perfil.</li>
+                    <li><strong>Eliminación:</strong> Puedes solicitar la eliminación de tu cuenta y datos asociados.</li>
+                    <li><strong>Portabilidad:</strong> Puedes exportar tus datos en formato estándar.</li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="privacidad-contact">
+            <div class="contact-card">
+                <h3>¿Tienes dudas sobre tu privacidad?</h3>
+                <p>Si tienes preguntas sobre cómo manejamos tu información o quieres ejercer alguno de tus derechos, no dudes en contactarnos.</p>
+                <div class="contact-buttons">
+                    <a href="mailto:privacidad@metamapa.org" class="btn btn-outline-primary">Contactar por Email</a>
+                    <a th:href="@{/home/sobreNosotros}" class="btn btn-dark">Conocer más sobre MetaMapa</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</html>
