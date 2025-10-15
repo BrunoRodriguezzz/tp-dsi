@@ -1164,7 +1164,10 @@ public class MockService {
                 "SPAM",
                 "PENDIENTE",
                 "ACEPTADA",
-                "RECHAZADA"
+                "RECHAZADA",
+                "SPAM",
+                "SPAM",
+                "SPAM"
         );
     }
 
@@ -1185,6 +1188,8 @@ public class MockService {
 
         // Alternativamente podrías usar total - cantSpam:
         // Long cantNoSpam = (long) solicitudes.size() - cantSpam;
+        System.out.println("SPam: " + cantSpam);
+        System.out.println("NO SPAM: " + cantNoSpam);
 
         return new EstadisticaSolicitudesDTO(LocalDateTime.now(), cantSpam, cantNoSpam);
     }

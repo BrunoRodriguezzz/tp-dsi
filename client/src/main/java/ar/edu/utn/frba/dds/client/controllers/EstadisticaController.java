@@ -30,7 +30,7 @@ public class EstadisticaController {
         model.addAttribute("categoriaTop", categorias.getCategoriasConHechos().entrySet().iterator().next().getKey());
         EstadisticaSolicitudesDTO cantSpam = this.estadisticaService.getCantSolicitudesSpam();
         model.addAttribute("cantSpam", cantSpam.getSolicitudes_spam());
-        model.addAttribute("cantNoSpam", cantSpam.getSolicitudes_spam());
+        model.addAttribute("cantNoSpam", cantSpam.getSolicitudes_no_spam());
         model.addAttribute("totalHechos",categorias.getCategoriasConHechos().values().stream().reduce(0L,Long::sum));
 
         // Tab Content de "Colección por Provincia"
