@@ -27,7 +27,7 @@ public class ColeccionController {
   private final String agregadorUrl;
 
   public ColeccionController(ColeccionService coleccionService,
-                             @Value("${agregador.service.url:http://localhost:8082}") String agregadorUrl) {
+                             @Value("http://localhost:8082") String agregadorUrl) {
     this.coleccionService = coleccionService;
     this.agregadorUrl = agregadorUrl;
     this.webClient = WebClient.builder().baseUrl(agregadorUrl).build();
@@ -70,6 +70,7 @@ public class ColeccionController {
   @GetMapping("/colecciones/fuentes")
   @ResponseBody
   public Mono<List<FuenteOutputDTO>> obtenerFuentes() {
+    System.out.println("Obteniendo fuentessssssssssssss");
     return webClient.get()
             .uri("/fuentes")
             .retrieve()
