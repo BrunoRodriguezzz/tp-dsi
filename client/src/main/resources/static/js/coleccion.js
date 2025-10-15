@@ -1,42 +1,5 @@
-console.log('Script de nuevaColeccion cargado');
+console.log('coleccion.js cargado');
 document.addEventListener('DOMContentLoaded', function() {
-    const container = document.getElementById('fuentesContainer');
-    const loading = document.getElementById('fuentesLoading');
-    container.style.display = 'none';
-    loading.style.display = 'block';
-    fetch('/colecciones/fuentes')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('HTTP status ' + response.status);
-            }
-            return response.json();
-        })
-        .then(data => {
-            container.innerHTML = '';
-            if (!Array.isArray(data)) {
-                container.innerHTML = '<p class="text-danger">Respuesta inesperada del servidor.</p>';
-            } else if (data.length === 0) {
-                container.innerHTML = '<p>No hay fuentes disponibles.</p>';
-            } else {
-                data.forEach(fuente => {
-                    const div = document.createElement('div');
-                    div.className = 'form-check fade-in';
-                    div.innerHTML = `
-                        <input class="form-check-input" type="checkbox" name="fuentes" value="${fuente.nombre}" id="fuente_${fuente.id}">
-                        <label class="form-check-label" for="fuente_${fuente.id}">${fuente.nombre}</label>
-                    `;
-                    container.appendChild(div);
-                });
-            }
-            loading.style.display = 'none';
-            container.style.display = 'block';
-        })
-        .catch((err) => {
-            container.innerHTML = `<p class="text-danger">Error al obtener fuentes: ${err.message}</p>`;
-            loading.style.display = 'none';
-            container.style.display = 'block';
-        });
-
     const form = document.querySelector('.form-coleccion');
     if (!form) {
         console.error('No se encontró el formulario con clase .form-coleccion');
@@ -87,4 +50,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-

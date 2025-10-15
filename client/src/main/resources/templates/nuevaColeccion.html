@@ -42,8 +42,15 @@
                 <p>Selecciona las fuentes de datos que alimentarán esta colección</p>
             </div>
             <div class="form-title">
-                <div id="fuentesContainer" class="mb-2"></div>
-                <div id="fuentesLoading" class="mb-2" style="display:none; color: #007bff;">Cargando fuentes...</div>
+                <div id="fuentesContainer" class="mb-2">
+                    <div th:each="fuente : ${fuentes}" class="form-check fade-in">
+                        <input class="form-check-input" type="checkbox" name="fuentes" th:value="${fuente.nombre}" th:id="${'fuente_' + fuente.id}">
+                        <label class="form-check-label" th:for="${'fuente_' + fuente.id}" th:text="${fuente.nombre}"></label>
+                    </div>
+                    <div th:if="${fuentes == null || #lists.isEmpty(fuentes)}">
+                        <p>No hay fuentes disponibles.</p>
+                    </div>
+                </div>
             </div>
             <div class="header-form">
                 <h3><strong>Criterios de Filtrado</strong></h3>
@@ -106,9 +113,7 @@
             </div>
         </form>
     </div>
-    <th:block th:fragment="additional-scripts">
-        <script src="/js/coleccion.js"></script>
-    </th:block>
+
     <style>
         .fade-in {
             animation: fadeIn 0.5s;

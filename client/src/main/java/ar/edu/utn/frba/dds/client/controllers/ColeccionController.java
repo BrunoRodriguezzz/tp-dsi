@@ -6,6 +6,9 @@ import ar.edu.utn.frba.dds.client.dtos.FuenteOutputDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.services.ColeccionService;
 import java.util.List;
+
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.event.LoggingEvent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Controller
 public class ColeccionController {
   private final ColeccionService coleccionService;
@@ -63,7 +67,31 @@ public class ColeccionController {
   @PreAuthorize("hasRole('ADMINISTRADOR')")
   @GetMapping("/nuevaColeccion")
   public String nuevaColeccion(Model model) {
+    List<FuenteOutputDTO> fuentes = webClient.get()
+            .uri("/fuentes")
+            .retrieve()
+            .bodyToFlux(FuenteOutputDTO.class)
+            .collectList()
+            .block();
+    model.addAttribute("fuentes", fuentes);
     return "nuevaColeccion";
+  }
+
+  @PostMapping("/nuevaColeccion")
+  public String crearColeccion(ColeccionInputDTO coleccionInputDTO) {
+    log.info("Informacion que vamos a mandar: {}", coleccionInputDTO);
+    log.info("Nombre: {}", coleccionInputDTO.getTitulo());
+    log.info("Descripcion: {}", coleccionInputDTO.getDescripcion());
+    log.info("Criterio: {}", coleccionInputDTO.getCriterio());
+    log.info("Fuentes: {}", coleccionInputDTO.getFuentes());
+    log.info("Consensos: {}", coleccionInputDTO.getConsensos());
+    webClient.post()
+        .uri("/colecciones")
+        .bodyValue(coleccionInputDTO)
+        .retrieve()
+        .toBodilessEntity()
+        .block();
+    return "redirect:/colecciones";
   }
 
   @CrossOrigin(origins = "*")
@@ -76,18 +104,5 @@ public class ColeccionController {
             .retrieve()
             .bodyToFlux(FuenteOutputDTO.class)
             .collectList();
-  }
-
-  @CrossOrigin(origins = "*")
-  @PostMapping("/colecciones")
-  @ResponseBody
-  public Mono<ResponseEntity<String>> crearColeccion(@RequestBody ColeccionInputDTO coleccionInputDTO) {
-    return webClient.post()
-            .uri("/colecciones")
-            .bodyValue(coleccionInputDTO)
-            .retrieve()
-            .toBodilessEntity()
-            .map(response -> ResponseEntity.status(response.getStatusCode()).body(""))
-            .onErrorResume(e -> Mono.just(ResponseEntity.badRequest().body(e.getMessage())));
   }
 }
