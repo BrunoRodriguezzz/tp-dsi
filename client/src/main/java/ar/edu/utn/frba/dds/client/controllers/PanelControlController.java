@@ -61,6 +61,12 @@ public class PanelControlController {
         return "panelControl/fuentes";
     }
 
+    @GetMapping("/importarCSV")
+    public String panelControlImportarCSV(Model model) {
+        model.addAttribute("titulo", "Importar CSV");
+        return "panelControl/importarCSV";
+    }
+
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/solicitudes")
     public String panelControlSolicitudes(Model model) {
