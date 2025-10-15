@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.client.controllers;
 
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
+import ar.edu.utn.frba.dds.client.dtos.hecho.PaginadoHechoDTO;
 import ar.edu.utn.frba.dds.client.services.DinamicaService;
 import ar.edu.utn.frba.dds.client.services.HechoService;
 import jakarta.validation.Valid;
@@ -26,10 +27,10 @@ public class HechoController {
     @GetMapping
     public String listarHechos(Model model) {
         model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
-        List<HechoDTO> hechos = this.hechoService.obtenerHechos();
-        model.addAttribute("hechos", hechos);
-        model.addAttribute("cantidad", hechos.size());
-        LOGGER.info("Mostrando {} hechos.", hechos.size());
+        PaginadoHechoDTO paginado = this.hechoService.obtenerHechosAgregador();
+        model.addAttribute("hechos", paginado.getContent());
+        model.addAttribute("cantidad", paginado.getTotalElements());
+        LOGGER.info("Mostrando {} hechos.", paginado.getTotalElements());
         return "hechos";
     }
 

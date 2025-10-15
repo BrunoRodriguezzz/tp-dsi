@@ -3,6 +3,7 @@ package ar.edu.utn.frba.dds.client.services;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDinamicaDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
+import ar.edu.utn.frba.dds.client.dtos.hecho.PaginadoHechoDTO;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ public class HechoService {
     private final WebApiCallerService webApiCallerService;
     private final String hechoServiceUrl;
     private final MockService mockService;
+    private final String agregadorURL = "http://localhost:8082";
 
     public HechoService(
             WebApiCallerService webApiCallerService,
@@ -35,6 +37,15 @@ public class HechoService {
 
     public List<HechoDTO> obtenerHechos() {
         return mockService.obtenerHechosMockeados();
+    }
+
+    public PaginadoHechoDTO obtenerHechosAgregador() {
+        try {
+            return this.webApiCallerService.get(this.agregadorURL + "/hechos", PaginadoHechoDTO.class);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     public HechoDTO obtenerHechoPorId(Long id) {
