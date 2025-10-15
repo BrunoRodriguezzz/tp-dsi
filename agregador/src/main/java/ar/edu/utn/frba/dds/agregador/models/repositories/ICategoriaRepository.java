@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.agregador.models.repositories;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -17,7 +18,17 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
 
     @Transactional
     default Categoria findByTituloOrCreate(String titulo) {
-        return findByTitulo(titulo).orElseGet(() -> save(new Categoria(titulo)));
+        Optional<Categoria> categoria = findByTitulo(titulo);
+        if (categoria.isPresent()) {
+            return categoria.get();
+        } else {
+            try {
+                return save(new Categoria(titulo));
+            } catch (DataIntegrityViolationException e) {
+                return findByTitulo(titulo)
+                    .orElseThrow(() -> new IllegalStateException("Failed to find category after insert failed: " + titulo, e));
+            }
+        }
     }
 
     boolean existsByTitulo(String titulo);
