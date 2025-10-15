@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,11 +38,14 @@ public class EstadisticaController {
         model.addAttribute("totalColecciones",estadisticasProvinciasPorColeccion.size());
         model.addAttribute("colecciones", estadisticasProvinciasPorColeccion.stream().map(EstadisticaProvinciaXColeccionDTO::getColeccion).distinct().toList());
 
+        System.out.println("Provincias por Colección : " + estadisticasProvinciasPorColeccion);
         Map<String, Map<String, Long>> coleccionPorProvincia =
                 estadisticasProvinciasPorColeccion.stream()
                         .collect(Collectors.toMap(
                                 EstadisticaProvinciaXColeccionDTO::getColeccion,
-                                EstadisticaProvinciaXColeccionDTO::getProvinciasConHechos
+                                EstadisticaProvinciaXColeccionDTO::getProvinciasConHechos,
+                                (existing, replacement) -> existing,  // merge function (en caso de duplicados)
+                                LinkedHashMap::new
                         ));
         System.out.println("coleccionPorProvincia = " + coleccionPorProvincia);
 
@@ -57,7 +61,9 @@ public class EstadisticaController {
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey, // la categoría
-                                e -> e.getValue().values().stream().mapToLong(Long::longValue).sum() // suma de sus provincias
+                                e -> e.getValue().values().stream().mapToLong(Long::longValue).sum(), // suma de sus provincias
+                                (existing, replacement) -> existing,  // merge function (en caso de duplicados)
+                                LinkedHashMap::new
                         )));
 
         Map<String, Long> rankingCategorias =
@@ -65,7 +71,9 @@ public class EstadisticaController {
                         .stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                e -> e.getValue().values().stream().mapToLong(Long::longValue).sum()
+                                e -> e.getValue().values().stream().mapToLong(Long::longValue).sum(),
+                                (existing, replacement) -> existing,  // merge function (en caso de duplicados)
+                                LinkedHashMap::new
                         ));
 
         rankingCategorias.forEach((categoria, total) ->
