@@ -57,14 +57,24 @@ public class HechoService implements IHechoService {
   @Override
   public Hecho incorporarHecho(HechoInputDTO hechoDTO) {
     Contribuyente contribuyente = crearContribuyente(hechoDTO);
-    Fuente fuente = this.fuenteRepository.findByTipoFuente(TipoFuente.DINAMICA).get(0);
+    List<Fuente> fuentesDinamicas = this.fuenteRepository.findByTipoFuente(TipoFuente.DINAMICA);
+    if (fuentesDinamicas.isEmpty()) {
+      throw new NotFoundException("No se encontró una fuente dinámica para asociar el hecho.");
+    }
+    Fuente fuente = fuentesDinamicas.get(0);
     Hecho hecho = HechoInputDTO.DTOToHecho(hechoDTO, contribuyente, fuente);
-    return this.guardarHecho(hecho);
+    return this.guardarHechoDinamica(hecho);
   }
 
   @Override
   public Hecho buscarHecho(Long id) {
       return this.buscarPorID(id);
+  }
+
+  @Override
+  public Hecho guardarHechoDinamica(Hecho hecho) {
+    Hecho hechoNormalizado = this.normalizadorService.normalizarHecho(hecho);
+    return this.hechoRepository.save(hechoNormalizado);
   }
 
   @Override

@@ -12,6 +12,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -103,8 +104,12 @@ public class AdminService implements IAdminService {
             hecho.setEnviado(true);
             this.dinamicaRepository.guardar(hecho);
 
-        } catch (Exception e) {
-            System.err.println("Fallo el envio del Hecho");
+        } catch (WebClientResponseException e) {
+            // Capturamos la excepción específica de WebClient y mostramos detalles valiosos
+            System.err.println("Fallo el envio del Hecho. Status: " + e.getStatusCode() + ". Body: " + e.getResponseBodyAsString());
+            e.printStackTrace();
+        } catch (Exception e){
+            System.err.println("Fallo el envio del Hecho por un error inesperado: " + e.getMessage());
             e.printStackTrace();
         }
     }

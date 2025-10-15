@@ -1,149 +1,52 @@
-document.addEventListener("DOMContentLoaded", () => {
-const btnFiltro = document.querySelector(".btn-filtro");
-const filtrosContainer = document.querySelector(".filtros-container");
-
-btnFiltro.addEventListener("click", () => {
-    const visible = filtrosContainer.style.display === "block";
-
-    if (visible) {
-    filtrosContainer.style.display = "none";
-    btnFiltro.textContent = "Mostrar filtros";
+console.log('coleccion.js cargado');
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.form-coleccion');
+    if (!form) {
+        console.error('No se encontró el formulario con clase .form-coleccion');
     } else {
-    filtrosContainer.style.display = "block";
-    btnFiltro.textContent = "Ocultar filtros";
-    }
-});
-});
-
-let hechosOriginales = [];
-let modoActual = 'curado';
-let algoritmoSeleccionado = null;
-
-function getAlgoritmos(hecho) {
-    return Array.isArray(hecho.algoritmos) ? hecho.algoritmos : (Array.isArray(hecho.consensos) ? hecho.consensos : []);
-}
-
-function renderHechos(hechos) {
-    const container = document.getElementById('hechos-container');
-    if (!hechos || hechos.length === 0) {
-        container.innerHTML = '<p>No hay hechos para esta colección.</p>';
-        return;
-    }
-    let html = '<div class="row">';
-    hechos.forEach(hecho => {
-        html += `
-        <div class="col">
-            <div class="hecho-card">
-                <div class="hecho-card-mas-opciones">
-                    <div class="titulo-mas-descripcion">
-                        <h2 class="titulo-Hecho">${hecho.titulo || ''}</h2>
-                        <p class="descripcion">${hecho.descripcion || ''}</p>
-                    </div>
-                    <div class="opciones">
-                        <p class="etiqueta-categoria config-categoria distancia-opciones">${hecho.categoria || ''}</p>
-                        <a href="/hechos/verDetalle/${hecho.id}" class="btn btn-dark"><span>Ver Detalle</span></a>
-                        <a href="/reportarHecho" class="btn btn-red config-opciones">Reportar</a>
-                    </div>
-                </div>
-                <div class="informacion-general">
-                    <div class="fecha-ubicacion-fuente encolumnar">
-                        <p class="info-fecha-ubicacion-fuente"><b>Fecha: </b><span>${hecho.fechaAcontecimiento || ''}</span></p>
-                        <p class="info-fecha-ubicacion-fuente"><b>Ubicación: </b><span>${hecho.ubicacion || ''}</span></p>
-                        <p class="info-fecha-ubicacion-fuente"><b>Fuente: </b><span>${hecho.fuente || ''}</span></p>
-                    </div>
-                    <div class="etiquetas">
-                        ${(hecho.etiquetas || []).map(etiqueta => `<p class="titulo-etiqueta etiqueta-interes">${etiqueta}</p>`).join('')}
-                    </div>
-                    <div class="ultima-linea">
-                        <div class="fechaPublicacion">
-                            <i class="fa-regular fa-calendar"></i>
-                            <p class="alineacion">Publicado: <span>${hecho.fechaPublicacion || ''}</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>`;
-    });
-    html += '</div>';
-    container.innerHTML = html;
-}
-
-function filtrarHechos() {
-    let hechosFiltrados = hechosOriginales;
-    // Filtrado por modo
-    if (modoActual === 'curado') {
-        hechosFiltrados = hechosFiltrados.filter(h => getAlgoritmos(h).length > 0);
-    } else if (modoActual === 'irrestricto') {
-        hechosFiltrados = hechosFiltrados.filter(h => getAlgoritmos(h).length === 0);
-    }
-    // Filtrado por algoritmo de consenso
-    if (algoritmoSeleccionado) {
-        hechosFiltrados = hechosFiltrados.filter(h => getAlgoritmos(h).includes(algoritmoSeleccionado));
-    }
-    renderHechos(hechosFiltrados);
-}
-
-function activarBotonModo(modo) {
-    document.querySelectorAll('.modo-navegacion-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.modo === modo) btn.classList.add('active');
-    });
-}
-
-function activarBotonAlgoritmo(algoritmo) {
-    document.querySelectorAll('.filtro-algoritmo').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.algoritmo === algoritmo) btn.classList.add('active');
-    });
-}
-
-window.addEventListener('DOMContentLoaded', function() {
-    // Mostrar/ocultar filtros
-    const btnFiltro = document.querySelector(".btn-filtro");
-    const filtrosContainer = document.querySelector(".filtros-container");
-    if (btnFiltro && filtrosContainer) {
-        btnFiltro.addEventListener("click", () => {
-            const visible = filtrosContainer.style.display === "block";
-            if (visible) {
-                filtrosContainer.style.display = "none";
-                btnFiltro.textContent = "Mostrar filtros";
-            } else {
-                filtrosContainer.style.display = "block";
-                btnFiltro.textContent = "Ocultar filtros";
-            }
+        form.addEventListener('submit', function(e) {
+            console.log('Submit interceptado por JS');
+            e.preventDefault();
+            const nombre = document.getElementById('titleInput').value;
+            const descripcion = document.getElementById('descripcionInput').value;
+            const criterio = {
+                categoria: document.getElementById('categoriaInput').value,
+                fechaCargaInicio: document.getElementById('fechaCargaInicioInput').value,
+                fechaCargaFin: document.getElementById('fechaCargaFinInput').value,
+                fechaAcontecimientoInicio: document.getElementById('fechaAcontecimientoInicioInput').value,
+                fechaAcontecimientoFin: document.getElementById('fechaAcontecimientoFinInput').value,
+                titulo: document.getElementById('criterioTituloInput').value,
+                latitud: document.getElementById('latitudInput').value,
+                longitud: document.getElementById('longitudInput').value
+            };
+            const fuentes = Array.from(document.querySelectorAll('input[name="fuentes"]:checked')).map(cb => cb.value);
+            const consensos = Array.from(document.querySelectorAll('input[name="consensos"]:checked')).map(cb => cb.value);
+            const coleccionInput = {
+                nombre: nombre,
+                descripcion: descripcion,
+                criterio: criterio,
+                fuentes: fuentes,
+                consensos: consensos
+            };
+            console.log('DTO a enviar:', coleccionInput);
+            fetch('/colecciones', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(coleccionInput)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Colección creada exitosamente');
+                    window.location.href = '/colecciones';
+                } else {
+                    return response.text().then(text => { throw new Error(text); });
+                }
+            })
+            .catch(err => {
+                alert('Error al crear la colección: ' + err.message);
+            });
         });
     }
-
-    var coleccionId = window.coleccionId || (typeof COLECCION_ID !== 'undefined' ? COLECCION_ID : 0);
-    if (coleccionId === 0) return;
-    fetch('/coleccion/' + coleccionId + '/hechos')
-        .then(response => response.json())
-        .then(hechos => {
-            hechosOriginales = hechos;
-            if (hechos.length > 0) {
-                console.log('Ejemplo de hecho:', hechos[0]);
-            }
-            filtrarHechos();
-        });
-
-    document.querySelectorAll('.modo-navegacion-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            modoActual = btn.dataset.modo;
-            activarBotonModo(modoActual);
-            filtrarHechos();
-        });
-    });
-
-    document.querySelectorAll('.filtro-algoritmo').forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (algoritmoSeleccionado === btn.dataset.algoritmo) {
-                algoritmoSeleccionado = null;
-                activarBotonAlgoritmo(null);
-            } else {
-                algoritmoSeleccionado = btn.dataset.algoritmo;
-                activarBotonAlgoritmo(algoritmoSeleccionado);
-            }
-            filtrarHechos();
-        });
-    });
 });

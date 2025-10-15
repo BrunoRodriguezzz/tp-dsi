@@ -21,6 +21,7 @@ public interface IHechoService {
   public Hecho incorporarHecho(HechoInputDTO hecho);
   public Hecho guardarHecho(Hecho hecho);
   public Flux<Hecho> guardarHechos(Flux<Hecho> hechos);
+  public Hecho guardarHechoDinamica(Hecho hecho);
 
   // Operaciones sobre hechos
   public Hecho eliminarHecho(Long id);

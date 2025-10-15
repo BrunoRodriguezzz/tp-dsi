@@ -8,9 +8,9 @@ import java.util.List;
 @Getter
 @Setter
 public class ColeccionInputDTO {
-    private String nombre;
+    private String titulo;
     private String descripcion;
     private CriterioInputDTO criterio;
-    private List<String> fuentes;
+    private List<NombreFuenteInputDTO> fuentes;
     private List<String> consensos;
 }
