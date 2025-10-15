@@ -11,6 +11,6 @@ public class ColeccionInputDTO {
     private String titulo;
     private String descripcion;
     private CriterioInputDTO criterio;
-    private List<String> fuentes;
+    private List<NombreFuenteInputDTO> fuentes;
     private List<String> consensos;
 }

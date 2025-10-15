@@ -124,7 +124,7 @@
                             <div class="card-col-der">
                                 <span class="card-categoria">${hecho.categoria || ''}</span>
                                 <div class="card-botones">
-                                    <a th:href="@{'/verDetalle/' + ${hecho.id}}" class="btn btn-dark">Ver Detalle</a>
+                                    <a href="/hechos/${hecho.id}" class="btn btn-dark">Ver Detalle</a>
                                     <a href="/reportarHecho" class="btn btn-red">Reportar</a>
                                 </div>
                             </div>

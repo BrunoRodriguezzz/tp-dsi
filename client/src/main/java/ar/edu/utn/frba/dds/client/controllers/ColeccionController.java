@@ -1,11 +1,13 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
-import ar.edu.utn.frba.dds.client.dtos.ColeccionInputDTO;
-import ar.edu.utn.frba.dds.client.dtos.ColeccionOutputDTO;
-import ar.edu.utn.frba.dds.client.dtos.FuenteOutputDTO;
+import ar.edu.utn.frba.dds.client.dtos.*;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.services.ColeccionService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.core.ParameterizedTypeReference;
 import java.util.List;
+import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.event.LoggingEvent;
@@ -14,12 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -39,7 +36,13 @@ public class ColeccionController {
 
   @GetMapping("/colecciones")
   public String listarColecciones(Model model) {
-    List<ColeccionOutputDTO> colecciones = coleccionService.obtenerColecciones();
+    PaginaDTO<ColeccionOutputDTO> pagina = webClient.get()
+        .uri("/colecciones")
+        .retrieve()
+        .bodyToMono(new ParameterizedTypeReference<PaginaDTO<ColeccionOutputDTO>>() {})
+        .block();
+    List<ColeccionOutputDTO> colecciones = pagina != null ? pagina.getContent() : List.of();
+    log.info("Colecciones recibidas del agregador: {}", colecciones);
     model.addAttribute("colecciones", colecciones);
     return "colecciones";
   }
@@ -78,13 +81,25 @@ public class ColeccionController {
   }
 
   @PostMapping("/nuevaColeccion")
-  public String crearColeccion(ColeccionInputDTO coleccionInputDTO) {
+  public String crearColeccion(@RequestParam String titulo,
+                            @RequestParam String descripcion,
+                            @RequestParam(required = false) List<String> fuentes,
+                            @ModelAttribute CriterioInputDTO criterio,
+                            @RequestParam(required = false) List<String> consensos) {
+    ColeccionInputDTO coleccionInputDTO = new ColeccionInputDTO();
+    coleccionInputDTO.setTitulo(titulo);
+    coleccionInputDTO.setDescripcion(descripcion);
+    coleccionInputDTO.setCriterio(criterio);
+    if (fuentes != null) {
+        List<NombreFuenteInputDTO> fuentesDTO = fuentes.stream().map(f -> {
+            NombreFuenteInputDTO dto = new NombreFuenteInputDTO();
+            dto.setNombre(f);
+            return dto;
+        }).toList();
+        coleccionInputDTO.setFuentes(fuentesDTO);
+    }
+    coleccionInputDTO.setConsensos(consensos);
     log.info("Informacion que vamos a mandar: {}", coleccionInputDTO);
-    log.info("Nombre: {}", coleccionInputDTO.getTitulo());
-    log.info("Descripcion: {}", coleccionInputDTO.getDescripcion());
-    log.info("Criterio: {}", coleccionInputDTO.getCriterio());
-    log.info("Fuentes: {}", coleccionInputDTO.getFuentes());
-    log.info("Consensos: {}", coleccionInputDTO.getConsensos());
     webClient.post()
         .uri("/colecciones")
         .bodyValue(coleccionInputDTO)
