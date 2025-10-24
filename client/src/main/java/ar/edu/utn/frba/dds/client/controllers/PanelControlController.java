@@ -30,7 +30,6 @@ public class PanelControlController {
         this.dinamicaService = dinamicaService;
     }
 
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
     public String panelControl(Model model) {
         model.addAttribute("cantidadHechosPendientes", dinamicaService.obtenerHechosPendientes().size());

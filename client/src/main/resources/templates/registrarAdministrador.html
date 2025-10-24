@@ -1,0 +1,53 @@
+<html lang="en" th:replace="~{layout/base :: html}" xmlns:th="http://www.w3.org/1999/xhtml">
+<th:block th:fragment="additional-links">
+    <link rel="stylesheet" th:href="@{/css/registrarAdministrador.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
+</th:block>
+    <div th:fragment="contenido">
+        <div class="container sesion-container">
+            <div id="register-form" class="container sesion-container" style="display: none;">
+                <h3>Crear nueva cuenta</h3>
+                <p>Completa los datos para registrarte</p>
+                <form th:action="@{/register}" th:object="${usuario}" method="post" class="sesion-form">
+                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+                    <div class="input-name-surname">
+                        <div class="input">
+                            <label for="name">Nombre *</label>
+                            <input type="text" th:field="*{nombre}" id="name" placeholder="Tu nombre" required>
+                        </div>
+                        <div class="input">
+                            <label for="surname">Apellido *</label>
+                            <input type="text" th:field="*{apellido}" id="surname" placeholder="Tu apellido" required>
+                        </div>
+                    </div>
+
+                    <div class="input">
+                        <label for="fechaNacimiento">Fecha de nacimiento *</label>
+                        <input type="date" th:field="*{fechaNacimiento}" id="fechaNacimiento" placeholder="2000-08-01" required>
+                    </div>
+
+                    <div class="input">
+                        <label for="register-username">Nombre de usuario *</label>
+                        <input type="text" th:field="*{username}" id="register-username" placeholder="MyUsername123" required>
+                    </div>
+
+                    <div class="input">
+                        <label for="register-password">Contraseña *</label>
+                        <input type="password" th:field="*{password}" id="register-password" placeholder="······" required>
+                        <p>Mínimo 8 caracteres, incluye mayúsculas, minúsculas y números</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark">Crear cuenta</button>
+                </form>
+                <hr>
+                <a href="" id="show-login">¿Ya tienes cuenta? Inicia sesión aquí</a>
+                <a href="index.html" class="ultimo">← Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/login.js}"></script>
+</html>
