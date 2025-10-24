@@ -107,4 +107,14 @@ public class HechoController {
             return "redirect:/panelControl";
         }
     }
+
+    @GetMapping("/reportarHecho")
+    public String mostrarFormulario(Model model) {
+        return "reportarHecho";
+    }
+
+    @PostMapping("/reportarHecho")
+    public String procesarFormulario() {
+        return "redirect:/";
+    }
 }

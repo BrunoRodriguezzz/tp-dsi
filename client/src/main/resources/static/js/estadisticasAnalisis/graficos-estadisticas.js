@@ -552,6 +552,9 @@ const EstadisticasApp = {
             const spam = this.datos.values[0];
             const porcentajeSpam = Math.round((spam / total) * 100);
 
+            this.chart.data.datasets[0].data =this.datos.values;
+            this.chart.update();
+
             actualizarElementoTexto('porcentajeSpam', porcentajeSpam + '%');
             actualizarElementoTexto('porcentajeNoSpam', 100-porcentajeSpam + '%');
             console.log(`Total solicitudes: ${total}`);

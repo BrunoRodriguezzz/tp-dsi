@@ -1,3 +1,20 @@
+/* Estilos para el selector de mapa en nuevaColeccion */
+.map {
+    width: 100%;
+    height: 350px;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+#geocoder {
+    margin-bottom: 10px;
+}
+@media (max-width: 600px) {
+    .map {
+        height: 220px;
+    }
+}
+
 .form-coleccion {
     margin: 0 auto;
     max-width: 40rem;
@@ -34,4 +51,3 @@
     background-color: #e9ecef !important;
     border-color: #adb5bd !important;
 }
-

@@ -31,7 +31,7 @@
             </div>
             <div class="form-title">
                 <h6>Título de la Colección</h6>
-                <input type="text" class="form-control" placeholder="Ej: Protestas Sociales 2024" id="titleInput" name="titulo" required>
+                <input type="text" class="form-control" placeholder="Ej: Protestas Sociales 2024" id="titleInput" name="nombre" required>
             </div>
             <div class="form-desc">
                 <h6>Descripción</h6>
@@ -81,13 +81,20 @@
                 <input type="text" class="form-control" placeholder="Filtrar por título..." id="criterioTituloInput" name="criterio.titulo">
             </div>
             <div class="form-group">
-                <h6>Latitud</h6>
-                <input type="number" step="any" class="form-control" placeholder="Ej: -34.6037" id="latitudInput" name="criterio.latitud">
+                <h6>Ubicación</h6>
+                <!-- Inputs ocultos para latitud y longitud -->
+                <input type="hidden" id="latInput" name="criterio.latitud">
+                <input type="hidden" id="lngInput" name="criterio.longitud">
+                <!-- Geocoder y mapa -->
+                <div id="geocoder" class="mb-3" style="width: 100%"></div>
+                <div id="map" class="map"></div>
             </div>
-            <div class="form-group">
-                <h6>Longitud</h6>
-                <input type="number" step="any" class="form-control" placeholder="Ej: -58.3816" id="longitudInput" name="criterio.longitud">
-            </div>
+            <!-- Enlaces a Mapbox y JS del mapa -->
+            <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+            <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
+            <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+            <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+            <script th:src="@{/js/mapa.js}"></script>
             <div class="header-form">
                 <h3><strong>Consensos</strong></h3>
                 <p>Selecciona los consensos requeridos para la colección</p>

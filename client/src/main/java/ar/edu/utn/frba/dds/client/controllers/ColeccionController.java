@@ -66,7 +66,11 @@ public class ColeccionController {
 
   @GetMapping("/editarColeccion/{id}")
   public String editarColeccion(@PathVariable Long id, Model model) {
-    ColeccionOutputDTO coleccion = coleccionService.obtenerColeccionPorId(id);
+      ColeccionOutputDTO coleccion = webClient.get()
+        .uri("/colecciones/" + id)
+        .retrieve()
+        .bodyToMono(ColeccionOutputDTO.class)
+        .block();
     model.addAttribute("coleccion", coleccion);
     return "editarColeccion";
   }
@@ -85,13 +89,13 @@ public class ColeccionController {
   }
 
   @PostMapping("/nuevaColeccion")
-  public String crearColeccion(@RequestParam String titulo,
+  public String crearColeccion(@RequestParam String nombre,
                             @RequestParam String descripcion,
                             @RequestParam(required = false) List<String> fuentes,
                             @ModelAttribute CriterioInputDTO criterio,
                             @RequestParam(required = false) List<String> consensos) {
     ColeccionInputDTO coleccionInputDTO = new ColeccionInputDTO();
-    coleccionInputDTO.setTitulo(titulo);
+    coleccionInputDTO.setNombre(nombre);
     coleccionInputDTO.setDescripcion(descripcion);
     coleccionInputDTO.setCriterio(criterio);
     if (fuentes != null) {
@@ -117,7 +121,6 @@ public class ColeccionController {
   @GetMapping("/colecciones/fuentes")
   @ResponseBody
   public Mono<List<FuenteOutputDTO>> obtenerFuentes() {
-    System.out.println("Obteniendo fuentessssssssssssss");
     return webClient.get()
             .uri("/fuentes")
             .retrieve()
