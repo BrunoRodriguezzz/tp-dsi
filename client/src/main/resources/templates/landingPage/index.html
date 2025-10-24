@@ -14,7 +14,7 @@
         <p class="metaMapa-info-p">Sistema de código abierto para la recopilación, visualización y mapeo colaborativo de información. Diseñado para maximizar la disponibilidad y veracidad de la información, protegiendo la identidad de quienes la comparten.</p>
         <div class="metaMapa-info-button-container">
             <!-- TODO: agregar los th:ref con sus respectivos Controllers -->
-            <button class="btn btn-dark"><a class="nav-link active" aria-current="page" href="map.html">Explorar Mapa</a></button>
+            <button class="btn btn-dark"><a class="nav-link active" aria-current="page" th:href="@{/mapa}">Explorar Mapa</a></button>
             <button class="btn btn-outline-primary"><a class="nav-link active" aria-current="page" th:href="@{/hechos}">Ver Hechos</a></button>
         </div>
     </div>

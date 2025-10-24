@@ -30,6 +30,7 @@ public class HomeController {
 
     @GetMapping("home/sobreNosotros")
     public String sobreNosotros(Model model){
+        model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
         return "sobreNosotros";
     }
 
