@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/estadisticas")
 public class RegistrarAdminController {
     private final AuthApiService authApiService;
 
@@ -31,7 +30,7 @@ public class RegistrarAdminController {
     @GetMapping("/registroAdministrador")
     public String login(Model model) {
         model.addAttribute("usuario", new Usuario());
-        return "registroAdministrador";
+        return "registrarAdministrador";
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
@@ -51,7 +50,7 @@ public class RegistrarAdminController {
         } catch (Exception e) {
             model.addAttribute("usuario", new Usuario()); // Recargar objeto
             model.addAttribute("error", "Error al registrar usuario: " + e.getMessage());
-            return "registroAdministrador";
+            return "registrarAdministrador";
         }
     }
 }

@@ -43,7 +43,6 @@ body{
     display:flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 2rem;
 }
 
 .botones-header{
@@ -224,6 +223,21 @@ body{
 .alineacion{
     margin:0vw;
     padding-bottom: 0.1rem;
+}
+
+.mapa{
+
+}
+
+.filtro-input {
+    margin-bottom: 1rem;
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
 }
 
 @media (min-width: 1400px) {

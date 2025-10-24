@@ -1,7 +1,12 @@
 <html lang="en" th:replace="~{layout/base :: html}">
 <th:block th:fragment="additional-links">
+    <link rel="stylesheet" th:href="@{/css/publicarHecho.css}">
     <link rel="stylesheet" th:href="@{/css/hechos.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
 </th:block>
 <div th:fragment="contenido">
     <div class="container-responsive">
@@ -13,8 +18,45 @@
                     <p class="p3" th:text="|${cantidad} hechos mostrados|"></p>
                 </div>
                 <div class="botones-header">
-                    <button class="btn btn-outline-secondary config-mostrarFiltros">Mostrar Filtros</button>
+                    <button class="btn btn-outline-secondary config-mostrarFiltros" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">Mostrar Filtros</button>
                     <a th:href="@{/publicarHecho}" class="btn btn-primary btn-dark config-nuevoHecho">+ Publicar Hecho</a>
+                </div>
+            </div>
+
+            <div class="collapse" id="filtrosCollapse">
+                <div class="card card-body mb-3">
+                    <form th:action="@{/hechos}" method="get">
+                        <div class="row">
+                            <div class="input-mapa col-12 col-md-6">
+                                <p style="color: black">Ingrese su Ubicación deseada</p>
+                                <div id="geocoder" class="ubicacion-input"></div>
+                                <div id="map" class="map mapa"></div>
+                                <input type="hidden" id="latInput" name="lat" th:value="${param.lat}">>
+                                <input type="hidden" id="lngInput" name="lng" th:value="${param.lng}">
+                                <input type="hidden" id="municipioInput" name="municipio" th:value="${param.municipio}">
+                                <input type="hidden" id="provinciaInput" name="provincia" th:value="${param.provincia}">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="col-md-4 mb-12 w-100 filtro-input">
+                                    <label for="fecha" class="form-label">Fecha</label>
+                                    <input type="date" class="form-control" id="fecha" name="fecha" th:value="${param.fecha}">
+                                </div>
+                                <div class="col-md-4 mb-12 w-100 filtro-input">
+                                    <label for="categoria" class="form-label">Categoría</label>
+                                    <input type="text" class="form-control" id="categoria" name="categoria" th:value="${param.categoria}">
+                                </div>
+                                <div class="col-md-4 mb-12 w-100 filtro-input">
+                                    <label for="fuente" class="form-label">Fuente</label>
+                                    <input type="text" class="form-control" id="fuente" name="fuente" th:value="${param.fuente}">
+                                </div>
+                                <div class="text-end buttons">
+                                    <button type="submit" class="btn btn-primary btn-dark">Filtrar</button>
+                                    <a th:href="@{/hechos}" class="btn btn-outline-secondary">Limpiar</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -45,5 +87,10 @@
             </div>
         </div>
     </div>
+    <script th:src="@{/js/mapa.js}"></script>
 </div>
 </html>
+
+
+
+
