@@ -23,9 +23,10 @@ public class QueryParamsFiltro {
   public LocalDateTime fechaAcontecimientoFin;
   public LocalDateTime fechaCargaInicio;
   public LocalDateTime fechaCargaFin;
-  public String longitud;
-  public String latitud;
+  public Double longitud;
+  public Double latitud;
   public String titulo;
+  public String fuente;
 
   public List<Filtro> instanciarFiltros() {
     List<Filtro> filtros = new ArrayList<>();
@@ -34,14 +35,14 @@ public class QueryParamsFiltro {
         filtros.add(new FiltroCategoria(new Categoria(categoria)));
       } catch(Exception e){throw new RuntimeException("Categoria invalida");}
     }
-    if(latitud != null && !latitud.isEmpty()) {
+    if(latitud != null) {
       try{
-        filtros.add(new FiltroLatitud(Double.parseDouble(latitud)));
+        filtros.add(new FiltroLatitud(latitud));
       } catch(Exception e){throw new RuntimeException("Latitud invalida " + e.getMessage());}
     }
-    if(longitud != null && !longitud.isEmpty()) {
+    if(longitud != null) {
       try{
-        filtros.add(new FiltroLongitud(Double.parseDouble(longitud)));
+        filtros.add(new FiltroLongitud(longitud));
       } catch(Exception e){throw new RuntimeException("Longitud invalida " + e.getMessage());}
     }
     if(fechaAcontecimientoInicio != null) {

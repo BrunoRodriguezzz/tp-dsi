@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.criterio.EntidadFiltro;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.*;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
+import ar.edu.utn.frba.dds.agregador.models.domain.hechos.HechoFuente;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HechoSpecification {
+
     public static Specification<Hecho> noEliminado() {
         return (root, query, cb) -> cb.isFalse(root.get("estaEliminado"));
     }
@@ -23,10 +25,17 @@ public class HechoSpecification {
     public static Specification<Hecho> conFiltros(QueryParamsFiltro params) {
         return (root, query, cb) -> {
             var predicates = new ArrayList<Predicate>();
+            final int radio = 10; // Radio en kilometros
 
-            if (params.categoria != null) {
+            if (params.categoria != null && !params.categoria.isEmpty()) {
                 predicates.add(cb.equal(root.get("categoria").get("titulo"), params.categoria));
             }
+
+            if (params.fuente != null && !params.fuente.isEmpty()) {
+                Join<Hecho, HechoFuente> hechoFuenteJoin = root.join("fuenteSet");
+                predicates.add(cb.equal(hechoFuenteJoin.get("fuente").get("nombre"), params.fuente));
+            }
+
             if (params.fechaAcontecimientoInicio != null) {
                 predicates.add(cb.greaterThanOrEqualTo(root.get("fechaAcontecimiento"), params.fechaAcontecimientoInicio));
             }
@@ -39,13 +48,28 @@ public class HechoSpecification {
             if (params.fechaCargaFin != null) {
                 predicates.add(cb.lessThanOrEqualTo(root.get("fechaCarga"), params.fechaCargaFin));
             }
-            if (params.latitud != null) {
+            if (params.latitud != null && params.longitud != null) {
+                double latitudEnRadianes = Math.toRadians(params.latitud);
+
+                // 1 grado de latitud son aprox 111.1 km
+                double deltaLat = radio / 111.1;
+
+                // 1 grado de longitud es aprox 111.1 * cos(latitud) km
+                double deltaLon = radio / (111.1 * Math.cos(latitudEnRadianes));
+
+                double latMin = params.latitud - deltaLat;
+                double latMax = params.latitud + deltaLat;
+                double lonMin = params.longitud - deltaLon;
+                double lonMax = params.longitud + deltaLon;
+
+                predicates.add(cb.between(root.get("ubicacion").get("latitud"), latMin, latMax));
+                predicates.add(cb.between(root.get("ubicacion").get("longitud"), lonMin, lonMax));
+            } else if (params.latitud != null) {
                 predicates.add(cb.equal(root.get("ubicacion").get("latitud"), params.latitud));
-            }
-            if (params.longitud != null) {
+            } else if (params.longitud != null) {
                 predicates.add(cb.equal(root.get("ubicacion").get("longitud"), params.longitud));
             }
-            if (params.titulo != null) {
+            if (params.titulo != null && !params.titulo.isEmpty()) {
                 predicates.add(cb.like(cb.lower(root.get("titulo")), "%" + params.titulo.toLowerCase() + "%"));
             }
 
@@ -76,8 +100,22 @@ public class HechoSpecification {
             }
 
             List<Predicate> predicates = new ArrayList<>();
+            final int radio = 10; // Radio en kilometros
+
+            FiltroLatitud filtroLat = criterio.getFiltros().stream()
+                    .filter(FiltroLatitud.class::isInstance)
+                    .map(FiltroLatitud.class::cast)
+                    .findFirst().orElse(null);
+
+            FiltroLongitud filtroLon = criterio.getFiltros().stream()
+                    .filter(FiltroLongitud.class::isInstance)
+                    .map(FiltroLongitud.class::cast)
+                    .findFirst().orElse(null);
 
             for (EntidadFiltro filtro : criterio.getFiltros()) {
+                if (filtro instanceof FiltroLatitud || filtro instanceof FiltroLongitud) {
+                    continue;
+                }
                 if (filtro instanceof FiltroCategoria) {
                     FiltroCategoria filtroCat = (FiltroCategoria) filtro;
                     predicates.add(criteriaBuilder.equal(
@@ -108,18 +146,6 @@ public class HechoSpecification {
                             root.get("fechaCarga"),
                             filtroFecha.getFechaInicio()
                     ));
-                } else if (filtro instanceof FiltroLatitud) {
-                    FiltroLatitud filtroLat = (FiltroLatitud) filtro;
-                    predicates.add(criteriaBuilder.equal(
-                            root.get("ubicacion").get("latitud"),
-                            filtroLat.getLatitud()
-                    ));
-                } else if (filtro instanceof FiltroLongitud) {
-                    FiltroLongitud filtroLon = (FiltroLongitud) filtro;
-                    predicates.add(criteriaBuilder.equal(
-                            root.get("ubicacion").get("longitud"),
-                            filtroLon.getLongitud()
-                    ));
                 } else if (filtro instanceof FiltroTitulo) {
                     FiltroTitulo filtroTitulo = (FiltroTitulo) filtro;
                     predicates.add(criteriaBuilder.equal(
@@ -127,6 +153,36 @@ public class HechoSpecification {
                             filtroTitulo.getTitulo()
                     ));
                 }
+            }
+
+            if (filtroLat != null && filtroLon != null) {
+                double latitud = filtroLat.getLatitud();
+                double longitud = filtroLon.getLongitud();
+                double latitudEnRadianes = Math.toRadians(latitud);
+
+                // 1 grado de latitud son aprox 111.1 km
+                double deltaLat = radio / 111.1;
+
+                // 1 grado de longitud es aprox 111.1 * cos(latitud) km
+                double deltaLon = radio / (111.1 * Math.cos(latitudEnRadianes));
+
+                double latMin = latitud - deltaLat;
+                double latMax = latitud + deltaLat;
+                double lonMin = longitud - deltaLon;
+                double lonMax = longitud + deltaLon;
+
+                predicates.add(criteriaBuilder.between(root.get("ubicacion").get("latitud"), latMin, latMax));
+                predicates.add(criteriaBuilder.between(root.get("ubicacion").get("longitud"), lonMin, lonMax));
+            } else if (filtroLat != null) {
+                predicates.add(criteriaBuilder.equal(
+                        root.get("ubicacion").get("latitud"),
+                        filtroLat.getLatitud()
+                ));
+            } else if (filtroLon != null) {
+                predicates.add(criteriaBuilder.equal(
+                        root.get("ubicacion").get("longitud"),
+                        filtroLon.getLongitud()
+                ));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

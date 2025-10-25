@@ -31,15 +31,22 @@
                                 <p style="color: black">Ingrese su Ubicación deseada</p>
                                 <div id="geocoder" class="ubicacion-input"></div>
                                 <div id="map" class="map mapa"></div>
-                                <input type="hidden" id="latInput" name="lat" th:value="${param.lat}">>
+                                <input type="hidden" id="latInput" name="lat" th:value="${param.lat}">
                                 <input type="hidden" id="lngInput" name="lng" th:value="${param.lng}">
                                 <input type="hidden" id="municipioInput" name="municipio" th:value="${param.municipio}">
                                 <input type="hidden" id="provinciaInput" name="provincia" th:value="${param.provincia}">
                             </div>
                             <div class="col-12 col-md-6">
-                                <div class="col-md-4 mb-12 w-100 filtro-input">
-                                    <label for="fecha" class="form-label">Fecha</label>
-                                    <input type="date" class="form-control" id="fecha" name="fecha" th:value="${param.fecha}">
+                                <div class="col-md-4 mb-12 w-100 filtro-input row">
+                                    <div class="col-6">
+                                        <label for="fechaAcontencimientoDesde" class="form-label">Fecha desde</label>
+                                        <input type="date" class="form-control" id="fechaAcontencimientoDesde" name="fechaAcontencimientoDesde" th:value="${param.fechaDesde}">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="fechaAcontencimientoHasta" class="form-label">Fecha hasta</label>
+                                        <input type="date" class="form-control" id="fechaAcontencimientoHasta" name="fechaAcontencimientoHasta" th:value="${param.fechaHasta}">
+                                    </div>
+
                                 </div>
                                 <div class="col-md-4 mb-12 w-100 filtro-input">
                                     <label for="categoria" class="form-label">Categoría</label>

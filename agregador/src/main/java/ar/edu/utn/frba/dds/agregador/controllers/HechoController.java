@@ -32,14 +32,15 @@ public class HechoController {
       @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDateTime fechaAcontecimientoInicio,
       @RequestParam(name = "fechaAcontecimientoFin", required = false) LocalDateTime fechaAcontecimientoFin,
       @RequestParam(name = "titulo", required = false) String titulo,
-      @RequestParam(name = "latitud", required = false) String latitud,
-      @RequestParam(name = "longitud", required = false) String longitud,
+      @RequestParam(name = "latitud", required = false) Double latitud,
+      @RequestParam(name = "longitud", required = false) Double longitud,
       @RequestParam(name = "fechaCargaInicio", required = false) LocalDateTime fechaCargaInicio,
       @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin,
+      @RequestParam(name = "fuente", required = false) String fuente,
       Pageable pageable
   ) {
       QueryParamsFiltro params = Utils.crearFiltros(categoria, fechaAcontecimientoInicio,
-              fechaAcontecimientoFin, titulo, latitud, longitud, fechaCargaInicio, fechaCargaFin);
+              fechaAcontecimientoFin, titulo, latitud, longitud, fechaCargaInicio, fechaCargaFin, fuente);
       Page<HechoOutputDTO> hechos = this.hechoService.buscarHechos(params, pageable);
     return ResponseEntity.ok(hechos);
   }

@@ -36,14 +36,15 @@ public class ColeccionController {
       @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDateTime fechaAcontecimientoInicio,
       @RequestParam(name = "fechaAcontecimientoFin", required = false) LocalDateTime fechaAcontecimientoFin,
       @RequestParam(name = "titulo", required = false) String titulo,
-      @RequestParam(name = "latitud", required = false) String latitud,
-      @RequestParam(name = "longitud", required = false) String longitud,
+      @RequestParam(name = "latitud", required = false) Double latitud,
+      @RequestParam(name = "longitud", required = false) Double longitud,
       @RequestParam(name = "fechaCargaInicio", required = false) LocalDateTime fechaCargaInicio,
       @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin,
+      @RequestParam(name = "fuente", required = false) String fuente,
       Pageable pageable
   ) {
     QueryParamsFiltro params = Utils.crearFiltros(categoria, fechaAcontecimientoInicio, fechaAcontecimientoFin,
-            titulo, latitud, longitud, fechaCargaInicio, fechaCargaFin);
+            titulo, latitud, longitud, fechaCargaInicio, fechaCargaFin, fuente);
 
     Page<HechoOutputDTO> hechos = this.coleccionService.buscarHechosColeccion(id, params, pageable);
     return ResponseEntity.status(HttpStatus.OK).body(hechos);
@@ -56,13 +57,14 @@ public class ColeccionController {
       @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDateTime fechaAcontecimientoInicio,
       @RequestParam(name = "fechaAcontecimientoFin", required = false) LocalDateTime fechaAcontecimientoFin,
       @RequestParam(name = "titulo", required = false) String titulo,
-      @RequestParam(name = "latitud", required = false) String latitud,
-      @RequestParam(name = "longitud", required = false) String longitud,
+      @RequestParam(name = "latitud", required = false) Double latitud,
+      @RequestParam(name = "longitud", required = false) Double longitud,
       @RequestParam(name = "fechaCargaInicio", required = false) LocalDateTime fechaCargaInicio,
-      @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin
+      @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin,
+      @RequestParam(name = "fuente", required = false) String fuente
   ) {
     QueryParamsFiltro params = Utils.crearFiltros(categoria, fechaAcontecimientoInicio, fechaAcontecimientoFin, titulo,
-            latitud, longitud, fechaCargaInicio, fechaCargaFin);
+            latitud, longitud, fechaCargaInicio, fechaCargaFin, fuente);
 
     List<HechoOutputDTO> hechos = this.coleccionService.buscarHechosCuradosColeccion(id,params);
     if(hechos == null) {

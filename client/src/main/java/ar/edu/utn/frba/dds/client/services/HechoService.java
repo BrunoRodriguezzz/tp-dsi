@@ -1,17 +1,20 @@
 package ar.edu.utn.frba.dds.client.services;
 
+import ar.edu.utn.frba.dds.client.dtos.Params;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDinamicaDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
 import ar.edu.utn.frba.dds.client.dtos.hecho.PaginadoHechoDTO;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class HechoService {
     private final WebClient webClient;
@@ -44,6 +47,37 @@ public class HechoService {
             return this.webApiCallerService.get(this.agregadorURL + "/hechos", PaginadoHechoDTO.class);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    public PaginadoHechoDTO obtenerHechosAgregadorFiltrados(Params params) {
+        try {
+            PaginadoHechoDTO paginado = WebClient.builder().baseUrl(this.agregadorURL)
+                    .build()
+                    .get()
+                    .uri(uriBuilder -> {
+                        var uri = uriBuilder.path("/hechos")
+                                .queryParam("fechaAcontecimientoInicio", params.getFechaAcontecimientoInicio())
+                                .queryParam("fechaAcontecimientoFin", params.getFechaAcontecimientoFin())
+                                .queryParam("categoria", params.getCategoria())
+                                .queryParam("latitud", params.getLat())
+                                .queryParam("longitud", params.getLng())
+                                .queryParam("fuente", params.getFuente())
+                                .queryParam("page", params.getPage())
+                                .queryParam("size", params.getSize())
+                                .build();
+                        log.info("Requesting URL: {}", uri);
+                        return uri;
+                    })
+                    .retrieve()
+                    .bodyToMono(PaginadoHechoDTO.class)
+                    .block();
+            log.info("Recibi: {}", paginado);
+            return paginado;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }

@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class UbicacionOutputDTO {
-  private String latitud;
-  private String longitud;
+  private double latitud;
+  private double longitud;
   private String Pais;
   private String provincia;
   private String muncipio;
@@ -14,8 +14,8 @@ public class UbicacionOutputDTO {
 
   public static UbicacionOutputDTO UbicacionToDTO(Ubicacion ubicacion) {
     UbicacionOutputDTO ubicacionDTO = new UbicacionOutputDTO();
-    ubicacionDTO.setLatitud(String.valueOf(ubicacion.getLatitud()));
-    ubicacionDTO.setLongitud(String.valueOf(ubicacion.getLongitud()));
+    ubicacionDTO.setLatitud(ubicacion.getLatitud());
+    ubicacionDTO.setLongitud(ubicacion.getLongitud());
     ubicacionDTO.setMuncipio(ubicacion.getMunicipio());
     if (ubicacion.getProvincia() != null) {
       ubicacionDTO.setProvincia(ubicacion.getProvincia().toString());

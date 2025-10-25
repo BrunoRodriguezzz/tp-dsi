@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
+import ar.edu.utn.frba.dds.client.dtos.Params;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
 import ar.edu.utn.frba.dds.client.dtos.hecho.PaginadoHechoDTO;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -25,12 +28,29 @@ public class HechoController {
     private final Logger LOGGER = LogManager.getLogger(HechoController.class);
 
     @GetMapping
-    public String listarHechos(Model model) {
+    public String listarHechos(
+            Model model,
+            @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDate fechaAcontecimientoInicio,
+            @RequestParam(name = "fechaAcontecimientoFin", required = false) LocalDate fechaAcontecimientoFin,
+            @RequestParam(name = "categoria", required = false) String categoria,
+            @RequestParam(name = "lat", required = false) Double lat,
+            @RequestParam(name = "lng", required = false) Double lon,
+            @RequestParam(name = "fuente", required = false) String fuente,
+            @RequestParam(name = "page", required = false) Long page,
+            @RequestParam(name = "size", required = false) Long size
+    ) {
+        Params params = new Params(fechaAcontecimientoInicio, fechaAcontecimientoFin, categoria, lat, lon, fuente, page, size);
         model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
-        PaginadoHechoDTO paginado = this.hechoService.obtenerHechosAgregador();
-        model.addAttribute("hechos", paginado.getContent());
-        model.addAttribute("cantidad", paginado.getTotalElements());
-        LOGGER.info("Mostrando {} hechos.", paginado.getTotalElements());
+        PaginadoHechoDTO paginado = this.hechoService.obtenerHechosAgregadorFiltrados(params);
+        if (paginado != null) {
+            model.addAttribute("hechos", paginado.getContent());
+            model.addAttribute("cantidad", paginado.getTotalElements());
+            LOGGER.info("Mostrando {} hechos.", paginado.getTotalElements());
+        } else {
+            model.addAttribute("hechos", List.of());
+            model.addAttribute("cantidad", 0);
+            LOGGER.info("No se encontraron hechos.");
+        }
         return "hechos";
     }
 
