@@ -7,10 +7,10 @@
 </th:block>
     <div th:fragment="contenido">
         <div class="container sesion-container">
-            <div id="register-form" class="container sesion-container" style="display: none;">
-                <h3>Crear nueva cuenta</h3>
-                <p>Completa los datos para registrarte</p>
-                <form th:action="@{/register}" th:object="${usuario}" method="post" class="sesion-form">
+            <div id="register-form" class="container sesion-container">
+                    <h3>Registra un nuevo administrador</h3>
+                <p>Completa los datos para registrarlo</p>
+                <form th:action="@{/registroAdministrador}" th:object="${usuario}" method="post" class="sesion-form">
                     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
                     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
@@ -41,13 +41,11 @@
                         <p>Mínimo 8 caracteres, incluye mayúsculas, minúsculas y números</p>
                     </div>
 
-                    <button type="submit" class="btn btn-dark">Crear cuenta</button>
+                    <button type="submit" class="btn btn-dark">Registrar administrador</button>
                 </form>
                 <hr>
-                <a href="" id="show-login">¿Ya tienes cuenta? Inicia sesión aquí</a>
                 <a href="index.html" class="ultimo">← Volver al inicio</a>
             </div>
         </div>
     </div>
-    <script th:src="@{/js/login.js}"></script>
 </html>

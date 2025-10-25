@@ -77,6 +77,7 @@ public class AuthApiService {
     }
 
     public UsuarioDTO crearUsuario(@Valid UsuarioDTO usuarioDTO) {
+
         UsuarioDTO response = webApiCallerService.postWithoutToken(authServiceUrl + "/register", usuarioDTO, UsuarioDTO.class);
         if (response == null) {
             throw new RuntimeException("Error al registrar al usuario en el servicio externo");

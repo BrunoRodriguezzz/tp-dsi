@@ -35,10 +35,12 @@ public class RegistrarAdminController {
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping("/registroAdministrador")
-    public String registrar(@ModelAttribute("usuario") UsuarioDTO usuario,
+    public String registrarAdministrador(@ModelAttribute("usuario") UsuarioDTO usuario,
                            Model model,
                            RedirectAttributes redirectAttributes) {
         try {
+            System.out.println("El usuario es");
+            System.out.println(usuario);
             usuario.setRoles(List.of(Rol.ADMINISTRADOR));
             usuario.setPermisos(new ArrayList<>());
 
