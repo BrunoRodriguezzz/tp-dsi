@@ -61,6 +61,11 @@ h1 {
     background-color: var(--color-blue-100);
 }
 
+.yellow {
+    color: var(--color-yellow-600);
+    background-color: var(--color-yellow-100);
+}
+
 .green {
     color: var(--color-green-600);
     background-color: var(--color-green-100);
@@ -74,6 +79,11 @@ h1 {
 .violet {
     color: var(--color-violet-600);
     background-color: var(--color-violet-100);
+}
+
+.pink {
+    color: var(--color-pink-600);
+    background-color: var(--color-pink-100);
 }
 
 /* Links */
@@ -97,11 +107,21 @@ a {
     color: var(--color-violet-600);
 }
 
+#link-estadisticas {
+    color: var(--color-yellow-600);
+}
+
+#link-agregar-admintrador {
+    color: var(--color-pink-600);
+}
+
+
 /* Cartas */
 .card-body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: start;
 }
 
 .card {
@@ -136,4 +156,12 @@ a {
 
 .card:hover .violet {
     background-color: #d8cfff;
+}
+
+.card:hover .yellow {
+    background-color: #f6f2bd;
+}
+
+card:hover .pink {
+    background-color: #f1bce3;
 }

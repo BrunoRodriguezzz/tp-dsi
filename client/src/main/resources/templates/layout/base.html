@@ -53,12 +53,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="sobreNosotros.html" th:href="@{/home/sobreNosotros}">Sobre Nosotros</a>
                 </li>
-                <li class="nav-item" sec:authorize="hasRole('ADMINISTRADOR')">
-                    <a class="nav-link" th:href="@{/estadisticas}">Estadisticas</a>
-                </li>
-                <li class="nav-item" sec:authorize="hasRole('ADMINISTRADOR')">
-                    <a class="nav-link" th:href="@{/registroAdministrador}">Registrar Administrador</a>
-                </li>
             </ul>
             <div class="auth-section">
                 <div th:if="${usuarioLogueado == null}">
