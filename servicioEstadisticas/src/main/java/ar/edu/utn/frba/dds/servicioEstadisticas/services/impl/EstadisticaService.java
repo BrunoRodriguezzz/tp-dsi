@@ -1,6 +1,8 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaCategoriaDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaSolicitudesDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.*;
@@ -107,22 +109,23 @@ public class EstadisticaService implements IEstadisticaService {
         return this.estadisticaProvinciaXColeccionRepository.save(estadistica);
     }
 
-    public EstadisticaCategoria categoriaConMasHechos() {
+    public EstadisticaCategoriaDTO categoriaConMasHechos() {
         List<Object[]> resultados = estadisticaRepository.findCategoriasConHechos();
 
         // Convertir los resultados a un mapa (limitado a 30)
         Map<Categoria, Long> categoriasConHechos = new LinkedHashMap<>();
-        for (Object[] resultado : resultados) {
-            if (categoriasConHechos.size() >= 30) {
-                break; // Limitar a máximo 30 categorías
-            }
-            Categoria categoria = (Categoria) resultado[0];
-            Long cantidad = ((Number) resultado[1]).longValue();
+        resultados.forEach(r -> {
+            Categoria categoria = (Categoria) r[0];
+            Long cantidad = ((Number) r[1]).longValue();
             categoriasConHechos.put(categoria, cantidad);
-        }
+        });
 
+        // TODO: lo mismo que solicitudes
         EstadisticaCategoria estadisticaCategoria = new EstadisticaCategoria(categoriasConHechos, LocalDateTime.now());
-        return this.estadisticaCategoriaRepository.save(estadisticaCategoria);
+        // return this.estadisticaCategoriaRepository.save(estadisticaCategoria);
+
+        Categoria categoria = (Categoria) resultados.get(0)[0];
+        return new EstadisticaCategoriaDTO(categoria.getDetalle());
     }
 
     public EstadisticaProvinciaXCategoria provinciaConMasHechosSegunCategoria(Long idCategoria) {
@@ -173,7 +176,7 @@ public class EstadisticaService implements IEstadisticaService {
         return this.estadisticaHoraXCategoriaRepository.save(estadisticaHoraXCategoria);
     }
 
-    public EstadisticaSolicitudes cantSolicitudesSpam() {
+    public EstadisticaSolicitudesDTO cantSolicitudesSpam() {
         Long cantSpam = solicitudRepository.countByEstado(EstadoSolicitudEliminacion.SPAM);
         Long cantAceptada = solicitudRepository.countByEstado(EstadoSolicitudEliminacion.ACEPTADA);
         Long cantRechazada = solicitudRepository.countByEstado(EstadoSolicitudEliminacion.RECHAZADA);
@@ -181,13 +184,19 @@ public class EstadisticaService implements IEstadisticaService {
 
         Long cantNoSpam = cantAceptada + cantRechazada + cantPendiente;
 
+        // TODO: acá se está guardando cada vez que alguien llama a ESTADISTICAS (por ejemplo, si en el front refresco la página 3 veces, se estarían guardando 3 veces en la BD que son los mismos datos). No sé si es necesario guardarlo, ya que estamos haciendo el cálculo acá y por cada cálculo se guarda, entonces como que es casi lo mismo
         EstadisticaSolicitudes estadisticaSolicitudes = new EstadisticaSolicitudes(
             LocalDateTime.now(),
             cantSpam,
             cantNoSpam
         );
+        // this.estadisticaSolicitudesRepository.save(estadisticaSolicitudes);
+        return this.mapToDTO(estadisticaSolicitudes);
+    }
 
-        return this.estadisticaSolicitudesRepository.save(estadisticaSolicitudes);
+    private EstadisticaSolicitudesDTO mapToDTO(EstadisticaSolicitudes estadisticaSolicitudes) {
+        return new EstadisticaSolicitudesDTO(estadisticaSolicitudes.getSolicitudes_spam(),
+                estadisticaSolicitudes.getSolicitudes_no_spam());
     }
 
     @Override

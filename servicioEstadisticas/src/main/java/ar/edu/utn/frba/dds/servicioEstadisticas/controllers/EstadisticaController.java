@@ -1,12 +1,13 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.controllers;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaCategoriaDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaSolicitudesDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaHoraXCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaSolicitudes;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.utils.EstadisticaCombinacion;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticaService;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IImportadorService;
@@ -42,7 +43,7 @@ public class EstadisticaController {
     // ¿Cuál es la categoría con mayor cantidad de hechos reportados?
     @GetMapping("/categoria/mayorCantidadHechos")
     public ResponseEntity categoriaConMasHechos() {
-        EstadisticaCategoria estadisticaCategoria = this.estadisticaService.categoriaConMasHechos();
+        EstadisticaCategoriaDTO estadisticaCategoria = this.estadisticaService.categoriaConMasHechos();
         if(estadisticaCategoria == null) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
@@ -76,7 +77,7 @@ public class EstadisticaController {
     // ¿Cuántas solicitudes de eliminación son spam?
     @GetMapping("/solicitudes/cantSpam")
     public ResponseEntity cantSolicitudesSpam() {
-        EstadisticaSolicitudes estadisticaSolicitudes = this.estadisticaService.cantSolicitudesSpam();
+        EstadisticaSolicitudesDTO estadisticaSolicitudes = this.estadisticaService.cantSolicitudesSpam();
         if(estadisticaSolicitudes == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }

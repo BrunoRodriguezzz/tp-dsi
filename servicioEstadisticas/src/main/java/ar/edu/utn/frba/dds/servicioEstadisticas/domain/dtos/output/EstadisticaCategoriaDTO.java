@@ -1,14 +1,12 @@
-package ar.edu.utn.frba.dds.client.dtos.estadisticas;
+package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class EstadisticaCategoriaDTO {
     private String categoriaConMasHechos;
 }
