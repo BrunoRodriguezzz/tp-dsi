@@ -1191,7 +1191,7 @@ public class MockService {
         System.out.println("SPam: " + cantSpam);
         System.out.println("NO SPAM: " + cantNoSpam);
 
-        return new EstadisticaSolicitudesDTO(LocalDateTime.now(), cantSpam, cantNoSpam);
+        return new EstadisticaSolicitudesDTO(cantSpam, cantNoSpam);
     }
 
     public List<EstadisticaProvinciaXColeccionDTO> getRankingProvinciasPorColeccion() {

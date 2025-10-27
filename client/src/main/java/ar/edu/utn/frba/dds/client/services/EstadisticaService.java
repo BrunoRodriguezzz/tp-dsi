@@ -14,20 +14,20 @@ import java.util.stream.Collectors;
 public class EstadisticaService {
     private final WebClient webClient;
     private final WebApiCallerService webApiCallerService;
-    private final String hechoServiceUrl;
+    private final String estadisticasServiceUrl;
     private final MockService mockService;
 
     public EstadisticaService(
             WebApiCallerService webApiCallerService,
-            @Value("${hechos.service.url}") String hechoServiceUrl) {
+            @Value("${estadisticas.service.url}") String estadisticasServiceUrl) {
         this.webClient = WebClient.builder().build();
         this.webApiCallerService = webApiCallerService;
-        this.hechoServiceUrl = hechoServiceUrl;
+        this.estadisticasServiceUrl = estadisticasServiceUrl;
         this.mockService = new MockService();
     }
 
-    public EstadisticaCategoriaDTO getCategorias(){
-        return new EstadisticaCategoriaDTO(this.mockService.getCategorias());
+    public EstadisticaCategoriaDTO getCategoriaTop(){
+        return this.webApiCallerService.get(this.estadisticasServiceUrl + "/categoria/mayorCantidadHechos", EstadisticaCategoriaDTO.class);
     }
 
     public List<EstadisticaProvinciaXCategoriaDTO> getCategoriasPorProvincias(){
@@ -43,7 +43,11 @@ public class EstadisticaService {
     }
 
     public EstadisticaSolicitudesDTO getCantSolicitudesSpam(){
-        return this.mockService.getCantSolicitudesSpam();
+        try {
+            return this.webApiCallerService.get(this.estadisticasServiceUrl + "/solicitudes/cantSpam", EstadisticaSolicitudesDTO.class);
+        } catch (Exception e) {
+            return this.mockService.getCantSolicitudesSpam();
+        }
     }
 
     public List<EstadisticaProvinciaXColeccionDTO> getRankingProvinciasPorColeccion() {

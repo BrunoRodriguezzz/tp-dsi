@@ -23,15 +23,16 @@ public class EstadisticaController {
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
     public String getEstadisticasGenerales(Model model){
-        model.addAttribute("titulo", "Estadisticas y Análisis");
+        model.addAttribute("titulo", "Estadísticas y Análisis");
 
         // Cards de Estadísticas Generales
-        EstadisticaCategoriaDTO categorias = this.estadisticaService.getCategorias();
-        model.addAttribute("categoriaTop", categorias.getCategoriasConHechos().entrySet().iterator().next().getKey());
         EstadisticaSolicitudesDTO cantSpam = this.estadisticaService.getCantSolicitudesSpam();
         model.addAttribute("cantSpam", cantSpam.getSolicitudes_spam());
         model.addAttribute("cantNoSpam", cantSpam.getSolicitudes_no_spam());
-        model.addAttribute("totalHechos",categorias.getCategoriasConHechos().values().stream().reduce(0L,Long::sum));
+        EstadisticaCategoriaDTO categoriaTop = this.estadisticaService.getCategoriaTop();
+        model.addAttribute("categoriaTop", categoriaTop.getCategoriaConMasHechos());
+        // model.addAttribute("totalHechos",categorias.getCategoriasConHechos().values().stream().reduce(0L,Long::sum));
+        model.addAttribute("totalHechos", 100);
 
         // Tab Content de "Colección por Provincia"
         List<EstadisticaProvinciaXColeccionDTO> estadisticasProvinciasPorColeccion = this.estadisticaService.getRankingProvinciasPorColeccion().stream().limit(8).toList();
