@@ -74,6 +74,17 @@ public class GeneradorDatosPrueba {
         hecho1_4.setUbicacion(ubicacion1_4);
         hechos1.add(hecho1_4);
 
+        // Hecho 1.5: BUENOS_AIRES - Cultural - H10
+        HechoInputDTO hecho1_5 = new HechoInputDTO();
+        hecho1_5.setId(8L);
+        hecho1_5.setTitulo("Inauguración del Teatro Colón");
+        hecho1_5.setCategoria("Cultural");
+        hecho1_5.setFechaAcontecimiento(LocalDateTime.of(1908, 5, 25, 20, 0));
+        UbicacionInputDTO ubicacion1_5 = new UbicacionInputDTO();
+        ubicacion1_5.setProvincia(Provincia.valueOf("BUENOS_AIRES"));
+        hecho1_5.setUbicacion(ubicacion1_5);
+        hechos1.add(hecho1_5);
+
         coleccion1.setHechos(hechos1);
         colecciones.add(coleccion1);
 
@@ -387,6 +398,43 @@ public class GeneradorDatosPrueba {
         solicitud6.setResolucion(resolucion6);
 
         solicitudes.add(solicitud6);
+
+        // === SOLICITUD 7: RECHAZADA - Hecho "Inauguración Obelisco" ===
+        SolicitudEliminacionInputDTO solicitud7 = new SolicitudEliminacionInputDTO();
+        solicitud7.setId(1007L);
+
+        // Crear hecho asociado (Inauguración del Obelisco)
+        HechoInputDTO hecho7 = new HechoInputDTO();
+        hecho7.setId(10L);
+        hecho7.setTitulo("Inauguración del Obelisco");
+        hecho7.setCategoria("Histórico");
+        hecho7.setFechaAcontecimiento(LocalDateTime.of(1936, 5, 23, 12, 0));
+        UbicacionInputDTO ubicacion7 = new UbicacionInputDTO();
+        ubicacion7.setProvincia(Provincia.valueOf("BUENOS_AIRES"));
+        hecho7.setUbicacion(ubicacion7);
+        solicitud7.setHecho(hecho7);
+
+        solicitud7.setFundamento("El obelisco no representa a todos, debería eliminarse");
+        solicitud7.setFechaCreacion(LocalDateTime.of(2024, 5, 10, 10, 30));
+        solicitud7.setEstado("RECHAZADA");
+
+        // Contribuyente
+        ContribuyenteInputDTO contribuyente7 = new ContribuyenteInputDTO();
+        contribuyente7.setNombre("Carlos");
+        contribuyente7.setApellido("Gómez");
+        contribuyente7.setFechaNacimiento(LocalDate.of(1985, 3, 22));
+        solicitud7.setContribuyente(contribuyente7);
+
+        // Resolución para RECHAZADA
+        ResolucionSolicitudEliminacionInputDTO resolucion7 = new ResolucionSolicitudEliminacionInputDTO();
+        AdministradorInputDTO admin7 = new AdministradorInputDTO();
+        admin7.setNombre("Lucía");
+        admin7.setApellido("Moderadora");
+        resolucion7.setAdministrador(admin7);
+        resolucion7.setFechaResolucion(LocalDateTime.of(2024, 5, 11, 14, 15));
+        solicitud7.setResolucion(resolucion7);
+
+        solicitudes.add(solicitud7);
 
         return solicitudes;
     }
