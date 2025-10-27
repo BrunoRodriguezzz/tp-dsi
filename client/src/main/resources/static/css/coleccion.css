@@ -145,7 +145,6 @@ body {
     color: #fff;
 }
 
-/* Mejor centrado vertical y horizontal del formulario de edición de colección */
 main.container {
     display: flex;
     flex-direction: column;
@@ -198,4 +197,30 @@ main.container {
         flex-direction: row;
         gap: 1rem;
     }
+}
+
+.chip {
+    display: inline-block;
+    padding: 0.35em 1em;
+    font-size: 0.95em;
+    font-weight: 500;
+    border-radius: 16px;
+    background: #e0e0e0;
+    color: #333;
+    margin: 0 0.2em 0.2em 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    border: none;
+    transition: background 0.2s, color 0.2s;
+}
+.chip-celeste {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+.chip-verde {
+    background: #e8f5e9;
+    color: #388e3c;
+}
+.chip-morado {
+    background: #ede7f6;
+    color: #7b1fa2;
 }

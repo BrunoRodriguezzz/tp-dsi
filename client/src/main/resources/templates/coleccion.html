@@ -10,15 +10,22 @@
         <link rel="stylesheet" th:href="@{/css/header.css}">
         <link rel="stylesheet" th:href="@{/css/footer.css}">
         <link rel="stylesheet" th:href="@{/css/coleccion.css}">
+        <link rel="stylesheet" th:href="@{/css/publicarHecho.css}">
+        <link rel="stylesheet" th:href="@{/css/hechos.css}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
+        <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+        <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
         <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+        <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
     </th:block>
 </head>
 <body>
 <div th:fragment="contenido">
-    <main class="container">
+    <main class="container" th:attr="data-coleccion-id=${coleccion.id}">
         <div th:if="${coleccion == null}">
             <h2>Colección no encontrada</h2>
             <p>La colección solicitada no existe.</p>
@@ -31,7 +38,7 @@
                     <p th:text="${coleccion.descripcion}">Descripción de la colección</p>
                 </div>
                 <div class="titulos-buttons">
-                    <button class="btn btn-filtro" onclick="document.querySelector('.filtros-container').style.display = (document.querySelector('.filtros-container').style.display === 'none' ? 'block' : 'none')">Mostrar filtros</button>
+                    <button class="btn btn-outline-secondary config-mostrarFiltros" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">Mostrar Filtros</button>
                     <a th:if="${coleccion.id != null}" th:href="@{'/editarColeccion/' + ${coleccion.id}}">
                         <button class="nav-item btn btn-outline-primary">Modificar Colección</button>
                     </a>
@@ -51,121 +58,16 @@
                     </span>
                 </div>
             </div>
-            <style>
-                .chip {
-                    display: inline-block;
-                    padding: 0.35em 1em;
-                    font-size: 0.95em;
-                    font-weight: 500;
-                    border-radius: 16px;
-                    background: #e0e0e0;
-                    color: #333;
-                    margin: 0 0.2em 0.2em 0;
-                    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
-                    border: none;
-                    transition: background 0.2s, color 0.2s;
-                }
-                .chip-celeste {
-                    background: #e3f2fd;
-                    color: #1976d2;
-                }
-                .chip-verde {
-                    background: #e8f5e9;
-                    color: #388e3c;
-                }
-                .chip-morado {
-                    background: #ede7f6;
-                    color: #7b1fa2;
-                }
-            </style>
 
-            <div class="filtros-container" style="display: none;">
-                <h5>Filtros</h5>
-                <div class="filtros-grid">
-                    <div class="form-group">
-                        <label for="categoria">Categoría</label>
-                        <select id="categoria" class="form-select">
-                            <option>Todas las categorías</option>
-                            <option>Opción 1</option>
-                            <option>Opción 2</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="fecha-desde">Fecha Desde</label>
-                        <input type="date" id="fecha-desde" class="form-control" placeholder="dd/mm/aaaa">
-                    </div>
-                    <div class="form-group">
-                        <label for="fecha-hasta">Fecha Hasta</label>
-                        <input type="date" id="fecha-hasta" class="form-control" placeholder="dd/mm/aaaa">
-                    </div>
-                    <div class="form-group wide">
-                        <label for="ubicacion">Ubicación</label>
-                        <input type="text" id="ubicacion" class="form-control" placeholder="Buscar por ubicación...">
-                    </div>
-                    <div class="form-group wide">
-                        <label for="fuente">Fuente</label>
-                        <input type="text" id="fuente" class="form-control" placeholder="Buscar por fuente...">
-                    </div>
-                    <div class="form-group wide">
-                        <label>&nbsp;</label>
-                        <button type="button" class="btn btn-outline-secondary w-100" id="limpiar-filtros">Limpiar Filtros</button>
-                    </div>
-                </div>
-            </div>
+            <div th:insert="~{fragments/filtros :: filtros}"></div>
 
             <div class="hechos-container" id="hechos-container"></div>
         </div>
     </main>
 
+    <script th:src="@{/js/mapa.js}"></script>
     <script th:src="@{/js/coleccion.js}"></script>
-    <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function() {
-            var coleccionId = /*[[${coleccion.id}]]*/ 0;
-            if (coleccionId === 0) return;
-            fetch('/coleccion/' + coleccionId + '/hechos')
-                .then(response => response.json())
-                .then(hechos => {
-                    const container = document.getElementById('hechos-container');
-                    if (!hechos || hechos.length === 0) {
-                        container.innerHTML = '<p>No hay hechos para esta colección.</p>';
-                        return;
-                    }
-                    let html = '';
-                    hechos.forEach(hecho => {
-                        html += `
-                        <div class="hecho-card">
-                            <div class="card-col-izq">
-                                <div class="card-header">${hecho.titulo || ''}</div>
-                                <div class="card-desc">${hecho.descripcion || ''}</div>
-                                <div class="card-info-row">
-                                    <p><b>Fecha:</b> ${hecho.fechaAcontecimiento || ''}</p>
-                                    <p><b>Ubicación:</b> ${hecho.ubicacion || ''}</p>
-                                    <p><b>Fuente:</b> ${hecho.fuente || ''}</p>
-                                </div>
-                                <div class="card-etiquetas">
-                                    ${(hecho.etiquetas || []).map(etiqueta => `<span class="card-etiqueta">${etiqueta}</span>`).join('')}
-                                </div>
-                                <div class="card-footer">
-                                    <i class="fa-regular fa-calendar"></i>
-                                    <span>Publicado: ${hecho.fechaPublicacion || ''}</span>
-                                </div>
-                            </div>
-                            <div class="card-col-der">
-                                <span class="card-categoria">${hecho.categoria || ''}</span>
-                                <div class="card-botones">
-                                    <a href="/hechos/${hecho.id}" class="btn btn-dark">Ver Detalle</a>
-                                    <a href="/reportarHecho" class="btn btn-red">Reportar</a>
-                                </div>
-                            </div>
-                        </div>`;
-                    });
-                    container.innerHTML = html;
-                })
-                .catch(() => {
-                    document.getElementById('hechos-container').innerHTML = '<p>Error al cargar los hechos.</p>';
-                });
-        });
-    </script>
+
     <th:block th:fragment="additional-scripts"></th:block>
 </div>
 </body>
