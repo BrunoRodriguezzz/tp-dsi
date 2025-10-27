@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
     <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js" rel="preload" as="script"/>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
 </th:block>
@@ -23,49 +24,7 @@
                 </div>
             </div>
 
-            <div class="collapse" id="filtrosCollapse">
-                <div class="card card-body mb-3">
-                    <form th:action="@{/hechos}" method="get">
-                        <div class="row">
-                            <div class="input-mapa col-12 col-md-6">
-                                <p style="color: black">Ingrese su Ubicación deseada</p>
-                                <div id="geocoder" class="ubicacion-input"></div>
-                                <div id="map" class="map mapa"></div>
-                                <input type="hidden" id="latInput" name="lat" th:value="${param.lat}">
-                                <input type="hidden" id="lngInput" name="lng" th:value="${param.lng}">
-                                <input type="hidden" id="municipioInput" name="municipio" th:value="${param.municipio}">
-                                <input type="hidden" id="provinciaInput" name="provincia" th:value="${param.provincia}">
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <div class="col-md-4 mb-12 w-100 filtro-input row">
-                                    <div class="col-6">
-                                        <label for="fechaAcontencimientoDesde" class="form-label">Fecha desde</label>
-                                        <input type="date" class="form-control" id="fechaAcontencimientoDesde" name="fechaAcontencimientoDesde" th:value="${param.fechaDesde}">
-                                    </div>
-                                    <div class="col-6">
-                                        <label for="fechaAcontencimientoHasta" class="form-label">Fecha hasta</label>
-                                        <input type="date" class="form-control" id="fechaAcontencimientoHasta" name="fechaAcontencimientoHasta" th:value="${param.fechaHasta}">
-                                    </div>
-
-                                </div>
-                                <div class="col-md-4 mb-12 w-100 filtro-input">
-                                    <label for="categoria" class="form-label">Categoría</label>
-                                    <input type="text" class="form-control" id="categoria" name="categoria" th:value="${param.categoria}">
-                                </div>
-                                <div class="col-md-4 mb-12 w-100 filtro-input">
-                                    <label for="fuente" class="form-label">Fuente</label>
-                                    <input type="text" class="form-control" id="fuente" name="fuente" th:value="${param.fuente}">
-                                </div>
-                                <div class="text-end buttons">
-                                    <button type="submit" class="btn btn-primary btn-dark">Filtrar</button>
-                                    <a th:href="@{/hechos}" class="btn btn-outline-secondary">Limpiar</a>
-                                </div>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
-            </div>
+            <div th:insert="~{fragments/filtros :: filtros}"></div>
 
             <div class="hecho-card" th:each="hecho: ${hechos}">
                 <div class="hecho-card-mas-opciones">
@@ -81,8 +40,8 @@
                 </div>
                 <div class="informacion-general">
                     <div class="fecha-ubicacion-fuente encolumnar">
-                        <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento}|">Sin fecha</p>
-                        <p class="info-fecha-ubicacion-fuente" th:text="|Ubicacion: ${hecho.ubicacion.provincia}, ${hecho.ubicacion.municipio}|">Sin Ubicación</p>
+                        <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento}|"></p>
+                        <p class="info-fecha-ubicacion-fuente" th:text="|Ubicacion: ${hecho.ubicacion.provincia}, ${hecho.ubicacion.municipio}|"></p>
                         <p class="info-fecha-ubicacion-fuente" th:text="|Fuente: ${hecho.fuente}|"></p>
                     </div>
                     <div class="etiquetas">
@@ -97,7 +56,3 @@
     <script th:src="@{/js/mapa.js}"></script>
 </div>
 </html>
-
-
-
-

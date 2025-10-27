@@ -1,10 +1,10 @@
 package ar.edu.utn.frba.dds.client.dtos;
 
 import lombok.Data;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 public class Params {
@@ -23,7 +23,7 @@ public class Params {
         else
             this.fechaAcontecimientoInicio = null;
         if (fechaAcontecimientoFin != null)
-            this.fechaAcontecimientoFin = fechaAcontecimientoFin.atStartOfDay();
+            this.fechaAcontecimientoFin = fechaAcontecimientoFin.atTime(LocalTime.MAX);
         else
             this.fechaAcontecimientoFin = null;
         this.categoria = categoria;
