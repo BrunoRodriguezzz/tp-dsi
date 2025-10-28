@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.servicioEstadisticas.controllers;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaCategoriaDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaProvinciaXCategoriaDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaProvinciaXColeccionDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaSolicitudesDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
@@ -47,8 +48,8 @@ public class EstadisticaController {
         return ResponseEntity.status(HttpStatus.OK).body(estadisticas);
     }
 
-    // ¿Cuál es la categoría con mayor cantidad de hechos reportados?
-    @GetMapping("/categoria/mayorCantidadHechos")
+    // ¿Cuáles son las categorías con mayor cantidad de hechos reportados?
+    @GetMapping("/categorias/mayorCantidadHechos")
     public ResponseEntity categoriasConMasHechos() {
         EstadisticaCategoriaDTO estadisticaCategoria = this.estadisticaService.categoriaConMasHechos();
         if(estadisticaCategoria == null) {
@@ -67,6 +68,13 @@ public class EstadisticaController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.status(HttpStatus.OK).body(estadisticaProvinciaXCategoria);
+    }
+
+    @GetMapping("provincias/categorias/mayorCantidadHechos")
+    public ResponseEntity provinciaConMasHechosSegunCategorias() {
+        List<EstadisticaProvinciaXCategoriaDTO> estadisticas = this.estadisticaService.provinciaConMasHechosSegunCategorias();
+        if(estadisticas == null) return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.OK).body(estadisticas);
     }
 
     // ¿A qué hora del día ocurren la mayor cantidad de hechos de una cierta categoría?

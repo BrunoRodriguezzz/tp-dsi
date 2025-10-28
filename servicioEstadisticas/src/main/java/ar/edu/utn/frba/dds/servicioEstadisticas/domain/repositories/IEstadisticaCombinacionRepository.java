@@ -56,6 +56,14 @@ public interface IEstadisticaCombinacionRepository extends JpaRepository<Estadis
         "ORDER BY COUNT(DISTINCT h.id) DESC")
     List<Object[]> findProvinciasConHechosPorCategoria(@Param("idCategoria") Long idCategoria);
 
+    // mapa de provincias para TODAS las categorías
+    @Query("SELECT e.categoria as categoria, e.provincia as provincia, COUNT(DISTINCT h.id) as cantidad " +
+            "FROM EstadisticaCombinacion e " +
+            "JOIN e.hechos h " +
+            "GROUP BY e.categoria, e.provincia " +
+            "ORDER BY COUNT(DISTINCT h.id) DESC")
+    List<Object[]> findProvinciasConHechosPorCategorias();
+
     // mapa de horas por categoría
     @Query("SELECT e.hora as hora, COUNT(DISTINCT h.id) as cantidad " +
         "FROM EstadisticaCombinacion e " +

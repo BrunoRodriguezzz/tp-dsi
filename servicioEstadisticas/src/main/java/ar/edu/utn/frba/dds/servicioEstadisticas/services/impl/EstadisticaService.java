@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaCategoriaDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaProvinciaXCategoriaDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaProvinciaXColeccionDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaSolicitudesDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
@@ -190,6 +191,27 @@ public class EstadisticaService implements IEstadisticaService {
         );
 
         return this.estadisticaProvinciaXCategoriaRepository.save(estadisticaProvinciaXCategoria);
+    }
+
+    public List<EstadisticaProvinciaXCategoriaDTO> provinciaConMasHechosSegunCategorias(){
+        List<Object[]> resultados = estadisticaRepository.findProvinciasConHechosPorCategorias();
+
+        // Mapa auxiliar: categoría → provincias con cantidad
+        Map<String, Map<String, Long>> agrupado = new LinkedHashMap<>();
+
+        for (Object[] fila : resultados) {
+            String categoria = ((Categoria) fila[0]).getDetalle();
+            String provincia = ((Provincia) fila[1]).getValue();
+            Long cantidad = ((Number) fila[2]).longValue();
+
+            agrupado
+                    .computeIfAbsent(categoria, k -> new LinkedHashMap<>())
+                    .put(provincia, cantidad);
+        }
+        // Convertir a lista de DTOs
+        return agrupado.entrySet().stream()
+                .map(entry -> new EstadisticaProvinciaXCategoriaDTO(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 
     public EstadisticaHoraXCategoria horaConMasHechosSegunCategoria(Long idCategoria) {

@@ -28,19 +28,20 @@ public class EstadisticaService {
     }
 
     public EstadisticaCategoriaDTO getRankingCategorias(){
-        return this.webApiCallerService.get(this.estadisticasServiceUrl + "/categoria/mayorCantidadHechos", EstadisticaCategoriaDTO.class);
+        return this.webApiCallerService.get(this.estadisticasServiceUrl + "/categorias/mayorCantidadHechos", EstadisticaCategoriaDTO.class);
     }
 
     public List<EstadisticaProvinciaXCategoriaDTO> getCategoriasPorProvincias(){
-        Map<String, Map<String, Long>> categoriasPorProvincia = this.mockService.getCategoriasPorProvincia();
-
-        return categoriasPorProvincia.entrySet().stream()
-                .map(entry -> new EstadisticaProvinciaXCategoriaDTO(
-                        entry.getKey(),     // la categoría
-                        entry.getValue()    // el mapa de provincias y sus cantidades
-                ))
-                .collect(Collectors.toList());
-
+        try {
+            return this.webApiCallerService.getList(this.estadisticasServiceUrl + "/provincias/categorias/mayorCantidadHechos", EstadisticaProvinciaXCategoriaDTO.class);
+        } catch (Exception e) {
+            return this.mockService.getCategoriasPorProvincia().entrySet().stream()
+                    .map(entry -> new EstadisticaProvinciaXCategoriaDTO(
+                            entry.getKey(),     // la categoría
+                            entry.getValue()    // el mapa de provincias y sus cantidades
+                    ))
+                    .collect(Collectors.toList());
+        }
     }
 
     public EstadisticaSolicitudesDTO getCantSolicitudesSpam(){
