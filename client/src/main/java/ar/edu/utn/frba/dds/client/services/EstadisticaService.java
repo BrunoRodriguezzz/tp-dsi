@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,10 +52,25 @@ public class EstadisticaService {
     }
 
     public List<EstadisticaProvinciaXColeccionDTO> getRankingProvinciasPorColeccion() {
-        return this.mockService.getRankingProvinciasPorColeccion();
+        try {
+            return this.webApiCallerService.getList(this.estadisticasServiceUrl + "/colecciones/provincias", EstadisticaProvinciaXColeccionDTO.class);
+        }catch (Exception e){
+            return this.mockService.getRankingProvinciasPorColeccion();
+        }
     }
 
     public List<EstadisticaHoraXCategoriaDTO> getHorariosPorCategoria(){
         return this.mockService.getHorariosPorCategoria(this.mockService.getCategorias());
+    }
+
+    // NOTA: si hay tiempo, esto se podría eliminar y manejar una List en vez de un Map en el JS, pero por ahora lo dejo así
+    public Map<String, Map<String, Long>> convertToMap(List<EstadisticaProvinciaXColeccionDTO> estadisticasProvinciasPorColecciones){
+        return estadisticasProvinciasPorColecciones.stream()
+                .collect(Collectors.toMap(
+                        EstadisticaProvinciaXColeccionDTO::getColeccion,
+                        EstadisticaProvinciaXColeccionDTO::getProvinciasConHechos,
+                        (existing, replacement) -> existing,  // merge function (en caso de duplicados)
+                        LinkedHashMap::new
+                ));
     }
 }

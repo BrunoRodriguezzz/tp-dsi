@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaCategoriaDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaProvinciaXColeccionDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaSolicitudesDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
@@ -85,7 +86,28 @@ public class EstadisticaService implements IEstadisticaService {
     @Autowired
     private ISolicitudRepository solicitudRepository;
 
-    public EstadisticaProvinciaXColeccion provinciaConMasHechosDeUnaColeccion(Long idColeccion) {
+    public List<EstadisticaProvinciaXColeccionDTO> provinciasConMasHechosPorColecciones(){
+        List<Object[]> resultados = estadisticaRepository.findProvinciasConHechosPorColecciones();
+        // Mapear: coleccion → (provincia → cantidad)
+        Map<String, Map<String, Long>> agrupadoPorColeccion = new LinkedHashMap<>();
+
+        for (Object[] fila : resultados) {
+            String coleccion = ((Coleccion) fila[0]).getDetalle();
+            String provincia = ((Provincia) fila[1]).getValue();
+            Long cantidad = ((Number) fila[2]).longValue();
+
+            agrupadoPorColeccion
+                    .computeIfAbsent(coleccion, k -> new LinkedHashMap<>())
+                    .put(provincia, cantidad);
+        }
+
+        // Convertir a lista de DTOs
+        return agrupadoPorColeccion.entrySet().stream()
+                .map(entry -> new EstadisticaProvinciaXColeccionDTO(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    public EstadisticaProvinciaXColeccionDTO provinciaConMasHechosDeUnaColeccion(Long idColeccion) {
         Coleccion coleccion = coleccionRepository.findById(idColeccion)
             .orElseThrow(() -> new RuntimeException("Colección no encontrada"));
 
@@ -105,8 +127,20 @@ public class EstadisticaService implements IEstadisticaService {
             LocalDateTime.now(),
             coleccion
         );
+        // TODO: lo mismo que solicitudes
+        // return this.estadisticaProvinciaXColeccionRepository.save(estadistica);
+        return this.mapToDTO(estadistica);
+    }
 
-        return this.estadisticaProvinciaXColeccionRepository.save(estadistica);
+    private EstadisticaProvinciaXColeccionDTO mapToDTO(EstadisticaProvinciaXColeccion estadisticaProvinciaXColeccion) {
+        Map<String, Long> provincias = new LinkedHashMap<>();
+        estadisticaProvinciaXColeccion.getProvinciasConHechos().forEach((provincia, cantidad) -> {
+            provincias.put(provincia.getValue(), cantidad);
+        });
+
+        return new EstadisticaProvinciaXColeccionDTO(
+                estadisticaProvinciaXColeccion.getColeccion().getDetalle(),
+                provincias);
     }
 
     public EstadisticaCategoriaDTO categoriaConMasHechos() {

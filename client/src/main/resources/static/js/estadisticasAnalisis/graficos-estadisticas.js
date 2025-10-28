@@ -167,33 +167,6 @@ function encontrarEnPosicion(datos, posicion = 0) {
     return null;
 }
 
-function encontrarMaximo(datos) {
-    if (Array.isArray(datos.values)) {
-        const maxValor = Math.max(...datos.values);
-        const indiceMax = datos.values.indexOf(maxValor);
-        return {
-            valor: maxValor,
-            indice: indiceMax,
-            label: datos.labels[indiceMax]
-        };
-    }
-    return null;
-}
-
-function encontrarSegundoMaximo(datos) {
-    if (Array.isArray(datos.values)) {
-        const valoresOrdenados = [...datos.values].sort((a, b) => b - a);
-        const segundoValor = valoresOrdenados[1];
-        const indiceSegundo = datos.values.indexOf(segundoValor);
-        return {
-            valor: segundoValor,
-            indice: indiceSegundo,
-            label: datos.labels[indiceSegundo]
-        };
-    }
-    return null;
-}
-
 function actualizarElementoTexto(elementId, texto) {
     const elemento = document.getElementById(elementId);
     if (elemento) {
