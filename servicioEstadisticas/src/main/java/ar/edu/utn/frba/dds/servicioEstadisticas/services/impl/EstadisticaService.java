@@ -124,8 +124,14 @@ public class EstadisticaService implements IEstadisticaService {
         EstadisticaCategoria estadisticaCategoria = new EstadisticaCategoria(categoriasConHechos, LocalDateTime.now());
         // return this.estadisticaCategoriaRepository.save(estadisticaCategoria);
 
-        Categoria categoria = (Categoria) resultados.get(0)[0];
-        return new EstadisticaCategoriaDTO(categoria.getDetalle());
+        return this.mapToDTO(estadisticaCategoria);
+    }
+
+    private EstadisticaCategoriaDTO mapToDTO(EstadisticaCategoria estadisticaCategoria) {
+        Map<String, Long> categorias = new LinkedHashMap<>();
+        estadisticaCategoria.getCategoriasConHechos().forEach((categoria, cantidad) ->
+                categorias.put(categoria.getDetalle(), cantidad));
+        return new EstadisticaCategoriaDTO(categorias);
     }
 
     public EstadisticaProvinciaXCategoria provinciaConMasHechosSegunCategoria(Long idCategoria) {

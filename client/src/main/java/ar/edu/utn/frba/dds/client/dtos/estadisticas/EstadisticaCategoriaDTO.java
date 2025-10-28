@@ -10,5 +10,5 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EstadisticaCategoriaDTO {
-    private String categoriaConMasHechos;
+    private Map<String, Long> categoriasConMasHechos;
 }

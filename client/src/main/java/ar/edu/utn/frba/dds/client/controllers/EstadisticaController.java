@@ -29,8 +29,8 @@ public class EstadisticaController {
         EstadisticaSolicitudesDTO cantSpam = this.estadisticaService.getCantSolicitudesSpam();
         model.addAttribute("cantSpam", cantSpam.getSolicitudes_spam());
         model.addAttribute("cantNoSpam", cantSpam.getSolicitudes_no_spam());
-        EstadisticaCategoriaDTO categoriaTop = this.estadisticaService.getCategoriaTop();
-        model.addAttribute("categoriaTop", categoriaTop.getCategoriaConMasHechos());
+        EstadisticaCategoriaDTO categorias = this.estadisticaService.getRankingCategorias();
+        model.addAttribute("categoriaTop", categorias.getCategoriasConMasHechos().entrySet().iterator().next().getKey());
         // model.addAttribute("totalHechos",categorias.getCategoriasConHechos().values().stream().reduce(0L,Long::sum));
         model.addAttribute("totalHechos", 100);
 
@@ -56,16 +56,7 @@ public class EstadisticaController {
         model.addAttribute("resultCantidad",estadisticasProvinciasPorColeccion.get(0).getProvinciasConHechos().values().iterator().next());
 
         // Tab Content "Ranking de Categorías"
-        model.addAttribute("rankingCategorias",
-                coleccionPorProvincia
-                        .entrySet()
-                        .stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey, // la categoría
-                                e -> e.getValue().values().stream().mapToLong(Long::longValue).sum(), // suma de sus provincias
-                                (existing, replacement) -> existing,  // merge function (en caso de duplicados)
-                                LinkedHashMap::new
-                        )));
+        model.addAttribute("rankingCategorias", categorias.getCategoriasConMasHechos());
 
         Map<String, Long> rankingCategorias =
                 coleccionPorProvincia.entrySet()

@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class EstadisticaCategoriaDTO {
-    private String categoriaConMasHechos;
+    private Map<String, Long> categoriasConMasHechos;
 }

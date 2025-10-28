@@ -26,7 +26,7 @@ public class EstadisticaService {
         this.mockService = new MockService();
     }
 
-    public EstadisticaCategoriaDTO getCategoriaTop(){
+    public EstadisticaCategoriaDTO getRankingCategorias(){
         return this.webApiCallerService.get(this.estadisticasServiceUrl + "/categoria/mayorCantidadHechos", EstadisticaCategoriaDTO.class);
     }
 
