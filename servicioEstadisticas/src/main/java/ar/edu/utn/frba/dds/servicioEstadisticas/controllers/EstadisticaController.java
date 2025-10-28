@@ -4,7 +4,6 @@ import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaCategoriaDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaSolicitudesDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaHoraXCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
@@ -42,7 +41,7 @@ public class EstadisticaController {
 
     // ¿Cuál es la categoría con mayor cantidad de hechos reportados?
     @GetMapping("/categoria/mayorCantidadHechos")
-    public ResponseEntity categoriaConMasHechos() {
+    public ResponseEntity categoriasConMasHechos() {
         EstadisticaCategoriaDTO estadisticaCategoria = this.estadisticaService.categoriaConMasHechos();
         if(estadisticaCategoria == null) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
