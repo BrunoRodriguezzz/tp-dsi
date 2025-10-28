@@ -61,7 +61,11 @@ public class EstadisticaService {
     }
 
     public List<EstadisticaHoraXCategoriaDTO> getHorariosPorCategoria(){
-        return this.mockService.getHorariosPorCategoria(this.mockService.getCategorias());
+        try {
+            return this.webApiCallerService.getList(this.estadisticasServiceUrl + "/categorias/hora/mayorCantidadHechos", EstadisticaHoraXCategoriaDTO.class);
+        } catch (Exception e) {
+            return this.mockService.getHorariosPorCategoria(this.mockService.getCategorias());
+        }
     }
 
     // NOTA: si hay tiempo, esto se podría eliminar y manejar una List en vez de un Map en el JS, pero por ahora lo dejo así

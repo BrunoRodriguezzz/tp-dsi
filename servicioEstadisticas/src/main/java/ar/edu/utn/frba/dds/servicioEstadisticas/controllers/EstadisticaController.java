@@ -1,10 +1,7 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.controllers;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaCategoriaDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaProvinciaXCategoriaDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaProvinciaXColeccionDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaSolicitudesDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.*;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaHoraXCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
@@ -87,6 +84,14 @@ public class EstadisticaController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.status(HttpStatus.OK).body(estadisticaHoraXCategoria);
+    }
+
+    // EstadisticaHoraXCategoriaDTO
+    @GetMapping("/categorias/hora/mayorCantidadHechos")
+    public ResponseEntity horaConMasHechosSegunCategorias() {
+        List<EstadisticaHoraXCategoriaDTO> estadisticas = this.estadisticaService.horaConMasHechosSegunCategorias();
+        if(estadisticas == null) return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.OK).body(estadisticas);
     }
 
     // ¿Cuántas solicitudes de eliminación son spam?

@@ -1,10 +1,7 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaCategoriaDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaProvinciaXCategoriaDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaProvinciaXColeccionDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.EstadisticaSolicitudesDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.*;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.*;
@@ -32,16 +29,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
+import java.time.LocalTime;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -236,6 +231,25 @@ public class EstadisticaService implements IEstadisticaService {
         );
 
         return this.estadisticaHoraXCategoriaRepository.save(estadisticaHoraXCategoria);
+    }
+
+    public List<EstadisticaHoraXCategoriaDTO> horaConMasHechosSegunCategorias(){
+        List<Object[]> resultados = estadisticaRepository.findHorasConHechosPorCategorias();
+
+        Map<String, Map<LocalTime, Long>> agrupado = new LinkedHashMap<>();
+
+        for (Object[] fila : resultados) {
+            String categoria = ((Categoria) fila[0]).getDetalle();
+            LocalTime hora = ((HoraDelDia) fila[1]).getHora();
+            Long cantidad = ((Number) fila[2]).longValue();
+
+            agrupado
+                    .computeIfAbsent(categoria, k -> new TreeMap<>())
+                    .put(hora, cantidad);
+        }
+        return agrupado.entrySet().stream()
+                .map(entry -> new EstadisticaHoraXCategoriaDTO(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 
     public EstadisticaSolicitudesDTO cantSolicitudesSpam() {
