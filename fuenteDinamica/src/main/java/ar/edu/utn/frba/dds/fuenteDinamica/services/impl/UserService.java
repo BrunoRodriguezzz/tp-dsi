@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoProhibido;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorDeTiempo;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudModOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.*;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.ICategoriaRepository;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,10 +64,15 @@ public class UserService implements IUserService {
                     .map(this::convertirMultimedia)
                     .toList();
 
+            Categoria categoria = categoriaExistente(hechoInputDTO.getCategoria());
+            Ubicacion ubicacion = ubicacionExistente(hechoInputDTO.getLatitud(), hechoInputDTO.getLongitud());
+
             Hecho hecho = Hecho
                     .builder()
                     .titulo(hechoInputDTO.getTitulo())
                     .descripcion(hechoInputDTO.getDescripcion())
+                    .categoria(categoria)
+                    .ubicacion(ubicacion)
                     .contenidoMultimedia(contenidoMultimedia)
                     .fechaGuardado(LocalDateTime.now())
                     .estaEliminado(false)
@@ -76,36 +83,6 @@ public class UserService implements IUserService {
                     .fuente("Provistos por contribuyentes")
                     .build();
 
-            Categoria categoriaGuardada = this.categoriaRepository.findByNombre(hechoInputDTO.getCategoria());
-
-            if(categoriaGuardada==null){
-                Categoria categoria = this.convertirCategoria(hechoInputDTO.getCategoria());
-                this.categoriaRepository.save(categoria);
-                hecho.setCategoria(categoria);
-            }else{
-                hecho.setCategoria(categoriaGuardada);
-            }
-
-            Ubicacion ubicacionGuardada = this.ubicacionRepository.findByLatitudAndLongitud(hechoInputDTO.getLatitud(), hechoInputDTO.getLongitud());
-
-            if(ubicacionGuardada==null){
-
-                Ubicacion nuevaUbicacion = Ubicacion
-                        .builder()
-                        .latitud(hechoInputDTO.getLatitud())
-                        .longitud(hechoInputDTO.getLongitud())
-                        .pais("ARGENTINA")
-                        .provincia(hechoInputDTO.getProvincia())
-                        .municipio(hechoInputDTO.getMunicipio())
-                        .build();
-
-                this.ubicacionRepository.save(nuevaUbicacion);
-
-                hecho.setUbicacion(nuevaUbicacion);
-
-            }else{
-                hecho.setUbicacion(ubicacionGuardada);
-            }
 
             // Guardo el contribuyente, solo si indico su nombre
             if(usuario.getNombre() != "" && usuario.getApellido() != ""){
@@ -149,19 +126,10 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public SolicitudOutputDTO actualizar(HechoModificadoInputDTO hechoModificado){
+    public SolicitudModOutputDTO actualizar(HechoModificadoInputDTO hechoModificado){
 
         if(this.verificarUsuarioRegistrado(hechoModificado)){
             if(this.verificarTiempoParaActualizar(hechoModificado)){
-                List<Hecho> hechos = this.dinamicaRepository.buscarTodos();
-
-                Hecho hechoOriginal = hechos
-                        .stream()
-                        .filter(hecho -> hecho.getId().equals(hechoModificado.getId()))
-                        .findFirst()
-                        .orElse(null);
-
-                Categoria categoria = this.convertirCategoria(hechoModificado.getCategoria());
 
                 List<ContenidoMultimedia> contenido = hechoModificado
                         .getContenidoMultimedia()
@@ -169,27 +137,25 @@ public class UserService implements IUserService {
                         .map(this::convertirMultimedia)
                         .collect(Collectors.toCollection(ArrayList::new));
 
-                hechoOriginal.setTitulo(hechoModificado.getTitulo());
-                hechoOriginal.setDescripcion(hechoModificado.getDescripcion());
-                hechoOriginal.setCategoria(categoria);
-                hechoOriginal.setContenidoMultimedia(contenido);
-                hechoOriginal.setFechaModificacion(LocalDateTime.now());
+                Categoria categoria = this.categoriaExistente(hechoModificado.getCategoria());
 
-                Ubicacion ubicacion = Ubicacion
+                Ubicacion ubicacion = this.ubicacionExistente(hechoModificado.getLatitud(),  hechoModificado.getLongitud());
+
+                SolicitudModificacion nuevaSolicitud = SolicitudModificacion
                         .builder()
-                        .latitud(hechoModificado.getLatitud())
-                        .longitud(hechoModificado.getLongitud())
+                        .idHecho(hechoModificado.getId())
+                        .titulo(hechoModificado.getTitulo())
+                        .descripcion(hechoModificado.getDescripcion())
+                        .categoria(categoria)
+                        .ubicacion(ubicacion)
+                        .contenidoMultimedia(contenido)
+                        .fechaAcontecimiento(hechoModificado.getFechaAcontecimiento())
+                        .estadoSolicitud(EstadoHecho.PENDIENTE_DE_REVISION)
                         .build();
 
-                hechoOriginal.setUbicacion(ubicacion);
-                hechoOriginal.setFechaAcontecimiento(hechoModificado.getFechaAcontecimiento());
-                hechoOriginal.setFechaModificacion(LocalDateTime.now());
-                hechoOriginal.setEstadoHecho(EstadoHecho.PENDIENTE_DE_REVISION);
-                hechoOriginal.setEnviado(false);
+                this.dinamicaRepository.guardarSolicitudModificacion(nuevaSolicitud);
 
-                this.dinamicaRepository.guardar(hechoOriginal);
-
-                return SolicitudOutputDTO.convertir(hechoOriginal);
+                return SolicitudModOutputDTO.convertir(nuevaSolicitud);
             }else{
                 throw new ErrorDeTiempo("El plazo para modificar el hecho se ha terminado y no es posible modificar el hecho.");
             }
@@ -203,9 +169,7 @@ public class UserService implements IUserService {
 
         Usuario usuario = Usuario
                 .builder()
-                .nombre(hechoParaActualizar.getNombreUsuario())
-                .apellido(hechoParaActualizar.getApellidoUsuario())
-                .fechaNacimiento(hechoParaActualizar.getFechaNacimientoUsuario())
+                .idUsuario(hechoParaActualizar.getIdUsuario())
                 .build();
 
         return this.comprobarUsuarioRegistrado(usuario);
@@ -234,9 +198,9 @@ public class UserService implements IUserService {
 
     private Boolean comprobarUsuarioRegistrado(Usuario contribuyente){
 
-        Contribuyente contribuyentes = this.contribuyentesRepository.findByIdUsuario(contribuyente.getIdUsuario());
+        Optional<Contribuyente> contribuyentes = this.contribuyentesRepository.findById(contribuyente.getIdUsuario());
 
-        if(contribuyentes==null){
+        if(contribuyentes.isEmpty()){
             return false;
         }
         return true;
@@ -247,7 +211,41 @@ public class UserService implements IUserService {
         return ContenidoMultimedia.builder().url(url).build();
     }
 
+    private Categoria categoriaExistente(String categoria){
+        Categoria categoriaGuardada = this.categoriaRepository.findByNombre(categoria);
+
+        if(categoriaGuardada==null){
+            Categoria categoriaNueva = this.convertirCategoria(categoria);
+            this.categoriaRepository.save(categoriaNueva);
+            return categoriaNueva;
+        }else{
+            return categoriaGuardada;
+        }
+    }
+
     private Categoria convertirCategoria(String categoria){
         return Categoria.builder().nombre(categoria).build();
     }
+
+    private Ubicacion ubicacionExistente(String latitud,String longitud){
+        Ubicacion ubicacionGuardada = this.ubicacionRepository.findByLatitudAndLongitud(latitud,longitud);
+
+        if(ubicacionGuardada==null){
+
+            Ubicacion nuevaUbicacion = Ubicacion
+                    .builder()
+                    .latitud(latitud)
+                    .longitud(longitud)
+                    .pais("ARGENTINA")
+                    .build();
+
+            this.ubicacionRepository.save(nuevaUbicacion);
+
+            return nuevaUbicacion;
+
+        }else{
+            return ubicacionGuardada;
+        }
+    }
+
 }

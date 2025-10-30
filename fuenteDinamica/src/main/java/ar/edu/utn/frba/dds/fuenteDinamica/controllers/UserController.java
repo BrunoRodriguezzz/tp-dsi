@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorDeTiempo;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorTipoDeDatos;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudModOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,8 @@ public class UserController {
 
     // Solicitud de modificar un hecho
 
-    @PatchMapping("/modificacion")
-    public SolicitudOutputDTO actualizarHecho(@RequestBody HechoModificadoInputDTO hecho){
+    @PostMapping ("/modificacion")
+    public SolicitudModOutputDTO actualizarHecho(@RequestBody HechoModificadoInputDTO hecho){
 
         HechoInputDTO hechoParaValidarInput = HechoInputDTO.convertirModAInput(hecho);
 

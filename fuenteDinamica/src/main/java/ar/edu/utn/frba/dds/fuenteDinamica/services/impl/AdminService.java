@@ -3,10 +3,14 @@ package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorNotFound;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoEliminarInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.SolicitudRevisadaInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudModOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Etiqueta;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.SolicitudModificacion;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IAdminService;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
 import org.springframework.http.MediaType;
@@ -14,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,6 +93,51 @@ public class AdminService implements IAdminService {
         }
 
         return HechoOutputDTO.convertir(hecho);
+    }
+
+    @Override
+    public List<SolicitudModOutputDTO> obtenerSolicitudesPendientes(){
+        return this.dinamicaRepository.buscarSolicitudesPendientes()
+                .stream()
+                .map(SolicitudModOutputDTO::convertir)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public SolicitudModOutputDTO aplicarCambios(SolicitudRevisadaInputDTO solicitud) {
+
+        SolicitudModificacion solicitudGuardada = this.dinamicaRepository.buscarSolicitud(solicitud.getId());
+
+        if(solicitud.getEstadoHecho() == EstadoHecho.ACEPTADA){
+
+            Hecho hechoGuardado = this.dinamicaRepository.buscarPorID(solicitud.getIdHecho());
+
+
+            hechoGuardado.setTitulo(solicitudGuardada.getTitulo());
+            hechoGuardado.setDescripcion(solicitudGuardada.getDescripcion());
+            hechoGuardado.setCategoria(solicitudGuardada.getCategoria());
+            hechoGuardado.setContenidoMultimedia(new ArrayList<>(solicitudGuardada.getContenidoMultimedia()));
+            hechoGuardado.setUbicacion(solicitudGuardada.getUbicacion());
+            hechoGuardado.setFechaAcontecimiento(solicitudGuardada.getFechaAcontecimiento());
+            hechoGuardado.setFechaModificacion(LocalDateTime.now());
+            hechoGuardado.setFechaGuardado(LocalDateTime.now());
+
+            solicitudGuardada.setEstadoSolicitud(EstadoHecho.ACEPTADA);
+            this.dinamicaRepository.guardarSolicitudModificacion(solicitudGuardada);
+
+            this.dinamicaRepository.guardar(hechoGuardado);
+
+            //TODO: En realidad deberia enviar a un endpoint de PUT en el agregador
+            this.enviarHecho(hechoGuardado);
+
+            return SolicitudModOutputDTO.convertir(solicitudGuardada);
+
+        }else{
+            solicitudGuardada.setEstadoSolicitud(EstadoHecho.RECHAZADA);
+            this.dinamicaRepository.guardarSolicitudModificacion(solicitudGuardada);
+
+            return SolicitudModOutputDTO.convertir(solicitudGuardada);
+        }
     }
 
     private void enviarHecho(Hecho hecho){
