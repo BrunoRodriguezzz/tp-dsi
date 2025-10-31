@@ -56,13 +56,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const main = document.querySelector('main.container');
         const coleccionId = main ? main.dataset.coleccionId : 0;
         if (!coleccionId || coleccionId === '0') return;
-        const agregadorUrl = 'http://localhost:8082/colecciones/' + coleccionId + '/hechos';
+        const query = window.location.search || '';
+        const agregadorUrl = 'http://localhost:8082/colecciones/' + coleccionId + '/hechos' + query;
+        console.log('coleccion.js: querystring detectado =', query);
+        console.log('coleccion.js: llamando al agregador:', agregadorUrl);
         fetch(agregadorUrl)
             .then(response => {
+                console.log('coleccion.js: respuesta del agregador, status=', response.status, 'url=', response.url);
                 if (!response.ok) throw new Error('Error al obtener hechos: ' + response.status + ' ' + response.statusText);
                 return response.json();
             })
             .then(data => {
+                console.log('coleccion.js: datos recibidos del agregador', data);
                 // la respuesta puede ser paginada { content: [...] } o directamente un array
                 const hechos = Array.isArray(data) ? data : (data.content || []);
                 const container = document.getElementById('hechos-container');
@@ -114,3 +119,5 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error al cargar hechos de la colección:', e);
     }
 });
+
+

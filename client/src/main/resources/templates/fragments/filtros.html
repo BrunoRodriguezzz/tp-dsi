@@ -1,7 +1,7 @@
-<div th:fragment="filtros">
+<div th:fragment="filtros (actionUrl, clearUrl)">
     <div class="collapse" id="filtrosCollapse">
         <div class="card card-body mb-3">
-            <form th:action="@{/hechos}" method="get">
+            <form th:action="${actionUrl}" method="get">
                 <div class="row">
                     <div class="input-mapa col-12 col-md-6">
                         <p style="color: black">Ingrese su Ubicación deseada</p>
@@ -34,7 +34,7 @@
                         </div>
                         <div class="text-end buttons">
                             <button type="submit" class="btn btn-primary btn-dark">Filtrar</button>
-                            <a th:href="@{/hechos}" class="btn btn-outline-secondary">Limpiar</a>
+                            <a th:href="${clearUrl}" th:attr="data-clear=${clearUrl}" onclick="window.location.href=this.getAttribute('data-clear')" class="btn btn-outline-secondary">Limpiar</a>
                         </div>
                     </div>
 

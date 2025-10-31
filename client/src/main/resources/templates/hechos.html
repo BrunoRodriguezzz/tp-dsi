@@ -24,7 +24,9 @@
                 </div>
             </div>
 
-            <div th:insert="~{fragments/filtros :: filtros}"></div>
+            <div th:with="filtAction=@{/hechos}, filtClear=@{/hechos}">
+                <div th:insert="~{fragments/filtros :: filtros(actionUrl=${filtAction}, clearUrl=${filtClear})}"></div>
+            </div>
 
             <div class="hecho-card" th:each="hecho: ${hechos}">
                 <div class="hecho-card-mas-opciones">

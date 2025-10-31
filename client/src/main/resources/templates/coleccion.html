@@ -59,7 +59,9 @@
                 </div>
             </div>
 
-            <div th:insert="~{fragments/filtros :: filtros}"></div>
+            <div th:with="filtAction=@{/coleccion/{id}(id=${coleccion.id})}, filtClear=@{/coleccion/{id}(id=${coleccion.id})}">
+                <div th:insert="~{fragments/filtros :: filtros(actionUrl=${filtAction}, clearUrl=${filtClear})}"></div>
+            </div>
 
             <div class="hechos-container" id="hechos-container"></div>
         </div>
