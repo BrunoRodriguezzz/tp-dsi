@@ -28,7 +28,7 @@ public class HechoSpecification {
             final int radio = 10; // Radio en kilometros
 
             if (params.categoria != null && !params.categoria.isEmpty()) {
-                predicates.add(cb.equal(root.get("categoria").get("titulo"), params.categoria));
+                predicates.add(cb.equal(cb.lower(root.get("categoria").get("titulo")), params.categoria.toLowerCase()));
             }
 
             if (params.fuente != null && !params.fuente.isEmpty()) {
@@ -132,8 +132,8 @@ public class HechoSpecification {
                 if (filtro instanceof FiltroCategoria) {
                     FiltroCategoria filtroCat = (FiltroCategoria) filtro;
                     predicates.add(criteriaBuilder.equal(
-                            root.get("categoria").get("titulo"),
-                            filtroCat.getCategoria().getTitulo()
+                            criteriaBuilder.lower(root.get("categoria").get("titulo")),
+                            filtroCat.getCategoria().getTitulo().toLowerCase()
                     ));
                 } else if (filtro instanceof FiltroEtiqueta) {
                     FiltroEtiqueta filtroEtiqueta = (FiltroEtiqueta) filtro;

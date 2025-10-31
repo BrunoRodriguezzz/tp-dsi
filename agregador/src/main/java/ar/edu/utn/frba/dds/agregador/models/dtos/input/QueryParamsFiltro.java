@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Setter;
+import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroFuente;
 
 @Setter
 public class QueryParamsFiltro {
@@ -35,15 +36,21 @@ public class QueryParamsFiltro {
         filtros.add(new FiltroCategoria(new Categoria(categoria)));
       } catch(Exception e){throw new RuntimeException("Categoria invalida");}
     }
-    if(latitud != null) {
+    if(latitud != null && longitud != null) {
       try{
-        filtros.add(new FiltroLatitud(latitud));
-      } catch(Exception e){throw new RuntimeException("Latitud invalida " + e.getMessage());}
-    }
-    if(longitud != null) {
-      try{
-        filtros.add(new FiltroLongitud(longitud));
-      } catch(Exception e){throw new RuntimeException("Longitud invalida " + e.getMessage());}
+        filtros.add(new ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.FiltroRadio(latitud, longitud, 10.0));
+      } catch(Exception e){throw new RuntimeException("Latitud/Longitud invalida " + e.getMessage());}
+    } else {
+      if(latitud != null) {
+        try{
+          filtros.add(new FiltroLatitud(latitud));
+        } catch(Exception e){throw new RuntimeException("Latitud invalida " + e.getMessage());}
+      }
+      if(longitud != null) {
+        try{
+          filtros.add(new FiltroLongitud(longitud));
+        } catch(Exception e){throw new RuntimeException("Longitud invalida " + e.getMessage());}
+      }
     }
     if(fechaAcontecimientoInicio != null) {
       FiltroFechaAcontecimientoInicio filtroFechaAcontecimientoInicio = new FiltroFechaAcontecimientoInicio();
@@ -69,6 +76,9 @@ public class QueryParamsFiltro {
       try{
         filtros.add(new FiltroTitulo(titulo));
       } catch(Exception e){throw new RuntimeException("Titulo invalida");}
+    }
+    if(fuente != null && !fuente.isEmpty()) {
+      filtros.add(new FiltroFuente(fuente));
     }
     return filtros;
   }

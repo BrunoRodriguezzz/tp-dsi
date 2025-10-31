@@ -9,25 +9,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@DiscriminatorValue("Titulo")
+@DiscriminatorValue("Fuente")
 @NoArgsConstructor
 @Getter
 @Setter
-public class FiltroTitulo extends EntidadFiltro {
-    private String titulo;
+public class FiltroFuente extends EntidadFiltro {
+    private String fuente;
 
-    public FiltroTitulo(String titulo) {
-        this.titulo = titulo;
+    public FiltroFuente(String fuente) {
+        this.fuente = fuente;
     }
 
     @Override
     public Boolean coincide(Hecho hecho) {
-        if (this.titulo == null || hecho.getTitulo() == null) return false;
-        return hecho.getTitulo().toLowerCase().contains(this.titulo.toLowerCase());
+        if (hecho.getFuenteSet() == null || hecho.getFuenteSet().isEmpty() || fuente == null) return false;
+        return hecho.getFuenteSet().stream().anyMatch(hf -> hf.getFuente() != null && hf.getFuente().getNombre() != null && hf.getFuente().getNombre().equalsIgnoreCase(fuente));
     }
 
     @Override
     public String toDTO() {
-        return this.titulo;
+        return fuente;
     }
 }
+

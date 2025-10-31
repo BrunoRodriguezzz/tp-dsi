@@ -24,7 +24,9 @@ public class FiltroLongitud extends EntidadFiltro {
   }
 
   public Boolean coincide(Hecho hecho) {
-    return hecho.getUbicacion().getLongitud() == longitud;
+    if (hecho.getUbicacion() == null) return false;
+    double epsilon = 0.0001; // tolerancia ~11m
+    return Math.abs(hecho.getUbicacion().getLongitud() - longitud) <= epsilon;
   }
 
   public String toDTO() {

@@ -72,8 +72,35 @@ public class ColeccionService implements IColeccionService {
   }
 
   public Page<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params, Pageable pageable) {
-    Page<ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho> hechosPaginados = this.hechoRepository.findByColeccionId(id, pageable);
-    return hechosPaginados.map(ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO::HechoToDTO);
+    boolean tieneFiltros = (params.categoria != null && !params.categoria.isEmpty()) ||
+            params.fechaAcontecimientoInicio != null || params.fechaAcontecimientoFin != null ||
+            params.latitud != null || params.longitud != null ||
+            (params.titulo != null && !params.titulo.isEmpty()) ||
+            (params.fuente != null && !params.fuente.isEmpty()) ||
+            params.fechaCargaInicio != null || params.fechaCargaFin != null;
+
+    if (!tieneFiltros) {
+      Page<ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho> hechosPaginados = this.hechoRepository.findByColeccionId(id, pageable);
+      return hechosPaginados.map(ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO::HechoToDTO);
+    }
+
+    Coleccion coleccion = this.findColecccionAux(id);
+    List<Hecho> hechosProxy = this.pedirHechosProxy(coleccion.getFuentes().stream().filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY)).toList());
+    coleccion.cargarHechos(hechosProxy);
+
+    List<Hecho> hechosFiltrados = coleccion.consultarHechos(params.instanciarFiltros());
+
+    int total = hechosFiltrados.size();
+    int page = pageable.getPageNumber();
+    int size = pageable.getPageSize();
+    int fromIndex = Math.min(page * size, total);
+    int toIndex = Math.min(fromIndex + size, total);
+    List<Hecho> content = hechosFiltrados.subList(fromIndex, toIndex);
+
+    org.springframework.data.domain.Page<ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho> hechosPage =
+            new org.springframework.data.domain.PageImpl<>(content, pageable, total);
+
+    return hechosPage.map(ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO::HechoToDTO);
   }
 
   public List<HechoOutputDTO> buscarHechosCuradosColeccion(Long id, QueryParamsFiltro params) {
@@ -91,7 +118,6 @@ public class ColeccionService implements IColeccionService {
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
   }
 
-  // Guarda un Hecho en las colecciones
   public List<String> incorporarHecho(Hecho hecho) {
     List<Coleccion> colecciones = this.coleccionRepository.findAll();
     List<String> nombreColecciones = this.agregarHechoAColecciones(colecciones, hecho);
@@ -102,7 +128,6 @@ public class ColeccionService implements IColeccionService {
     return nombreColecciones;
   }
 
-  // Guarda multiples Hechos en las colecciones
   public void incorporarHechos(List<Hecho> hechos) {
     List<Coleccion> colecciones = this.coleccionRepository.findAll();
     this.agregarHechosAColecciones(hechos, colecciones);
@@ -146,8 +171,7 @@ public class ColeccionService implements IColeccionService {
     Coleccion coleccionGuardada = this.coleccionRepository.save(nuevaColeccion);
     log.info("Colección persistida con id={} (título='{}'). Iniciando importación asíncrona de hechos...", coleccionGuardada.getId(), coleccionGuardada.getTitulo());
 
-    // Invocar el método @Async a través del proxy para que la anotación funcione
-    ((ColeccionService) applicationContext.getBean(ColeccionService.class)).importarYAsociarHechos(coleccionGuardada.getId(), fuentesColeccion);
+    applicationContext.getBean(ColeccionService.class).importarYAsociarHechos(coleccionGuardada.getId(), fuentesColeccion);
 
     log.info("Saliendo de guardarColeccion (se devuelve resultado sin esperar importación) para id={}", coleccionGuardada.getId());
 
@@ -179,7 +203,7 @@ public class ColeccionService implements IColeccionService {
     }
 
     if (!hechosGuardadosTotales.isEmpty()) {
-      ((ColeccionService) applicationContext.getBean(ColeccionService.class)).asociarHechos(idColeccion, hechosGuardadosTotales);
+      applicationContext.getBean(ColeccionService.class).asociarHechos(idColeccion, hechosGuardadosTotales);
     }
     log.info("Fin importarYAsociarHechos para coleccion id={}", idColeccion);
   }
@@ -298,7 +322,6 @@ public class ColeccionService implements IColeccionService {
       fuentesColeccion.add(temp);
     });
 
-    //coleccion.setFuentes(fuentesColeccion);
     coleccion.getFuentes().removeAll(fuentesColeccion);
     coleccion.recalcularHechos();
 
@@ -325,11 +348,10 @@ public class ColeccionService implements IColeccionService {
   }
 
   @Override
-  public void eliminarColeccion(Long id) { // TODO: Hacer baja lógica
+  public void eliminarColeccion(Long id) {
       coleccionRepository.deleteById(id);
   }
 
-  // ---------------------------------------------------- Privados ----------------------------------------------------
   private List<String> agregarHechoAColecciones(List<Coleccion> colecciones, Hecho hecho) {
     List<String> nombreColecciones = new ArrayList<>();
     colecciones.forEach(coleccion -> {
@@ -342,7 +364,6 @@ public class ColeccionService implements IColeccionService {
   }
 
   private void agregarHechosAColecciones(List<Hecho> hechos, List<Coleccion> colecciones) {
-    // TODO Es poco eficiciente pero funciona
     List<Fuente> fuentesHechos = hechos.stream()
             .map(h -> h.getFuenteSet()
                     .stream()
@@ -354,7 +375,7 @@ public class ColeccionService implements IColeccionService {
     hechos.forEach(hecho -> {
       colecciones.forEach(c -> {
         if(new HashSet<>(c.getFuentes()).containsAll(fuentesHechos)) {
-          if(c.getHechos()==null || c.getHechos().stream().noneMatch(h -> h.getId().equals(hecho.getId()))) { // TODO: Revisar, esto es lo que hace que no haya hechos repetidos en las colecciones
+          if(c.getHechos()==null || c.getHechos().stream().noneMatch(h -> h.getId().equals(hecho.getId()))) {
             c.cargarHecho(hecho);
             this.hechoService.guardarHecho(hecho);
           }
@@ -390,14 +411,14 @@ public class ColeccionService implements IColeccionService {
   private Boolean deleteHechoFromColeccion(Hecho hecho) {
     List<Hecho> hechos = new ArrayList<>();
     hechos.add(hecho);
-    List<Coleccion> colecciones = this.coleccionRepository.findColeccionsByHechos(hechos); // POSIBLE CACA
+    List<Coleccion> colecciones = this.coleccionRepository.findColeccionsByHechos(hechos);
 
     AtomicBoolean resultado = new AtomicBoolean(false);
 
     colecciones.forEach(coleccion -> {
       List<Hecho> aux = coleccion.getHechos();
       boolean borrado = aux.remove(hecho);
-      resultado.set(resultado.get() || borrado); // true si al menos uno fue eliminado
+      resultado.set(resultado.get() || borrado);
       coleccion.setHechos(aux);
       coleccionRepository.save(coleccion);
     });

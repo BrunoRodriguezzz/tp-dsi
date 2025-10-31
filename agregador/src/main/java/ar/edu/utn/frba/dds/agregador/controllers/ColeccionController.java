@@ -15,10 +15,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/colecciones")
 @CrossOrigin(origins = "http://localhost:8080")
+@Slf4j
 public class ColeccionController {
   @Autowired
   private IColeccionService coleccionService;

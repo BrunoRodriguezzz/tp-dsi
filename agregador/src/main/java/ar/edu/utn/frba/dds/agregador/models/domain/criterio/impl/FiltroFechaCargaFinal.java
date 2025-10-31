@@ -25,7 +25,7 @@ public class FiltroFechaCargaFinal extends EntidadFiltro {
   @Override
   public Boolean coincide(Hecho hecho) {
     if (hecho.getFechaCarga() == null || fechaFinal == null) return false;
-    return !hecho.getFechaCarga().isBefore(fechaFinal);
+    return !hecho.getFechaCarga().isAfter(fechaFinal);
   }
 
   @Override

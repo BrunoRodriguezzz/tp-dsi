@@ -25,7 +25,9 @@ public class FiltroLatitud extends EntidadFiltro {
 
   @Override
   public Boolean coincide(Hecho hecho) {
-    return hecho.getUbicacion().getLatitud() == latitud;
+    if (hecho.getUbicacion() == null) return false;
+    double epsilon = 0.0001; // tolerancia ~11m
+    return Math.abs(hecho.getUbicacion().getLatitud() - latitud) <= epsilon;
   }
 
   @Override

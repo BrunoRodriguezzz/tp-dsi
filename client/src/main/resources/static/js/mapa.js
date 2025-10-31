@@ -17,10 +17,95 @@ const geocoder = new MapboxGeocoder({
     language: 'es'
 });
 
-document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+// Exponer el geocoder globalmente para que otros scripts puedan leer su input
+try {
+    window.__mapboxGeocoder = geocoder;
+} catch (err) {
+    console.warn('mapa.js: no se pudo exponer window.__mapboxGeocoder', err);
+}
+
+// Exponer token para que otros scripts puedan usarlo si es necesario
+try {
+    window.__mapboxAccessToken = mapboxgl.accessToken;
+} catch (err) {
+    console.warn('mapa.js: no se pudo exponer window.__mapboxAccessToken', err);
+}
+
+// document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+// función helper para setear el input oculto de ubicacion
+function setUbicacionText(val) {
+    try {
+        const el = document.getElementById('ubicacionInput');
+        if (el) {
+            el.value = val || '';
+        }
+    } catch (err) {
+        console.warn('mapa.js: error seteando ubicacionInput', err);
+    }
+}
+
+// intentar encontrar el input del control geocoder y escuchar eventos
+function bindGeocoderInputEvents() {
+    try {
+        const container = document.getElementById('geocoder');
+        const selectors = ['input[type="text"]', '.mapboxgl-ctrl-geocoder--input', 'input'];
+        let inputEl = null;
+        const tryFind = () => {
+            if (!container) return null;
+            for (const sel of selectors) {
+                const el = container.querySelector(sel);
+                if (el && el.value !== undefined) return el;
+            }
+            // última oportunidad: any input inside container
+            const any = container.querySelector('input');
+            if (any && any.value !== undefined) return any;
+            return null;
+        };
+
+        inputEl = tryFind();
+        if (inputEl) {
+            inputEl.addEventListener('input', function(e) { setUbicacionText(inputEl.value); });
+            inputEl.addEventListener('blur', function(e) { setUbicacionText(inputEl.value); });
+            return;
+        }
+
+        // Si no encontramos input, usar MutationObserver en el container para detectarlo cuando se agregue
+        if (container) {
+            const observer = new MutationObserver((mutations, obs) => {
+                const found = tryFind();
+                if (found) {
+                    found.addEventListener('input', function(e) { setUbicacionText(found.value); });
+                    found.addEventListener('blur', function(e) { setUbicacionText(found.value); });
+                    obs.disconnect();
+                }
+            });
+            observer.observe(container, { childList: true, subtree: true });
+            // fallback: desconectar observer luego de 6s
+            setTimeout(() => {
+                try { observer.disconnect(); } catch (e) {}
+            }, 6000);
+            return;
+        }
+
+        console.warn('mapa.js: no se encontró el elemento contenedor #geocoder para observar');
+    } catch (err) {
+        console.warn('mapa.js: error intentando vincular eventos al input del geocoder', err);
+    }
+}
+
+bindGeocoderInputEvents();
 
 geocoder.on('result', function (e) {
-    console.log("Ubicación seleccionada:", e.result);
+    // almacenar resultado globalmente para que coleccion.js pueda leerlo si los inputs están vacíos
+    try {
+        window.__lastGeocoderResult = e.result;
+    } catch (err) {
+        console.warn('mapa.js: no se pudo asignar window.__lastGeocoderResult', err);
+    }
+
+    // setear el texto de ubicacion en el input oculto
+    try { setUbicacionText(e.result.place_name || ''); } catch (err) { /* ignore */ }
 
     const coords = e.result.geometry.coordinates; // [long, lat]
     const lat = coords[1];
@@ -30,14 +115,28 @@ geocoder.on('result', function (e) {
     if (latInput) {
         latInput.value = lat;
     } else {
-        console.error("Elemento latInput no encontrado");
+        console.error("mapa.js: Elemento latInput no encontrado");
     }
 
     const lngInput = document.getElementById('lngInput');
     if (lngInput) {
         lngInput.value = lng;
     } else {
-        console.error("Elemento lngInput no encontrado");
+        console.error("mapa.js: Elemento lngInput no encontrado");
+    }
+
+    // Rellenar también latitud/longitud para compatibilidad con coleccion
+    const latitudInput = document.getElementById('latitudInput');
+    if (latitudInput) {
+        latitudInput.value = lat;
+    } else {
+        console.warn('mapa.js: latitudInput no encontrado');
+    }
+    const longitudInput = document.getElementById('longitudInput');
+    if (longitudInput) {
+        longitudInput.value = lng;
+    } else {
+        console.warn('mapa.js: longitudInput no encontrado');
     }
 
     const municipioInput = document.getElementById('municipioInput');
@@ -45,7 +144,7 @@ geocoder.on('result', function (e) {
         const municipio = e.result.context?.[1].text || '';
         municipioInput.value = municipio;
     } else {
-        console.error("Elemento municipioInput no encontrado");
+        console.error("mapa.js: Elemento municipioInput no encontrado");
     }
 
     const provinciaInput = document.getElementById('provinciaInput');
@@ -53,9 +152,67 @@ geocoder.on('result', function (e) {
         const provincia = e.result.context?.[2].text || '';
         provinciaInput.value = provincia;
     } else {
-        console.error("Elemento provinciaInput no encontrado");
+        console.error("mapa.js: Elemento provinciaInput no encontrado");
     }
 });
+
+// Handler para el botón 'Usar ubicación' que forza geocoding del texto escrito
+function bindUsarUbicButton() {
+    try {
+        const btn = document.getElementById('usarUbicBtn');
+        if (!btn) { return; }
+        btn.addEventListener('click', async function() {
+            try {
+                // Obtener texto del geocoder (varios métodos)
+                let val = '';
+                const getText = () => {
+                    const selectors = ['#geocoder input[type="text"]', '#geocoder .mapboxgl-ctrl-geocoder--input', '.mapboxgl-ctrl-geocoder--input', '#geocoder input'];
+                    for (const sel of selectors) {
+                        const el = document.querySelector(sel);
+                        if (el && el.value && el.value.trim()) return el.value.trim();
+                    }
+                    // intentar input oculto
+                    const hidden = document.getElementById('ubicacionInput');
+                    if (hidden && hidden.value && hidden.value.trim()) return hidden.value.trim();
+                    // intentar el control expuesto
+                    const g = window.__mapboxGeocoder;
+                    if (g) {
+                        try { if (g._inputEl && g._inputEl.value) return g._inputEl.value.trim(); } catch(e){}
+                        try { if (g.inputEl && g.inputEl.value) return g.inputEl.value.trim(); } catch(e){}
+                    }
+                    return '';
+                };
+                val = getText();
+                if (!val) { console.warn('mapa.js: no se detectó texto en el geocoder para usar'); return; }
+                const token = window.__mapboxAccessToken || (window.mapboxgl && window.mapboxgl.accessToken) || '';
+                if (!token) { console.warn('mapa.js: token no disponible para geocoding'); return; }
+                const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + encodeURIComponent(val) + '.json?access_token=' + encodeURIComponent(token) + '&limit=1&language=es';
+                const resp = await fetch(url);
+                if (!resp.ok) { console.warn('mapa.js: usarUbicBtn geocoding fallo status=', resp.status); return; }
+                const geo = await resp.json();
+                if (geo.features && geo.features.length > 0) {
+                    const feat = geo.features[0];
+                    window.__lastGeocoderResult = feat;
+                    setUbicacionText(feat.place_name || val);
+                    const coords = feat.geometry.coordinates; // [lng, lat]
+                    const lat = coords[1]; const lng = coords[0];
+                    const latInput = document.getElementById('latitudInput'); if (latInput) { latInput.value = lat; }
+                    const lngInput = document.getElementById('longitudInput'); if (lngInput) { lngInput.value = lng; }
+                    const latLegacy = document.getElementById('latInput'); if (latLegacy) latLegacy.value = lat;
+                    const lngLegacy = document.getElementById('lngInput'); if (lngLegacy) lngLegacy.value = lng;
+                } else {
+                    console.warn('mapa.js: usarUbicBtn geocoding no devolvió features');
+                }
+            } catch (err) {
+                console.error('mapa.js: error en usarUbicBtn', err);
+            }
+        });
+    } catch (err) {
+        console.warn('mapa.js: error vinculando usarUbicBtn', err);
+    }
+}
+
+bindUsarUbicButton();
 
 document.getElementById('filtrosCollapse').addEventListener('shown.bs.collapse', function () {
     map.resize();

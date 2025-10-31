@@ -23,8 +23,8 @@ public class FiltroFechaAcontecimientoFinal extends EntidadFiltro {
   }
 
   public Boolean coincide(Hecho hecho) {
-    if (hecho.getFechaCarga() == null || fechaFinal == null) return false;
-    return !hecho.getFechaCarga().isBefore(fechaFinal);
+    if (hecho.getFechaAcontecimiento() == null || fechaFinal == null) return false;
+    return !hecho.getFechaAcontecimiento().isAfter(fechaFinal);
   }
 
   public String toDTO() {

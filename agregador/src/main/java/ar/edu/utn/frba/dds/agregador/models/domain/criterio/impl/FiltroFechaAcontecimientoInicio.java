@@ -23,8 +23,8 @@ public class FiltroFechaAcontecimientoInicio extends EntidadFiltro {
   }
 
   public Boolean coincide(Hecho hecho) {
-    if (hecho.getFechaCarga() == null || fechaInicio == null) return false;
-    return !hecho.getFechaCarga().isBefore(fechaInicio);
+    if (hecho.getFechaAcontecimiento() == null || fechaInicio == null) return false;
+    return !hecho.getFechaAcontecimiento().isBefore(fechaInicio);
   }
 
   public String toDTO() {

@@ -1,14 +1,20 @@
 <div th:fragment="filtros (actionUrl, clearUrl)">
     <div class="collapse" id="filtrosCollapse">
         <div class="card card-body mb-3">
-            <form th:action="${actionUrl}" method="get">
+            <form id="filtrosForm" th:action="${actionUrl}" method="get">
                 <div class="row">
                     <div class="input-mapa col-12 col-md-6">
                         <p style="color: black">Ingrese su Ubicación deseada</p>
                         <div id="geocoder" class="ubicacion-input"></div>
+                        <div style="margin-top:0.5rem;">
+                            <button type="button" id="usarUbicBtn" class="btn btn-sm btn-outline-primary">Usar ubicación</button>
+                        </div>
                         <div id="map" class="map mapa"></div>
                         <input type="hidden" id="latInput" name="lat" th:value="${param.lat}">
                         <input type="hidden" id="lngInput" name="lng" th:value="${param.lng}">
+                        <input type="hidden" id="latitudInput" name="latitud" th:value="${param.latitud}">
+                        <input type="hidden" id="longitudInput" name="longitud" th:value="${param.longitud}">
+                        <input type="hidden" id="ubicacionInput" name="ubicacion" th:value="${param.ubicacion}">
                         <input type="hidden" id="municipioInput" name="municipio" th:value="${param.municipio}">
                         <input type="hidden" id="provinciaInput" name="provincia" th:value="${param.provincia}">
                     </div>

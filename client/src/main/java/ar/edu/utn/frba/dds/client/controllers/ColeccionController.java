@@ -3,34 +3,36 @@ package ar.edu.utn.frba.dds.client.controllers;
 import ar.edu.utn.frba.dds.client.dtos.*;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.services.ColeccionService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.core.ParameterizedTypeReference;
-import java.util.List;
-import java.util.Map;
+import ar.edu.utn.frba.dds.client.dtos.hecho.PaginadoHechoDTO;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.event.LoggingEvent;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.core.ParameterizedTypeReference;
 import reactor.core.publisher.Mono;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Slf4j
 @Controller
 public class ColeccionController {
   private final ColeccionService coleccionService;
   private final WebClient webClient;
-  private final String agregadorUrl;
+
+  @Value("${mapbox.token:}")
+  private String mapboxToken;
 
   public ColeccionController(ColeccionService coleccionService,
                              @Value("http://localhost:8082") String agregadorUrl) {
     this.coleccionService = coleccionService;
-    this.agregadorUrl = agregadorUrl;
     this.webClient = WebClient.builder().baseUrl(agregadorUrl).build();
   }
 
@@ -48,13 +50,108 @@ public class ColeccionController {
   }
 
   @GetMapping("/coleccion/{id}")
-  public String verDetalleColeccion(@PathVariable Long id, Model model) {
+  public String verDetalleColeccion(
+      @PathVariable Long id,
+      Model model,
+      @RequestParam(name = "categoria", required = false) String categoria,
+      @RequestParam(name = "fechaAcontecimientoInicio", required = false) String fechaAcontecimientoInicio,
+      @RequestParam(name = "fechaAcontecimientoFin", required = false) String fechaAcontecimientoFin,
+      @RequestParam(name = "titulo", required = false) String titulo,
+      @RequestParam(name = "latitud", required = false) String latitud,
+      @RequestParam(name = "longitud", required = false) String longitud,
+      @RequestParam(name = "lat", required = false) String lat,
+      @RequestParam(name = "lng", required = false) String lng,
+      @RequestParam(name = "ubicacion", required = false) String ubicacion,
+      @RequestParam(name = "fechaCargaInicio", required = false) String fechaCargaInicio,
+      @RequestParam(name = "fechaCargaFin", required = false) String fechaCargaFin,
+      @RequestParam(name = "fuente", required = false) String fuente
+  ) {
     ColeccionOutputDTO coleccion = webClient.get()
         .uri("/colecciones/" + id)
         .retrieve()
         .bodyToMono(ColeccionOutputDTO.class)
         .block();
     model.addAttribute("coleccion", coleccion);
+
+    String finalLat = (latitud != null && !latitud.isBlank()) ? latitud : (lat != null && !lat.isBlank() ? lat : null);
+    String finalLng = (longitud != null && !longitud.isBlank()) ? longitud : (lng != null && !lng.isBlank() ? lng : null);
+
+    String faIni = fechaAcontecimientoInicio;
+    String faFin = fechaAcontecimientoFin;
+    String fcIni = fechaCargaInicio;
+    String fcFin = fechaCargaFin;
+
+    if (faIni != null && faIni.matches("\\d{4}-\\d{2}-\\d{2}")) {
+      faIni = faIni + "T00:00:00";
+    }
+    if (faFin != null && faFin.matches("\\d{4}-\\d{2}-\\d{2}")) {
+      faFin = faFin + "T23:59:59";
+    }
+    if (fcIni != null && fcIni.matches("\\d{4}-\\d{2}-\\d{2}")) {
+      fcIni = fcIni + "T00:00:00";
+    }
+    if (fcFin != null && fcFin.matches("\\d{4}-\\d{2}-\\d{2}")) {
+      fcFin = fcFin + "T23:59:59";
+    }
+
+    final String qCategoria = (categoria != null && !categoria.isBlank()) ? categoria : null;
+    final String qTitulo = (titulo != null && !titulo.isBlank()) ? titulo : null;
+    String qLat = (finalLat != null && !finalLat.isBlank()) ? finalLat : null;
+    String qLng = (finalLng != null && !finalLng.isBlank()) ? finalLng : null;
+    final String qFaIni = (faIni != null && !faIni.isBlank()) ? faIni : null;
+    final String qFaFin = (faFin != null && !faFin.isBlank()) ? faFin : null;
+    final String qFcIni = (fcIni != null && !fcIni.isBlank()) ? fcIni : null;
+    final String qFcFin = (fcFin != null && !fcFin.isBlank()) ? fcFin : null;
+    final String qFuente = (fuente != null && !fuente.isBlank()) ? fuente : null;
+
+    if ((qLat == null || qLng == null) && ubicacion != null && !ubicacion.isBlank() && mapboxToken != null && !mapboxToken.isBlank()) {
+      try {
+        String q = URLEncoder.encode(ubicacion, StandardCharsets.UTF_8);
+        WebClient geo = WebClient.builder().baseUrl("https://api.mapbox.com").build();
+        JsonNode geoResp = geo.get()
+            .uri(uriBuilder -> uriBuilder.path("/geocoding/v5/mapbox.places/" + q + ".json").queryParam("access_token", mapboxToken).queryParam("limit", 1).queryParam("language", "es").build())
+            .retrieve()
+            .bodyToMono(JsonNode.class)
+            .block();
+        if (geoResp != null && geoResp.has("features") && geoResp.get("features").size() > 0) {
+          JsonNode first = geoResp.get("features").get(0);
+          JsonNode coords = first.path("geometry").path("coordinates");
+          if (coords.isArray() && coords.size() >= 2) {
+            qLng = coords.get(0).asText();
+            qLat = coords.get(1).asText();
+            log.info("Geocoding server-side: {} -> {},{}", ubicacion, qLat, qLng);
+          }
+        }
+      } catch (Exception e) {
+        log.warn("Error en geocoding server-side para '{}' : {}", ubicacion, e.getMessage());
+      }
+    }
+
+    final String fqLat = (qLat != null && !qLat.isBlank()) ? qLat : null;
+    final String fqLng = (qLng != null && !qLng.isBlank()) ? qLng : null;
+
+    PaginadoHechoDTO paginado = webClient.get()
+        .uri(uriBuilder -> {
+          var b = uriBuilder.path("/colecciones/" + id + "/hechos");
+          if (qCategoria != null) b = b.queryParam("categoria", qCategoria);
+          if (qFaIni != null) b = b.queryParam("fechaAcontecimientoInicio", qFaIni);
+          if (qFaFin != null) b = b.queryParam("fechaAcontecimientoFin", qFaFin);
+          if (qTitulo != null) b = b.queryParam("titulo", qTitulo);
+          if (fqLat != null) b = b.queryParam("latitud", fqLat);
+          if (fqLng != null) b = b.queryParam("longitud", fqLng);
+          if (qFcIni != null) b = b.queryParam("fechaCargaInicio", qFcIni);
+          if (qFcFin != null) b = b.queryParam("fechaCargaFin", qFcFin);
+          if (qFuente != null) b = b.queryParam("fuente", qFuente);
+          return b.build();
+        })
+        .retrieve()
+        .bodyToMono(PaginadoHechoDTO.class)
+        .block();
+
+    List<HechoDTO> hechos = paginado != null && paginado.getContent() != null ? paginado.getContent() : List.of();
+    model.addAttribute("hechos", hechos);
+    model.addAttribute("cantidad", hechos.size());
+
     return "coleccion";
   }
 

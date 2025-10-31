@@ -63,14 +63,38 @@
                 <div th:insert="~{fragments/filtros :: filtros(actionUrl=${filtAction}, clearUrl=${filtClear})}"></div>
             </div>
 
-            <div class="hechos-container" id="hechos-container"></div>
-        </div>
-    </main>
+            <div class="hecho-card" th:each="hecho: ${hechos}">
+                <div class="hecho-card-mas-opciones">
+                    <div class="titulo-mas-descripcion">
+                        <h2 class="titulo-Hecho" th:text="${hecho.titulo}">Sin título</h2>
+                        <p class="descripcion" th:text="${hecho.descripcion}">Sin descripción</p>
+                    </div>
+                    <div class="opciones">
+                        <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Sin Categoría</p>
+                        <a class="btn btn-primary btn-dark config-opciones" th:href="@{/hechos/{id}(id=${hecho.id})}">Ver Detalles</a>
+                        <a th:href="@{/reportarHecho}" class="btn btn-red config-opciones">Reportar</a>
+                    </div>
+                </div>
+                <div class="informacion-general">
+                    <div class="fecha-ubicacion-fuente encolumnar">
+                        <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento}|"></p>
+                        <p class="info-fecha-ubicacion-fuente" th:text="|Ubicacion: ${hecho.ubicacion.provincia}, ${hecho.ubicacion.municipio}|"></p>
+                        <p class="info-fecha-ubicacion-fuente" th:text="|Fuente: ${hecho.fuente}|"></p>
+                    </div>
+                    <div class="etiquetas">
+                        <div th:each="etiqueta, iterStat: ${hecho.etiquetas}" th:if="${iterStat.index < 3}">
+                            <p class="titulo-etiqueta etiqueta-interes" th:text="${etiqueta}">Sin etiqueta</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+         </div>
+     </main>
 
     <script th:src="@{/js/mapa.js}"></script>
-    <script th:src="@{/js/coleccion.js}"></script>
 
-    <th:block th:fragment="additional-scripts"></th:block>
+     <th:block th:fragment="additional-scripts"></th:block>
 </div>
 </body>
 </html>
