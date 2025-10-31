@@ -82,14 +82,11 @@
             </div>
             <div class="form-group">
                 <h6>Ubicación</h6>
-                <!-- Inputs ocultos para latitud y longitud -->
                 <input type="hidden" id="latInput" name="criterio.latitud">
                 <input type="hidden" id="lngInput" name="criterio.longitud">
-                <!-- Geocoder y mapa -->
                 <div id="geocoder" class="mb-3" style="width: 100%"></div>
                 <div id="map" class="map"></div>
             </div>
-            <!-- Enlaces a Mapbox y JS del mapa -->
             <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
             <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
             <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>

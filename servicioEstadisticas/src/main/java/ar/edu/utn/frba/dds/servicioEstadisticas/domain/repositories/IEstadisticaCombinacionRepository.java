@@ -30,6 +30,14 @@ public interface IEstadisticaCombinacionRepository extends JpaRepository<Estadis
         "ORDER BY COUNT(DISTINCT h.id) DESC")
     List<Object[]> findProvinciaConHechosPorColeccion(@Param("idColeccion") Long idColeccion);
 
+    // mapa de provincias para TODAS las colecciones
+    @Query("SELECT e.coleccion as coleccion, e.provincia as provincia, COUNT(DISTINCT h.id) as cantidad " +
+            "FROM EstadisticaCombinacion e " +
+            "JOIN e.hechos h " +
+            "GROUP BY e.coleccion, e.provincia " +
+            "ORDER BY COUNT(DISTINCT h.id) DESC")
+    List<Object[]> findProvinciasConHechosPorColecciones();
+
     // mapa de categorías con más hechos (máximo 30)
     @Query("SELECT e.categoria as categoria, COUNT(DISTINCT h.id) as cantidad " +
         "FROM EstadisticaCombinacion e " +
@@ -48,6 +56,14 @@ public interface IEstadisticaCombinacionRepository extends JpaRepository<Estadis
         "ORDER BY COUNT(DISTINCT h.id) DESC")
     List<Object[]> findProvinciasConHechosPorCategoria(@Param("idCategoria") Long idCategoria);
 
+    // mapa de provincias para TODAS las categorías
+    @Query("SELECT e.categoria as categoria, e.provincia as provincia, COUNT(DISTINCT h.id) as cantidad " +
+            "FROM EstadisticaCombinacion e " +
+            "JOIN e.hechos h " +
+            "GROUP BY e.categoria, e.provincia " +
+            "ORDER BY COUNT(DISTINCT h.id) DESC")
+    List<Object[]> findProvinciasConHechosPorCategorias();
+
     // mapa de horas por categoría
     @Query("SELECT e.hora as hora, COUNT(DISTINCT h.id) as cantidad " +
         "FROM EstadisticaCombinacion e " +
@@ -56,6 +72,13 @@ public interface IEstadisticaCombinacionRepository extends JpaRepository<Estadis
         "GROUP BY e.hora " +
         "ORDER BY COUNT(DISTINCT h.id) DESC")
     List<Object[]> findHorasConHechosPorCategoria(@Param("idCategoria") Long idCategoria);
+
+    @Query("SELECT e.categoria as categoria, e.hora as hora, COUNT(DISTINCT h.id) as cantidad " +
+            "FROM EstadisticaCombinacion e " +
+            "JOIN e.hechos h " +
+            "GROUP BY e.categoria, e.hora " +
+            "ORDER BY COUNT(DISTINCT h.id) DESC, 2 ASC")
+    List<Object[]> findHorasConHechosPorCategorias();
 
     // UNA provincia con más hechos por colección
     @Query("SELECT e.provincia " +

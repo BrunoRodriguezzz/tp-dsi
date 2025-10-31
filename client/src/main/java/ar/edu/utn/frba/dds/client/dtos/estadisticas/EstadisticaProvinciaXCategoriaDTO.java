@@ -10,8 +10,6 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EstadisticaProvinciaXCategoriaDTO {
-
     private String categoria;
     private Map<String, Long> provinciasConHechos;
-
 }

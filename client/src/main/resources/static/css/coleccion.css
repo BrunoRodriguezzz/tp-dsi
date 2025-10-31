@@ -224,3 +224,14 @@ main.container {
     background: #ede7f6;
     color: #7b1fa2;
 }
+
+/* Hacer que el botón "Reportar" dentro de la vista de colección sea rojo y con texto blanco */
+.hechos-container .btn-red {
+    background: #e53935;
+    color: #fff;
+    border: none;
+}
+.hechos-container .btn-red:hover {
+    background: #c62828;
+    color: #fff;
+}

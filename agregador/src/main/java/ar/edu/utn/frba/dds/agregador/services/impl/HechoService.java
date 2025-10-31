@@ -86,21 +86,33 @@ public class HechoService implements IHechoService {
 
   @Override
   public Flux<Hecho> guardarHechos(Flux<Hecho> hechosFlux) {
-    return this.ubicacionService
-            .obtenerUbicacionesReactivo(
-                    this.normalizadorService.normalizarHechosReactivo(hechosFlux)
-                            .doOnError(e -> log.error("❌ Error al normalizar hechos", e))
-                            .onErrorContinue((e, h) -> log.warn("⚠️ Error procesando hecho: {}", h, e))
-            )
-            .doOnError(e -> log.error("❌ Error al obtener ubicaciones", e))
-            .onErrorResume(e -> {
-              log.error("🚨 Error general en pipeline de guardarHechos", e);
-              return Flux.empty();
-            })
+    // Instrumentación para depurar el pipeline reactivo
+    Flux<Hecho> entrada = hechosFlux
+            .doOnSubscribe(s -> log.info("🔁 Inicio de pipeline guardarHechos"))
+            .doOnNext(h -> log.info("🔁 flujo entrada - hecho: {} (fuentes: {})", h == null ? "<null>" : h.getTitulo(), h == null || h.getFuenteSet() == null ? 0 : h.getFuenteSet().size()))
+            .doOnError(e -> log.error("❌ Error en flujo de entrada de hechos: {}", e.getMessage(), e));
+
+    Flux<Hecho> normalizados = this.normalizadorService
+            .normalizarHechosReactivo(entrada)
+            .doOnSubscribe(s -> log.info("🔁 Normalización: suscrito"))
+            .doOnNext(h -> log.info("🔁 Normalizador emitió: {} (categoria: {})", h == null ? "<null>" : h.getTitulo(), h == null || h.getCategoria() == null ? "null" : h.getCategoria().getTitulo()))
+            .doOnError(e -> log.error("❌ Error durante la normalización reactiva: {}", e.getMessage(), e))
+            .doOnComplete(() -> log.info("🔁 Normalización completada"));
+
+    Flux<Hecho> conUbicaciones = this.ubicacionService
+            .obtenerUbicacionesReactivo(normalizados)
+            .doOnSubscribe(s -> log.info("🔁 Obtención de ubicaciones: suscrito"))
+            .doOnNext(h -> log.info("🔁 Ubicacion emitió: {} (lat: {}, lon: {})", h == null ? "<null>" : h.getTitulo(), h == null || h.getUbicacion() == null ? "null" : h.getUbicacion().getLatitud(), h == null || h.getUbicacion() == null ? "null" : h.getUbicacion().getLongitud()))
+            .doOnError(e -> log.error("❌ Error durante la obtención de ubicaciones: {}", e.getMessage(), e))
+            .doOnComplete(() -> log.info("🔁 Obtención de ubicaciones completada"));
+
+    // No silenciamos errores globales aquí: queremos ver qué falla y por qué el pipeline queda vacío.
+    return conUbicaciones
             .collectList()
+            .doOnNext(list -> log.info("🔁 Resultado del pipeline - cantidad de hechos antes de guardar: {}", list == null ? 0 : list.size()))
             .flatMapMany(hechosParaGuardar -> {
-              if (hechosParaGuardar.isEmpty()) {
-                log.warn("⚠️ No hay hechos para guardar (pipeline vacío o con errores).");
+              if (hechosParaGuardar == null || hechosParaGuardar.isEmpty()) {
+                log.warn("⚠️ No hay hechos para guardar (pipeline vacío o con errores). hechosParaGuardar={}", hechosParaGuardar == null ? 0 : hechosParaGuardar.size());
                 return Flux.empty();
               }
 

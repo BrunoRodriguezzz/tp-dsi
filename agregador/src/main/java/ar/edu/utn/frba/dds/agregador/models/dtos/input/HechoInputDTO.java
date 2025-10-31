@@ -13,9 +13,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Data
 public class HechoInputDTO {
+  private static final Logger log = LoggerFactory.getLogger(HechoInputDTO.class);
+
   private Long id;
   private String titulo;
   private String descripcion;
@@ -61,9 +65,9 @@ public class HechoInputDTO {
 
       return hecho;
     } catch (Exception e){
-      System.out.println(e.getMessage());
+      log.error("Error convirtiendo HechoInputDTO a Hecho: {}", e.getMessage(), e);
+      return null;
     }
-    return null;
   }
 
   public static List<Hecho> mapDTOToHechos (List<HechoInputDTO> hechosInput, Fuente fuente) {

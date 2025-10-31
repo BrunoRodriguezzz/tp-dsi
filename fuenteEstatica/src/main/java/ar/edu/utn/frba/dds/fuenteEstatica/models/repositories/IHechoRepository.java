@@ -13,7 +13,6 @@ public interface IHechoRepository extends JpaRepository<HechoEstatica, Long>, Jp
     List<HechoEstatica> findByIdArchivo(Long id);
 
     List<HechoEstatica> findByTitulo(String titulo);
-//    List<HechoEstatica> getAll();
 //    HechoEstatica getById(Long id);
 //    HechoEstatica save(HechoEstatica hechoEstatica);
 //    public List<HechoEstatica> getByIdArchivo(Long id);

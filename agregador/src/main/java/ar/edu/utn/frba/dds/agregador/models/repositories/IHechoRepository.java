@@ -48,5 +48,7 @@ public interface IHechoRepository extends JpaRepository<Hecho, Long>, JpaSpecifi
             @Param("lonMax") double lonMax);
 
     List<Hecho> findByCategoria(Categoria categoria);
-}
 
+    @Query("SELECT h FROM Coleccion c JOIN c.hechos h WHERE c.id = :coleccionId")
+    Page<Hecho> findByColeccionId(@Param("coleccionId") Long coleccionId, Pageable pageable);
+}

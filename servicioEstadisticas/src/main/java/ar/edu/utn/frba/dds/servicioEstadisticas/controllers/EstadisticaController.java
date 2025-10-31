@@ -1,12 +1,11 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.controllers;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.*;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaHoraXCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaSolicitudes;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.utils.EstadisticaCombinacion;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticaService;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IImportadorService;
@@ -32,17 +31,24 @@ public class EstadisticaController {
     public ResponseEntity provinciaConMasHechosDeUnaColeccion(
             @PathVariable("idColeccion") Long idColeccion
     ) {
-        EstadisticaProvinciaXColeccion estadisticaProvinciaXColeccion = this.estadisticaService.provinciaConMasHechosDeUnaColeccion(idColeccion);
+        EstadisticaProvinciaXColeccionDTO estadisticaProvinciaXColeccion = this.estadisticaService.provinciaConMasHechosDeUnaColeccion(idColeccion);
         if(estadisticaProvinciaXColeccion == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.status(HttpStatus.OK).body(estadisticaProvinciaXColeccion);
     }
 
-    // ¿Cuál es la categoría con mayor cantidad de hechos reportados?
-    @GetMapping("/categoria/mayorCantidadHechos")
-    public ResponseEntity categoriaConMasHechos() {
-        EstadisticaCategoria estadisticaCategoria = this.estadisticaService.categoriaConMasHechos();
+    @GetMapping("colecciones/provincias")
+    public ResponseEntity provinciasConMasHechosPorColecciones(){
+        List<EstadisticaProvinciaXColeccionDTO> estadisticas = this.estadisticaService.provinciasConMasHechosPorColecciones();
+        if(estadisticas == null) return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.OK).body(estadisticas);
+    }
+
+    // ¿Cuáles son las categorías con mayor cantidad de hechos reportados?
+    @GetMapping("/categorias/mayorCantidadHechos")
+    public ResponseEntity categoriasConMasHechos() {
+        EstadisticaCategoriaDTO estadisticaCategoria = this.estadisticaService.categoriaConMasHechos();
         if(estadisticaCategoria == null) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
@@ -61,6 +67,13 @@ public class EstadisticaController {
         return ResponseEntity.status(HttpStatus.OK).body(estadisticaProvinciaXCategoria);
     }
 
+    @GetMapping("provincias/categorias/mayorCantidadHechos")
+    public ResponseEntity provinciaConMasHechosSegunCategorias() {
+        List<EstadisticaProvinciaXCategoriaDTO> estadisticas = this.estadisticaService.provinciaConMasHechosSegunCategorias();
+        if(estadisticas == null) return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.OK).body(estadisticas);
+    }
+
     // ¿A qué hora del día ocurren la mayor cantidad de hechos de una cierta categoría?
     @GetMapping("/hora/{idCategoria}/mayorCantidadHechos")
     public ResponseEntity horaConMasHechosSegunCategoria(
@@ -73,10 +86,18 @@ public class EstadisticaController {
         return ResponseEntity.status(HttpStatus.OK).body(estadisticaHoraXCategoria);
     }
 
+    // EstadisticaHoraXCategoriaDTO
+    @GetMapping("/categorias/hora/mayorCantidadHechos")
+    public ResponseEntity horaConMasHechosSegunCategorias() {
+        List<EstadisticaHoraXCategoriaDTO> estadisticas = this.estadisticaService.horaConMasHechosSegunCategorias();
+        if(estadisticas == null) return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.OK).body(estadisticas);
+    }
+
     // ¿Cuántas solicitudes de eliminación son spam?
     @GetMapping("/solicitudes/cantSpam")
     public ResponseEntity cantSolicitudesSpam() {
-        EstadisticaSolicitudes estadisticaSolicitudes = this.estadisticaService.cantSolicitudesSpam();
+        EstadisticaSolicitudesDTO estadisticaSolicitudes = this.estadisticaService.cantSolicitudesSpam();
         if(estadisticaSolicitudes == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }

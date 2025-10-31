@@ -1,7 +1,7 @@
-<div th:fragment="filtros">
+<div th:fragment="filtros (actionUrl, clearUrl)">
     <div class="collapse" id="filtrosCollapse">
         <div class="card card-body mb-3">
-            <form th:action="@{/hechos}" method="get">
+            <form th:action="${actionUrl}" method="get">
                 <div class="row">
                     <div class="input-mapa col-12 col-md-6">
                         <p style="color: black">Ingrese su Ubicación deseada</p>
@@ -15,12 +15,12 @@
                     <div class="col-12 col-md-6">
                         <div class="col-md-4 mb-12 w-100 filtro-input row">
                             <div class="col-6">
-                                <label for="fechaAcontencimientoDesde" class="form-label">Fecha desde</label>
-                                <input type="date" class="form-control" id="fechaAcontencimientoDesde" name="fechaAcontencimientoDesde" th:value="${param.fechaDesde}">
+                                <label for="fechaAcontecimientoInicio" class="form-label">Fecha desde</label>
+                                <input type="date" class="form-control" id="fechaAcontecimientoInicio" name="fechaAcontecimientoInicio" th:value="${param.fechaAcontecimientoInicio}">
                             </div>
                             <div class="col-6">
-                                <label for="fechaAcontencimientoHasta" class="form-label">Fecha hasta</label>
-                                <input type="date" class="form-control" id="fechaAcontencimientoHasta" name="fechaAcontencimientoHasta" th:value="${param.fechaHasta}">
+                                <label for="fechaAcontecimientoFin" class="form-label">Fecha hasta</label>
+                                <input type="date" class="form-control" id="fechaAcontecimientoFin" name="fechaAcontecimientoFin" th:value="${param.fechaAcontecimientoFin}">
                             </div>
 
                         </div>
@@ -34,7 +34,7 @@
                         </div>
                         <div class="text-end buttons">
                             <button type="submit" class="btn btn-primary btn-dark">Filtrar</button>
-                            <a th:href="@{/hechos}" class="btn btn-outline-secondary">Limpiar</a>
+                            <a th:href="${clearUrl}" th:attr="data-clear=${clearUrl}" onclick="window.location.href=this.getAttribute('data-clear')" class="btn btn-outline-secondary">Limpiar</a>
                         </div>
                     </div>
 

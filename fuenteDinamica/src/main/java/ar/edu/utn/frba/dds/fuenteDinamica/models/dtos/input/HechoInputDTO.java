@@ -35,10 +35,10 @@ public class HechoInputDTO {
     public static HechoInputDTO convertirModAInput(HechoModificadoInputDTO hecho){
         return HechoInputDTO
                 .builder()
+                .titulo(hecho.getTitulo())
                 .nombreUsuario(hecho.getNombreUsuario())
                 .apellidoUsuario(hecho.getApellidoUsuario())
                 .fechaNacimientoUsuario(hecho.getFechaNacimientoUsuario())
-                .titulo(hecho.getTitulo())
                 .descripcion(hecho.getDescripcion())
                 .categoria(hecho.getCategoria())
                 .contenidoMultimedia(hecho.getContenidoMultimedia())

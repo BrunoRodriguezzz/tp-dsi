@@ -1,9 +1,12 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.SolicitudModificacion;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IDinamicaRepository;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.ISolicitudesModRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +18,11 @@ import java.util.Optional;
 public class RepositoryService implements IRepositoryService {
 
     private IDinamicaRepository dinamicaRepository;
+    private ISolicitudesModRepository solicitudesModRepository;
 
-    public RepositoryService(IDinamicaRepository dinamicaRepository){
+    public RepositoryService(IDinamicaRepository dinamicaRepository, ISolicitudesModRepository solicitudesModRepository) {
         this.dinamicaRepository = dinamicaRepository;
+        this.solicitudesModRepository = solicitudesModRepository;
     };
 
     @Override
@@ -118,6 +123,21 @@ public class RepositoryService implements IRepositoryService {
         return this.dinamicaRepository
                 .findByEstadoHechoAndId(EstadoHecho.PENDIENTE_DE_REVISION, id)
                 .orElse(null);
+    }
+
+    @Override
+    public void guardarSolicitudModificacion(SolicitudModificacion solicitudModificacion){
+        this.solicitudesModRepository.save(solicitudModificacion);
+    }
+
+    @Override
+    public SolicitudModificacion buscarSolicitud(Long id){
+        return this.solicitudesModRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<SolicitudModificacion> buscarSolicitudesPendientes(){
+        return this.solicitudesModRepository.findByEstadoSolicitud(EstadoHecho.PENDIENTE_DE_REVISION);
     }
 
     private Boolean estadoAceptado(Hecho hecho){

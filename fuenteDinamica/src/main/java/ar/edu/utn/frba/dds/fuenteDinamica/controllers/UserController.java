@@ -1,12 +1,10 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.controllers;
 
-import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoNoAutorizado;
-import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorAccesoProhibido;
-import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorDeTiempo;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorTipoDeDatos;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudModOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/api/fuenteDinamica")
+@CrossOrigin(origins = "http://localhost:8081")
 public class UserController {
 
     @Autowired
@@ -37,7 +36,7 @@ public class UserController {
     // Solicitud de modificar un hecho
 
     @PatchMapping("/modificacion")
-    public SolicitudOutputDTO actualizarHecho(@RequestBody HechoOutputDTO hecho){
+    public SolicitudModOutputDTO actualizarHecho(@RequestBody HechoOutputDTO hecho){
 
         log.info("Recibido PATCH en /modificacion. Body: {}", hecho.toString());
 

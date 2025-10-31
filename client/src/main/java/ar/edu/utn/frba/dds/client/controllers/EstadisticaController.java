@@ -9,9 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -23,62 +21,27 @@ public class EstadisticaController {
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping
     public String getEstadisticasGenerales(Model model){
-        model.addAttribute("titulo", "Estadisticas y Análisis");
+        model.addAttribute("titulo", "Estadísticas y Análisis");
 
         // Cards de Estadísticas Generales
-        EstadisticaCategoriaDTO categorias = this.estadisticaService.getCategorias();
-        model.addAttribute("categoriaTop", categorias.getCategoriasConHechos().entrySet().iterator().next().getKey());
         EstadisticaSolicitudesDTO cantSpam = this.estadisticaService.getCantSolicitudesSpam();
         model.addAttribute("cantSpam", cantSpam.getSolicitudes_spam());
         model.addAttribute("cantNoSpam", cantSpam.getSolicitudes_no_spam());
-        model.addAttribute("totalHechos",categorias.getCategoriasConHechos().values().stream().reduce(0L,Long::sum));
+        EstadisticaCategoriaDTO categorias = this.estadisticaService.getRankingCategorias();
+        model.addAttribute("categoriaTop", categorias.getCategoriasConMasHechos().entrySet().iterator().next().getKey());
+        // model.addAttribute("totalHechos",categorias.getCategoriasConHechos().values().stream().reduce(0L,Long::sum));
+        model.addAttribute("totalHechos", 100);
 
         // Tab Content de "Colección por Provincia"
-        List<EstadisticaProvinciaXColeccionDTO> estadisticasProvinciasPorColeccion = this.estadisticaService.getRankingProvinciasPorColeccion().stream().limit(8).toList();
-        model.addAttribute("totalColecciones",estadisticasProvinciasPorColeccion.size());
-        model.addAttribute("colecciones", estadisticasProvinciasPorColeccion.stream().map(EstadisticaProvinciaXColeccionDTO::getColeccion).distinct().toList());
-
-        System.out.println("Provincias por Colección : " + estadisticasProvinciasPorColeccion);
-        Map<String, Map<String, Long>> coleccionPorProvincia =
-                estadisticasProvinciasPorColeccion.stream()
-                        .collect(Collectors.toMap(
-                                EstadisticaProvinciaXColeccionDTO::getColeccion,
-                                EstadisticaProvinciaXColeccionDTO::getProvinciasConHechos,
-                                (existing, replacement) -> existing,  // merge function (en caso de duplicados)
-                                LinkedHashMap::new
-                        ));
-        System.out.println("coleccionPorProvincia = " + coleccionPorProvincia);
-
-
-        model.addAttribute("coleccionPorProvincia", coleccionPorProvincia);
-        model.addAttribute("resultProvincia",estadisticasProvinciasPorColeccion.get(0).getProvinciasConHechos().entrySet().iterator().next().getKey());
-        model.addAttribute("resultCantidad",estadisticasProvinciasPorColeccion.get(0).getProvinciasConHechos().values().iterator().next());
+        List<EstadisticaProvinciaXColeccionDTO> estadisticasProvinciasPorColecciones = this.estadisticaService.getRankingProvinciasPorColeccion().stream().limit(8).toList();
+        model.addAttribute("totalColecciones",estadisticasProvinciasPorColecciones.size());
+        model.addAttribute("colecciones", estadisticasProvinciasPorColecciones.stream().map(EstadisticaProvinciaXColeccionDTO::getColeccion).toList());
+        model.addAttribute("coleccionPorProvincia", this.estadisticaService.convertToMap(estadisticasProvinciasPorColecciones));
+        model.addAttribute("resultProvincia",estadisticasProvinciasPorColecciones.get(0).getProvinciasConHechos().entrySet().iterator().next().getKey());
+        model.addAttribute("resultCantidad",estadisticasProvinciasPorColecciones.get(0).getProvinciasConHechos().values().iterator().next());
 
         // Tab Content "Ranking de Categorías"
-        model.addAttribute("rankingCategorias",
-                coleccionPorProvincia
-                        .entrySet()
-                        .stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey, // la categoría
-                                e -> e.getValue().values().stream().mapToLong(Long::longValue).sum(), // suma de sus provincias
-                                (existing, replacement) -> existing,  // merge function (en caso de duplicados)
-                                LinkedHashMap::new
-                        )));
-
-        Map<String, Long> rankingCategorias =
-                coleccionPorProvincia.entrySet()
-                        .stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                e -> e.getValue().values().stream().mapToLong(Long::longValue).sum(),
-                                (existing, replacement) -> existing,  // merge function (en caso de duplicados)
-                                LinkedHashMap::new
-                        ));
-
-        rankingCategorias.forEach((categoria, total) ->
-                System.out.println(categoria + " = " + total)
-        );
+        model.addAttribute("rankingCategorias", categorias.getCategoriasConMasHechos());
 
         // Tab Categorías Por Provincia
         List<EstadisticaProvinciaXCategoriaDTO> categoriasPorProvincia = this.estadisticaService.getCategoriasPorProvincias();

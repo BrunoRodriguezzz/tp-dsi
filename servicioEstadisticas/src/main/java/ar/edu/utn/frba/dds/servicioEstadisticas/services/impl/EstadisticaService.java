@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.*;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.*;
@@ -28,16 +29,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
+import java.time.LocalTime;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,7 +82,28 @@ public class EstadisticaService implements IEstadisticaService {
     @Autowired
     private ISolicitudRepository solicitudRepository;
 
-    public EstadisticaProvinciaXColeccion provinciaConMasHechosDeUnaColeccion(Long idColeccion) {
+    public List<EstadisticaProvinciaXColeccionDTO> provinciasConMasHechosPorColecciones(){
+        List<Object[]> resultados = estadisticaRepository.findProvinciasConHechosPorColecciones();
+        // Mapear: coleccion → (provincia → cantidad)
+        Map<String, Map<String, Long>> agrupadoPorColeccion = new LinkedHashMap<>();
+
+        for (Object[] fila : resultados) {
+            String coleccion = ((Coleccion) fila[0]).getDetalle();
+            String provincia = ((Provincia) fila[1]).getValue();
+            Long cantidad = ((Number) fila[2]).longValue();
+
+            agrupadoPorColeccion
+                    .computeIfAbsent(coleccion, k -> new LinkedHashMap<>())
+                    .put(provincia, cantidad);
+        }
+
+        // Convertir a lista de DTOs
+        return agrupadoPorColeccion.entrySet().stream()
+                .map(entry -> new EstadisticaProvinciaXColeccionDTO(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    public EstadisticaProvinciaXColeccionDTO provinciaConMasHechosDeUnaColeccion(Long idColeccion) {
         Coleccion coleccion = coleccionRepository.findById(idColeccion)
             .orElseThrow(() -> new RuntimeException("Colección no encontrada"));
 
@@ -103,26 +123,45 @@ public class EstadisticaService implements IEstadisticaService {
             LocalDateTime.now(),
             coleccion
         );
-
-        return this.estadisticaProvinciaXColeccionRepository.save(estadistica);
+        // TODO: lo mismo que solicitudes
+        // return this.estadisticaProvinciaXColeccionRepository.save(estadistica);
+        return this.mapToDTO(estadistica);
     }
 
-    public EstadisticaCategoria categoriaConMasHechos() {
+    private EstadisticaProvinciaXColeccionDTO mapToDTO(EstadisticaProvinciaXColeccion estadisticaProvinciaXColeccion) {
+        Map<String, Long> provincias = new LinkedHashMap<>();
+        estadisticaProvinciaXColeccion.getProvinciasConHechos().forEach((provincia, cantidad) -> {
+            provincias.put(provincia.getValue(), cantidad);
+        });
+
+        return new EstadisticaProvinciaXColeccionDTO(
+                estadisticaProvinciaXColeccion.getColeccion().getDetalle(),
+                provincias);
+    }
+
+    public EstadisticaCategoriaDTO categoriaConMasHechos() {
         List<Object[]> resultados = estadisticaRepository.findCategoriasConHechos();
 
         // Convertir los resultados a un mapa (limitado a 30)
         Map<Categoria, Long> categoriasConHechos = new LinkedHashMap<>();
-        for (Object[] resultado : resultados) {
-            if (categoriasConHechos.size() >= 30) {
-                break; // Limitar a máximo 30 categorías
-            }
-            Categoria categoria = (Categoria) resultado[0];
-            Long cantidad = ((Number) resultado[1]).longValue();
+        resultados.forEach(r -> {
+            Categoria categoria = (Categoria) r[0];
+            Long cantidad = ((Number) r[1]).longValue();
             categoriasConHechos.put(categoria, cantidad);
-        }
+        });
 
+        // TODO: lo mismo que solicitudes
         EstadisticaCategoria estadisticaCategoria = new EstadisticaCategoria(categoriasConHechos, LocalDateTime.now());
-        return this.estadisticaCategoriaRepository.save(estadisticaCategoria);
+        // return this.estadisticaCategoriaRepository.save(estadisticaCategoria);
+
+        return this.mapToDTO(estadisticaCategoria);
+    }
+
+    private EstadisticaCategoriaDTO mapToDTO(EstadisticaCategoria estadisticaCategoria) {
+        Map<String, Long> categorias = new LinkedHashMap<>();
+        estadisticaCategoria.getCategoriasConHechos().forEach((categoria, cantidad) ->
+                categorias.put(categoria.getDetalle(), cantidad));
+        return new EstadisticaCategoriaDTO(categorias);
     }
 
     public EstadisticaProvinciaXCategoria provinciaConMasHechosSegunCategoria(Long idCategoria) {
@@ -149,6 +188,27 @@ public class EstadisticaService implements IEstadisticaService {
         return this.estadisticaProvinciaXCategoriaRepository.save(estadisticaProvinciaXCategoria);
     }
 
+    public List<EstadisticaProvinciaXCategoriaDTO> provinciaConMasHechosSegunCategorias(){
+        List<Object[]> resultados = estadisticaRepository.findProvinciasConHechosPorCategorias();
+
+        // Mapa auxiliar: categoría → provincias con cantidad
+        Map<String, Map<String, Long>> agrupado = new LinkedHashMap<>();
+
+        for (Object[] fila : resultados) {
+            String categoria = ((Categoria) fila[0]).getDetalle();
+            String provincia = ((Provincia) fila[1]).getValue();
+            Long cantidad = ((Number) fila[2]).longValue();
+
+            agrupado
+                    .computeIfAbsent(categoria, k -> new LinkedHashMap<>())
+                    .put(provincia, cantidad);
+        }
+        // Convertir a lista de DTOs
+        return agrupado.entrySet().stream()
+                .map(entry -> new EstadisticaProvinciaXCategoriaDTO(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
+
     public EstadisticaHoraXCategoria horaConMasHechosSegunCategoria(Long idCategoria) {
         Categoria categoria = categoriaRepository.findById(idCategoria)
             .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
@@ -173,7 +233,26 @@ public class EstadisticaService implements IEstadisticaService {
         return this.estadisticaHoraXCategoriaRepository.save(estadisticaHoraXCategoria);
     }
 
-    public EstadisticaSolicitudes cantSolicitudesSpam() {
+    public List<EstadisticaHoraXCategoriaDTO> horaConMasHechosSegunCategorias(){
+        List<Object[]> resultados = estadisticaRepository.findHorasConHechosPorCategorias();
+
+        Map<String, Map<LocalTime, Long>> agrupado = new LinkedHashMap<>();
+
+        for (Object[] fila : resultados) {
+            String categoria = ((Categoria) fila[0]).getDetalle();
+            LocalTime hora = ((HoraDelDia) fila[1]).getHora();
+            Long cantidad = ((Number) fila[2]).longValue();
+
+            agrupado
+                    .computeIfAbsent(categoria, k -> new TreeMap<>())
+                    .put(hora, cantidad);
+        }
+        return agrupado.entrySet().stream()
+                .map(entry -> new EstadisticaHoraXCategoriaDTO(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    public EstadisticaSolicitudesDTO cantSolicitudesSpam() {
         Long cantSpam = solicitudRepository.countByEstado(EstadoSolicitudEliminacion.SPAM);
         Long cantAceptada = solicitudRepository.countByEstado(EstadoSolicitudEliminacion.ACEPTADA);
         Long cantRechazada = solicitudRepository.countByEstado(EstadoSolicitudEliminacion.RECHAZADA);
@@ -181,13 +260,19 @@ public class EstadisticaService implements IEstadisticaService {
 
         Long cantNoSpam = cantAceptada + cantRechazada + cantPendiente;
 
+        // TODO: acá se está guardando cada vez que alguien llama a ESTADISTICAS (por ejemplo, si en el front refresco la página 3 veces, se estarían guardando 3 veces en la BD que son los mismos datos). No sé si es necesario guardarlo, ya que estamos haciendo el cálculo acá y por cada cálculo se guarda, entonces como que es casi lo mismo
         EstadisticaSolicitudes estadisticaSolicitudes = new EstadisticaSolicitudes(
             LocalDateTime.now(),
             cantSpam,
             cantNoSpam
         );
+        // this.estadisticaSolicitudesRepository.save(estadisticaSolicitudes);
+        return this.mapToDTO(estadisticaSolicitudes);
+    }
 
-        return this.estadisticaSolicitudesRepository.save(estadisticaSolicitudes);
+    private EstadisticaSolicitudesDTO mapToDTO(EstadisticaSolicitudes estadisticaSolicitudes) {
+        return new EstadisticaSolicitudesDTO(estadisticaSolicitudes.getSolicitudes_spam(),
+                estadisticaSolicitudes.getSolicitudes_no_spam());
     }
 
     @Override

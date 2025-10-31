@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.client.dtos.estadisticas;
+package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EstadisticaProvinciaXColeccionDTO {
-    private String coleccion;
+public class EstadisticaProvinciaXCategoriaDTO {
+    private String categoria;
     private Map<String, Long> provinciasConHechos;
 }

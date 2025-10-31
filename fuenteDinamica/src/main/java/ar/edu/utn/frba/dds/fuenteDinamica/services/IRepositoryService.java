@@ -1,7 +1,9 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.SolicitudModificacion;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +16,9 @@ public interface IRepositoryService {
     public List<Hecho> mostrarTodos(LocalDateTime filtro);
     public List<Hecho> mostrarEnviados(Boolean enviado,LocalDateTime filtro);
     public List<Hecho> buscarTodosDeUnUsuario(Long idUsuario);
+    void guardarSolicitudModificacion(SolicitudModificacion hecho);
+    SolicitudModificacion buscarSolicitud(Long idSolicitud);
+    List<SolicitudModificacion> buscarSolicitudesPendientes();
 
     List<Hecho> buscarPendientes();
     Hecho buscarPendientesPorID(Long id);
