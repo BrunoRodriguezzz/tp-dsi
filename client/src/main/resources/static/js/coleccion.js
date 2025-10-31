@@ -56,9 +56,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const main = document.querySelector('main.container');
         const coleccionId = main ? main.dataset.coleccionId : 0;
         if (!coleccionId || coleccionId === '0') return;
-        fetch('/coleccion/' + coleccionId + '/hechos')
-            .then(response => response.json())
-            .then(hechos => {
+        const agregadorUrl = 'http://localhost:8082/colecciones/' + coleccionId + '/hechos';
+        fetch(agregadorUrl)
+            .then(response => {
+                if (!response.ok) throw new Error('Error al obtener hechos: ' + response.status + ' ' + response.statusText);
+                return response.json();
+            })
+            .then(data => {
+                // la respuesta puede ser paginada { content: [...] } o directamente un array
+                const hechos = Array.isArray(data) ? data : (data.content || []);
                 const container = document.getElementById('hechos-container');
                 if (!hechos || hechos.length === 0) {
                     container.innerHTML = '<p>No hay hechos para esta colección.</p>';
@@ -66,22 +72,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 let html = '';
                 hechos.forEach(hecho => {
+                    const ubic = hecho.ubicacion || {};
+                    const ubicText = (ubic.latitud !== undefined && ubic.longitud !== undefined) ? (`lat: ${ubic.latitud}, lon: ${ubic.longitud}`) : (ubic.provincia || ubic.muncipio || '') ;
+                    const fechaAcontecimiento = hecho.fechaAcontecimiento ? new Date(hecho.fechaAcontecimiento).toLocaleString() : '';
+                    const fechaCarga = hecho.fechaCarga ? new Date(hecho.fechaCarga).toLocaleString() : '';
                     html += `
                     <div class="hecho-card">
                         <div class="card-col-izq">
                             <div class="card-header">${hecho.titulo || ''}</div>
                             <div class="card-desc">${hecho.descripcion || ''}</div>
                             <div class="card-info-row">
-                                <p><b>Fecha:</b> ${hecho.fechaAcontecimiento || ''}</p>
-                                <p><b>Ubicación:</b> ${hecho.ubicacion || ''}</p>
+                                <p><b>Fecha:</b> ${fechaAcontecimiento}</p>
+                                <p><b>Ubicación:</b> ${ubicText}</p>
                                 <p><b>Fuente:</b> ${hecho.fuente || ''}</p>
                             </div>
                             <div class="card-etiquetas">
-                                ${(hecho.etiquetas || []).map(etiqueta => `<span class="card-etiqueta">${etiqueta}</span>`).join('')}
+                                <!-- etiquetas no disponibles en DTO por defecto -->
                             </div>
                             <div class="card-footer">
                                 <i class="fa-regular fa-calendar"></i>
-                                <span>Publicado: ${hecho.fechaPublicacion || ''}</span>
+                                <span>Publicado: ${fechaCarga}</span>
                             </div>
                         </div>
                         <div class="card-col-der">
@@ -95,9 +105,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 container.innerHTML = html;
             })
-            .catch(() => {
+            .catch(err => {
                 const container = document.getElementById('hechos-container');
-                if (container) container.innerHTML = '<p>Error al cargar los hechos.</p>';
+                if (container) container.innerHTML = '<p>Error al cargar los hechos: ' + err.message + '</p>';
+                console.error('Error al cargar hechos de la colección:', err);
             });
     } catch (e) {
         console.error('Error al cargar hechos de la colección:', e);
