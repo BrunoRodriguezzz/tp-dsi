@@ -13,6 +13,7 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IContribuyenteRepo
 import ar.edu.utn.frba.dds.fuenteDinamica.models.repositories.IUbicacionRepository;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IUserService;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserService implements IUserService {
 
     private final IRepositoryService dinamicaRepository;
@@ -130,12 +132,16 @@ public class UserService implements IUserService {
 
         if(this.verificarUsuarioRegistrado(hechoModificado)){
             if(this.verificarTiempoParaActualizar(hechoModificado)){
-
-                List<ContenidoMultimedia> contenido = hechoModificado
-                        .getContenidoMultimedia()
-                        .stream()
-                        .map(this::convertirMultimedia)
-                        .collect(Collectors.toCollection(ArrayList::new));
+                List<ContenidoMultimedia> contenido;
+                if (hechoModificado.getContenidoMultimedia() == null || hechoModificado.getContenidoMultimedia().isEmpty()) {
+                    contenido = new ArrayList<>();
+                } else {
+                    contenido = hechoModificado
+                            .getContenidoMultimedia()
+                            .stream()
+                            .map(this::convertirMultimedia)
+                            .collect(Collectors.toCollection(ArrayList::new));
+                }
 
                 Categoria categoria = this.categoriaExistente(hechoModificado.getCategoria());
 

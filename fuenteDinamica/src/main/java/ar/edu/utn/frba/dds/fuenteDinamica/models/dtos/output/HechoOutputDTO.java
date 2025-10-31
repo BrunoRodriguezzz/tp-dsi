@@ -54,6 +54,7 @@ public class HechoOutputDTO {
         return HechoModificadoInputDTO
                 .builder()
                 .id(hecho.getId())
+                .idUsuario(hecho.getContribuyente().getId())
                 .nombreUsuario(hecho.getContribuyente().getNombre())
                 .apellidoUsuario(hecho.getContribuyente().getApellido())
                 .fechaNacimientoUsuario(hecho.getContribuyente().getFechaNacimiento().toLocalDate())

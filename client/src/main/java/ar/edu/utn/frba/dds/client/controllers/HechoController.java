@@ -64,8 +64,17 @@ public class HechoController {
         return "hecho";
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CONTRIBUYENTE')")
+    @GetMapping("/contribuyentes/{id}")
+    public String verDetalleHechoContribuyente(@PathVariable Long id, Model model) {
+        HechoDTO hecho = dinamicaService.buscarHechoId(id);
+        model.addAttribute("hecho", hecho);
+        model.addAttribute("titulo", hecho.getTitulo());
+        return "hecho";
+    }
+
     @GetMapping("/verDetalle/{id}")
-    public String verDetalleHechoNuevo(@PathVariable Long id, Model model) {
+    public String verDetalleHechoNuevo(@PathVariable Long id, Model model) { // TODO: Ver para q sirve
         HechoDTO hecho = hechoService.obtenerHechoPorId(id);
         LOGGER.info("Mostrando {} hecho.", id);
         model.addAttribute("hecho", hecho);
@@ -148,10 +157,11 @@ public class HechoController {
 
     @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CONTRIBUYENTE')")
     @GetMapping("modificarHecho/contribuyentes/{id}")
-    public String modificarHechoContribuyente(@PathVariable(name = "id") Long id, Model model){
+    public String modificarHechoContribuyente(@PathVariable(name = "id") Long id, @SessionAttribute("id") Long idUsuario, Model model){
         HechoDTO hecho = dinamicaService.buscarHechoId(id);
         model.addAttribute("hecho", hecho);
         model.addAttribute("titulo", "Modificacion");
+        model.addAttribute("idUsuario", idUsuario);
         return "modificarHecho";
     }
 
@@ -160,6 +170,7 @@ public class HechoController {
     @PostMapping("modificarHecho/{id}")
     public String procesarModificacionHecho(@PathVariable Long id, @ModelAttribute HechoDTO hechoDTO, RedirectAttributes redirectAttributes) {
         boolean rta;
+        log.info("El ID del usuario que se envia es: {}", hechoDTO.getContribuyente().getId());
         if (hechoDTO.getOrigen() != null && hechoDTO.getOrigen().equals("CONTRIBUYENTE")) {
             rta = this.dinamicaService.modificarHecho(hechoDTO);
         }

@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.client.services;
 
 import ar.edu.utn.frba.dds.client.dtos.HechoInputDTO;
+import ar.edu.utn.frba.dds.client.dtos.SolicitudModOutputDTO;
 import ar.edu.utn.frba.dds.client.dtos.UbicacionDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDinamicaDTO;
@@ -196,7 +197,7 @@ public class DinamicaService {
 
     public boolean modificarHecho(HechoDTO hechoDTO) {
         try {
-            WebClient.builder().baseUrl(dinamicaUrl)
+            SolicitudModOutputDTO respuesta = WebClient.builder().baseUrl(dinamicaUrl)
                     .build()
                     .patch()
                     .uri("/modificacion")
@@ -206,12 +207,12 @@ public class DinamicaService {
                             httpStatusCode -> httpStatusCode.is4xxClientError() || httpStatusCode.is5xxServerError(),
                             clientResponse -> clientResponse.bodyToMono(String.class).map(RuntimeException::new)
                     )
-                    .bodyToMono(Boolean.class)
+                    .bodyToMono(SolicitudModOutputDTO.class)
                     .block();
+            return respuesta != null && respuesta.getIdSolicitud() != null;
         } catch (Exception e) {
             log.error("Error al modificar el hecho con id {}: {}", hechoDTO.getId(), e.getMessage());
             return false;
         }
-        return true;
     }
 }

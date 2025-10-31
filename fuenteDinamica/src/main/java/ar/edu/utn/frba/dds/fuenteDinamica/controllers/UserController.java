@@ -38,8 +38,6 @@ public class UserController {
     @PatchMapping("/modificacion")
     public SolicitudModOutputDTO actualizarHecho(@RequestBody HechoOutputDTO hecho){
 
-        log.info("Recibido PATCH en /modificacion. Body: {}", hecho.toString());
-
         HechoModificadoInputDTO hechoNuevo = HechoOutputDTO.toHechoModificado(hecho);
         HechoInputDTO hechoParaValidarInput = HechoInputDTO.convertirModAInput(hechoNuevo);
 
