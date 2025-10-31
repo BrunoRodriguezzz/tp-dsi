@@ -13,6 +13,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.time.Duration;
 
 public interface IAdapUbicacion {
     public static Ubicacion buscarUbicacion(String latitud, String longitud) {
@@ -29,7 +32,13 @@ public interface IAdapUbicacion {
                 .build())
             .retrieve()
             .bodyToMono(ResponseUbicacionGobierno.class)
+            .timeout(Duration.ofSeconds(5))
             .map(ResponseUbicacionGobierno::toUbicacion)
+            .onErrorResume(e -> {
+                Logger log = LoggerFactory.getLogger(IAdapUbicacion.class);
+                log.warn("Error obteniendo ubicacion sincrona desde georef: {}. Devolviendo ubicacion original vacía.", e.getMessage());
+                return Mono.just(new Ubicacion(0.0,0.0));
+            })
             .block();
     }
 
@@ -46,8 +55,14 @@ public interface IAdapUbicacion {
                 .bodyValue(output)
                 .retrieve()
                 .bodyToMono(ColeccionRespuestaGobiernoDTO.class)
+                .timeout(Duration.ofSeconds(5))
                 .map(r -> {
                     return r.getResultados().stream().map(ResponseUbicacionGobierno::toUbicacion).toList();
+                })
+                .onErrorResume(e -> {
+                    Logger log = LoggerFactory.getLogger(IAdapUbicacion.class);
+                    log.warn("Error obteniendo ubicaciones en lote desde georef: {}. Devolviendo lista vacía.", e.getMessage());
+                    return Mono.just(List.of());
                 });
     }
 
@@ -55,6 +70,8 @@ public interface IAdapUbicacion {
         if (hechos.isEmpty()) {
             return Flux.empty();
         }
+
+        Logger log = LoggerFactory.getLogger(IAdapUbicacion.class);
 
         WebClient client = WebClient.builder()
                 .baseUrl("https://apis.datos.gob.ar/georef/api")
@@ -69,6 +86,7 @@ public interface IAdapUbicacion {
                 .bodyValue(output)
                 .retrieve()
                 .bodyToMono(ColeccionRespuestaGobiernoDTO.class)
+                .timeout(Duration.ofSeconds(5))
                 .flatMapMany(response -> {
                     List<Ubicacion> ubicacionesEnriquecidas = response.getResultados().stream()
                             .map(ResponseUbicacionGobierno::toUbicacion)
@@ -89,8 +107,13 @@ public interface IAdapUbicacion {
                                 hechoOriginal.setUbicacion(ubicacion);
                                 return hechoOriginal;
                             });
+                })
+                .onErrorResume(e -> {
+                    // Si hubo error consultando la API de georef (timeout, 5xx, etc.), no abortamos todo el pipeline.
+                    // Registramos y devolvemos los hechos originales sin enriquecer para que el flujo continúe.
+                    log.warn("Error al obtener ubicaciones reactivamente desde georef: {}. Se devolverán hechos sin enriquecer.", e.getMessage());
+                    return Flux.fromIterable(hechos);
                 });
     }
 
 }
-

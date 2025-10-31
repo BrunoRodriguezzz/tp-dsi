@@ -93,6 +93,19 @@ public class HechoSpecification {
         };
     }
 
+    public static Specification<Hecho> conFuentesIds(List<Long> fuenteIds) {
+        return (root, query, criteriaBuilder) -> {
+            if (fuenteIds == null || fuenteIds.isEmpty()) {
+                return criteriaBuilder.conjunction();
+            }
+
+            Join<Hecho, HechoFuente> hechoFuenteJoin = root.join("fuenteSet");
+            Path<Long> fuenteIdPath = hechoFuenteJoin.get("fuente").get("id");
+            query.distinct(true);
+            return fuenteIdPath.in(fuenteIds);
+        };
+    }
+
     public static Specification<Hecho> conCriterio(Criterio criterio) {
         return (root, query, criteriaBuilder) -> {
             if (criterio == null || criterio.getFiltros() == null || criterio.getFiltros().isEmpty()) {
@@ -186,6 +199,17 @@ public class HechoSpecification {
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+    public static Specification<Hecho> conColeccionId(Long coleccionId) {
+        return (root, query, criteriaBuilder) -> {
+            if (coleccionId == null) {
+                return criteriaBuilder.conjunction();
+            }
+            Join<Hecho, ?> coleccionJoin = root.join("colecciones");
+            query.distinct(true);
+            return criteriaBuilder.equal(coleccionJoin.get("id"), coleccionId);
         };
     }
 }

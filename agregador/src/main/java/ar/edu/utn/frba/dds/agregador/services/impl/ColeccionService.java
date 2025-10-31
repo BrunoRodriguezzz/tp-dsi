@@ -15,12 +15,10 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IColeccionRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
-import ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -29,12 +27,15 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class ColeccionService implements IColeccionService {
   @Autowired
@@ -46,12 +47,13 @@ public class ColeccionService implements IColeccionService {
   @Autowired
   private FiltroMapper filtroMapper;
 
+  @Autowired
+  private ApplicationContext applicationContext;
+
   private final IHechoService hechoService;
-  private LocalDateTime ultimaFechaRefresco;
 
   public ColeccionService(HechoService hechoService) {
     this.hechoService = hechoService;
-    this.ultimaFechaRefresco = LocalDateTime.now().minusDays(1); // TODO: Debería persistirse
   }
 
   public Page<ColeccionOutputDTO> buscarColecciones(Pageable pageable) {
@@ -66,20 +68,12 @@ public class ColeccionService implements IColeccionService {
                             )
                     .toList());
     colecciones.forEach(c -> c.cargarHechos(hechosNuevos));
-    // TODO: Buscar colecciones del servicio PROXY
     return colecciones.map(ColeccionOutputDTO::coleccionToDTO);
   }
 
   public Page<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params, Pageable pageable) {
-    Coleccion coleccion = this.findColecccionAux(id);
-    List<Hecho> hechosProxy = this.hechoService.actualizarHechosProxy();
-    coleccion.cargarHechos(hechosProxy);
-    List<Hecho> hechosOutput = coleccion.consultarHechos(params.instanciarFiltros());
-      return new PageImpl<HechoOutputDTO>(
-              HechoOutputDTO.mapHechoToDTO(hechosOutput),
-              pageable,
-              hechosOutput.size()
-      );
+    Page<ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho> hechosPaginados = this.hechoRepository.findByColeccionId(id, pageable);
+    return hechosPaginados.map(ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO::HechoToDTO);
   }
 
   public List<HechoOutputDTO> buscarHechosCuradosColeccion(Long id, QueryParamsFiltro params) {
@@ -125,6 +119,7 @@ public class ColeccionService implements IColeccionService {
 
   @Override
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
+    log.info("Entrando en guardarColeccion para: {}", coleccionInputDTO.getNombre());
     List<Fuente> fuentesColeccion = new ArrayList<>();
     coleccionInputDTO.getFuentes().forEach(fuente -> {
       Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
@@ -140,13 +135,6 @@ public class ColeccionService implements IColeccionService {
     Criterio criterio = new Criterio();
     criterio.agregarFiltros(filtrosGestionados);
 
-    Specification<Hecho> spec = Specification
-            .where(HechoSpecification.noEliminado())
-            .and(HechoSpecification.conFuentes(fuentesColeccion))
-            .and(HechoSpecification.conCriterio(criterio));
-
-    List<Hecho> hechosEncontrados = this.hechoRepository.findAll(spec);
-
     Coleccion nuevaColeccion = new Coleccion(
             coleccionInputDTO.getNombre(),
             coleccionInputDTO.getDescripcion(),
@@ -154,19 +142,95 @@ public class ColeccionService implements IColeccionService {
             criterio
     );
 
-    hechosEncontrados.forEach(nuevaColeccion::cargarHecho);
+    log.info("Guardando colección (sin hechos) con título='{}'...", coleccionInputDTO.getNombre());
+    Coleccion coleccionGuardada = this.coleccionRepository.save(nuevaColeccion);
+    log.info("Colección persistida con id={} (título='{}'). Iniciando importación asíncrona de hechos...", coleccionGuardada.getId(), coleccionGuardada.getTitulo());
 
-    List<Consenso> listaConsensos = new ArrayList<>();
-    if (coleccionInputDTO.getConsensos() != null) {
-      listaConsensos = coleccionInputDTO.getConsensos()
-              .stream()
-              .map(Consenso::valueOf)
-              .toList();
+    // Invocar el método @Async a través del proxy para que la anotación funcione
+    ((ColeccionService) applicationContext.getBean(ColeccionService.class)).importarYAsociarHechos(coleccionGuardada.getId(), fuentesColeccion);
+
+    log.info("Saliendo de guardarColeccion (se devuelve resultado sin esperar importación) para id={}", coleccionGuardada.getId());
+
+    return ColeccionOutputDTO.coleccionToDTO(coleccionGuardada);
+  }
+
+  @Async
+  public void importarYAsociarHechos(Long idColeccion, List<Fuente> fuentesColeccion) {
+    log.info("Inicio importarYAsociarHechos para coleccion id={}", idColeccion);
+    List<Hecho> hechosGuardadosTotales = new ArrayList<>();
+    for (Fuente f : fuentesColeccion) {
+      try {
+        log.info("Importando hechos desde la fuente '{}'...", f.getNombre());
+        List<Hecho> hechosDesdeFuente = f.importarHechos().collectList().block();
+        if (hechosDesdeFuente == null || hechosDesdeFuente.isEmpty()) {
+          continue;
+        }
+        for (Hecho h : hechosDesdeFuente) {
+          try {
+            Hecho guardado = this.hechoService.guardarHechoDinamica(h);
+            if (guardado != null) hechosGuardadosTotales.add(guardado);
+          } catch (Exception e) {
+            log.warn("Error guardando hecho de la fuente '{}' (titulo='{}'): {}", f.getNombre(), h == null ? "<null>" : h.getTitulo(), e.getMessage());
+          }
+        }
+      } catch (Exception e) {
+        log.warn("Error importando desde la fuente '{}': {}", f.getNombre(), e.getMessage());
+      }
     }
-    listaConsensos.forEach(nuevaColeccion::agregarConsenso);
 
-    this.coleccionRepository.save(nuevaColeccion);
-    return ColeccionOutputDTO.coleccionToDTO(nuevaColeccion);
+    if (!hechosGuardadosTotales.isEmpty()) {
+      ((ColeccionService) applicationContext.getBean(ColeccionService.class)).asociarHechos(idColeccion, hechosGuardadosTotales);
+    }
+    log.info("Fin importarYAsociarHechos para coleccion id={}", idColeccion);
+  }
+
+  @Transactional
+  public void asociarHechos(Long idColeccion, List<Hecho> hechos) {
+    Optional<Coleccion> opt = this.coleccionRepository.findById(idColeccion);
+    if (opt.isEmpty()) {
+      throw new NotFoundException("Coleccion no encontrada id=" + idColeccion);
+    }
+
+    Coleccion coleccion = opt.get();
+    coleccion.getFuentes().size();
+
+    int inicial = coleccion.getHechos() == null ? 0 : coleccion.getHechos().size();
+    int agregados = 0;
+    if (hechos != null) {
+      for (Hecho h : hechos) {
+        Long idHecho = h.getId();
+        if (idHecho == null) {
+          try {
+            Hecho saved = this.hechoRepository.save(h);
+            coleccion.getHechos().add(saved);
+            agregados++;
+            this.coleccionRepository.insertHechoEnColeccion(idColeccion, saved.getId());
+          } catch (Exception e) {
+            log.warn("No se pudo guardar hecho sin id antes de asociar a coleccion: {}", e.getMessage());
+          }
+          continue;
+        }
+
+        boolean existe = coleccion.getHechos().stream().anyMatch(existing -> existing.getId() != null && existing.getId().equals(idHecho));
+        if (!existe) {
+          var optHecho = this.hechoRepository.findById(idHecho);
+          if (optHecho.isPresent()) {
+            coleccion.getHechos().add(optHecho.get());
+            agregados++;
+            try {
+              this.coleccionRepository.insertHechoEnColeccion(idColeccion, idHecho);
+            } catch (Exception e) {
+              log.warn("No se pudo insertar relacion nativa coleccion-hecho para coleccion={}, hecho={}: {}", idColeccion, idHecho, e.getMessage());
+            }
+          } else {
+            log.warn("Hecho id={} no encontrado en repo al intentar asociar a coleccion id={}", idHecho, idColeccion);
+          }
+        }
+      }
+    }
+
+    this.coleccionRepository.saveAndFlush(coleccion);
+    log.info("Coleccion id={} actualizada transaccionalmente: hechos antes={}, agregados={}, total={}", idColeccion, inicial, agregados, coleccion.getHechos().size());
   }
 
   @Override
