@@ -8,17 +8,19 @@ import ar.edu.utn.frba.dds.client.services.DinamicaService;
 import ar.edu.utn.frba.dds.client.services.HechoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequestMapping("/hechos")
 @RequiredArgsConstructor
@@ -74,9 +76,7 @@ public class HechoController {
     @PreAuthorize("hasAnyRole('ADMINISTRADOR','CONTRIBUYENTE')")
     @GetMapping("/misHechos")
     public String mostrarMisHechos(@SessionAttribute("id") Long id, Model model){
-        LOGGER.info("El id de la sesion es: {}.", id);
         List<HechoDTO> hechos = this.dinamicaService.mostrarMisHechos(id);
-        hechos.forEach(h -> LOGGER.info("Mostrando estado del hecho: {}.", h.getEstado()));
         model.addAttribute("hechos", hechos);
         model.addAttribute("cantidad", hechos.size());
         model.addAttribute("titulo", "Mis Hechos");
@@ -110,7 +110,6 @@ public class HechoController {
     @PostMapping("/gestion")
     public String gestionarHecho(@Valid @ModelAttribute HechoRevisadoForm form) {
         this.dinamicaService.gestionarHecho(form);
-        LOGGER.info("Hecho {} gestionado por el administrador {}.", form.getId(), form.getIdAdministrador());
         return "redirect:/panelControl/hechosPendientes";
     }
 
@@ -136,5 +135,38 @@ public class HechoController {
     @PostMapping("/reportarHecho")
     public String procesarFormulario() {
         return "redirect:/";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CONTRIBUYENTE')")
+    @GetMapping("modificarHecho/{id}")
+    public String modificacionHecho(@PathVariable(name = "id") Long id, Model model){
+        HechoDTO hecho = hechoService.obtenerHechoPorId(id);
+        model.addAttribute("hecho", hecho);
+        model.addAttribute("titulo", "Modificacion");
+        return "modificarHecho";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CONTRIBUYENTE')")
+    @GetMapping("modificarHecho/contribuyentes/{id}")
+    public String modificarHechoContribuyente(@PathVariable(name = "id") Long id, Model model){
+        HechoDTO hecho = dinamicaService.buscarHechoId(id);
+        model.addAttribute("hecho", hecho);
+        model.addAttribute("titulo", "Modificacion");
+        return "modificarHecho";
+    }
+
+
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CONTRIBUYENTE')")
+    @PostMapping("modificarHecho/{id}")
+    public String procesarModificacionHecho(@PathVariable Long id, @ModelAttribute HechoDTO hechoDTO, RedirectAttributes redirectAttributes) {
+        boolean rta;
+        if (hechoDTO.getOrigen() != null && hechoDTO.getOrigen().equals("CONTRIBUYENTE")) {
+            rta = this.dinamicaService.modificarHecho(hechoDTO);
+        }
+        else {
+            rta = this.hechoService.modificarHecho(id, hechoDTO);
+        }
+        redirectAttributes.addFlashAttribute("operacion", rta);
+        return "redirect:/hechos/misHechos";
     }
 }

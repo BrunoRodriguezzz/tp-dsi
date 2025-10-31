@@ -1,9 +1,12 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +15,7 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
+@ToString
 public class HechoOutputDTO {
     private Long          id;
     private Contribuyente contribuyente;
@@ -43,6 +47,22 @@ public class HechoOutputDTO {
                 .fuente(hecho.getFuente())
                 .fechaCarga(hecho.getFechaGuardado())
                 .estado(hecho.getEstadoHecho())
+                .build();
+    }
+
+    public static HechoModificadoInputDTO toHechoModificado(HechoOutputDTO hecho) {
+        return HechoModificadoInputDTO
+                .builder()
+                .id(hecho.getId())
+                .nombreUsuario(hecho.getContribuyente().getNombre())
+                .apellidoUsuario(hecho.getContribuyente().getApellido())
+                .fechaNacimientoUsuario(hecho.getContribuyente().getFechaNacimiento().toLocalDate())
+                .titulo(hecho.getTitulo())
+                .categoria(hecho.getCategoria())
+                .descripcion(hecho.getDescripcion())
+                .latitud(hecho.getUbicacion().getLatitud())
+                .longitud(hecho.getUbicacion().getLongitud())
+                .fechaAcontecimiento(hecho.getFechaAcontecimiento())
                 .build();
     }
 }

@@ -5,6 +5,8 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.EtiquetaOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.ContenidoMultimedia;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,8 +14,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Setter
-@Getter
+
+@Data
+@Builder
 public class HechoModificadoInputDTO {
 
     private Long          id;

@@ -52,6 +52,11 @@ public class APIService implements IAPIService {
                 .toList();
     }
 
+    @Override
+    public HechoOutputDTO buscarHechoPorId(Long id) {
+        return HechoOutputDTO.convertir(this.dinamicaRepository.buscarPorID(id));
+    }
+
     private HechoOutputDTO hechoOutputDTO(Hecho hecho){
         return HechoOutputDTO.convertir(hecho);
     }

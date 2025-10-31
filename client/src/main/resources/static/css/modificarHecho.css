@@ -20,7 +20,7 @@ body{
 
 .config-nav{
     display: flex;
-    gap: 0.4rem;
+    gap: 1rem;
     font-size: 0.9rem;
     align-items: center;
 }

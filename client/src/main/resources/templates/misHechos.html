@@ -65,7 +65,7 @@
                         <a  class="btn btn-primary btn-dark config-opciones icono" th:href="@{/hechos/pendientes/{id}(id=${hecho.id})}">
                             <i class="bi bi-info-circle"></i>
                         </a>
-                        <a  class="btn btn-white config-opciones icono" th:href="@{/modificarHecho/{id}(id=${hecho.id})}">
+                        <a  class="btn btn-white config-opciones icono" th:href="@{modificarHecho/contribuyentes/{id}(id=${hecho.id})}">
                             <i class="bi bi-pencil-square"></i>
                         </a>
                         <a  class="btn btn-red config-opciones icono" th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}">
@@ -76,5 +76,38 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de Bootstrap -->
+    <div th:if="${operacion != null}" class="modal fade" id="operacionModal" tabindex="-1" aria-labelledby="operacionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" th:classappend="${operacion} ? 'bg-success text-white' : 'bg-danger text-white'">
+                    <h1 class="modal-title fs-5" id="operacionModalLabel" th:text="${operacion} ? 'Operación Exitosa' : 'Error en la Operación'"></h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p th:text="${operacion} ? 'La operación se completó correctamente.' : 'Hubo un problema al procesar la solicitud.'"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-dark" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:if="${operacion != null}" th:inline="javascript">
+        /*<![CDATA[*/
+        // Espera a que el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', function () {
+            // Selecciona el modal por su ID
+            var operacionModal = document.getElementById('operacionModal');
+            // Crea una nueva instancia del modal de Bootstrap
+            var modal = new bootstrap.Modal(operacionModal, {});
+            // Muestra el modal
+            modal.show();
+        });
+        /*]]>*/
+    </script>
+
 </div>
 </html>

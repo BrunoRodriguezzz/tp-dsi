@@ -31,8 +31,13 @@ public class APIController {
         }
     }
 
-    @GetMapping("/hechos/{idUsuario}")
-    public List<HechoOutputDTO> buscarHecho(@PathVariable Long idUsuario){
-        return this.apiService.hechosDeUsuario(idUsuario);
+    @GetMapping("/hechos/user/{id}")
+    public List<HechoOutputDTO> buscarHecho(@PathVariable Long id){
+        return this.apiService.hechosDeUsuario(id);
+    }
+
+    @GetMapping("/hechos/{id}")
+    public HechoOutputDTO buscarHechoPorId(@PathVariable Long id) {
+        return this.apiService.buscarHechoPorId(id);
     }
 }

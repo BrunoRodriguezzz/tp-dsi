@@ -6,14 +6,16 @@ import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorDeTiempo;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorTipoDeDatos;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
+import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/fuenteDinamica")
-@CrossOrigin(origins = "http://localhost:8081")
 public class UserController {
 
     @Autowired
@@ -35,12 +37,15 @@ public class UserController {
     // Solicitud de modificar un hecho
 
     @PatchMapping("/modificacion")
-    public SolicitudOutputDTO actualizarHecho(@RequestBody HechoModificadoInputDTO hecho){
+    public SolicitudOutputDTO actualizarHecho(@RequestBody HechoOutputDTO hecho){
 
-        HechoInputDTO hechoParaValidarInput = HechoInputDTO.convertirModAInput(hecho);
+        log.info("Recibido PATCH en /modificacion. Body: {}", hecho.toString());
+
+        HechoModificadoInputDTO hechoNuevo = HechoOutputDTO.toHechoModificado(hecho);
+        HechoInputDTO hechoParaValidarInput = HechoInputDTO.convertirModAInput(hechoNuevo);
 
         if(this.verificarTiposDeDatos(hechoParaValidarInput)){
-            return this.userService.actualizar(hecho);
+            return this.userService.actualizar(hechoNuevo);
         }else{
             throw new ErrorTipoDeDatos("Error de ingreso de datos en: " + this.tipoDeDatoErroneo(hechoParaValidarInput) + ". No puede haber campos vacios.");
         }

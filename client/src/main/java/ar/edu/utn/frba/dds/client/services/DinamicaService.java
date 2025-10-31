@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDinamicaDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class DinamicaService {
 
@@ -31,9 +33,7 @@ public class DinamicaService {
 
     public List<HechoDTO> mostrarMisHechos(Long id){
         try{
-
-            return this.webApiCallerService.getList(this.dinamicaUrl + "/hechos/" + id, HechoDTO.class);
-
+            return this.webApiCallerService.getList(this.dinamicaUrl + "/hechos/user/" + id, HechoDTO.class);
         } catch (Exception e) {
 
             // Si no esta activa la fuente dinamica envio unos hechos mockeados
@@ -107,12 +107,13 @@ public class DinamicaService {
                     .origen("Contribuyentes")
                     .fuente("Fuente Dinamica")
                     .build();
+             log.error(e.getMessage());
         }
         return hecho;
     }
 
     public void enviarHecho(HechoInputDTO hecho){
-        this.webApiCallerService.post(this.dinamicaUrl + "/solicitud", hecho, HechoDTO.class);
+        this.webApiCallerService.post(this.dinamicaUrl + "/solicitud", hecho, Void.class);
     }
 
     public void gestionarHecho(HechoRevisadoForm form) {
@@ -191,5 +192,26 @@ public class DinamicaService {
             System.out.println("[ERROR] " + e.getMessage());
             return null;
         }
+    }
+
+    public boolean modificarHecho(HechoDTO hechoDTO) {
+        try {
+            WebClient.builder().baseUrl(dinamicaUrl)
+                    .build()
+                    .patch()
+                    .uri("/modificacion")
+                    .bodyValue(hechoDTO)
+                    .retrieve()
+                    .onStatus(
+                            httpStatusCode -> httpStatusCode.is4xxClientError() || httpStatusCode.is5xxServerError(),
+                            clientResponse -> clientResponse.bodyToMono(String.class).map(RuntimeException::new)
+                    )
+                    .bodyToMono(Boolean.class)
+                    .block();
+        } catch (Exception e) {
+            log.error("Error al modificar el hecho con id {}: {}", hechoDTO.getId(), e.getMessage());
+            return false;
+        }
+        return true;
     }
 }

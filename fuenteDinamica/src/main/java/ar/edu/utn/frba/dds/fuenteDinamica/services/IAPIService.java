@@ -9,4 +9,5 @@ public interface IAPIService {
     public List<HechoOutputDTO> buscarHechos(Boolean noEnviado, LocalDateTime filtro);
     public List<HechoOutputDTO> hechosDeIgualTitulo(Boolean enviado,LocalDateTime dateTimeGT,String titulo);
     public List<HechoOutputDTO> hechosDeUsuario(Long idUsuario);
+    public HechoOutputDTO buscarHechoPorId(Long id);
 }

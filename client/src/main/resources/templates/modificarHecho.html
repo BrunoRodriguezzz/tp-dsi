@@ -1,4 +1,5 @@
 <html lang="en" th:replace="~{layout/base :: html}">
+
 <th:block th:fragment="additional-links">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -10,152 +11,123 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
 </th:block>
-<div th:fragment="contenido">
-    <div class="container-responsive">
-        <div class="container-navegador">
-            <nav class="config-nav">
-                <a th:href="@{/home}" class="boton-navegacion">Home</a>
-                <i class="fa-solid fa-chevron-right" style="font-size: 0.5rem;"></i>
-                <a th:href="@{/hechos/misHechos(id=${usuarioLogueado.id})}" class="boton-navegacion">Mis Hechos</a>
-                <i class="fa-solid fa-chevron-right" style="font-size: 0.5rem;"></i>
-                <span>Editar Hecho</span>
-            </nav>
-            <div style="margin-bottom: 2rem;">
-                <h3><b>Modificar Hecho</b></h3>
-                <p style="color: var(--color-gray-600);">Edita la información de tu hecho publicado</p>
-            </div>
-            <div>
-                <form>
-                    <div class="config-form">
+
+<div th:fragment="contenido" class="container">
+    <div class="container-navegador">
+        <nav class="config-nav">
+            <a th:href="@{/home}" class="boton-navegacion">Home</a>
+            <i class="fa-solid fa-chevron-right" style="font-size: 0.5rem;"></i>
+            <a th:href="@{/hechos/misHechos(id=${usuarioLogueado.id})}" class="boton-navegacion">Mis Hechos</a>
+            <i class="fa-solid fa-chevron-right" style="font-size: 0.5rem;"></i>
+            <span>Editar Hecho</span>
+        </nav>
+        <div style="margin-bottom: 2rem;">
+            <h3><b>Modificar Hecho</b></h3>
+            <p style="color: var(--color-gray-600);">Edita la información de tu hecho publicado</p>
+        </div>
+        <div>
+            <form th:action="@{'/hechos/modificarHecho/' + ${hecho.id}}" method="post">
+                <div class="config-form">
+                    <div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 0.2rem;">Información del Hecho</h3>
+                        <p style="font-size: 0.9rem; color: var(--color-gray-500);">Modifica los datos principales de tu hecho</p>
+                    </div>
+                    <hr>
+                    <div>
+                        <label class="config-label">Título *</label>
+                        <input name="titulo" class="config-input" type="text" th:value="${hecho.titulo}">
+                    </div>
+                    <div>
+                        <label class="config-label">Descripción *</label>
+                        <textarea name="descripcion" class="config-input" rows="4" style="min-height: fit-content; margin-bottom: 0.4rem;" th:text="${hecho.descripcion}"></textarea>
+                    </div>
+                    <div>
+                        <label class="config-label">Categoría *</label>
                         <div>
-                            <h3 style="font-size: 1.5rem; margin-bottom: 0.2rem;">Información del Hecho</h3>
-                            <p style="font-size: 0.9rem; color: var(--color-gray-500);">Modifica los datos principales de tu hecho</p>
-                        </div>
-                        <div>
-                            <label class="config-label">Título *</label>
-                            <input name="tituloHecho" class="config-input" type="text" th:value="${hecho.titulo}">
-                        </div>
-                        <div>
-                            <label class="config-label">Descripción *</label>
-                            <textarea name="descripcion" class="config-input" rows="4" style="min-height: fit-content; margin-bottom: 0.4rem;" th:text="${hecho.descripcion}"></textarea>
-                        </div>
-                        <div>
-                            <label class="config-label">Categoría *</label>
-                            <div>
-                                <select class="config-input" name="categoria" th:value="${hecho.categoria}">
-                                    <option value="Protesta Social">Protesta Social</option>
-                                    <option value="Desaroollo Social">Desarrollo Social</option>
-                                    <option value="Medio Ambiente">Medio Ambiente</option>
-                                    <option value="Seguridad">Seguridad</option>
-                                    <option value="Educacion">Educación</option>
-                                    <option value="Salud">Salud</option>
-                                    <option value="Infraestructura">Infraestructura</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="config-label">Fecha Acontecimiento *</label>
-                            <input class="config-input" type="datetime-local" th:value="${hecho.fechaAcontecimiento}">
-                        </div>
-                        <div>
-                            <label class="config-label">Provincia</label>
-                            <select class="config-input" id="provinciaSelect" name="provincia">
-                                <option value="" disabled selected hidden>Seleccionar provincia</option>
-                                <option value="Buenos Aires">Buenos Aires</option>
-                                <option value="Catamarca">Catamarca</option>
-                                <option value="Chaco">Chaco</option>
-                                <option value="Chubut">Chubut</option>
-                                <option value="Córdoba">Córdoba</option>
-                                <option value="Corrientes">Corrientes</option>
-                                <option value="Entre Ríos">Entre Ríos</option>
-                                <option value="Formosa">Formosa</option>
-                                <option value="Jujuy">Jujuy</option>
-                                <option value="La Pampa">La Pampa</option>
-                                <option value="La Rioja">La Rioja</option>
-                                <option value="Mendoza">Mendoza</option>
-                                <option value="Misiones">Misiones</option>
-                                <option value="Neuquén">Neuquén</option>
-                                <option value="Río Negro">Río Negro</option>
-                                <option value="Salta">Salta</option>
-                                <option value="San Juan">San Juan</option>
-                                <option value="San Luis">San Luis</option>
-                                <option value="Santa Cruz">Santa Cruz</option>
-                                <option value="Santa Fe">Santa Fe</option>
-                                <option value="Santiago del Estero">Santiago del Estero</option>
-                                <option value="Tierra del Fuego">Tierra del Fuego</option>
-                                <option value="Tucumán">Tucumán</option>
-                                <option value="Ciudad Autónoma de Buenos Aires">Ciudad Autónoma de Buenos Aires</option>
+                            <select class="config-input" name="categoria">
+                                <option value="Protesta Social" th:selected="${hecho.categoria == 'Protesta Social'}">Protesta Social</option>
+                                <option value="Desarrollo Social" th:selected="${hecho.categoria == 'Desarrollo Social'}">Desarrollo Social</option>
+                                <option value="Medio Ambiente" th:selected="${hecho.categoria == 'Medio Ambiente'}">Medio Ambiente</option>
+                                <option value="Seguridad" th:selected="${hecho.categoria == 'Seguridad'}">Seguridad</option>
+                                <option value="Educacion" th:selected="${hecho.categoria == 'Educacion'}">Educación</option>
+                                <option value="Salud" th:selected="${hecho.categoria == 'Salud'}">Salud</option>
+                                <option value="Infraestructura" th:selected="${hecho.categoria == 'Infraestructura'}">Infraestructura</option>
                             </select>
                         </div>
-                        <div>
-                            <label class="config-label">Municipio</label>
-                            <input type="text" class="config-input" placeholder="Nombre del municipio" id="municipioInput" name="municipio">
-                        </div>
-                        <input type="hidden" id="latInput" name="latitud">
-                        <input type="hidden" id="lngInput" name="longitud">
-                        <input type="hidden" id="idContribuyente" name="idContribuyente">
-                        <div id="geocoder" class="mb-3" style="width: 100%"></div>
-                        <div id="map" class="map"></div>
                     </div>
-                    <div class="config-form">
-                        <div>
-                            <h3 style="font-size: 1.5rem; margin-bottom: 0.2rem;">Contenido Multimedia</h3>
-                            <p style="font-size: 0.9rem; color: var(--color-gray-500);">Gestiona las imágenes, videos y audios de tu hecho</p>
-                        </div>
-                        <div>
-                            <p class="config-label">Contenido Actual</p>
-                        </div>
-                        <div class="caja-de-imagenes">
-                            <div class="config-image">
-                                <div class="nombre-imagen">
-                                    <div>
-                                        <i class="fa-solid fa-image"></i>
-                                        <span>imagen1.jpg</span>
-                                    </div>
-                                    <a class="btn btn-red">X</a>
-                                </div>
-                                <div class="preview">
+                    <div>
+                        <label class="config-label">Fecha Acontecimiento *</label>
+                        <input class="config-input" name="fechaAcontecimiento" type="datetime-local" th:value="${hecho.fechaAcontecimiento}">
+                    </div>
+                    <input type="hidden" id="provinciaInput" name="ubicacion.provincia" th:value="${hecho.ubicacion?.provincia}">
+                    <input type="hidden" id="municipioInput" name="ubicacion.municipio" th:value="${hecho.ubicacion?.municipio}">
+                    <input type="hidden" id="latInput" name="ubicacion.latitud" th:value="${hecho.ubicacion?.latitud}">
+                    <input type="hidden" id="lngInput" name="ubicacion.longitud" th:value="${hecho.ubicacion?.longitud}">
+                    <input type="hidden" name="origen" th:value="${hecho.origen}">
+                    <input type="hidden" name="contribuyente.fechaNacimiento" th:value="${hecho.contribuyente?.fechaNacimiento}">
+                    <input type="hidden" name="contribuyente.nombre" th:value="${hecho.contribuyente?.nombre}">
+                    <input type="hidden" name="contribuyente.apellido" th:value="${hecho.contribuyente?.apellido}">
+                    <div id="geocoder" class="mb-3" style="width: 100%"></div>
+                    <div id="map" class="map"></div>
+                </div>
+                <div class="config-form">
+                    <div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 0.2rem;">Contenido Multimedia</h3>
+                        <p style="font-size: 0.9rem; color: var(--color-gray-500);">Gestiona las imágenes, videos y audios de tu hecho</p>
+                    </div>
+                    <div>
+                        <p class="config-label">Contenido Actual</p>
+                    </div>
+                    <div class="caja-de-imagenes">
+                        <div class="config-image">
+                            <div class="nombre-imagen">
+                                <div>
                                     <i class="fa-solid fa-image"></i>
+                                    <span>imagen1.jpg</span>
                                 </div>
+                                <a class="btn btn-red">X</a>
                             </div>
-                            <div class="config-image">
-                                <div class="nombre-imagen">
-                                    <div>
-                                        <i class="fa-solid fa-file-video"></i>
-                                        <span>video1.mp4</span>
-                                    </div>
-                                    <a class="btn btn-red">X</a>
-                                </div>
-                                <div class="preview">
+                            <div class="preview">
+                                <i class="fa-solid fa-image"></i>
+                            </div>
+                        </div>
+                        <div class="config-image">
+                            <div class="nombre-imagen">
+                                <div>
                                     <i class="fa-solid fa-file-video"></i>
+                                    <span>video1.mp4</span>
                                 </div>
+                                <a class="btn btn-red">X</a>
                             </div>
-                            <div class="config-image">
-                                <div class="nombre-imagen">
-                                    <div>
-                                        <i class="fa-solid fa-image"></i>
-                                        <span>imagen2.jpg</span>
-                                    </div>
-                                    <a class="btn btn-red">X</a>
-                                </div>
-                                <div class="preview">
+                            <div class="preview">
+                                <i class="fa-solid fa-file-video"></i>
+                            </div>
+                        </div>
+                        <div class="config-image">
+                            <div class="nombre-imagen">
+                                <div>
                                     <i class="fa-solid fa-image"></i>
+                                    <span>imagen2.jpg</span>
                                 </div>
+                                <a class="btn btn-red">X</a>
+                            </div>
+                            <div class="preview">
+                                <i class="fa-solid fa-image"></i>
                             </div>
                         </div>
-                        <div>
-                            <label class="config-label">Agregar Nuevo Contenido</label>
-                            <input class="config-input" type="file">
-                        </div>
                     </div>
-                    <div class="opciones">
-                        <script th:src="@{/js/mapa.js}"></script>
-                        <button type="submit" class="btn btn-primary btn-dark config-opciones">Guardar Cambios</button>
-                        <a th:href="@{/hechos/misHechos(id=${usuarioLogueado.id})}" class="btn btn-cancelar config-opciones">Cancelar</a>
+                    <div>
+                        <label class="config-label">Agregar Nuevo Contenido</label>
+                        <input class="config-input" type="file">
                     </div>
-                </form>
-            </div>
+                </div>
+                <div class="opciones">
+                    <button type="submit" class="btn btn-primary btn-dark config-opciones">Guardar Cambios</button>
+                    <a th:href="@{/hechos/misHechos(id=${usuarioLogueado.id})}" class="btn btn-cancelar config-opciones">Cancelar</a>
+                </div>
+            </form>
         </div>
     </div>
+    <script th:src="@{/js/mapa.js}"></script>
 </div>
 </html>
