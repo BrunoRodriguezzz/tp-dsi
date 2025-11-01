@@ -59,7 +59,7 @@
                 </div>
             </div>
 
-            <div th:with="filtAction=@{/coleccion/{id}(id=${coleccion.id})}, filtClear=@{/coleccion/{id}(id=${coleccion.id})}">
+            <div th:with="filtAction=@{/coleccion/{id}(id=${coleccion.id})}, filtClear=@{/coleccion/{id}(id=${coleccion.id})}, usarUbicBtnClass='btn btn-sm btn-outline-primary'">
                 <div th:insert="~{fragments/filtros :: filtros(actionUrl=${filtAction}, clearUrl=${filtClear})}"></div>
             </div>
 

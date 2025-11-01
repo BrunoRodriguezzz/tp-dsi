@@ -149,7 +149,7 @@ main.container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     min-height: 90vh;
     padding-bottom: 4rem;
 }
@@ -225,7 +225,6 @@ main.container {
     color: #7b1fa2;
 }
 
-/* Hacer que el botón "Reportar" dentro de la vista de colección sea rojo y con texto blanco */
 .hechos-container .btn-red {
     background: #e53935;
     color: #fff;
@@ -234,4 +233,20 @@ main.container {
 .hechos-container .btn-red:hover {
     background: #c62828;
     color: #fff;
+}
+
+main[data-coleccion-id] #usarUbicBtn {
+    background: transparent !important;
+    color: #111 !important;
+    border-color: #111 !important;
+    border-width: 1.5px !important;
+    border-style: solid !important;
+    border-radius: 8px;
+    padding: 0.32rem 0.9rem;
+    font-size: 0.88rem;
+}
+main[data-coleccion-id] #usarUbicBtn:hover {
+    background-color: #111 !important;
+    color: #fff !important;
+    border-color: #111 !important;
 }
