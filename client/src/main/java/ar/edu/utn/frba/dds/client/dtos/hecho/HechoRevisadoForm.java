@@ -12,6 +12,7 @@ public class HechoRevisadoForm {
 
     @NotNull
     private Long id;
+    private Long idHecho;
     private String etiquetas;
 
     @NotNull

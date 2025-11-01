@@ -13,7 +13,6 @@ public class SolicitudRevisadaInputDTO {
 
     private Long id;
     private Long idHecho;
-    private List<String> etiquetas;
     private EstadoHecho estadoHecho;
 
 }

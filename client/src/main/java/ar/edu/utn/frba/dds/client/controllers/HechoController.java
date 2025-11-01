@@ -123,6 +123,13 @@ public class HechoController {
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PostMapping("/modificacion")
+    public String modificarHecho(@Valid @ModelAttribute HechoRevisadoForm form) {
+        this.dinamicaService.modificar(form);
+        return "redirect:/panelControl";
+    }
+
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/pendientes/{id}")
     public String verDetalleHechoPendiente(@PathVariable Long id, Model model) {
         HechoDTO hecho = this.dinamicaService.buscarPendienteID(id);

@@ -1,6 +1,8 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
 import ar.edu.utn.frba.dds.client.dtos.FuenteDTO;
+import ar.edu.utn.frba.dds.client.dtos.SolicitudCambiosDTO;
+import ar.edu.utn.frba.dds.client.dtos.SolicitudModOutputDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.solicitud.SolicitudDTO;
 import ar.edu.utn.frba.dds.client.services.DinamicaService;
@@ -51,13 +53,15 @@ public class PanelControlController {
     }
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @GetMapping("/fuentes")
-    public String panelControlFuentes(Model model) {
-        List<FuenteDTO> fuentes = this.fuenteService.obtenerFuentesNuevas();
-        model.addAttribute("titulo", "Fuentes Nuevas");
-        model.addAttribute("fuentes", fuentes);
-        model.addAttribute("cantidadFuentes", fuentes.size());
-        return "panelControl/fuentes";
+    @GetMapping("/solicitudesModificado")
+    public String panelControlModificados(Model model) {
+
+        List<SolicitudCambiosDTO> solicitudes = this.dinamicaService.obtenerSolicitudesCambios();
+
+        model.addAttribute("titulo", "Solicitudes de Modificación");
+        model.addAttribute("solicitudes", solicitudes);
+        model.addAttribute("cantidadSolicitudes", solicitudes.size());
+        return "panelControl/solicitudesModificado";
     }
 
     @GetMapping("/importarCSV")

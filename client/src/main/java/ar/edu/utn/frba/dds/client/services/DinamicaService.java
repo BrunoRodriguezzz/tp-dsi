@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.client.services;
 
 import ar.edu.utn.frba.dds.client.dtos.HechoInputDTO;
+import ar.edu.utn.frba.dds.client.dtos.SolicitudCambiosDTO;
 import ar.edu.utn.frba.dds.client.dtos.SolicitudModOutputDTO;
 import ar.edu.utn.frba.dds.client.dtos.UbicacionDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
@@ -15,7 +16,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -213,6 +217,55 @@ public class DinamicaService {
         } catch (Exception e) {
             log.error("Error al modificar el hecho con id {}: {}", hechoDTO.getId(), e.getMessage());
             return false;
+        }
+    }
+
+    public List<SolicitudModOutputDTO> obtenerSolicitudesMod() {
+        return this.webApiCallerService.getList(this.dinamicaUrl + "/modificacion", SolicitudModOutputDTO.class);
+    }
+
+    public List<HechoDTO> obtenerHechos() {
+        return this.webApiCallerService.getList(this.dinamicaUrl + "/hechos", HechoDTO.class);
+    }
+
+    public List<SolicitudCambiosDTO> obtenerSolicitudesCambios() {
+        List<SolicitudModOutputDTO> solicitudes = this.obtenerSolicitudesMod();
+        List<HechoDTO> hechos = this.obtenerHechos();
+
+        Map<Long, HechoDTO> hechosPorId = hechos.stream()
+                .collect(Collectors.toMap(HechoDTO::getId, h -> h));
+
+        List<SolicitudCambiosDTO> comparativas = solicitudes.stream()
+                .map(sol -> new SolicitudCambiosDTO(sol, hechosPorId.get(sol.getIdHecho())))
+                .toList();
+
+        return comparativas;
+    }
+
+    public void modificar(HechoRevisadoForm hechoDTO) {
+        try {
+
+            log.info("Modificando el hecho con id {}", hechoDTO.getId());
+            log.info("Modificando el hecho con id {}", hechoDTO.getIdHecho());
+            log.info("Modificando el hecho con id {}", hechoDTO.getEtiquetas());
+            log.info("Modificando el hecho con id {}", hechoDTO.getEstadoHecho());
+
+
+
+            WebClient.builder().baseUrl(dinamicaUrl)
+                    .build()
+                    .put()
+                    .uri("/modificacion")
+                    .bodyValue(hechoDTO)
+                    .retrieve()
+                    .onStatus(
+                            httpStatusCode -> httpStatusCode.is4xxClientError() || httpStatusCode.is5xxServerError(),
+                            clientResponse -> clientResponse.bodyToMono(String.class).map(RuntimeException::new)
+                    )
+                    .bodyToMono(SolicitudModOutputDTO.class)
+                    .block();
+        } catch (Exception e) {
+            log.error("Error al modificar el hecho con id {}: {}", hechoDTO.getId(), e.getMessage());
         }
     }
 }

@@ -1,0 +1,108 @@
+<html th:replace="~{layout/base :: html}">
+
+<head>
+    <th:block th:fragment="additional-links">
+        <link rel="stylesheet" th:href="@{/css/panelControl/hechosPendientes.css}">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    </th:block>
+</head>
+
+<div th:fragment="contenido" class="container main-container">
+    <div class="page-info">
+        <a th:href="@{/panelControl}" class="link" id="link-panelDeControl">← Volver al Panel de Control</a>
+        <h2><strong>Hechos Pendientes</strong></h2>
+        <p>Gestiona y aprueba los hechos que están esperando revisión</p>
+    </div>
+    <div class="container-totalPendientes">
+        <div class="logo-tiempo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock w-6 h-6 text-blue-600"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        </div>
+        <div>
+            <p>Total de Solicitudes de Modificación Pendientes</p>
+            <h4 th:text="${cantidadSolicitudes}"><strong>0</strong></h4>
+        </div>
+    </div>
+    <div class="container-hechosAprobacion">
+        <div class="hechosAprobacion-header d-flex align-items-center mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 class="me-2 text-primary">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <h6 class="mb-0"><strong>Solicitudes Esperando Aprobación</strong></h6>
+        </div>
+
+        <div class="hechos-lista">
+            <div th:each="item : ${solicitudes}" class="hecho-item card mb-3 shadow-sm">
+                <div class="hecho-item card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3"
+                            th:text="|Hecho: ${item.hechoOriginal.titulo}|"></h5>
+
+                        <div class="row">
+                            <!-- Hecho original -->
+                            <div class="col-md-6 border-end pe-3">
+                                <h6 class="text-muted">Hecho original</h6>
+                                <p><strong>Título:</strong> <span th:text="${item.hechoOriginal.titulo}"></span></p>
+                                <p><strong>Descripción:</strong> <span th:text="${item.hechoOriginal.descripcion}"></span></p>
+                                <p><strong>Categoría:</strong> <span th:text="${item.hechoOriginal.categoria}"></span></p>
+                                <p>
+                                    <strong>Ubicación:</strong>
+                                    <span th:text="${item.hechoOriginal.ubicacion.latitud}"></span>,
+                                    <span th:text="${item.hechoOriginal.ubicacion.longitud}"></span>
+                                </p>
+                            </div>
+
+                            <!-- Solicitud de modificacion -->
+                            <div class="col-md-6 ps-3">
+                                <h6 class="text-muted">Propuesta de modificación</h6>
+
+                                <div th:if="${item.solicitud.titulo != null and item.solicitud.titulo != item.hechoOriginal.titulo}">
+                                    <p>
+                                        <strong>Título:</strong><br>
+                                        <span class="text-success fw-semibold" th:text="${item.solicitud.titulo}"></span>
+                                    </p>
+                                </div>
+
+                                <div th:if="${item.solicitud.descripcion != null and item.solicitud.descripcion != item.hechoOriginal.descripcion}">
+                                    <p>
+                                        <strong>Descripción:</strong><br>
+                                        <span class="text-success fw-semibold" th:text="${item.solicitud.descripcion}"></span>
+                                    </p>
+                                </div>
+
+                                <div th:if="${item.solicitud.categoria != null and item.solicitud.categoria != item.hechoOriginal.categoria}">
+                                    <p>
+                                        <strong>Categoría:</strong><br>
+                                        <span class="text-success fw-semibold" th:text="${item.solicitud.categoria}"></span>
+                                    </p>
+                                </div>
+
+                                <div th:if="${item.solicitud.ubicacion != null and
+                                 (item.solicitud.ubicacion.latitud != item.hechoOriginal.ubicacion.latitud or
+                                  item.solicitud.ubicacion.longitud != item.hechoOriginal.ubicacion.longitud)}">
+                                    <p>
+                                        <strong>Ubicación:</strong><br>
+                                        <span class="text-success fw-semibold"
+                                              th:text="|${item.solicitud.ubicacion.latitud}, ${item.solicitud.ubicacion.longitud}|"></span>
+                                    </p>
+                                </div>
+
+                                <div th:if="${(item.solicitud.titulo == item.hechoOriginal.titulo) and
+                                 (item.solicitud.descripcion == item.hechoOriginal.descripcion) and
+                                 (item.solicitud.categoria == item.hechoOriginal.categoria) and
+                                 (item.solicitud.ubicacion.latitud == item.hechoOriginal.ubicacion.latitud) and
+                                 (item.solicitud.ubicacion.longitud == item.hechoOriginal.ubicacion.longitud)}">
+                                    <p class="text-muted fst-italic">No se propusieron cambios.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <th:block th:replace="panelControl/fragments/accionesSolicitudesModificadas :: accionesSolicitudesModificadas(${item.solicitud.idSolicitud}, ${item.solicitud.idHecho})"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

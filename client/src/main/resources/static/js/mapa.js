@@ -31,7 +31,7 @@ try {
     console.warn('mapa.js: no se pudo exponer window.__mapboxAccessToken', err);
 }
 
-// document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
 // función helper para setear el input oculto de ubicacion
 function setUbicacionText(val) {
