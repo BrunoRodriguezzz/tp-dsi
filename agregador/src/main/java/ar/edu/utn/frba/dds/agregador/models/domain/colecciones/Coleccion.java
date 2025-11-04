@@ -87,7 +87,13 @@ public class Coleccion {
     }
 
     public List<Hecho> cargarHechos(List<Hecho> hechos) {
-        this.hechos.addAll(this.filtrarHechosSegunCriterioYFuentes(hechos));
+        List<Hecho> filtrados = this.filtrarHechosSegunCriterioYFuentes(hechos);
+        if (filtrados == null || filtrados.isEmpty()) {
+            return this.hechos;
+        }
+        for (Hecho h : filtrados) {
+            this.cargarHecho(h);
+        }
         return this.hechos;
     }
 
@@ -107,16 +113,25 @@ public class Coleccion {
     }
 
     public boolean cargarHecho(Hecho hecho) {
-        if (!hecho.getEstaEliminado() && cumpleCriterioColeccion(hecho)) {
-            if (this.hechos == null) {
-                this.hechos = new ArrayList<>();
-            }
-            return this.hechos.add(hecho);
+        if (hecho == null || hecho.getEstaEliminado()) {
+            return false;
         }
-        return false;
+        if (!cumpleCriterioColeccion(hecho)) {
+            return false;
+        }
+        if (this.hechos == null) {
+            this.hechos = new ArrayList<>();
+        }
+        if (hecho.getId() != null) {
+            boolean existe = this.hechos.stream().anyMatch(h -> h.getId() != null && h.getId().equals(hecho.getId()));
+            if (existe) return false;
+        } else {
+            boolean existeObj = this.hechos.stream().anyMatch(h -> h == hecho || (h.getTitulo() != null && h.getTitulo().equals(hecho.getTitulo()) && h.getFechaAcontecimiento() != null && h.getFechaAcontecimiento().equals(hecho.getFechaAcontecimiento())));
+            if (existeObj) return false;
+        }
+        return this.hechos.add(hecho);
     }
 
-    // Consultas de Hechos
     public List<Hecho> consultarHechosCurados(List<Filtro> filtros) {
         List<Hecho> hechosQueCumplenFiltrosUsuario = this.aplicarFiltros(filtros);
         if(hechosQueCumplenFiltrosUsuario == null){
@@ -143,7 +158,6 @@ public class Coleccion {
         ).collect(Collectors.toList());
     }
 
-    // Consultas de Hechos
     public List<Hecho> consultarHechos() {
         if(this.hechos == null){
             return new ArrayList<>();
@@ -167,7 +181,6 @@ public class Coleccion {
         return hechos;
     }
 
-    // Auxiliares a consultas de Hechos
     private List<Hecho> filtrarHechosSegunCriterioYFuentes(List<Hecho> hechos) {
         List<Long> IDfuentes = this.getFuentes()
                 .stream()
@@ -187,7 +200,7 @@ public class Coleccion {
     }
 
     private Boolean cumpleCriterioColeccion(Hecho hecho) {
-    if(this.criterio == null) { //Si no tengo criterio, lo cumple
+    if(this.criterio == null) { //Si no tengo criterio es q lo cumple
         return true;
     }
         return this.criterio.coincideCon(hecho);

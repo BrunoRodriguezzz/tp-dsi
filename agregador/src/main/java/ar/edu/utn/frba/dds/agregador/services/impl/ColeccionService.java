@@ -142,32 +142,38 @@ public class ColeccionService implements IColeccionService {
 
   @Override
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
-     List<Fuente> fuentesColeccion = new ArrayList<>();
-     coleccionInputDTO.getFuentes().forEach(fuente -> {
-       Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
-       if (temp == null) {
-         throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
-       }
-       fuentesColeccion.add(temp);
-     });
+      List<Fuente> fuentesColeccion = new ArrayList<>();
+      coleccionInputDTO.getFuentes().forEach(fuente -> {
+        Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
+        if (temp == null) {
+          throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
+        }
+        fuentesColeccion.add(temp);
+      });
 
-     List<Filtro> filtrosTransitorios = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
-     List<EntidadFiltro> filtrosGestionados = this.filtroMapper.toEntities(filtrosTransitorios);
+      List<Filtro> filtrosTransitorios = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
+      List<EntidadFiltro> filtrosGestionados = this.filtroMapper.toEntities(filtrosTransitorios);
 
-     Criterio criterio = new Criterio();
-     criterio.agregarFiltros(filtrosGestionados);
+      Criterio criterio = new Criterio();
+      criterio.agregarFiltros(filtrosGestionados);
 
-     Coleccion nuevaColeccion = new Coleccion(
-             coleccionInputDTO.getNombre(),
-             coleccionInputDTO.getDescripcion(),
-             fuentesColeccion,
-             criterio
-     );
+      Coleccion nuevaColeccion = new Coleccion(
+              coleccionInputDTO.getNombre(),
+              coleccionInputDTO.getDescripcion(),
+              fuentesColeccion,
+              criterio
+      );
 
-     Coleccion coleccionGuardada = this.coleccionRepository.save(nuevaColeccion);
-     applicationContext.getBean(ColeccionService.class).importarYAsociarHechos(coleccionGuardada.getId(), fuentesColeccion);
+     if (coleccionInputDTO.getConsensos() != null && !coleccionInputDTO.getConsensos().isEmpty()) {
+       coleccionInputDTO.getConsensos().stream()
+           .map(Consenso::valueOf)
+           .forEach(nuevaColeccion::agregarConsenso);
+     }
 
-     return ColeccionOutputDTO.coleccionToDTO(coleccionGuardada);
+      Coleccion coleccionGuardada = this.coleccionRepository.save(nuevaColeccion);
+      applicationContext.getBean(ColeccionService.class).importarYAsociarHechos(coleccionGuardada.getId(), fuentesColeccion);
+
+      return ColeccionOutputDTO.coleccionToDTO(coleccionGuardada);
    }
 
    @Async
@@ -229,7 +235,9 @@ public class ColeccionService implements IColeccionService {
              if (added) {
                agregados++;
                try {
-                 this.coleccionRepository.insertHechoEnColeccion(idColeccion, saved.getId());
+                 if (!this.coleccionRepository.existsHechoInColeccion(idColeccion, saved.getId())) {
+                   this.coleccionRepository.insertHechoEnColeccion(idColeccion, saved.getId());
+                 }
                } catch (Exception e) {
                }
              }
@@ -248,7 +256,9 @@ public class ColeccionService implements IColeccionService {
              if (added) {
                agregados++;
                try {
-                 this.coleccionRepository.insertHechoEnColeccion(idColeccion, idHecho);
+                 if (!this.coleccionRepository.existsHechoInColeccion(idColeccion, idHecho)) {
+                   this.coleccionRepository.insertHechoEnColeccion(idColeccion, idHecho);
+                 }
                } catch (Exception e) {
                }
              }
@@ -347,16 +357,22 @@ public class ColeccionService implements IColeccionService {
 
      this.actualizarDatosColeccion(coleccion, coleccionInputDTO);
 
-     if (coleccionInputDTO.getCriterio() != null) {
-       List<Filtro> filtrosTransitorios = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
-       List<EntidadFiltro> filtrosGestionados = this.filtroMapper.toEntities(filtrosTransitorios);
+    if (coleccionInputDTO.getConsensos() != null && !coleccionInputDTO.getConsensos().isEmpty()) {
+      coleccionInputDTO.getConsensos().stream()
+          .map(Consenso::valueOf)
+          .forEach(coleccion::agregarConsenso);
+    }
 
-       coleccion.cambiarCriterio(new Criterio(filtrosGestionados));
+    if (coleccionInputDTO.getCriterio() != null) {
+      List<Filtro> filtrosTransitorios = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
+      List<EntidadFiltro> filtrosGestionados = this.filtroMapper.toEntities(filtrosTransitorios);
 
-       List<Fuente> fuentes = coleccion.getFuentes();
-       List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentes);
-       coleccion.cargarHechos(hechosFuentes);
-       coleccion.recalcularHechos();
+      coleccion.cambiarCriterio(new Criterio(filtrosGestionados));
+
+      List<Fuente> fuentes = coleccion.getFuentes();
+      List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentes);
+      coleccion.cargarHechos(hechosFuentes);
+      coleccion.recalcularHechos();
      }
 
      this.coleccionRepository.save(coleccion);

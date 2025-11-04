@@ -19,4 +19,7 @@ public interface IColeccionRepository extends JpaRepository<Coleccion, Long> {
     @Query(value = "INSERT INTO hecho_x_coleccion (coleccion_id, hecho_id) VALUES (:coleccionId, :hechoId)", nativeQuery = true)
     void insertHechoEnColeccion(@Param("coleccionId") Long coleccionId, @Param("hechoId") Long hechoId);
 
+    @Query("SELECT CASE WHEN COUNT(h) > 0 THEN true ELSE false END FROM Coleccion c JOIN c.hechos h WHERE c.id = :coleccionId AND h.id = :hechoId")
+    boolean existsHechoInColeccion(@Param("coleccionId") Long coleccionId, @Param("hechoId") Long hechoId);
+
 }
