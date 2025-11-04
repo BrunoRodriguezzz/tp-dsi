@@ -30,7 +30,12 @@ public class EstadisticaController {
         EstadisticaCategoriaDTO categorias = this.estadisticaService.getRankingCategorias();
         model.addAttribute("categoriaTop", categorias.getCategoriasConMasHechos().entrySet().iterator().next().getKey());
         // model.addAttribute("totalHechos",categorias.getCategoriasConHechos().values().stream().reduce(0L,Long::sum));
-        model.addAttribute("totalHechos", 100);
+        List<EstadisticaProvinciaXCategoriaDTO> categoriasPorProvincia = this.estadisticaService.getCategoriasPorProvincias();
+        model.addAttribute("totalHechos", categoriasPorProvincia
+                .stream()
+                .map(EstadisticaProvinciaXCategoriaDTO::getProvinciasConHechos)
+                .flatMap(map -> map.values().stream())
+                .reduce(0L, Long::sum));
 
         // Tab Content de "Colección por Provincia"
         List<EstadisticaProvinciaXColeccionDTO> estadisticasProvinciasPorColecciones = this.estadisticaService.getRankingProvinciasPorColeccion().stream().limit(8).toList();
@@ -44,7 +49,6 @@ public class EstadisticaController {
         model.addAttribute("rankingCategorias", categorias.getCategoriasConMasHechos());
 
         // Tab Categorías Por Provincia
-        List<EstadisticaProvinciaXCategoriaDTO> categoriasPorProvincia = this.estadisticaService.getCategoriasPorProvincias();
         model.addAttribute("categorias", categoriasPorProvincia.stream()
                 .map(EstadisticaProvinciaXCategoriaDTO::getCategoria)
                 .collect(Collectors.toList()));
