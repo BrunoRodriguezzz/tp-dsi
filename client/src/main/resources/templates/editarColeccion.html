@@ -5,50 +5,208 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Colección</title>
     <th:block th:fragment="additional-links">
-        <link rel="stylesheet" th:href="@{/css/styles.css}">
-        <link rel="stylesheet" th:href="@{/css/components.css}">
         <link rel="stylesheet" th:href="@{/css/coleccion.css}">
-        <link rel="stylesheet" th:href="@{/css/header.css}">
-        <link rel="stylesheet" th:href="@{/css/footer.css}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
-        <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" th:href="@{/css/editarColeccion.css}">
     </th:block>
 </head>
 <body>
     <div th:fragment="contenido">
-        <main class="container">
-            <div class="outer-form">
-                <h2><strong>Editar Colección</strong></h2>
-                <p>Modifica los atributos de una coleccion libremente</p>
+        <div class="container editar-coleccion-container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 col-lg-10">
+                    <div class="outer-form">
+                        <h2><strong>Editar Colección</strong></h2>
+                        <p>Modifica los atributos de una coleccion libremente</p>
+                    </div>
+                    <form class="form-coleccion" th:action="@{'/editarColeccion/' + ${coleccion.id}}" method="post" th:attr="data-url=@{/editarColeccion/{id}(id=${coleccion.id})}">
+                        <input type="hidden" name="_method" value="put" />
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" id="_csrf" />
+                        <input type="hidden" id="existing_nombre" th:value="${coleccion.titulo}" />
+                        <input type="hidden" id="existing_descripcion" th:value="${coleccion.descripcion}" />
+                        <th:block th:if="${coleccion.fuentes != null}">
+                            <th:block th:each="f,fi : ${coleccion.fuentes}">
+                                <input type="hidden" class="existing-fuente" th:value="${f}" />
+                            </th:block>
+                        </th:block>
+                        <th:block th:if="${coleccion.consensos != null}">
+                            <th:block th:each="c,ci : ${coleccion.consensos}">
+                                <input type="hidden" class="existing-consenso" th:value="${c}" />
+                            </th:block>
+                        </th:block>
+                        <div class="form-section">
+                            <h3><strong>Información Básica</strong></h3>
+                            <p>Define el título y descripción de tu colección</p>
+                            <div class="form-group">
+                                <label for="nombreInput">Nombre</label>
+                                <input type="text" class="form-control" th:value="${coleccion.titulo != null ? coleccion.titulo : '' }" placeholder="Ej: Protestas Sociales 2024" id="nombreInput" name="nombre">
+                            </div>
+                            <div class="form-group">
+                                <label for="descripcionInput">Descripción</label>
+                                <textarea class="form-control" placeholder="Describe el proposito y alcance de esta coleccion..." id="descripcionInput" name="descripcion" rows="4" th:text="${coleccion.descripcion}"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><strong>Criterio</strong></h3>
+                            <p>Define los criterios de filtrado para la colección</p>
+                            <div class="form-group">
+                                <label for="categoriaInput">Categoría</label>
+                                <input type="text" class="form-control" id="categoriaInput" name="criterio.categoria" th:value="${''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaCargaInicio">Fecha de Carga - Inicio</label>
+                                <input type="datetime-local" class="form-control" id="fechaCargaInicio" name="criterio.fechaCargaInicio" th:value="${''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaCargaFin">Fecha de Carga - Fin</label>
+                                <input type="datetime-local" class="form-control" id="fechaCargaFin" name="criterio.fechaCargaFin" th:value="${''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaAcontecimientoInicio">Fecha de Acontecimiento - Inicio</label>
+                                <input type="datetime-local" class="form-control" id="fechaAcontecimientoInicio" name="criterio.fechaAcontecimientoInicio" th:value="${''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaAcontecimientoFin">Fecha de Acontecimiento - Fin</label>
+                                <input type="datetime-local" class="form-control" id="fechaAcontecimientoFin" name="criterio.fechaAcontecimientoFin" th:value="${''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="criterioTitulo">Título (filtro)</label>
+                                <input type="text" class="form-control" id="criterioTitulo" name="criterio.titulo" th:value="${''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="criterioLat">Latitud</label>
+                                <input type="number" step="any" class="form-control" id="criterioLat" name="criterio.latitud" th:value="${''}">
+                            </div>
+                            <div class="form-group">
+                                <label for="criterioLon">Longitud</label>
+                                <input type="number" step="any" class="form-control" id="criterioLon" name="criterio.longitud" th:value="${''}">
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><strong>Fuentes</strong></h3>
+                            <p>Lista de fuentes asociadas (puedes agregar una más en el último campo)</p>
+                            <div id="fuentesContainer">
+                                <th:block th:if="${coleccion.fuentes != null}">
+                                    <div th:each="fuente,iter : ${coleccion.fuentes}" class="form-group">
+                                        <label th:for="${'fuente-' + iter.index}">Fuente</label>
+                                        <input type="text" class="form-control" th:id="${'fuente-' + iter.index}" th:name="${'fuentes[' + iter.index + ']'}" th:value="${fuente}">
+                                    </div>
+                                </th:block>
+                                <div class="form-group">
+                                    <label th:for="${'fuente-' + (coleccion.fuentes != null ? #lists.size(coleccion.fuentes) : 0)}">Nueva Fuente</label>
+                                    <input type="text" class="form-control" th:id="${'fuente-' + (coleccion.fuentes != null ? #lists.size(coleccion.fuentes) : 0)}" th:name="${'fuentes[' + (coleccion.fuentes != null ? #lists.size(coleccion.fuentes) : 0) + ']'}" placeholder="Agregar nueva fuente...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><strong>Consensos</strong></h3>
+                            <p>Algoritmos de consenso (se envía como arreglo)</p>
+                            <div id="consensosContainer">
+                                <th:block th:if="${coleccion.consensos != null}">
+                                    <div th:each="cons,iter : ${coleccion.consensos}" class="form-group">
+                                        <label th:for="${'consenso-' + iter.index}">Consenso</label>
+                                        <input type="text" class="form-control" th:id="${'consenso-' + iter.index}" th:name="${'consensos[' + iter.index + ']'}" th:value="${cons}">
+                                    </div>
+                                </th:block>
+                                <div class="form-group">
+                                    <label th:for="${'consenso-' + (coleccion.consensos != null ? #lists.size(coleccion.consensos) : 0)}">Nuevo Consenso</label>
+                                    <input type="text" class="form-control" th:id="${'consenso-' + (coleccion.consensos != null ? #lists.size(coleccion.consensos) : 0)}" th:name="${'consensos[' + (coleccion.consensos != null ? #lists.size(coleccion.consensos) : 0) + ']'}" placeholder="Agregar consenso (ej: ABSOLUTO)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="botones-formulario">
+                            <button type="submit" class="btn btn-dark">Guardar Cambios</button>
+                            <a th:href="@{/colecciones}" class="btn btn-outline-secondary btn-cancelar">Cancelar</a>
+                        </div>
+                    </form>
+                    <script th:inline="javascript">
+                        (function(){
+                            const form = document.currentScript.previousElementSibling;
+                            const aggId = /*[[${coleccion.id}]]*/ 0;
+                            const aggUrlBase = 'http://localhost:8082/colecciones/';
+                            const aggregatorUrl = aggUrlBase + aggId;
+
+                            function initialOrValue(el){
+                                if(!el) return null;
+                                const v = el.value != null ? el.value.toString().trim() : '';
+                                if(v !== '') return v;
+                                const attr = el.getAttribute('value');
+                                if(attr != null && attr.toString().trim() !== '') return attr.toString().trim();
+                                return null;
+                            }
+
+                            function normalizeDateTime(s){
+                                if(!s) return null;
+                                // datetime-local typically returns yyyy-MM-ddTHH:mm (no seconds) — add :00 if necessary
+                                if(s.length === 16) return s + ':00';
+                                return s;
+                            }
+
+                            form.addEventListener('submit', function(e){
+                                e.preventDefault();
+                                const csrfInput = form.querySelector('input[id="_csrf"]');
+                                const csrfHeader = csrfInput ? csrfInput.value : null;
+
+                                const datos = {};
+                                datos.nombre = initialOrValue(form.querySelector('[name="nombre"]')) || (document.getElementById('existing_nombre') ? document.getElementById('existing_nombre').value : null) || null;
+                                datos.descripcion = initialOrValue(form.querySelector('[name="descripcion"]')) || (document.getElementById('existing_descripcion') ? document.getElementById('existing_descripcion').value : null) || null;
+
+                                const criterio = {};
+                                criterio.categoria = initialOrValue(form.querySelector('[name="criterio.categoria"]')) || null;
+                                criterio.fechaCargaInicio = normalizeDateTime(initialOrValue(form.querySelector('[name="criterio.fechaCargaInicio"]')));
+                                criterio.fechaCargaFin = normalizeDateTime(initialOrValue(form.querySelector('[name="criterio.fechaCargaFin"]')));
+                                criterio.fechaAcontecimientoInicio = normalizeDateTime(initialOrValue(form.querySelector('[name="criterio.fechaAcontecimientoInicio"]')));
+                                criterio.fechaAcontecimientoFin = normalizeDateTime(initialOrValue(form.querySelector('[name="criterio.fechaAcontecimientoFin"]')));
+                                criterio.titulo = initialOrValue(form.querySelector('[name="criterio.titulo"]')) || null;
+                                criterio.latitud = (function(v){ if(v==null || v==='') return null; const n = Number(v); return isNaN(n)? null : n;})(initialOrValue(form.querySelector('[name="criterio.latitud"]')));
+                                criterio.longitud = (function(v){ if(v==null || v==='') return null; const n = Number(v); return isNaN(n)? null : n;})(initialOrValue(form.querySelector('[name="criterio.longitud"]')));
+                                datos.criterio = criterio;
+
+                                const fuentes = [];
+                                form.querySelectorAll('#fuentesContainer input[type="text"]').forEach(function(inp){
+                                    const val = initialOrValue(inp);
+                                    if(val){ fuentes.push({ nombre: val }); }
+                                });
+                                if(fuentes.length === 0){
+                                    document.querySelectorAll('.existing-fuente').forEach(function(h){ if(h.value && h.value.trim()){ fuentes.push({ nombre: h.value.trim() }); }});
+                                }
+                                datos.fuentes = fuentes;
+
+                                const consensos = [];
+                                form.querySelectorAll('#consensosContainer input[type="text"]').forEach(function(inp){
+                                    const val = initialOrValue(inp);
+                                    if(val){ consensos.push(val); }
+                                });
+                                if(consensos.length === 0){
+                                    document.querySelectorAll('.existing-consenso').forEach(function(h){ if(h.value && h.value.trim()){ consensos.push(h.value.trim()); }});
+                                }
+                                datos.consensos = consensos;
+
+                                const headers = {
+                                    'Content-Type': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                };
+                                if(csrfHeader) { headers['X-CSRF-TOKEN'] = csrfHeader; }
+
+                                console.log('PUT ->', aggregatorUrl, JSON.stringify(datos));
+                                fetch(aggregatorUrl, {
+                                    method: 'PUT',
+                                    mode: 'cors',
+                                    headers: headers,
+                                    body: JSON.stringify(datos)
+                                }).then(function(res){
+                                    if(res.ok){ window.location.href = /*[[${'/colecciones'}]]*/ '/colecciones'; }
+                                    else { return res.text().then(t => { alert('Error: ' + t); }); }
+                                }).catch(function(err){ alert('Error: ' + err); });
+                            });
+                        })();
+                    </script>
+                </div>
             </div>
-            <form class="form-coleccion" th:action="@{'/editarColeccion/' + ${coleccion.id}}" method="post">
-                <div class="form-section">
-                    <h3><strong>Información Básica</strong></h3>
-                    <p>Define el título y descripción de tu colección</p>
-                    <div class="form-group">
-                        <h6>Título de la Colección</h6>
-                        <input type="text" class="form-control" th:value="${coleccion.titulo}" placeholder="Ej: Protestas Sociales 2024" id="titleColeccionInput" name="titulo">
-                    </div>
-                    <div class="form-group">
-                        <h6>Descripcion</h6>
-                        <textarea class="form-control" placeholder="Describe el proposito y alcance de esta coleccion..." id="descripcionInput" name="descripcion" rows="4" th:text="${coleccion.descripcion}"></textarea>
-                    </div>
-                </div>
-                <div class="form-section">
-                    <h3><strong>Algoritmo de Consenso</strong></h3>
-                    <p>Selecciona el algoritmo de consenso para la colección</p>
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Algoritmo de consenso" id="consensoInput" name="consenso" th:value="${coleccion.consensos[0]}">
-                    </div>
-                </div>
-                <div class="botones-formulario">
-                    <button type="submit" class="btn btn-dark px-5 py-2">Guardar Cambios</button>
-                    <a th:href="@{/colecciones}" class="btn btn-outline-secondary px-5 py-2 btn-cancelar">Cancelar</a>
-                </div>
-            </form>
-        </main>
+        </div>
     </div>
 </body>
 </html>

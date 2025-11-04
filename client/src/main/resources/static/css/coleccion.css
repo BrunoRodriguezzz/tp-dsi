@@ -1,4 +1,5 @@
-main {
+/* Estilos aplicados únicamente a mains que usan la clase 'container' (no al main global del layout) */
+main.container {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -7,7 +8,7 @@ main {
     margin-top: 2rem;
     padding: 0 1.5rem;
     justify-content: start;
-    align-items: start;
+    align-items: stretch; /* permitir que hijos controlen su alineamiento (ej. centro en editar-coleccion) */
 }
 
 body {
@@ -154,18 +155,121 @@ main.container {
     padding-bottom: 4rem;
 }
 
+/* Estilos específicos para la página de editar coleccion: centramos el contenido interno sin afectar otras páginas */
+main.editar-coleccion {
+    padding-left: 2rem; /* poco padding lateral general */
+    padding-right: 2rem;
+}
+
+/* Si el contenedor de la página de edición es un div.container (se usa en la plantilla), aplicamos centrado aquí */
+.container.editar-coleccion {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centra horizontalmente los hijos */
+    justify-content: flex-start;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    width: 100%;
+    max-width: 1200px; /* limitar ancho del contenedor y centrarlo */
+    margin: 0 auto;
+}
+
+/* Reglas específicas para asegurar centrado cuando el container.editar-coleccion es hijo directo del main del layout */
+main.flex-grow-1 > .container.editar-coleccion {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* asegura centrado horizontal */
+    justify-content: flex-start;
+}
+
+main.flex-grow-1 > .container.editar-coleccion .form-coleccion {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto; /* centro efectivo */
+}
+
+/* Centrar el formulario de edición dentro del contenedor .editar-coleccion (div o main) */
+.container.editar-coleccion .form-coleccion,
+main.editar-coleccion .form-coleccion {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 700px; /* tamaño razonable para edición */
+    width: 100%;
+}
+
+/* Centrado vertical opcional en pantallas grandes */
+@media (min-width: 900px) {
+    .container.editar-coleccion {
+        padding-top: 2.5rem;
+    }
+}
+
 .form-coleccion {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    max-width: 500px;
-    width: 100%;
+    align-items: stretch; /* que los hijos ocupen el ancho interno */
+    justify-content: flex-start;
+    margin: 1rem auto 2rem auto;
+    max-width: 600px; /* ancho más armónico */
+    width: 100%; /* ocupar el ancho disponible dentro del col */
+    box-sizing: border-box; /* incluir padding en el ancho */
     background: #fff;
-    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    padding: 2.5rem 2rem 3rem 2rem; /* padding lateral un poco menor para más aire */
     border-radius: 16px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* Encabezados y secciones dentro del form */
+.form-coleccion .form-section h3 {
+    font-size: 1.25rem;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.1;
+}
+.form-coleccion .form-section p {
+    margin: 0 0 1rem 0;
+    color: #666;
+    font-size: 0.95rem;
+}
+.form-coleccion .form-group h6 {
+    font-size: 0.95rem;
+    margin: 0 0 0.4rem 0;
+    font-weight: 600;
+}
+
+.form-coleccion .form-section {
+    margin-bottom: 1.25rem;
+}
+
+/* Inputs y grupos dentro del formulario ocupen el 100% y tengan buen espaciado */
+.form-coleccion .form-group {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+.form-coleccion .form-control {
+    width: 100%;
+    box-sizing: border-box;
+    padding: .6rem .8rem;
+    border-radius: 8px;
+}
+
+/* Ajuste de la fila de botones: que quede dentro del form y centrada */
+.botones-formulario {
+    display: flex;
+    justify-content: center; /* centrados horizontalmente */
+    gap: 1rem;
+    margin-top: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Asegurar que los botones no se salgan del contenedor y tengan un tamaño coherente */
+.botones-formulario .btn {
+    min-width: 120px;
+    padding: .45rem 1rem;
+}
+
+.botones-formulario .btn-cancelar {
+    background: transparent;
 }
 
 .outer-form {
@@ -250,3 +354,19 @@ main[data-coleccion-id] #usarUbicBtn:hover {
     color: #fff !important;
     border-color: #111 !important;
 }
+
+/* A partir de aquí quitamos/neutralizamos reglas muy específicas para la página de edición
+   porque `editarColeccion.css` debe encargarse del estilo de esa vista. */
+
+/* Eliminamos reglas específicas para el formulario de edición para que la vista use su CSS dedicado (editarColeccion.css). */
+
+/* Neutral: limitar ancho del contenedor de edición pero no forzar alineamientos ni estilos del formulario */
+.editar-coleccion-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+/* No declarar aquí .form-coleccion ni .outer-form ni .botones-formulario: los estilos específicos están en editarColeccion.css */

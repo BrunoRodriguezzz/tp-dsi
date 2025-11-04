@@ -4,27 +4,26 @@ body {
 }
 
 .container {
-    max-width: 600px;
+    max-width: 84rem; /* más ancho (~1344px) */
     margin: 48px auto 0 auto;
     padding: 0 1.5rem;
 }
 
 .outer-form {
-    background: #fff;
-    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.07);
-    border-radius: 14px;
-    margin-bottom: 2rem;
-    padding: 2.5rem 2rem 2rem 2rem;
-    text-align: left;
-    border: 1.5px solid #e5e7eb;
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    margin-bottom: 1rem;
+    padding: 0;
+    text-align: center;
 }
 
 .outer-form h2 {
     font-size: 2.1rem;
     font-weight: 700;
     margin-bottom: 0.7rem;
-    color: #1a237e;
-    text-align: left;
+    color: #111;
+    text-align: center;
 }
 
 .outer-form p {
@@ -76,7 +75,7 @@ body {
     font-size: 1.01rem;
     font-weight: 500;
     margin-bottom: 0.2rem;
-    color: #1a237e;
+    color: #111;
 }
 
 input.form-control, textarea.form-control, select.form-select {
@@ -92,10 +91,10 @@ input.form-control, textarea.form-control, select.form-select {
 }
 
 input.form-control:focus, textarea.form-control:focus, select.form-select:focus {
-    border-color: #2563eb;
+    border-color: #111;
     outline: none;
     background: #fff;
-    box-shadow: 0 0 0 2px #e3eaff;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
 }
 
 .etiquetas {
@@ -108,8 +107,8 @@ input.form-control:focus, textarea.form-control:focus, select.form-select:focus 
 .titulo-etiqueta {
     display: flex;
     align-items: center;
-    background: #e6f0fa;
-    color: #2563eb;
+    background: #f2f4f7;
+    color: #111;
     border-radius: 16px;
     padding: 0.3rem 0.9rem;
     font-size: 0.97rem;
@@ -121,7 +120,7 @@ input.form-control:focus, textarea.form-control:focus, select.form-select:focus 
 .titulo-etiqueta button {
     background: none;
     border: none;
-    color: #2563eb;
+    color: #111;
     font-size: 1rem;
     margin-left: 0.3rem;
     cursor: pointer;
@@ -135,106 +134,86 @@ input.form-control:focus, textarea.form-control:focus, select.form-select:focus 
 }
 
 .titulo-etiqueta button:hover {
-    background: #dbeafe;
+    background: #f0f2f5;
 }
 
 .botones-formulario {
     display: flex;
-    gap: 1.2rem;
+    gap: 1rem;
     justify-content: flex-end;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 1.7rem;
+    margin-top: 1.2rem;
+}
+
+.form-coleccion,
+.form-report {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: #fff;
+    margin-bottom: 1.6rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+}
+
+.editar-coleccion-container .form-coleccion {
+    max-width: 78rem; /* ancho mayor (~1248px) */
+    width: 100%;
+}
+
+.editar-coleccion-container,
+.editar-coleccion-container h1,
+.editar-coleccion-container h2,
+.editar-coleccion-container h3,
+.editar-coleccion-container h4,
+.editar-coleccion-container h5,
+.editar-coleccion-container p,
+.editar-coleccion-container a,
+.editar-coleccion-container label,
+.editar-coleccion-container .form-group h6,
+.editar-coleccion-container .titulo-etiqueta,
+.editar-coleccion-container .fuente-item,
+.editar-coleccion-container option {
+    color: #111 !important;
+}
+
+.editar-coleccion-container a {
+    color: #111 !important;
+    text-decoration: none !important;
+}
+
+.editar-coleccion-container input.form-control:focus,
+.editar-coleccion-container textarea.form-control:focus,
+.editar-coleccion-container select.form-select:focus {
+    border-color: #111 !important;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.04) !important;
 }
 
 .btn.btn-dark {
-    background: #2563eb;
+    background: #000;
     border: none;
     border-radius: 8px;
     font-weight: 600;
-    font-size: 1.08rem;
-    padding: 0.7rem 2.2rem;
+    font-size: 0.75rem; /* más pequeño */
+    padding: 0.22rem 0.6rem; /* menos padding */
     color: #fff;
-    transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px 0 rgba(37,99,235,0.08);
-}
-
-.btn.btn-dark:hover {
-    background: #174ea6;
-    box-shadow: 0 4px 16px 0 rgba(37,99,235,0.13);
+    transition: background 0.15s, box-shadow 0.15s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .btn-cancelar {
-    color: #2563eb !important;
-    border: 1.5px solid #b6c6e3 !important;
-    background: #f8fafc !important;
+    color: #333 !important;
+    border: 1.2px solid #d0d6dd !important;
+    background: transparent !important;
     border-radius: 8px;
     font-weight: 500;
-    font-size: 1.08rem;
-    padding: 0.7rem 2.2rem;
-    transition: background 0.2s, border-color 0.2s;
+    font-size: 0.75rem; /* más pequeño */
+    padding: 0.22rem 0.6rem; /* menos padding */
+    transition: background 0.15s, border-color 0.15s;
 }
 
-.btn-cancelar:hover {
-    color: #174ea6 !important;
-    background: #e6f0fa !important;
-    border-color: #2563eb !important;
-}
-
-.fuentes-list {
-    margin-top: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.fuente-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    padding: 0.3rem 0.9rem;
-    font-size: 1rem;
-    color: #222;
-    min-height: 36px;
-    box-shadow: none;
-    transition: box-shadow 0.2s;
-}
-
-.fuente-item:hover {
-    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.06);
-}
-
-.fuente-remove {
-    background: #fff;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    color: #222;
-    font-size: 1.1rem;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s, border-color 0.2s;
-    margin-left: 0.7rem;
-    box-shadow: none;
-}
-
-.fuente-remove:hover {
-    background: #f1f5f9;
-    border-color: #2563eb;
-    color: #2563eb;
-}
-
-.etiqueta-interes {
-    display: none !important;
-}
-
+/* Ajuste en mobile para botones pequeños pero legibles */
 @media (max-width: 700px) {
     .container {
         max-width: 98vw;
@@ -249,11 +228,18 @@ input.form-control:focus, textarea.form-control:focus, select.form-select:focus 
     }
     .btn.btn-dark, .btn-cancelar {
         width: 100%;
-        padding: 0.7rem 0;
+        padding: 0.6rem 0;
+        font-size: 0.95rem;
     }
     .botones-formulario {
         flex-direction: column;
         gap: 0.7rem;
         align-items: stretch;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 72rem;
     }
 }

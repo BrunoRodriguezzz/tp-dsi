@@ -168,8 +168,14 @@ public class ColeccionController {
         .retrieve()
         .bodyToMono(ColeccionOutputDTO.class)
         .block();
+    if (coleccion == null) {
+      coleccion = new ColeccionOutputDTO();
+    }
+    if (coleccion.getConsensos() == null) {
+      coleccion.setConsensos(java.util.Collections.emptyList());
+    }
     model.addAttribute("coleccion", coleccion);
-    return "editarColeccion";
+     return "editarColeccion";
   }
 
   @PreAuthorize("hasRole('ADMINISTRADOR')")
