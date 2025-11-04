@@ -405,7 +405,7 @@ public class GeneradorDatosPrueba {
 
         // Crear hecho asociado (Inauguración del Obelisco)
         HechoInputDTO hecho7 = new HechoInputDTO();
-        hecho7.setId(10L);
+        hecho7.setId(8L);
         hecho7.setTitulo("Inauguración del Obelisco");
         hecho7.setCategoria("Histórico");
         hecho7.setFechaAcontecimiento(LocalDateTime.of(1936, 5, 23, 12, 0));
