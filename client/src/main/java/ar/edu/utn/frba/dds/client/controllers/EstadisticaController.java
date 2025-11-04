@@ -29,7 +29,6 @@ public class EstadisticaController {
         model.addAttribute("cantNoSpam", cantSpam.getSolicitudes_no_spam());
         EstadisticaCategoriaDTO categorias = this.estadisticaService.getRankingCategorias();
         model.addAttribute("categoriaTop", categorias.getCategoriasConMasHechos().entrySet().iterator().next().getKey());
-        // model.addAttribute("totalHechos",categorias.getCategoriasConHechos().values().stream().reduce(0L,Long::sum));
         List<EstadisticaProvinciaXCategoriaDTO> categoriasPorProvincia = this.estadisticaService.getCategoriasPorProvincias();
         model.addAttribute("totalHechos", categoriasPorProvincia
                 .stream()
@@ -38,7 +37,8 @@ public class EstadisticaController {
                 .reduce(0L, Long::sum));
 
         // Tab Content de "Colección por Provincia"
-        List<EstadisticaProvinciaXColeccionDTO> estadisticasProvinciasPorColecciones = this.estadisticaService.getRankingProvinciasPorColeccion().stream().limit(8).toList();
+        // List<EstadisticaProvinciaXColeccionDTO> estadisticasProvinciasPorColecciones = this.estadisticaService.getRankingProvinciasPorColeccion().stream().limit(8).toList();
+        List<EstadisticaProvinciaXColeccionDTO> estadisticasProvinciasPorColecciones = this.estadisticaService.getRankingProvinciasPorColeccion();
         model.addAttribute("totalColecciones",estadisticasProvinciasPorColecciones.size());
         model.addAttribute("colecciones", estadisticasProvinciasPorColecciones.stream().map(EstadisticaProvinciaXColeccionDTO::getColeccion).toList());
         model.addAttribute("coleccionPorProvincia", this.estadisticaService.convertToMap(estadisticasProvinciasPorColecciones));
