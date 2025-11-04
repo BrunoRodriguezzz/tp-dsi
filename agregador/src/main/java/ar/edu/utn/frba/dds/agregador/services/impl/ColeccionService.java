@@ -346,6 +346,19 @@ public class ColeccionService implements IColeccionService {
      Coleccion coleccion = this.findColecccionAux(id);
 
      this.actualizarDatosColeccion(coleccion, coleccionInputDTO);
+
+     if (coleccionInputDTO.getCriterio() != null) {
+       List<Filtro> filtrosTransitorios = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
+       List<EntidadFiltro> filtrosGestionados = this.filtroMapper.toEntities(filtrosTransitorios);
+
+       coleccion.cambiarCriterio(new Criterio(filtrosGestionados));
+
+       List<Fuente> fuentes = coleccion.getFuentes();
+       List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentes);
+       coleccion.cargarHechos(hechosFuentes);
+       coleccion.recalcularHechos();
+     }
+
      this.coleccionRepository.save(coleccion);
      return ColeccionOutputDTO.coleccionToDTO(coleccion);
    }
