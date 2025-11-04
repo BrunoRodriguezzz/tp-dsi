@@ -33,11 +33,13 @@ public class Criterio {
     }
 
     public Boolean coincideCon(Hecho hecho) {
-        return filtros.stream().anyMatch(filtro -> {
+        if (filtros == null || filtros.isEmpty()) return true;
+
+        return filtros.stream().allMatch(filtro -> {
             try {
                 return filtro.coincide(hecho);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                return false;
             }
         });
     }

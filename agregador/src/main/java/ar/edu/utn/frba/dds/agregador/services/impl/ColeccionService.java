@@ -33,9 +33,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 public class ColeccionService implements IColeccionService {
   @Autowired
@@ -144,211 +142,216 @@ public class ColeccionService implements IColeccionService {
 
   @Override
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
-    log.info("Entrando en guardarColeccion para: {}", coleccionInputDTO.getNombre());
-    List<Fuente> fuentesColeccion = new ArrayList<>();
-    coleccionInputDTO.getFuentes().forEach(fuente -> {
-      Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
-      if (temp == null) {
-        throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
-      }
-      fuentesColeccion.add(temp);
-    });
+     List<Fuente> fuentesColeccion = new ArrayList<>();
+     coleccionInputDTO.getFuentes().forEach(fuente -> {
+       Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
+       if (temp == null) {
+         throw new RuntimeException("La fuente " + fuente.getNombre() + " no existe");
+       }
+       fuentesColeccion.add(temp);
+     });
 
-    List<Filtro> filtrosTransitorios = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
-    List<EntidadFiltro> filtrosGestionados = this.filtroMapper.toEntities(filtrosTransitorios);
+     List<Filtro> filtrosTransitorios = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
+     List<EntidadFiltro> filtrosGestionados = this.filtroMapper.toEntities(filtrosTransitorios);
 
-    Criterio criterio = new Criterio();
-    criterio.agregarFiltros(filtrosGestionados);
+     Criterio criterio = new Criterio();
+     criterio.agregarFiltros(filtrosGestionados);
 
-    Coleccion nuevaColeccion = new Coleccion(
-            coleccionInputDTO.getNombre(),
-            coleccionInputDTO.getDescripcion(),
-            fuentesColeccion,
-            criterio
-    );
+     Coleccion nuevaColeccion = new Coleccion(
+             coleccionInputDTO.getNombre(),
+             coleccionInputDTO.getDescripcion(),
+             fuentesColeccion,
+             criterio
+     );
 
-    log.info("Guardando colección (sin hechos) con título='{}'...", coleccionInputDTO.getNombre());
-    Coleccion coleccionGuardada = this.coleccionRepository.save(nuevaColeccion);
-    log.info("Colección persistida con id={} (título='{}'). Iniciando importación asíncrona de hechos...", coleccionGuardada.getId(), coleccionGuardada.getTitulo());
+     Coleccion coleccionGuardada = this.coleccionRepository.save(nuevaColeccion);
+     applicationContext.getBean(ColeccionService.class).importarYAsociarHechos(coleccionGuardada.getId(), fuentesColeccion);
 
-    applicationContext.getBean(ColeccionService.class).importarYAsociarHechos(coleccionGuardada.getId(), fuentesColeccion);
+     return ColeccionOutputDTO.coleccionToDTO(coleccionGuardada);
+   }
 
-    log.info("Saliendo de guardarColeccion (se devuelve resultado sin esperar importación) para id={}", coleccionGuardada.getId());
+   @Async
+   public void importarYAsociarHechos(Long idColeccion, List<Fuente> fuentesColeccion) {
+     List<Hecho> hechosGuardadosTotales = new ArrayList<>();
+     for (Fuente f : fuentesColeccion) {
+       try {
+         List<Hecho> hechosDesdeFuente = f.importarHechos().collectList().block();
+         if (hechosDesdeFuente == null || hechosDesdeFuente.isEmpty()) {
+           continue;
+         }
+         for (Hecho h : hechosDesdeFuente) {
+           try {
+             Hecho guardado = this.hechoService.guardarHechoDinamica(h);
+             if (guardado != null) {
+               hechosGuardadosTotales.add(guardado);
+             }
+           } catch (Exception e) {
+           }
+         }
+       } catch (Exception e) {
+       }
+     }
 
-    return ColeccionOutputDTO.coleccionToDTO(coleccionGuardada);
-  }
+     if (!hechosGuardadosTotales.isEmpty()) {
+       applicationContext.getBean(ColeccionService.class).asociarHechos(idColeccion, hechosGuardadosTotales);
+     } else {
+       try {
+         List<Hecho> hechosExistentes = this.hechoRepository.findByFuentes(fuentesColeccion);
+         if (hechosExistentes != null && !hechosExistentes.isEmpty()) {
+           applicationContext.getBean(ColeccionService.class).asociarHechos(idColeccion, hechosExistentes);
+         }
+       } catch (Exception e) {
+       }
+     }
+   }
 
-  @Async
-  public void importarYAsociarHechos(Long idColeccion, List<Fuente> fuentesColeccion) {
-    log.info("Inicio importarYAsociarHechos para coleccion id={}", idColeccion);
-    List<Hecho> hechosGuardadosTotales = new ArrayList<>();
-    for (Fuente f : fuentesColeccion) {
-      try {
-        log.info("Importando hechos desde la fuente '{}'...", f.getNombre());
-        List<Hecho> hechosDesdeFuente = f.importarHechos().collectList().block();
-        if (hechosDesdeFuente == null || hechosDesdeFuente.isEmpty()) {
-          continue;
-        }
-        for (Hecho h : hechosDesdeFuente) {
-          try {
-            Hecho guardado = this.hechoService.guardarHechoDinamica(h);
-            if (guardado != null) hechosGuardadosTotales.add(guardado);
-          } catch (Exception e) {
-            log.warn("Error guardando hecho de la fuente '{}' (titulo='{}'): {}", f.getNombre(), h == null ? "<null>" : h.getTitulo(), e.getMessage());
-          }
-        }
-      } catch (Exception e) {
-        log.warn("Error importando desde la fuente '{}': {}", f.getNombre(), e.getMessage());
-      }
-    }
+   @Transactional
+   public void asociarHechos(Long idColeccion, List<Hecho> hechos) {
+     Optional<Coleccion> opt = this.coleccionRepository.findById(idColeccion);
+     if (opt.isEmpty()) {
+       throw new NotFoundException("Coleccion no encontrada id=" + idColeccion);
+     }
 
-    if (!hechosGuardadosTotales.isEmpty()) {
-      applicationContext.getBean(ColeccionService.class).asociarHechos(idColeccion, hechosGuardadosTotales);
-    }
-    log.info("Fin importarYAsociarHechos para coleccion id={}", idColeccion);
-  }
+     Coleccion coleccion = opt.get();
+     coleccion.getFuentes().size();
+     coleccion.getHechos().size();
 
-  @Transactional
-  public void asociarHechos(Long idColeccion, List<Hecho> hechos) {
-    Optional<Coleccion> opt = this.coleccionRepository.findById(idColeccion);
-    if (opt.isEmpty()) {
-      throw new NotFoundException("Coleccion no encontrada id=" + idColeccion);
-    }
+     int inicial = coleccion.getHechos() == null ? 0 : coleccion.getHechos().size();
+     int agregados = 0;
+     if (hechos != null) {
+       for (Hecho h : hechos) {
+         Long idHecho = h.getId();
+         if (idHecho == null) {
+           try {
+             Hecho saved = this.hechoRepository.save(h);
+             if (saved.getFuenteSet() != null) saved.getFuenteSet().size();
+             boolean added = coleccion.cargarHecho(saved);
+             if (added) {
+               agregados++;
+               try {
+                 this.coleccionRepository.insertHechoEnColeccion(idColeccion, saved.getId());
+               } catch (Exception e) {
+               }
+             }
+           } catch (Exception e) {
+           }
+           continue;
+         }
 
-    Coleccion coleccion = opt.get();
-    coleccion.getFuentes().size();
+         boolean existe = coleccion.getHechos().stream().anyMatch(existing -> existing.getId() != null && existing.getId().equals(idHecho));
+         if (!existe) {
+           var optHecho = this.hechoRepository.findById(idHecho);
+           if (optHecho.isPresent()) {
+             Hecho hechoExistente = optHecho.get();
+             if (hechoExistente.getFuenteSet() != null) hechoExistente.getFuenteSet().size();
+             boolean added = coleccion.cargarHecho(hechoExistente);
+             if (added) {
+               agregados++;
+               try {
+                 this.coleccionRepository.insertHechoEnColeccion(idColeccion, idHecho);
+               } catch (Exception e) {
+               }
+             }
+           }
+         }
+       }
+     }
 
-    int inicial = coleccion.getHechos() == null ? 0 : coleccion.getHechos().size();
-    int agregados = 0;
-    if (hechos != null) {
-      for (Hecho h : hechos) {
-        Long idHecho = h.getId();
-        if (idHecho == null) {
-          try {
-            Hecho saved = this.hechoRepository.save(h);
-            coleccion.getHechos().add(saved);
-            agregados++;
-            this.coleccionRepository.insertHechoEnColeccion(idColeccion, saved.getId());
-          } catch (Exception e) {
-            log.warn("No se pudo guardar hecho sin id antes de asociar a coleccion: {}", e.getMessage());
-          }
-          continue;
-        }
+     this.coleccionRepository.saveAndFlush(coleccion);
+   }
 
-        boolean existe = coleccion.getHechos().stream().anyMatch(existing -> existing.getId() != null && existing.getId().equals(idHecho));
-        if (!existe) {
-          var optHecho = this.hechoRepository.findById(idHecho);
-          if (optHecho.isPresent()) {
-            coleccion.getHechos().add(optHecho.get());
-            agregados++;
-            try {
-              this.coleccionRepository.insertHechoEnColeccion(idColeccion, idHecho);
-            } catch (Exception e) {
-              log.warn("No se pudo insertar relacion nativa coleccion-hecho para coleccion={}, hecho={}: {}", idColeccion, idHecho, e.getMessage());
-            }
-          } else {
-            log.warn("Hecho id={} no encontrado en repo al intentar asociar a coleccion id={}", idHecho, idColeccion);
-          }
-        }
-      }
-    }
+   @Override
+   public ColeccionOutputDTO agregarFiltrosCriterio(Long id, CriterioInputDTO criterioInputDTO) {
+     List<Filtro> nuevosFiltros = CriterioInputDTO.crearFiltros(criterioInputDTO);
 
-    this.coleccionRepository.saveAndFlush(coleccion);
-    log.info("Coleccion id={} actualizada transaccionalmente: hechos antes={}, agregados={}, total={}", idColeccion, inicial, agregados, coleccion.getHechos().size());
-  }
+     List<EntidadFiltro> nuevosFiltrosEntity = this.filtroMapper.toEntities(nuevosFiltros);
 
-  @Override
-  public ColeccionOutputDTO agregarFiltrosCriterio(Long id, CriterioInputDTO criterioInputDTO) {
-    List<Filtro> nuevosFiltros = CriterioInputDTO.crearFiltros(criterioInputDTO);
+     Coleccion coleccion = this.findColecccionAux(id);
 
-    List<EntidadFiltro> nuevosFiltrosEntity = this.filtroMapper.toEntities(nuevosFiltros);
+     coleccion.getCriterio().getFiltros().addAll(nuevosFiltrosEntity);
+     coleccion.recalcularHechos();
 
-    Coleccion coleccion = this.findColecccionAux(id);
+     this.coleccionRepository.save(coleccion);
+     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+   }
 
-    coleccion.getCriterio().getFiltros().addAll(nuevosFiltrosEntity);
-    coleccion.recalcularHechos();
+   @Override
+   public ColeccionOutputDTO quitarFiltrosCriterio(Long id, CriterioInputDTO criterio) {
+     Coleccion coleccion = this.findColecccionAux(id);
 
-    this.coleccionRepository.save(coleccion);
-    return ColeccionOutputDTO.coleccionToDTO(coleccion);
-  }
+     List<Filtro> filtrosNuevos = CriterioInputDTO.crearFiltros(criterio);
 
-  @Override
-  public ColeccionOutputDTO quitarFiltrosCriterio(Long id, CriterioInputDTO criterio) {
-    Coleccion coleccion = this.findColecccionAux(id);
+     List<EntidadFiltro> entidadesFiltrosNuevos = this.filtroMapper.toEntities(filtrosNuevos);
 
-    List<Filtro> filtrosNuevos = CriterioInputDTO.crearFiltros(criterio);
+     coleccion.cambiarCriterio(new Criterio(entidadesFiltrosNuevos));
 
-    List<EntidadFiltro> entidadesFiltrosNuevos = this.filtroMapper.toEntities(filtrosNuevos);
+     List<Fuente> fuentes = coleccion.getFuentes();
+     List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentes);
+     coleccion.cargarHechos(hechosFuentes);
+     coleccion.recalcularHechos();
 
-    coleccion.cambiarCriterio(new Criterio(entidadesFiltrosNuevos));
+     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+   }
 
-    List<Fuente> fuentes = coleccion.getFuentes();
-    List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentes);
-    coleccion.cargarHechos(hechosFuentes);
-    coleccion.recalcularHechos();
+   @Override
+   public ColeccionOutputDTO agregarFuenteAColeccion(Long id, NombreFuenteInputDTO fuenteInputDTO) {
+     Coleccion coleccion = this.findColecccionAux(id);
 
-    return ColeccionOutputDTO.coleccionToDTO(coleccion);
-  }
+     Fuente fuente = this.fuenteRepository.findByNombre(fuenteInputDTO.getNombre());
+     if(fuente == null){
+       throw new RuntimeException("La fuente " + fuenteInputDTO + " no existe");
+     }
 
-  @Override
-  public ColeccionOutputDTO agregarFuenteAColeccion(Long id, NombreFuenteInputDTO fuenteInputDTO) {
-    Coleccion coleccion = this.findColecccionAux(id);
+     coleccion.agregarFuente(fuente);
+     List<Fuente> fuentes = new ArrayList<>();
+     fuentes.add(fuente);
+     List<Hecho> hechos = this.hechoRepository.findByFuentes(fuentes);
+     coleccion.cargarHechos(hechos);
 
-    Fuente fuente = this.fuenteRepository.findByNombre(fuenteInputDTO.getNombre());
-    if(fuente == null){
-      throw new RuntimeException("La fuente " + fuenteInputDTO + " no existe");
-    }
+     this.coleccionRepository.save(coleccion);
+     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+   }
 
-    coleccion.agregarFuente(fuente);
-    List<Fuente> fuentes = new ArrayList<>();
-    fuentes.add(fuente);
-    List<Hecho> hechos = this.hechoRepository.findByFuentes(fuentes);
-    coleccion.cargarHechos(hechos);
+   @Override
+   public ColeccionOutputDTO quitarFuentesAColeccion(Long id, List<NombreFuenteInputDTO> fuentesInputDTO) {
+     Coleccion coleccion = this.findColecccionAux(id);
 
-    this.coleccionRepository.save(coleccion);
-    return ColeccionOutputDTO.coleccionToDTO(coleccion);
-  }
+     List<Fuente> fuentesColeccion = new ArrayList<>();
+     fuentesInputDTO.forEach(fuente -> {
+       Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
+       if(temp == null){
+         throw new RuntimeException("La fuente " + fuente + " no existe");
+       }
+       fuentesColeccion.add(temp);
+     });
 
-  @Override
-  public ColeccionOutputDTO quitarFuentesAColeccion(Long id, List<NombreFuenteInputDTO> fuentesInputDTO) {
-    Coleccion coleccion = this.findColecccionAux(id);
+     coleccion.getFuentes().removeAll(fuentesColeccion);
+     coleccion.recalcularHechos();
 
-    List<Fuente> fuentesColeccion = new ArrayList<>();
-    fuentesInputDTO.forEach(fuente -> {
-      Fuente temp = this.fuenteRepository.findByNombre(fuente.getNombre());
-      if(temp == null){
-        throw new RuntimeException("La fuente " + fuente + " no existe");
-      }
-      fuentesColeccion.add(temp);
-    });
+     this.coleccionRepository.save(coleccion);
+     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+   }
 
-    coleccion.getFuentes().removeAll(fuentesColeccion);
-    coleccion.recalcularHechos();
+   @Override
+   public ColeccionOutputDTO agregarConsensoAColeccion(Long id, Consenso consenso) {
+     Coleccion coleccion = this.findColecccionAux(id);
+     coleccion.agregarConsenso(consenso);
 
-    this.coleccionRepository.save(coleccion);
-    return ColeccionOutputDTO.coleccionToDTO(coleccion);
-  }
+     this.coleccionRepository.save(coleccion);
+     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+   }
 
-  @Override
-  public ColeccionOutputDTO agregarConsensoAColeccion(Long id, Consenso consenso) {
-    Coleccion coleccion = this.findColecccionAux(id);
-    coleccion.agregarConsenso(consenso);
+   @Override
+   public ColeccionOutputDTO actualizarColeccion(Long id, ColeccionInputDTO coleccionInputDTO) {
+     Coleccion coleccion = this.findColecccionAux(id);
 
-    this.coleccionRepository.save(coleccion);
-    return ColeccionOutputDTO.coleccionToDTO(coleccion);
-  }
+     this.actualizarDatosColeccion(coleccion, coleccionInputDTO);
+     this.coleccionRepository.save(coleccion);
+     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+   }
 
-  @Override
-  public ColeccionOutputDTO actualizarColeccion(Long id, ColeccionInputDTO coleccionInputDTO) {
-    Coleccion coleccion = this.findColecccionAux(id);
-
-    this.actualizarDatosColeccion(coleccion, coleccionInputDTO);
-    this.coleccionRepository.save(coleccion);
-    return ColeccionOutputDTO.coleccionToDTO(coleccion);
-  }
-
-  @Override
-  public void eliminarColeccion(Long id) {
+   @Override
+   public void eliminarColeccion(Long id) {
       coleccionRepository.deleteById(id);
   }
 
