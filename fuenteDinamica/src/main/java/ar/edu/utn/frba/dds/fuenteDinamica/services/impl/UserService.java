@@ -67,7 +67,10 @@ public class UserService implements IUserService {
                     .toList();
 
             Categoria categoria = categoriaExistente(hechoInputDTO.getCategoria());
-            Ubicacion ubicacion = ubicacionExistente(hechoInputDTO.getLatitud(), hechoInputDTO.getLongitud());
+            Ubicacion ubicacion = ubicacionExistente(hechoInputDTO.getLatitud(),
+                    hechoInputDTO.getLongitud(),
+                    hechoInputDTO.getProvincia(),
+                    hechoInputDTO.getMunicipio());
 
             Hecho hecho = Hecho
                     .builder()
@@ -145,7 +148,10 @@ public class UserService implements IUserService {
 
                 Categoria categoria = this.categoriaExistente(hechoModificado.getCategoria());
 
-                Ubicacion ubicacion = this.ubicacionExistente(hechoModificado.getLatitud(),  hechoModificado.getLongitud());
+                Ubicacion ubicacion = this.ubicacionExistente(hechoModificado.getLatitud(),
+                        hechoModificado.getLongitud(),
+                        hechoModificado.getProvincia(),
+                        hechoModificado.getMunicipio());
 
                 SolicitudModificacion nuevaSolicitud = SolicitudModificacion
                         .builder()
@@ -233,7 +239,7 @@ public class UserService implements IUserService {
         return Categoria.builder().nombre(categoria).build();
     }
 
-    private Ubicacion ubicacionExistente(String latitud,String longitud){
+    private Ubicacion ubicacionExistente(String latitud,String longitud, String prov, String munip){
         Ubicacion ubicacionGuardada = this.ubicacionRepository.findByLatitudAndLongitud(latitud,longitud);
 
         if(ubicacionGuardada==null){
@@ -243,6 +249,8 @@ public class UserService implements IUserService {
                     .latitud(latitud)
                     .longitud(longitud)
                     .pais("ARGENTINA")
+                    .provincia(prov)
+                    .municipio(munip)
                     .build();
 
             this.ubicacionRepository.save(nuevaUbicacion);

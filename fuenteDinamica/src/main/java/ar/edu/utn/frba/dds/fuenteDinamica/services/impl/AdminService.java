@@ -128,7 +128,7 @@ public class AdminService implements IAdminService {
             this.dinamicaRepository.guardar(hechoGuardado);
 
             //TODO: En realidad deberia enviar a un endpoint de PUT en el agregador
-            this.enviarHecho(hechoGuardado);
+            this.enviarHechoMod(hechoGuardado);
 
             return SolicitudModOutputDTO.convertir(solicitudGuardada);
 
@@ -170,5 +170,30 @@ public class AdminService implements IAdminService {
                 .builder()
                 .titulo(etiqueta)
                 .build();
+    }
+
+    private void enviarHechoMod(Hecho hecho){
+        HechoOutputDTO hechoParaEnviar = HechoOutputDTO.convertir(hecho);
+
+        try {
+            this.webClient.put()
+                    .uri(uriBuilder -> uriBuilder.path("/hechos/" + hecho.getId()).build())
+                    .contentType(MediaType.APPLICATION_JSON)  // aseguramos Content-Type
+                    .bodyValue(hechoParaEnviar)
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();  // bloquea y espera la respuesta
+
+            hecho.setEnviado(true);
+            this.dinamicaRepository.guardar(hecho);
+
+        } catch (WebClientResponseException e) {
+            // Capturamos la excepción específica de WebClient y mostramos detalles valiosos
+            System.err.println("Fallo el envio del Hecho. Status: " + e.getStatusCode() + ". Body: " + e.getResponseBodyAsString());
+            e.printStackTrace();
+        } catch (Exception e){
+            System.err.println("Fallo el envio del Hecho por un error inesperado: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

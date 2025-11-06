@@ -47,6 +47,8 @@
         </div>
         <input type="hidden" id="latInput" name="latitud">
         <input type="hidden" id="lngInput" name="longitud">
+        <input type="hidden" id="municipioInput" name="municipio">
+        <input type="hidden" id="provinciaInput" name="provincia">
         <input type="hidden" id="idContribuyente" name="idUsuario" th:value="${usuarioLogueado?.id ?: ''}">
         <input type="hidden" id="nombre" name="nombreUsuario" th:value="${usuarioLogueado?.nombre ?: ''}">
         <input type="hidden" id="apellido" name="apellidoUsuario" th:value="${usuarioLogueado?.apellido ?: ''}">

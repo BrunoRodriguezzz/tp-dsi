@@ -29,6 +29,8 @@ public class HechoModificadoInputDTO {
     private List<String>  contenidoMultimedia;
     private String        latitud;
     private String        longitud;
+    private String        provincia;
+    private String        municipio;
     private LocalDateTime fechaAcontecimiento;
     private Long          idUsuario;
 }

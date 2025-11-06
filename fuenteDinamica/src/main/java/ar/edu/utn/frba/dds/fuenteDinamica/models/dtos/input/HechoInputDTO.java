@@ -44,6 +44,8 @@ public class HechoInputDTO {
                 .contenidoMultimedia(hecho.getContenidoMultimedia())
                 .latitud(hecho.getLatitud())
                 .longitud(hecho.getLongitud())
+                .municipio(hecho.getMunicipio())
+                .provincia(hecho.getProvincia())
                 .fechaAcontecimiento(hecho.getFechaAcontecimiento())
                 .idUsuario(hecho.getIdUsuario())
                 .build();
