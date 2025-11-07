@@ -1,7 +1,6 @@
 <!-- Fragmento para las acciones las solicitudes de modificacion pendientes -->
 <th:block th:fragment="accionesSolicitudesModificadas(solicitudId, hechoId)">
-    <div class="hecho-acciones">
-
+    <div class="hecho-acciones mx-auto justify-content-end">
         <!-- Aprobar -->
         <form th:action="@{/hechos/modificacion}" method="post" style="display:inline;">
             <input type="hidden" name="id" th:value="${solicitudId}" />
@@ -9,7 +8,7 @@
             <input type="hidden" name="idHecho" th:value="${hechoId}" />
             <input type="hidden" name="estadoHecho" value="ACEPTADA" />
             <input type="hidden" name="etiquetas" value="" />
-            <button type="submit" class="btn btn-aprobar">
+            <button type="submit" class="btn btn-success">
                 <i class="fas fa-check"></i> Aprobar
             </button>
         </form>
@@ -21,7 +20,7 @@
             <input type="hidden" name="idHecho" th:value="${hechoId}" />
             <input type="hidden" name="estadoHecho" value="RECHAZADA" />
             <input type="hidden" name="etiquetas" value="" />
-            <button type="submit" class="btn btn-rechazar">
+            <button type="submit" class="btn btn-danger">
                 <i class="fas fa-times"></i> Rechazar
             </button>
         </form>

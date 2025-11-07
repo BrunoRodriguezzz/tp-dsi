@@ -1,0 +1,81 @@
+<div class="hecho-item card mb-3 w-100 shadow-sm" th:fragment="propuestaModificacion(item)">
+    <div class="card-body w-100">
+        <h5 class="card-title mb-3 border-bottom pb-2" th:text="|Hecho: ${item.hechoOriginal.titulo}|"></h5>
+
+        <div class="row">
+            <!-- Hecho original -->
+            <div class="col-md-6 borde-hecho pe-3">
+                <h6 class="text-muted">Hecho original</h6>
+                <p><strong>Título:</strong> <span th:text="${item.hechoOriginal.titulo}"></span></p>
+                <p><strong>Descripción:</strong> <span th:text="${item.hechoOriginal.descripcion}"></span></p>
+                <p><strong>Categoría:</strong> <span th:text="${item.hechoOriginal.categoria}"></span></p>
+                <p>
+                    <strong>Ubicación:</strong>
+                    <th:block th:if="${item.hechoOriginal.ubicacion}">
+                        <span th:if="${!#strings.isEmpty(item.hechoOriginal.ubicacion.municipio)}" th:text="${item.hechoOriginal.ubicacion.municipio}"></span>
+                        <span th:if="${!#strings.isEmpty(item.hechoOriginal.ubicacion.municipio) and !#strings.isEmpty(item.hechoOriginal.ubicacion.provincia)}">, </span>
+                        <span th:if="${!#strings.isEmpty(item.hechoOriginal.ubicacion.provincia)}" th:text="${item.hechoOriginal.ubicacion.provincia}"></span>
+                    </th:block>
+                </p>
+            </div>
+
+            <!-- Solicitud de modificacion -->
+            <div class="col-md-6 ps-3 modificado">
+                <h6 class="text-muted">Propuesta de modificación</h6>
+
+                <th:block th:with="
+                    tituloCambiado = ${item.solicitud.titulo != null and item.solicitud.titulo != item.hechoOriginal.titulo},
+                    descripcionCambiada = ${item.solicitud.descripcion != null and item.solicitud.descripcion != item.hechoOriginal.descripcion},
+                    categoriaCambiada = ${item.solicitud.categoria != null and item.solicitud.categoria != item.hechoOriginal.categoria},
+                    municipioCambiado = ${item.solicitud.ubicacion?.municipio != null and item.solicitud.ubicacion.municipio != item.hechoOriginal.ubicacion?.municipio},
+                    provinciaCambiada = ${item.solicitud.ubicacion?.provincia != null and item.solicitud.ubicacion.provincia != item.hechoOriginal.ubicacion?.provincia}
+                ">
+                    <th:block th:with="ubicacionCambiada = ${municipioCambiado or provinciaCambiada}">
+
+                        <div th:if="${tituloCambiado}">
+                            <p>
+                                <strong>Título:</strong>
+                                <span class="text-success fw-semibold" th:text="${item.solicitud.titulo}"></span>
+                            </p>
+                        </div>
+
+                        <div th:if="${descripcionCambiada}">
+                            <p>
+                                <strong>Descripción:</strong>
+                                <span class="text-success fw-semibold" th:text="${item.solicitud.descripcion}"></span>
+                            </p>
+                        </div>
+
+                        <div th:if="${categoriaCambiada}">
+                            <p>
+                                <strong>Categoría:</strong>
+                                <span class="text-success fw-semibold" th:text="${item.solicitud.categoria}"></span>
+                            </p>
+                        </div>
+
+                        <div th:if="${ubicacionCambiada}">
+                            <p>
+                                <strong>Ubicación:</strong>
+                                <span class="text-success fw-semibold">
+                                    <th:block th:with="
+                                        displayMunicipio=${item.solicitud.ubicacion?.municipio ?: item.hechoOriginal.ubicacion?.municipio},
+                                        displayProvincia=${item.solicitud.ubicacion?.provincia ?: item.hechoOriginal.ubicacion?.provincia}">
+
+                                        <span th:if="${!#strings.isEmpty(displayMunicipio)}" th:text="${displayMunicipio}"></span>
+                                        <span th:if="${!#strings.isEmpty(displayMunicipio) and !#strings.isEmpty(displayProvincia)}">, </span>
+                                        <span th:if="${!#strings.isEmpty(displayProvincia)}" th:text="${displayProvincia}"></span>
+                                    </th:block>
+                                </span>
+                            </p>
+                        </div>
+
+                        <div th:if="${!tituloCambiado and !descripcionCambiada and !categoriaCambiada and !ubicacionCambiada}">
+                            <p class="text-muted fst-italic">No se propusieron cambios.</p>
+                        </div>
+                    </th:block>
+                </th:block>
+            </div>
+        </div>
+        <th:block th:replace="panelControl/fragments/accionesSolicitudesModificadas :: accionesSolicitudesModificadas(${item.solicitud.idSolicitud}, ${item.solicitud.idHecho})"/>
+    </div>
+</div>

@@ -19,10 +19,13 @@
                 </div>
             </div>
             <div class="col">
-                <svg class="green" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square green" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                </svg>
                 <div class="contenidos-metricas">
-                    <p>Fuentes recientes</p>
-                    <p class="valor-metrica" th:text="${cantidadFuentes}">0</p>
+                    <p>Modificaciones</p>
+                    <p class="valor-metrica" th:text="${cantModificaciones}">0</p>
                 </div>
             </div>
             <div class="col">
@@ -54,7 +57,10 @@
             <div class="col-sm-6 mb-3 mb-sm-0">
                 <div class="card">
                     <div class="card-body">
-                        <svg class="green" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 4.4c.5.5.5 1.3 0 1.8l-1.2 1.2-2.8-2.8 1.2-1.2c.5-.5 1.3-.5 1.8 0l1 1zm-3.6 2.4l2.8 2.8L12 16H9.2v-2.8l6.8-6.4zM19 20H5a1 1 0 0 1-1-1V5c0-.6.4-1 1-1h8.5c.3 0 .5.1.7.3l1.2 1.2H5v14h14v-7.4l1.5-1.5V19c0 .6-.4 1-1 1z" fill="currentColor" stroke="none" transform="scale(0.9) translate(1.3,1.3)" /></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square green" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                        </svg>
                         <h2>Solicitudes de Modificación</h2>
                         <p>Gestiona, compara y aprueba las modificaciones solicitadas por los usuarios de la comunidad.</p>
                         <a th:href="@{/panelControl/solicitudesModificado}" class="link" id="link-fuentes">Gestionar solicitudes →</a>

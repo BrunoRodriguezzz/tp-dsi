@@ -234,10 +234,6 @@ body > p {
 }
 
 @media (max-width: 768px) {
-    body {
-        padding: 1rem;
-    }
-
     h2 {
         font-size: 1.75rem;
     }

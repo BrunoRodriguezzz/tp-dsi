@@ -37,7 +37,7 @@ public class PanelControlController {
         model.addAttribute("cantidadHechosPendientes", dinamicaService.obtenerHechosPendientes().size());
         model.addAttribute("titulo", "Panel de Control");
         model.addAttribute("cantidadHechos", hechoService.obtenerHechos().size());
-        model.addAttribute("cantidadFuentes", fuenteService.obtenerFuentesNuevas().size());
+        model.addAttribute("cantModificaciones", fuenteService.obtenerFuentesNuevas().size());
         model.addAttribute("cantidadSolicitudes", solicitudesService.obtenerSolicitudes().size());
         return "panelControl/index";
     }
