@@ -9,8 +9,7 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
 </th:block>
-<div th:fragment="contenido">
-    <div class="container-responsive">
+<div th:fragment="contenido" class="container-responsive container">
         <div class="container-principal">
             <div class="container-secundario">
                 <div>
@@ -26,6 +25,10 @@
 
             <div th:with="filtAction=@{/hechos}, filtClear=@{/hechos}">
                 <div th:insert="~{fragments/filtros :: filtros(actionUrl=${filtAction}, clearUrl=${filtClear})}"></div>
+            </div>
+
+            <div th:if="${cantidad == 0}">
+                <div th:insert="~{fragments/vacio :: vacio}"></div>
             </div>
 
             <div class="hecho-card" th:each="hecho: ${hechos}">
@@ -54,7 +57,6 @@
                 </div>
             </div>
         </div>
-    </div>
     <script th:src="@{/js/mapa.js}"></script>
 </div>
 </html>

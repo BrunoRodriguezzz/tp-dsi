@@ -177,7 +177,6 @@ public class HechoController {
     @PostMapping("modificarHecho/{id}")
     public String procesarModificacionHecho(@PathVariable Long id, @ModelAttribute HechoDTO hechoDTO, RedirectAttributes redirectAttributes) {
         boolean rta;
-        log.info("El ID del usuario que se envia es: {}", hechoDTO.getContribuyente().getId());
         if (hechoDTO.getOrigen() != null && hechoDTO.getOrigen().equals("CONTRIBUYENTE")) {
             rta = this.dinamicaService.modificarHecho(hechoDTO);
         }
