@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.FechaInvalida
 import ar.edu.utn.frba.dds.agregador.models.domain.ER_ValueObjects.TituloInvalidoException;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -47,7 +48,7 @@ public class Hecho {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")
     private Categoria categoria;
 
@@ -88,7 +89,7 @@ public class Hecho {
     @Column(name = "esta_eliminado")
     private Boolean estaEliminado;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     private List<ContenidoMultimedia> contenidoMultimedia;
 
@@ -159,10 +160,9 @@ public class Hecho {
         this.consensos.add(consenso);
     }
 
-    public void actualizarDesdeDTO(ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO dto)  {
+    public void actualizarDesdeDTO(HechoInputDTO dto)  {
         if (dto.getTitulo() != null) this.titulo = dto.getTitulo();
         if (dto.getDescripcion() != null) this.descripcion = dto.getDescripcion();
-        if (dto.getCategoria() != null) this.categoria = new Categoria(dto.getCategoria());
         if (dto.getUbicacion() != null) {
             this.ubicacion = new Ubicacion(
                 Double.parseDouble(dto.getUbicacion().getLatitud()),

@@ -9,6 +9,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
+import ar.edu.utn.frba.dds.agregador.models.repositories.ICategoriaRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IFuenteRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification;
@@ -37,10 +38,12 @@ public class HechoService implements IHechoService {
 
   private final IHechoRepository hechoRepository;
   private final IFuenteRepository fuenteRepository;
+  private final ICategoriaRepository categoriaRepository;
 
-  public HechoService(IFuenteRepository fuenteRepository, IHechoRepository hechoRepository) {
+  public HechoService(IFuenteRepository fuenteRepository, IHechoRepository hechoRepository, ICategoriaRepository categoriaRepository) {
     this.fuenteRepository = fuenteRepository;
     this.hechoRepository = hechoRepository;
+    this.categoriaRepository = categoriaRepository;
   }
 
   @Override
@@ -140,9 +143,36 @@ public class HechoService implements IHechoService {
     if (id <= 0) throw new ValidationException("El id del hecho debe ser mayor que 0");
 
     Hecho hechoExistente = this.buscarPorID(id);
+    
+    if (hechoDTO.getCategoria() != null) {
+        hechoExistente.setCategoria(categoriaRepository.findByTituloOrCreate(hechoDTO.getCategoria()));
+    }
+
     hechoExistente.actualizarDesdeDTO(hechoDTO);
     Hecho hechoGuardado = this.guardarHecho(hechoExistente);
     return HechoOutputDTO.HechoToDTO(hechoGuardado);
+  }
+
+  @Override
+  public void actualizarHechoDinamica(HechoInputDTO hecho, Long id) {
+    if (id <= 0) throw new ValidationException("El id del hecho debe ser mayor que 0");
+
+    Long idDinamica = this.fuenteRepository
+            .findByTipoFuente(TipoFuente.DINAMICA)
+            .stream()
+            .findFirst()
+            .orElseThrow(() -> new NotFoundException("No se encontró una fuente dinámica para asociar el hecho."))
+            .getId();
+    Hecho hechoExistente = this.hechoRepository
+            .findByFuenteIdAndIdInternoFuente(idDinamica, id)
+            .orElseThrow(() -> new NotFoundException("No se encontró el hecho en la fuente dinámica."));
+    
+    if (hecho.getCategoria() != null) {
+        hechoExistente.setCategoria(categoriaRepository.findByTituloOrCreate(hecho.getCategoria()));
+    }
+
+    hechoExistente.actualizarDesdeDTO(hecho);
+    this.guardarHechoDinamica(hechoExistente);
   }
 
   @Override

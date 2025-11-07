@@ -26,6 +26,7 @@ public interface IHechoService {
   // Operaciones sobre hechos
   public Hecho eliminarHecho(Long id);
   public HechoOutputDTO actualizarHecho(HechoInputDTO hecho, Long id);
+  public void actualizarHechoDinamica(HechoInputDTO hecho, Long id);
 
   // Se usa solo en los services, no en los controllers
   public List<Hecho> actualizarHechosProxy();

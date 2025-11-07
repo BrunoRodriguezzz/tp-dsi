@@ -57,6 +57,12 @@ public class HechoController {
       return ResponseEntity.ok(hechoActualizado);
   }
 
+  @PutMapping("/contribuyentes/{id}")
+  public ResponseEntity<Void> actualizarHechoDinamica(@RequestBody HechoInputDTO hecho, @PathVariable(name = "id") Long id) {
+    this.hechoService.actualizarHechoDinamica(hecho, id);
+    return ResponseEntity.noContent().build();
+  }
+
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> eliminarHecho(@PathVariable(name = "id") Long id) {
     this.agregadorService.eliminarHecho(id);

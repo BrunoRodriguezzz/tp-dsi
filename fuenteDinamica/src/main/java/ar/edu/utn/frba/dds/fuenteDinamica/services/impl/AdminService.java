@@ -177,7 +177,7 @@ public class AdminService implements IAdminService {
 
         try {
             this.webClient.put()
-                    .uri(uriBuilder -> uriBuilder.path("/hechos/" + hecho.getId()).build())
+                    .uri(uriBuilder -> uriBuilder.path("/hechos/contribuyentes/" + hecho.getId()).build())
                     .contentType(MediaType.APPLICATION_JSON)  // aseguramos Content-Type
                     .bodyValue(hechoParaEnviar)
                     .retrieve()

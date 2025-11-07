@@ -36,14 +36,27 @@ public class HechoInputDTO {
   public static Hecho DTOToHecho(HechoInputDTO hechoDTO, Contribuyente contribuyente, Fuente fuente) {
     Hecho hecho;
     try {
+      UbicacionInputDTO ubicacionDTO = hechoDTO.getUbicacion();
+      double latitud = 0.0;
+      double longitud = 0.0;
+
+      if (ubicacionDTO != null) {
+          String latitudStr = ubicacionDTO.getLatitud();
+          if (latitudStr != null && !latitudStr.trim().isEmpty()) {
+              latitud = Double.parseDouble(latitudStr);
+          }
+
+          String longitudStr = ubicacionDTO.getLongitud();
+          if (longitudStr != null && !longitudStr.trim().isEmpty()) {
+              longitud = Double.parseDouble(longitudStr);
+          }
+      }
+
       hecho = new Hecho(
           hechoDTO.getTitulo(),
           hechoDTO.getDescripcion(),
           new Categoria(hechoDTO.getCategoria()),
-          new Ubicacion(
-              Double.parseDouble(hechoDTO.getUbicacion().getLatitud()),
-              Double.parseDouble(hechoDTO.getUbicacion().getLongitud())
-          ),
+          new Ubicacion(latitud, longitud),
           hechoDTO.getFechaAcontecimiento(),
           Origen.valueOf(hechoDTO.getOrigen().toUpperCase())
       );

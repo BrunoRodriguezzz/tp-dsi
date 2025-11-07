@@ -244,13 +244,10 @@ public class DinamicaService {
 
     public void modificar(HechoRevisadoForm hechoDTO) {
         try {
-
             log.info("Modificando el hecho con id {}", hechoDTO.getId());
             log.info("Modificando el hecho con id {}", hechoDTO.getIdHecho());
             log.info("Modificando el hecho con id {}", hechoDTO.getEtiquetas());
             log.info("Modificando el hecho con id {}", hechoDTO.getEstadoHecho());
-
-
 
             WebClient.builder().baseUrl(dinamicaUrl)
                     .build()
