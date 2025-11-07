@@ -7,13 +7,13 @@
     </th:block>
 </head>
 
-<div th:fragment="contenido">
+<div th:fragment="contenido" class="w-100">
 
     <div class="metaMapa-info">
         <h2 class="metaMapa-info-title">MetaMapa</h2>
-        <p class="metaMapa-info-p">Sistema de código abierto para la recopilación, visualización y mapeo colaborativo de información. Diseñado para maximizar la disponibilidad y veracidad de la información, protegiendo la identidad de quienes la comparten.</p>
+        <p class="metaMapa-info-p" >Sistema de código abierto para la recopilación, visualización y mapeo colaborativo de información. Diseñado para maximizar la disponibilidad y veracidad de la información, protegiendo la identidad de quienes la comparten.</p>
         <div class="metaMapa-info-button-container">
-            <!-- TODO: agregar los th:ref con sus respectivos Controllers -->
+
             <button class="btn btn-dark"><a class="nav-link active" aria-current="page" th:href="@{/mapa}">Explorar Mapa</a></button>
             <button class="btn btn-outline-primary"><a class="nav-link active" aria-current="page" th:href="@{/hechos}">Ver Hechos</a></button>
         </div>
@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <div class="hechos-destacados-section">
+    <div class="hechos-destacados-section container">
         <th:block th:replace="~{landingPage/fragments/cardsDestacados :: section-header('Hechos Destacados', 'hechosCarousel')}"></th:block>
         <div id="hechosCarousel" class="carousel carousel-dark slide">
             <div class="carousel-inner">
@@ -55,7 +55,7 @@
         <button class="btn btn-outline-primary mt-3"><a class="nav-link active" aria-current="page" th:href="@{/hechos}">Ver Todos los Hechos</a></button>
     </div>
 
-    <div class="colecciones-destacadas-section">
+    <div class="colecciones-destacadas-section container">
         <th:block th:replace="~{landingPage/fragments/cardsDestacados :: section-header('Colecciones Destacadas', 'coleccionesCarousel')}"></th:block>
         <div id="coleccionesCarousel" class="carousel carousel-dark slide">
             <div class="carousel-inner">

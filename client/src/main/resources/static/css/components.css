@@ -29,11 +29,20 @@
 /* Card */
 .card.hecho-destacado-card{
   width: 100%;
-  max-width: 28rem;
+  max-width: 23rem;
+  min-height: 15rem;
   background-color: transparent;
   border: solid var(--color-gray-300) 1px;
   margin: 0 0.3rem;
   padding: 2rem;
+}
+
+.coleccion-destacada-card {
+  width: 100%;
+  max-width: 23rem;
+  background-color: transparent;
+  min-height: 15rem;
+  max-height: 15rem;
 }
 
 .card.hecho-destacado-card h5 {
@@ -71,6 +80,7 @@
 }
 
 .titulo-etiqueta {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -108,7 +118,7 @@
 
 .card.coleccion-destacada-card{
   width: 100%;
-  max-width: 28rem;
+  max-width: 23rem;
   background-color: transparent;
   border: solid var(--color-gray-300) 1px;
   margin: 0 0.3rem;

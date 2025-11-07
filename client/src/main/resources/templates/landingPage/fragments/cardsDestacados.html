@@ -1,7 +1,7 @@
 <th:block th:fragment="hecho-card(hecho)">
-    <div class="col">
-        <a th:href="@{'/hechos/' + ${hecho.id}}" style="text-decoration:none; color:inherit;">
-            <div class="hecho-destacado-card card">
+    <div class="h-100 w-100">
+        <a th:href="@{'/hechos/' + ${hecho.id}}" style="text-decoration:none; color:inherit;" class="d-flex flex-column align-items-center">
+            <div class="hecho-destacado-card card w-100 h-100">
                 <div class="hecho-destacado-card-body card-body">
                     <div class="titulo-etiqueta">
                         <h5 class="card-title" th:text="${hecho.titulo}"></h5>
@@ -22,13 +22,13 @@
     </div>
 </th:block>
 
-<div th:fragment="coleccion-card(id, titulo, cantidad, descripcion)" class="col">
+<div th:fragment="coleccion-card(id, titulo, cantidad, descripcion)" class="h-100 w-100">
     <a th:href="@{'/coleccion/' + ${id}}" style="text-decoration:none; color:inherit;">
-        <div class="coleccion-destacada-card card">
+        <div class="coleccion-destacada-card card h-100 w-100">
             <div class="coleccion-destacada-card-body card-body">
                 <h5 class="card-title" th:text="${titulo}"></h5>
                 <p class="card-subtitle" th:text="${cantidad} + ' hechos registrados'"></p>
-                <p class="card-text" th:text="${descripcion}"></p>
+                <p class="card-text" th:text="${#strings.abbreviate(descripcion, 100)}"></p>
             </div>
         </div>
     </a>

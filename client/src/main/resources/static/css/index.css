@@ -3,7 +3,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 
 .metaMapa-info-title{
@@ -11,10 +12,11 @@
 }
 
 .metaMapa-info-p{
-    margin:1.6rem;
+    margin: 1.6rem;
     text-align: center;
     color: var(--color-gray-700);
     font-size: 1.2rem;
+    max-width: 65rem;
 }
 
 /* Purpose */
@@ -22,13 +24,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 2rem;
-}
-
-.purpose-container{
+    margin-top: 2rem;
+    margin-bottom: 2rem;
     padding: 2.5rem 0;
     width: 100%;
-    background-color: var(--color-gray-50);
+    background-color: var(--color-gray-contrast-background);
+}
+
+.purpose-container h2 {
+    margin-bottom: 3rem;
 }
 
 .col{
@@ -83,7 +87,6 @@ i.card-icon{
 
 /* Hechos Destacados */
 .hechos-destacados-section{
-    margin: 2rem 4rem;
 }
 
 .hechos-destacados-container{
@@ -102,10 +105,9 @@ i.card-icon{
 
 /* Colecciones Destacadas */
 .colecciones-destacadas-section{
-    margin: 0;
-    padding: 2.5rem 4rem;
-    background-color: var(--color-gray-50);
+    background-color: var(--color-white);
     width: 100%;
+    margin-top: 2rem;
 }
 
 .colecciones-destacadas-container{
@@ -134,7 +136,8 @@ i.card-icon{
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
     padding: 2.5rem 0;
     width: 100%;
     background-color: white;
