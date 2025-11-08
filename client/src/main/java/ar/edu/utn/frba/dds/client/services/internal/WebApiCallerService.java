@@ -57,7 +57,10 @@ public class WebApiCallerService {
             if(e.getStatusCode() == HttpStatus.NOT_FOUND){
                 throw new NotFoundException(e.getMessage());
             }
-            throw new RuntimeException("Error en llamada al API: " + e.getMessage(), e);
+            String body;
+            try { body = e.getResponseBodyAsString(); } catch (Exception ignore) { body = "<sin cuerpo>"; }
+            String detailed = String.format("Error en llamada al API: %d %s - body: %s", e.getStatusCode().value(), e.getStatusText(), body);
+            throw new RuntimeException(detailed, e);
         } catch (Exception e) {
             throw new RuntimeException("Error de conexión con el servicio: " + e.getMessage(), e);
         }

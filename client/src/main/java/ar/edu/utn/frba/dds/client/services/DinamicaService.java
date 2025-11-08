@@ -8,7 +8,6 @@ import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDinamicaDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,13 +23,11 @@ import java.util.stream.Collectors;
 @Service
 public class DinamicaService {
 
-    private final WebClient webCient;
     private final WebApiCallerService webApiCallerService;
     private final String dinamicaUrl;
 
     public DinamicaService(WebApiCallerService webApiCallerService,
                            @Value("${dinamica.service.url}") String dinamicaUrl){
-        this.webCient = WebClient.builder().build();
         this.webApiCallerService = webApiCallerService;
         this.dinamicaUrl = dinamicaUrl;
     }
@@ -97,7 +93,7 @@ public class DinamicaService {
     }
 
     public HechoDTO buscarHechoId(Long idHecho){
-        HechoDTO hecho = null;
+        HechoDTO hecho;
         try{
             hecho = this.webApiCallerService.get(this.dinamicaUrl + "/hechos/" + idHecho, HechoDTO.class);
         }catch (Exception e) {
@@ -118,7 +114,19 @@ public class DinamicaService {
     }
 
     public void enviarHecho(HechoInputDTO hecho){
-        this.webApiCallerService.post(this.dinamicaUrl + "/solicitud", hecho, Void.class);
+        try {
+            // Intentar con token (si hay sesión con tokens)
+            this.webApiCallerService.post(this.dinamicaUrl + "/solicitud", hecho, Void.class);
+        } catch (RuntimeException ex) {
+            // Si el error es por falta de token o contexto de sesión, intentar sin token
+            String msg = ex.getMessage() != null ? ex.getMessage() : "";
+            boolean porToken = msg.contains("No hay token de acceso") || msg.contains("current request attributes") || msg.contains("401") || msg.contains("403");
+            if (porToken) {
+                this.webApiCallerService.postWithoutToken(this.dinamicaUrl + "/solicitud", hecho, Void.class);
+            } else {
+                throw ex;
+            }
+        }
     }
 
     public void gestionarHecho(HechoRevisadoForm form) {
@@ -235,11 +243,9 @@ public class DinamicaService {
         Map<Long, HechoDTO> hechosPorId = hechos.stream()
                 .collect(Collectors.toMap(HechoDTO::getId, h -> h));
 
-        List<SolicitudCambiosDTO> comparativas = solicitudes.stream()
+        return solicitudes.stream()
                 .map(sol -> new SolicitudCambiosDTO(sol, hechosPorId.get(sol.getIdHecho())))
                 .toList();
-
-        return comparativas;
     }
 
     public void modificar(HechoRevisadoForm hechoDTO) {
