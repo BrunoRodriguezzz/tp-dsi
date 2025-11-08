@@ -1,23 +1,24 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
+import ar.edu.utn.frba.dds.client.dtos.auth.Rol;
 import ar.edu.utn.frba.dds.client.dtos.auth.UsuarioDTO;
 import ar.edu.utn.frba.dds.client.services.AuthApiService;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Rol;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Usuario;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -30,8 +31,11 @@ public class LoginController {
     }
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(Model model, @RequestParam(value = "error", required = false) String error) {
         model.addAttribute("usuario", new Usuario());
+        if (error != null) {
+            model.addAttribute("error", "Usuario o contraseña incorrectos, revise los campos e intente de nuevo.");
+        }
         return "login";
     }
 
@@ -50,8 +54,8 @@ public class LoginController {
             return "redirect:/login";
 
         } catch (Exception e) {
-            model.addAttribute("usuario", new Usuario()); // Recargar objeto
-            model.addAttribute("error", "Error al registrar usuario: " + e.getMessage());
+            model.addAttribute("usuario", new Usuario());
+            model.addAttribute("error", e.getMessage());
             return "login";
         }
     }
@@ -62,7 +66,6 @@ public class LoginController {
         return "redirect:/";
     }
 
-    // Método para proporcionar el usuario logueado a todas las vistas
     @ModelAttribute("usuarioLogueado")
     public UsuarioDTO usuarioLogueado(HttpSession session) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();

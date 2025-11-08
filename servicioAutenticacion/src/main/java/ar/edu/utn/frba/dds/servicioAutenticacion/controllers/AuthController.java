@@ -3,8 +3,7 @@ package ar.edu.utn.frba.dds.servicioAutenticacion.controllers;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.AuthResponseDTO;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.RefreshRequest;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.dto.TokenResponse;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.InvalidPasswordError;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.NotFoundError;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.CamposInvalidosError;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.RegisterError;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Usuario;
 import ar.edu.utn.frba.dds.servicioAutenticacion.services.AuthService;
@@ -38,11 +37,11 @@ public class AuthController {
 
             // Validación básica de credenciales
             if (password == null || password.trim().isEmpty()) {
-                throw new InvalidPasswordError("La contraseña no puede estar vacía");
+                throw new CamposInvalidosError("La contraseña no puede estar vacía");
             }
 
             if(username == null || username.trim().isEmpty()) {
-                throw new InvalidPasswordError("El usuario no puede estar vacío");
+                throw new CamposInvalidosError("El usuario no puede estar vacío");
             }
 
             // Autenticar usuario usando el AuthService
@@ -104,7 +103,7 @@ public class AuthController {
 
             Usuario usuario = authService.obtenerUsuario(claims.get("username").toString());
             return ResponseEntity.ok(usuario);
-        } catch (NotFoundError e) {
+        } catch (CamposInvalidosError e) {
             log.error("Usuario no encontrado", e);
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
@@ -119,7 +118,7 @@ public class AuthController {
         try {
             List<Usuario> response = authService.obtenerUsuarios();
             return ResponseEntity.ok(response);
-        } catch (NotFoundError e) {
+        } catch (CamposInvalidosError e) {
             log.error("Usuarios no encontrado", e);
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

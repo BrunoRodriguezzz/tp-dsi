@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.dds.servicioAutenticacion;
 
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.InvalidPasswordError;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.NotFoundError;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.CamposInvalidosError;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Permiso;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Rol;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Usuario;
@@ -69,7 +68,7 @@ class AuthServiceUnitTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> authService.autenticarUsuario("usuarioinexistente", "password"))
-                .isInstanceOf(NotFoundError.class)
+                .isInstanceOf(CamposInvalidosError.class)
                 .hasMessage("Usuario usuarioinexistente no encontrado");
 
         verify(usuariosRepository).findByUsernameIgnoreCase("usuarioinexistente");
@@ -81,7 +80,7 @@ class AuthServiceUnitTest {
                 .thenReturn(Optional.of(testUser));
 
         assertThatThrownBy(() -> authService.autenticarUsuario("testuser", "passwordincorrecto"))
-                .isInstanceOf(InvalidPasswordError.class)
+                .isInstanceOf(CamposInvalidosError.class)
                 .hasMessage("La contraseña del usuario testuser no es correcta");
 
         verify(usuariosRepository).findByUsernameIgnoreCase("testuser");
@@ -133,7 +132,7 @@ class AuthServiceUnitTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> authService.obtenerUsuario("usuarioinexistente"))
-                .isInstanceOf(NotFoundError.class)
+                .isInstanceOf(CamposInvalidosError.class)
                 .hasMessage("Usuario usuarioinexistente no encontrado");
 
         verify(usuariosRepository).findByUsernameIgnoreCase("usuarioinexistente");
@@ -275,7 +274,7 @@ class AuthServiceUnitTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> authService.modificarUsuario(999L, updateDTO))
-                .isInstanceOf(NotFoundError.class)
+                .isInstanceOf(CamposInvalidosError.class)
                 .hasMessage("Usuario no encontrado");
 
         verify(usuariosRepository).findById(999L);

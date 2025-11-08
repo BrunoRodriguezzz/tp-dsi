@@ -75,7 +75,7 @@ public class CustomAuthProvider implements AuthenticationProvider {
             return new UsernamePasswordAuthenticationToken(username, password, authorities);
 
         } catch (RuntimeException e) {
-            throw new BadCredentialsException("Error en el sistema de autenticación: " + e.getMessage());
+            throw new BadCredentialsException(e.getMessage());
         }
     }
 

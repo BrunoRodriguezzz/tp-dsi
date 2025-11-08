@@ -15,9 +15,9 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundError.class)
+    @ExceptionHandler(CamposInvalidosError.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(
-            NotFoundError ex, WebRequest request) {
+            CamposInvalidosError ex, WebRequest request) {
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
@@ -48,21 +48,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ModificationError.class)
     public ResponseEntity<ErrorResponse> handleModificationError(
             ModificationError ex, WebRequest request) {
-
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error("Invalid modification")
-                .message(ex.getMessage())
-                .path(request.getDescription(false).replace("uri=", ""))
-                .build();
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(InvalidPasswordError.class)
-    public ResponseEntity<ErrorResponse> handleModificationError(
-            InvalidPasswordError ex, WebRequest request) {
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())

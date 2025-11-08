@@ -3,6 +3,9 @@ package ar.edu.utn.frba.dds.client.services;
 import ar.edu.utn.frba.dds.client.dtos.AuthResponseDTO;
 import ar.edu.utn.frba.dds.client.dtos.auth.UsuarioDTO;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,15 +48,26 @@ public class AuthApiService {
                     .block();
             return response;
         } catch (WebClientResponseException e) {
-            log.error(e.getMessage());
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                // Login fallido - credenciales incorrectas
-                return null;
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode errorBody = mapper.readTree(e.getResponseBodyAsString());
+
+                String message = errorBody.has("message") ? errorBody.get("message").asText() : "Error desconocido";
+
+                log.warn("Mensaje de error recibido: {}", message);
+
+                if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                    throw new RuntimeException("Login fallido: " + message);
+                }
+
+                // Otros errores HTTP
+                throw new RuntimeException("Error en autenticación: " + message);
+
+            } catch (JsonProcessingException ex) {
+                throw new RuntimeException("Error procesando respuesta de error del servidor.", ex);
             }
-            // Otros errores HTTP
-            throw new RuntimeException("Error en el servicio de autenticación: " + e.getMessage(), e);
         } catch (Exception e) {
-            throw new RuntimeException("Error de conexión con el servicio de autenticación: " + e.getMessage(), e);
+            throw new RuntimeException("Hubo un error de conexión con el servicio de autenticación.", e);
         }
     }
 
@@ -77,12 +91,27 @@ public class AuthApiService {
     }
 
     public UsuarioDTO crearUsuario(@Valid UsuarioDTO usuarioDTO) {
+        try {
+            UsuarioDTO response = webApiCallerService.postWithoutToken(authServiceUrl + "/register", usuarioDTO, UsuarioDTO.class);
+            if (response == null) {
+                throw new RuntimeException("Error al registrar al usuario en el servicio externo");
+            }
+            return response;
+        } catch (WebClientResponseException e) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode errorBody = mapper.readTree(e.getResponseBodyAsString());
 
-        UsuarioDTO response = webApiCallerService.postWithoutToken(authServiceUrl + "/register", usuarioDTO, UsuarioDTO.class);
-        if (response == null) {
-            throw new RuntimeException("Error al registrar al usuario en el servicio externo");
+                String message = errorBody.has("message") ? errorBody.get("message").asText() : "Error desconocido";
+
+                if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                    throw new RuntimeException(message);
+                }
+            } catch (JsonProcessingException ex) {
+                throw new RuntimeException("Error procesando respuesta de error del servidor.", ex);
+            }
+            throw new RuntimeException(e.getMessage());
         }
-        return response;
     }
 
     public UsuarioDTO actualizarUsuario(Long id, @Valid UsuarioDTO usuarioDTO) {
