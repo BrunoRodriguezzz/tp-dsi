@@ -2,11 +2,12 @@ package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Hecho;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Data
+@Data @JsonIgnoreProperties(ignoreUnknown = true)
 public class HechoInputDTO {
   private Long id;
   private String titulo;

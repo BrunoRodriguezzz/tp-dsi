@@ -1,42 +1,34 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.*;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.*;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.output.*;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.EstadoSolicitudEliminacion;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.Hecho;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.SolicitudEliminacion;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Categoria;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Coleccion;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.HoraDelDia;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.dimensiones.Provincia;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaCategoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaHoraXCategoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXCategoria;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaProvinciaXColeccion;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.EstadisticaSolicitudes;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.trazabilidad.*;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.utils.ClaveEstadistica;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.models.utils.EstadisticaCombinacion;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.*;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad.IEstadisticaCategoriaRepository;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad.IEstadisticaHoraXCategoriaRepository;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad.IEstadisticaProvinciaXCategoriaRepository;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad.IEstadisticaProvinciaXColeccionRepository;
-import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad.IEstadisticaSolicitudesRepository;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.repositories.estadisticasTrazabilidad.*;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticaService;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticasCsvService;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IImportadorService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.stream.Collectors;
 
 @Service

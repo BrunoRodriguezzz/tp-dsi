@@ -25,7 +25,7 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
-				<version>3.2.4</version> <!-- O la que corresponda -->
+				<version>3.2.4</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -102,7 +102,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>1.18.28</version>
+							<version>1.18.36</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

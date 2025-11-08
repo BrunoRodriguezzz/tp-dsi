@@ -2,11 +2,14 @@ package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaEliminadoException;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.SolicitudEliminacionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IAdministradorRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IContribuyenteRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.ISolicitudEliminacionRepository;
+import ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification;
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
 import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.services.IFuenteService;
@@ -19,9 +22,15 @@ import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.Solicitu
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Administrador;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SolicitudEliminacionService implements ISolicitudEliminacionService {
@@ -131,6 +140,13 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
     SolicitudEliminacion solicitud = this.buscarSolicitudEliminacionPorID(id);
     SolicitudEliminacionOutputDTO solicitudDTO = SolicitudEliminacionOutputDTO.SolicitudToDTO(solicitud);
     return solicitudDTO;
+  }
+
+  @Override
+  public List<SolicitudEliminacionOutputDTO> buscarSolicitudes() {
+    List<SolicitudEliminacion> solicitudesDominio = this.solicitudEliminacionRepository.findAll();
+    List<SolicitudEliminacionOutputDTO> solicitudesOutputDTO = solicitudesDominio.stream().map(SolicitudEliminacionOutputDTO::SolicitudToDTO).toList();
+    return solicitudesOutputDTO;
   }
 
   // ---------------------------------------------------- Privados ----------------------------------------------------

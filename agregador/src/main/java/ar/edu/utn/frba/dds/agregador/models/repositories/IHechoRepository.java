@@ -51,4 +51,14 @@ public interface IHechoRepository extends JpaRepository<Hecho, Long>, JpaSpecifi
 
     @Query("SELECT h FROM Coleccion c JOIN c.hechos h WHERE c.id = :coleccionId")
     Page<Hecho> findByColeccionId(@Param("coleccionId") Long coleccionId, Pageable pageable);
+
+    @Query("""
+        SELECT h
+        FROM Hecho h
+        WHERE h.id NOT IN (
+            SELECT h2.id
+            FROM Coleccion c JOIN c.hechos h2
+        )
+    """)
+    List<Hecho> buscarHechosIndependientes();
 }

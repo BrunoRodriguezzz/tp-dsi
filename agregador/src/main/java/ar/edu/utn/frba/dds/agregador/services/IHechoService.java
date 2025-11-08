@@ -16,8 +16,9 @@ public interface IHechoService {
   // Busqueda de hechos
   public Page<HechoOutputDTO> buscarHechos(QueryParamsFiltro params, Pageable pageable);
   public Hecho buscarHecho(Long id);
+  public List<HechoOutputDTO> buscarHechosIndependientes();
 
-  // Guardado de hechos
+    // Guardado de hechos
   public Hecho incorporarHecho(HechoInputDTO hecho);
   public Hecho guardarHecho(Hecho hecho);
   public Flux<Hecho> guardarHechos(Flux<Hecho> hechos);

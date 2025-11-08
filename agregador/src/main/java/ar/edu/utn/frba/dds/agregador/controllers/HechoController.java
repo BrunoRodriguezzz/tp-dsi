@@ -45,6 +45,12 @@ public class HechoController {
     return ResponseEntity.ok(hechos);
   }
 
+  @GetMapping("/independientes")
+  public ResponseEntity<List<HechoOutputDTO>> buscarHechos() {
+    List<HechoOutputDTO> hechos = this.hechoService.buscarHechosIndependientes();
+    return ResponseEntity.ok(hechos);
+  }
+
   @GetMapping("/{id}")
   public ResponseEntity<HechoOutputDTO> buscarHechoPorID(@PathVariable(name = "id") Long id) {
     HechoOutputDTO hecho = HechoOutputDTO.HechoToDTO(this.hechoService.buscarHecho(id));

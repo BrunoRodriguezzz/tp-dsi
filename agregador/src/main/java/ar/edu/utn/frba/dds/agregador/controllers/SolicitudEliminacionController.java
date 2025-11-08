@@ -3,20 +3,20 @@ package ar.edu.utn.frba.dds.agregador.controllers;
 import ar.edu.utn.frba.dds.agregador.controllers.validadores.ValidadorInput;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.AdministradorInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.GestionInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInputDTO;
+import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.SolicitudEliminacionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.ISolicitudEliminacionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/solicitudesEliminacion")
@@ -42,6 +42,12 @@ public class SolicitudEliminacionController {
       return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
     return ResponseEntity.status(HttpStatus.OK).body(solicitudEliminacion);
+  }
+
+  @GetMapping()
+  public ResponseEntity<List<SolicitudEliminacionOutputDTO>> buscarSolicitudes() {
+    List<SolicitudEliminacionOutputDTO> solicitudes = this.solicitudEliminacionService.buscarSolicitudes();
+    return ResponseEntity.ok(solicitudes);
   }
 
   @PatchMapping("rechazo/{id}")

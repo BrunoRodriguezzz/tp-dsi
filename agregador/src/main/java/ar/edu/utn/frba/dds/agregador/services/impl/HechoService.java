@@ -17,6 +17,7 @@ import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import ar.edu.utn.frba.dds.agregador.services.INormalizadorService;
 import ar.edu.utn.frba.dds.agregador.services.IUbicacionService;
@@ -55,6 +56,12 @@ public class HechoService implements IHechoService {
     Page<Hecho> hechosPaginados = hechoRepository.findAll(spec, pageable);
 
     return hechosPaginados.map(HechoOutputDTO::HechoToDTO);
+  }
+
+  @Override
+  public List<HechoOutputDTO> buscarHechosIndependientes() {
+    List<Hecho> hechos = this.hechoRepository.buscarHechosIndependientes();
+    return hechos.stream().map(HechoOutputDTO::HechoToDTO).collect(Collectors.toList());
   }
 
   @Override
