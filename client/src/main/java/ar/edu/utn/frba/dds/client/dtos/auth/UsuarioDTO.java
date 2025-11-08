@@ -1,7 +1,5 @@
 package ar.edu.utn.frba.dds.client.dtos.auth;
 
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Permiso;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Rol;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

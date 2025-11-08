@@ -1,8 +1,8 @@
 package ar.edu.utn.frba.dds.servicioAutenticacion.services;
 
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.AlreadyExistent;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.InvalidPasswordError;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.NotFoundError;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.CamposInvalidosError;
+import ar.edu.utn.frba.dds.servicioAutenticacion.domain.exceptions.CamposInvalidosError;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Usuario;
 import ar.edu.utn.frba.dds.servicioAutenticacion.domain.repositories.UsuariosRepository;
 import ar.edu.utn.frba.dds.servicioAutenticacion.utils.JwtUtil;
@@ -26,13 +26,13 @@ public class AuthService {
         Optional<Usuario> usuarioOpt = usuariosRepository.findByUsernameIgnoreCase(username);
 
         if (usuarioOpt.isEmpty()) {
-            throw new NotFoundError("Usuario " + username + " no encontrado");
+            throw new CamposInvalidosError("Usuario o contraseña incorrectos, revise los campos e intente de nuevo.");
         }
 
         Usuario usuario = usuarioOpt.get();
 
         if (!passwordEncoder.matches(password, usuario.getPassword())) {
-            throw new InvalidPasswordError("La contraseña del usuario " + username + " no es correcta");
+            throw new CamposInvalidosError("Usuario o contraseña incorrectos, revise los campos e intente de nuevo.");
         }
 
         return usuario;
@@ -41,7 +41,7 @@ public class AuthService {
     public Usuario registrarUsuario(Usuario registerUserDTO) {
         Optional<Usuario> usuarioExistente = usuariosRepository.findByUsernameIgnoreCase(registerUserDTO.getUsername());
         if (usuarioExistente.isPresent()) {
-            throw new AlreadyExistent("El usuario ya existe");
+            throw new AlreadyExistent("El nombre de usuario ya existe. Por favor intente de nuevo con otro.");
         }
 
         String secret = passwordEncoder.encode(registerUserDTO.getPassword());
@@ -54,7 +54,7 @@ public class AuthService {
 
     public Usuario modificarUsuario(Long id, Usuario updateUserDTO) {
         Usuario usuario = usuariosRepository.findById(id)
-                .orElseThrow(() -> new NotFoundError("Usuario no encontrado"));
+                .orElseThrow(() -> new CamposInvalidosError("Usuario no encontrado"));
 
         if (!usuario.getUsername().equalsIgnoreCase(updateUserDTO.getUsername())) {
             Optional<Usuario> usuarioConNuevoUsername = usuariosRepository.findByUsernameIgnoreCase(updateUserDTO.getUsername());
@@ -92,7 +92,7 @@ public class AuthService {
         Optional<Usuario> usuarioOpt = usuariosRepository.findByUsernameIgnoreCase(username);
 
         if (usuarioOpt.isEmpty()) {
-            throw new NotFoundError("Usuario " + username + " no encontrado");
+            throw new CamposInvalidosError("Usuario " + username + " no encontrado");
         }
 
         Usuario usuario = usuarioOpt.get();
@@ -104,7 +104,7 @@ public class AuthService {
         List<Usuario> usuarios = usuariosRepository.findAll();
 
         if (usuarios.isEmpty()) {
-            throw new NotFoundError("Usuarios no encontrados");
+            throw new CamposInvalidosError("Usuarios no encontrados");
         }
 
         return usuarios;
