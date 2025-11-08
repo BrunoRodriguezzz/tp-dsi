@@ -26,8 +26,12 @@ public class ColeccionController {
   private IColeccionService coleccionService;
 
   @GetMapping
-  public ResponseEntity<Page<ColeccionOutputDTO>> buscarColecciones(Pageable pageable) {
-    Page<ColeccionOutputDTO> colecciones = this.coleccionService.buscarColecciones(pageable);
+  public ResponseEntity<Page<ColeccionOutputDTO>> buscarColecciones(Pageable pageable, @RequestParam(name = "all", required = false) Boolean all) {
+    Pageable paginado = pageable;
+    if (all != null && all) {
+      paginado = Pageable.unpaged();
+    }
+    Page<ColeccionOutputDTO> colecciones = this.coleccionService.buscarColecciones(paginado);
     return ResponseEntity.ok(colecciones);
   }
 
