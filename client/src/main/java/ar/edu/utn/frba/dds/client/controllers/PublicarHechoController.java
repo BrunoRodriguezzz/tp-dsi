@@ -36,17 +36,7 @@ public class PublicarHechoController {
         hecho.setContenidoMultimedia(mult);
 
         // Validaciones mínimas del lado cliente-servidor con detalle de campos faltantes
-        List<String> faltantes = new ArrayList<>();
-        if (hecho.getTitulo() == null || hecho.getTitulo().isBlank()) faltantes.add("Título");
-        if (hecho.getDescripcion() == null || hecho.getDescripcion().isBlank()) faltantes.add("Descripción");
-        if (hecho.getCategoria() == null || hecho.getCategoria().isBlank()) faltantes.add("Categoría");
-        if (hecho.getLatitud() == null || hecho.getLongitud() == null) faltantes.add("Ubicación (lat/long)");
-        if (hecho.getMunicipio() == null || hecho.getMunicipio().isBlank()) faltantes.add("Municipio");
-        if (hecho.getProvincia() == null || hecho.getProvincia().isBlank()) faltantes.add("Provincia");
-        if (hecho.getFechaAcontecimiento() == null) faltantes.add("Fecha de Acontecimiento");
-        if (hecho.getNombreUsuario() == null || hecho.getNombreUsuario().isBlank()) faltantes.add("Nombre de Usuario");
-        if (hecho.getApellidoUsuario() == null || hecho.getApellidoUsuario().isBlank()) faltantes.add("Apellido de Usuario");
-        if (hecho.getFechaNacimientoUsuario() == null) faltantes.add("Fecha de Nacimiento");
+        List<String> faltantes = getStrings(hecho);
 
         if (!faltantes.isEmpty()) {
             redirect.addFlashAttribute("error", "Faltan datos obligatorios: " + String.join(", ", faltantes));
@@ -62,5 +52,17 @@ public class PublicarHechoController {
             redirect.addFlashAttribute("error", e.getMessage());
             return "redirect:/publicarHecho";
         }
+    }
+
+    private static List<String> getStrings(HechoInputDTO hecho) {
+        List<String> faltantes = new ArrayList<>();
+        if (hecho.getTitulo() == null || hecho.getTitulo().isBlank()) faltantes.add("Título");
+        if (hecho.getDescripcion() == null || hecho.getDescripcion().isBlank()) faltantes.add("Descripción");
+        if (hecho.getCategoria() == null || hecho.getCategoria().isBlank()) faltantes.add("Categoría");
+        if (hecho.getLatitud() == null || hecho.getLongitud() == null) faltantes.add("Ubicación (lat/long)");
+        if (hecho.getMunicipio() == null || hecho.getMunicipio().isBlank()) faltantes.add("Municipio");
+        if (hecho.getProvincia() == null || hecho.getProvincia().isBlank()) faltantes.add("Provincia");
+        if (hecho.getFechaAcontecimiento() == null) faltantes.add("Fecha de Acontecimiento");
+        return faltantes;
     }
 }
