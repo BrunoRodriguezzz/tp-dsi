@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consensuador;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.TipoFuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
+import ar.edu.utn.frba.dds.agregador.models.domain.valueObjectsHecho.Categoria;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 @Slf4j
@@ -87,6 +89,7 @@ public class HechoService implements IHechoService {
       return this.hechoRepository.save(hechoConUbicacion);
   }
 
+  @Transactional
   @Override
   public Flux<Hecho> guardarHechos(Flux<Hecho> hechosFlux) {
     // Instrumentación para depurar el pipeline reactivo
@@ -120,8 +123,20 @@ public class HechoService implements IHechoService {
               }
 
               log.info("🗂 Guardando {} hechos en la base de datos...", hechosParaGuardar.size());
+              // Reatachar categorías evitando detached
+              hechosParaGuardar.forEach(h -> {
+                if (h.getCategoria() != null) {
+                  Categoria cat = h.getCategoria();
+                  if (cat.getId() != null) {
+                    categoriaRepository.findById(cat.getId()).ifPresent(h::setCategoria);
+                  } else if (cat.getTitulo() != null) {
+                    h.setCategoria(categoriaRepository.findByTituloOrCreate(cat.getTitulo()));
+                  }
+                }
+              });
               List<Hecho> guardados = this.hechoRepository.saveAll(hechosParaGuardar);
               log.info("✅ Se guardaron {} hechos correctamente.", guardados.size());
+              guardados.forEach(g -> log.debug("Hecho persistido id={} categoriaId={} categoriaTitulo={}", g.getId(), g.getCategoria() != null ? g.getCategoria().getId() : null, g.getCategoria() != null ? g.getCategoria().getTitulo() : null));
               return Flux.fromIterable(guardados);
             });
   }

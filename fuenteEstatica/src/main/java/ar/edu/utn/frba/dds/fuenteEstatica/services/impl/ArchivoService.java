@@ -8,11 +8,14 @@ import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.IArchivoRepository
 import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.fuenteEstatica.services.IArchivoService;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class ArchivoService implements IArchivoService {
+  private static final Logger logger = LoggerFactory.getLogger(ArchivoService.class);
   private IArchivoRepository archivoRepository;
   private IHechoRepository hechoRepository;
 
@@ -29,9 +32,9 @@ public class ArchivoService implements IArchivoService {
   @Override
   public void guardarArchivo(Archivo archivo) {
     archivoRepository.findByNombre(archivo.getNombre())
-            .stream()
-            .findFirst()
-            .ifPresent(a -> archivo.setId(a.getId()));
+        .stream()
+        .findFirst()
+        .ifPresent(a -> archivo.setId(a.getId()));
     archivoRepository.save(archivo);
     importarHechosArchivo(archivo);
     ArchivoOutputAgregadorDTO outputAgregadorDTO = UtilsDTO.toOutputArchivoAgregador(archivo);
@@ -50,15 +53,15 @@ public class ArchivoService implements IArchivoService {
 
   private void importarHechosArchivo(Archivo archivo) {
     archivo.importarHechos()
-            .doOnNext(this::saveHecho)
-            .blockLast(); // Para que espere a que termine
+        .doOnNext(this::saveHecho)
+        .blockLast(); // Para que espere a que termine
   }
 
   private void saveHecho(HechoEstatica hecho) {
     this.hechoRepository.findByTitulo(hecho.getTitulo())
-            .stream()
-            .findFirst()
-            .ifPresent(h -> hecho.setId(h.getId()));
+        .stream()
+        .findFirst()
+        .ifPresent(h -> hecho.setId(h.getId()));
     this.hechoRepository.save(hecho);
   }
 }
