@@ -18,11 +18,13 @@ public class SolicitudEliminacionInputDTO {
     Contribuyente contribuyente = null;
     SolicitudEliminacion solicitud = null;
     try{
-      contribuyente = new Contribuyente(
-          c.getNombre(),
-          c.getApellido(),
-          c.getFechaNacimiento()
-      );
+      if(c != null) {
+        contribuyente = new Contribuyente(
+            c.getNombre(),
+            c.getApellido(),
+            c.getFechaNacimiento()
+        );
+      }
       solicitud = new SolicitudEliminacion(
           hecho,
           solicitudDTO.getFundamento(),

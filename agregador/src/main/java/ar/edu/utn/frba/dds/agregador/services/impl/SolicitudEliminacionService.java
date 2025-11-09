@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.SolicitudEliminacionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IAdministradorRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.IContribuyenteRepository;
+import ar.edu.utn.frba.dds.agregador.models.repositories.IResolucionSolicitudEliminacionRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.ISolicitudEliminacionRepository;
 import ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification;
 import ar.edu.utn.frba.dds.agregador.services.IAgregadorService;
@@ -47,6 +48,8 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
   IContribuyenteRepository contribuyenteRepository;
   @Autowired
   IAdministradorRepository administradorRepository;
+  @Autowired
+  IResolucionSolicitudEliminacionRepository resolucionSolicitudEliminacionRepository;
 
   public SolicitudEliminacionService(
       IAgregadorService agregadorService,
@@ -72,10 +75,13 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
       throw new HechoYaEliminadoException("El Hecho de id: " + hecho.getId() + " ya ha sido eliminado", hecho);
     }
 
-    Contribuyente contribuyente = this.buscarContribuyentePorID(solicitudInputDTO.getIdContribuyente());
+    Contribuyente contribuyente = null;
+    if(solicitudInputDTO.getIdContribuyente() != null) {
+      contribuyente = this.buscarContribuyentePorID(solicitudInputDTO.getIdContribuyente());
+    }
 
     SolicitudEliminacion solicitud = SolicitudEliminacionInputDTO.DTOtoSolicitud(solicitudInputDTO, hecho, contribuyente);
-
+    this.solicitudEliminacionRepository.save(solicitud);
     if(this.detectorSpam.esSpam(solicitud)) {
       // Es marcada como spam y no se guarda, solo se devuelve
       SolicitudEliminacionOutputDTO solicitudEliminacionOutputDTO =  this.gestionarSolicitudSpam(solicitud);
@@ -99,6 +105,7 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
 
     try {
       solicitud.serRechazada(administrador);
+      this.resolucionSolicitudEliminacionRepository.save(solicitud.getResolucionSolicitudEliminacion());
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }
@@ -122,6 +129,7 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
 
     try {
       solicitud.serAceptada(administrador);
+      this.resolucionSolicitudEliminacionRepository.save(solicitud.getResolucionSolicitudEliminacion());
     } catch (Exception e) {
       throw new RuntimeException(e.getMessage());
     }
@@ -152,6 +160,7 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
   // ---------------------------------------------------- Privados ----------------------------------------------------
   private SolicitudEliminacionOutputDTO gestionarSolicitudSpam(SolicitudEliminacion solicitud) {
     solicitud.setEstadoSolicitudEliminacion(EstadoSolicitudEliminacion.SPAM);
+    this.solicitudEliminacionRepository.save(solicitud);
     SolicitudEliminacionOutputDTO solicitudSpamDTO = SolicitudEliminacionOutputDTO.SolicitudToDTO(solicitud);
     return solicitudSpamDTO;
   }

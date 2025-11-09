@@ -3,8 +3,6 @@ package ar.edu.utn.frba.dds.agregador.controllers.validadores;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.RequestException;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ValidadorInput {
   public static void validarHechoInputDTO(HechoInputDTO hechoInputDTO) {
@@ -65,9 +63,9 @@ public class ValidadorInput {
       throw new RequestException("Fecha de creación faltante");
     }
 
-    if (solicitudEliminacion.getIdContribuyente() == null) {
-      throw new RequestException("ID del contribuyente faltante");
-    }
+//    if (solicitudEliminacion.getIdContribuyente() == null) {
+//      throw new RequestException("ID del contribuyente faltante");
+//    }
 
     if (solicitudEliminacion.getFundamento().length() <= 500) {
       throw new RequestException("El fundamento debe tener más de 500 caracteres, actualmente tiene: " + solicitudEliminacion.getFundamento().length());

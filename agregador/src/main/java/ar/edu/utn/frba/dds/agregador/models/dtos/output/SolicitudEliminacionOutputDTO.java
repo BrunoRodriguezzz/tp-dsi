@@ -21,7 +21,9 @@ public class SolicitudEliminacionOutputDTO {
     solicitudDTO.setHecho(HechoOutputDTO.HechoToDTO(solicitud.getHecho()));
     solicitudDTO.setFundamento(solicitud.getFundamento());
     solicitudDTO.setFechaCreacion(solicitud.getFechaCreacion());
-    solicitudDTO.setContribuyente(ContribuyenteOutputDTO.ContribuyenteToDTO(solicitud.getContribuyente()));
+    if(solicitudDTO.getContribuyente() != null){
+      solicitudDTO.setContribuyente(ContribuyenteOutputDTO.ContribuyenteToDTO(solicitud.getContribuyente()));
+    }
     solicitudDTO.setEstado(solicitud.getEstadoSolicitudEliminacion().name());
     if(solicitud.getResolucionSolicitudEliminacion() != null){
       solicitudDTO.setResolucion(ResolucionSolicitudEliminacionOutputDTO.ResolucionToDTO(solicitud.getResolucionSolicitudEliminacion()));
