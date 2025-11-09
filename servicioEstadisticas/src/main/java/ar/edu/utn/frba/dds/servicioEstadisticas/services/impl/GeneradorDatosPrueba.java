@@ -206,7 +206,6 @@ public class GeneradorDatosPrueba {
    */
   public static List<SolicitudEliminacionInputDTO> generarSolicitudesInputDTO() {
     List<SolicitudEliminacionInputDTO> solicitudes = buscarSolicitudesEliminacion();
-    solicitudes = solicitudes.stream().filter(s -> !s.getEstado().equals("PENDIENTE")).toList();
     return solicitudes;
 //
 //        List<SolicitudEliminacionInputDTO> solicitudes = new ArrayList<>();
