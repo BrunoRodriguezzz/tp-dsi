@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeneradorDatosPrueba {
-    /**
-     * Genera una lista de colecciones con hechos para testing
-     */
-    public static List<ColeccionInputDTO> generarColecciones() {
-        List<ColeccionInputDTO> colecciones = buscarColeccionesConHechos();
-        return colecciones;
+  /**
+   * Genera una lista de colecciones con hechos para testing
+   */
+  public static List<ColeccionInputDTO> generarColecciones() {
+    List<ColeccionInputDTO> colecciones = buscarColeccionesConHechos();
+    return colecciones;
 //
 //        List<ColeccionInputDTO> colecciones = new ArrayList<>();
 //
@@ -141,13 +141,14 @@ public class GeneradorDatosPrueba {
 //        colecciones.add(coleccion2);
 //
 //        return colecciones;
-    }
+  }
 
-    /**
-     * Genera una lista de hechos independientes (sin coleccion) para testing
-     */
-    public static List<HechoInputDTO> generarHechosIndependientes() {
-        return buscarHechosIndependientes();
+  /**
+   * Genera una lista de hechos independientes (sin coleccion) para testing
+   */
+  public static List<HechoInputDTO> generarHechosIndependientes() {
+    List<HechoInputDTO> hechos = buscarHechosIndependientes();
+    return hechos;
 //
 //        List<HechoInputDTO> hechos = new ArrayList<>();
 //
@@ -196,14 +197,15 @@ public class GeneradorDatosPrueba {
 //        hechos.add(hecho4);
 //
 //        return hechos;
-    }
+  }
 
-    /**
-     * Genera una lista de solicitudes de eliminación para testing
-     * Solo incluye estados PENDIENTE y SPAM según los requerimientos
-     */
-    public static List<SolicitudEliminacionInputDTO> generarSolicitudesInputDTO() {
-        return buscarSolicitudesEliminacion();
+  /**
+   * Genera una lista de solicitudes de eliminación para testing
+   * Solo incluye estados PENDIENTE y SPAM según los requerimientos
+   */
+  public static List<SolicitudEliminacionInputDTO> generarSolicitudesInputDTO() {
+    List<SolicitudEliminacionInputDTO> solicitudes = buscarSolicitudesEliminacion();
+    return solicitudes;
 //
 //        List<SolicitudEliminacionInputDTO> solicitudes = new ArrayList<>();
 //
@@ -449,172 +451,146 @@ public class GeneradorDatosPrueba {
 //        solicitudes.add(solicitud7);
 //
 //        return solicitudes;
-    }
-
+  }
     public static List<ColeccionInputDTO> buscarColeccionesConHechos() {
-        WebClient webClient = WebClient.builder()
-                .baseUrl("http://localhost:8082")
-                .build();
+      WebClient webClient = WebClient.builder()
+          .baseUrl("http://localhost:8082")
+          .build();
 
-        try {
-            List<ColeccionInputDTO> colecciones = obtenerTodasLasColecciones(webClient);
+      try {
+        List<ColeccionInputDTO> colecciones = obtenerTodasLasColeccionesSimple(webClient);
+        List<ColeccionInputDTO> coleccionesCompletas = Flux.fromIterable(colecciones)
+            .flatMap(coleccion -> obtenerTodosLosHechosPorColeccion(webClient, coleccion.getId())
+                .collectList()
+                .map(hechos -> {
+                  coleccion.setHechos(hechos);
+                  return coleccion;
+                }))
+            .collectList()
+            .block();
 
-            List<ColeccionInputDTO> coleccionesCompletas = Flux.fromIterable(colecciones)
-                    .flatMap(coleccion -> obtenerHechosPorColeccion(webClient, coleccion.getId())
-                            .collectList()
-                            .map(hechos -> {
-                                coleccion.setHechos(hechos);
-                                return coleccion;
-                            }))
-                    .collectList()
-                    .block();
+        return coleccionesCompletas != null ? coleccionesCompletas : new ArrayList<>();
 
-            return coleccionesCompletas != null ? coleccionesCompletas : new ArrayList<>();
-
-        } catch (Exception e) {
-            System.err.println("Error al buscar colecciones con hechos: " + e.getMessage());
-            return new ArrayList<>();
-        }
+      } catch (Exception e) {
+        System.err.println("Error al buscar colecciones con hechos: " + e.getMessage());
+        return new ArrayList<>();
+      }
     }
 
-    private static List<ColeccionInputDTO> obtenerTodasLasColecciones(WebClient webClient) {
-        List<ColeccionInputDTO> todasLasColecciones = new ArrayList<>();
-        int page = 0;
-        boolean hasNext = true;
+    private static List<ColeccionInputDTO> obtenerTodasLasColeccionesSimple(WebClient webClient) {
+      try {
+        String response = webClient.get()
+            .uri(uriBuilder -> uriBuilder
+                .path("/colecciones")
+                .queryParam("all", true)
+                .build())
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
 
-        while (hasNext) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        JsonNode jsonResponse = mapper.readTree(response);
+
+        List<ColeccionInputDTO> colecciones = mapper.readValue(
+            jsonResponse.get("content").toString(),
+            new TypeReference<List<ColeccionInputDTO>>() {
+            }
+        );
+
+        return colecciones;
+
+      } catch (Exception e) {
+        System.err.println("Error al obtener todas las colecciones: " + e.getMessage());
+        return new ArrayList<>();
+      }
+    }
+
+    private static Flux<HechoInputDTO> obtenerTodosLosHechosPorColeccion(WebClient webClient, Long coleccionId) {
+      return webClient.get()
+          .uri(uriBuilder -> uriBuilder
+              .path("/{id}/hechos")
+              .queryParam("all", true)
+              .build(coleccionId))
+          .retrieve()
+          .bodyToMono(String.class)
+          .map(response -> {
             try {
-                var aux = page;
-                String response = webClient.get()
-                        .uri(uriBuilder -> uriBuilder
-                                .path("/colecciones")
-                                .queryParam("page", aux)
-                                .queryParam("size", 20)
-                                .build())
-                        .retrieve()
-                        .bodyToMono(String.class)
-                        .block();
+              ObjectMapper mapper = new ObjectMapper();
+              mapper.registerModule(new JavaTimeModule());
+              JsonNode jsonResponse = mapper.readTree(response);
 
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.registerModule(new JavaTimeModule());
-                JsonNode jsonResponse = mapper.readTree(response);
+              List<HechoInputDTO> hechos = mapper.readValue(
+                  jsonResponse.get("content").toString(),
+                  new TypeReference<List<HechoInputDTO>>() {
+                  }
+              );
 
-                List<ColeccionInputDTO> coleccionesPagina = mapper.readValue(
-                        jsonResponse.get("content").toString(),
-                        new TypeReference<List<ColeccionInputDTO>>() {}
-                );
-
-                todasLasColecciones.addAll(coleccionesPagina);
-
-                hasNext = !jsonResponse.get("last").asBoolean();
-                page++;
+              return hechos;
 
             } catch (Exception e) {
-                System.err.println("Error al obtener página " + page + " de colecciones: " + e.getMessage());
-                break;
+              throw new RuntimeException("Error parsing hechos para colección " + coleccionId, e);
             }
-        }
-
-        return todasLasColecciones;
-    }
-
-    private static Flux<HechoInputDTO> obtenerHechosPorColeccion(WebClient webClient, Long coleccionId) {
-        return Flux.range(0, Integer.MAX_VALUE)
-                .concatMap(page ->
-                        webClient.get()
-                                .uri(uriBuilder -> uriBuilder
-                                        .path("/{id}/hechos")
-                                        .queryParam("page", page)
-                                        .queryParam("size", 20)
-                                        .build(coleccionId))
-                                .retrieve()
-                                .bodyToMono(String.class)
-                                .map(response -> {
-                                    try {
-                                        ObjectMapper mapper = new ObjectMapper();
-                                        mapper.registerModule(new JavaTimeModule());
-                                        JsonNode jsonResponse = mapper.readTree(response);
-
-                                        List<HechoInputDTO> hechos = mapper.readValue(
-                                                jsonResponse.get("content").toString(),
-                                                new TypeReference<List<HechoInputDTO>>() {}
-                                        );
-
-                                        boolean isLast = jsonResponse.get("last").asBoolean();
-                                        return new PaginaResultado(hechos, isLast);
-
-                                    } catch (Exception e) {
-                                        throw new RuntimeException("Error parsing hechos page", e);
-                                    }
-                                })
-                                .onErrorReturn(new PaginaResultado(new ArrayList<>(), true)))
-                .takeWhile(resultado -> !resultado.hechos.isEmpty() || !resultado.isLast)
-                .flatMapIterable(resultado -> resultado.hechos);
-    }
-
-    private static class PaginaResultado {
-        final List<HechoInputDTO> hechos;
-        final boolean isLast;
-
-        PaginaResultado(List<HechoInputDTO> hechos, boolean isLast) {
-            this.hechos = hechos;
-            this.isLast = isLast;
-        }
+          })
+          .onErrorReturn(new ArrayList<>())
+          .flatMapMany(Flux::fromIterable);
     }
 
     public static List<HechoInputDTO> buscarHechosIndependientes() {
         WebClient webClient = WebClient.builder()
-                .baseUrl("http://localhost:8082")
-                .build();
+            .baseUrl("http://localhost:8082")
+            .build();
 
         try {
-            String response = webClient.get()
-                    .uri("/hechos/independientes")
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+          String response = webClient.get()
+              .uri("/hechos/independientes")
+              .retrieve()
+              .bodyToMono(String.class)
+              .block();
 
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
+          ObjectMapper mapper = new ObjectMapper();
+          mapper.registerModule(new JavaTimeModule());
 
-            List<HechoInputDTO> hechos = mapper.readValue(
-                    response,
-                    new TypeReference<List<HechoInputDTO>>() {}
-            );
+          List<HechoInputDTO> hechos = mapper.readValue(
+              response,
+              new TypeReference<List<HechoInputDTO>>() {
+              }
+          );
 
-            return hechos;
+          return hechos;
 
         } catch (Exception e) {
-            System.err.println("Error al buscar hechos independientes: " + e.getMessage());
-            return new ArrayList<>();
+          System.err.println("Error al buscar hechos independientes: " + e.getMessage());
+          return new ArrayList<>();
         }
     }
 
     public static List<SolicitudEliminacionInputDTO> buscarSolicitudesEliminacion() {
         WebClient webClient = WebClient.builder()
-                .baseUrl("http://localhost:8082")
-                .build();
+            .baseUrl("http://localhost:8082")
+            .build();
 
         try {
-            String response = webClient.get()
-                    .uri("/solicitudesEliminacion")
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+          String response = webClient.get()
+              .uri("/solicitudesEliminacion")
+              .retrieve()
+              .bodyToMono(String.class)
+              .block();
 
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
+          ObjectMapper mapper = new ObjectMapper();
+          mapper.registerModule(new JavaTimeModule());
 
-            List<SolicitudEliminacionInputDTO> solicitudes = mapper.readValue(
-                    response,
-                    new TypeReference<List<SolicitudEliminacionInputDTO>>() {}
-            );
+          List<SolicitudEliminacionInputDTO> solicitudes = mapper.readValue(
+              response,
+              new TypeReference<List<SolicitudEliminacionInputDTO>>() {
+              }
+          );
 
-            return solicitudes;
+          return solicitudes;
 
         } catch (Exception e) {
-            System.err.println("Error al buscar solicitudes de eliminación: " + e.getMessage());
-            return new ArrayList<>();
+          System.err.println("Error al buscar solicitudes de eliminación: " + e.getMessage());
+          return new ArrayList<>();
         }
     }
 }
