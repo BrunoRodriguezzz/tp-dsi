@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.util.Objects;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -509,7 +510,7 @@ public class GeneradorDatosPrueba {
     private static Flux<HechoInputDTO> obtenerTodosLosHechosPorColeccion(WebClient webClient, Long coleccionId) {
       return webClient.get()
           .uri(uriBuilder -> uriBuilder
-              .path("/{id}/hechos")
+              .path("/colecciones/{id}/hechos")
               .queryParam("all", true)
               .build(coleccionId))
           .retrieve()

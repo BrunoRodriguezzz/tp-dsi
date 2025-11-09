@@ -52,16 +52,12 @@ public class UserController {
 
     private Boolean verificarTiposDeDatos(HechoInputDTO hecho){
 
-        return hecho.getNombreUsuario() != null
-                && hecho.getApellidoUsuario() != null
-                && hecho.getFechaNacimientoUsuario() != null
-                && hecho.getTitulo() != null
+        return hecho.getTitulo() != null
                 && hecho.getDescripcion() != null
                 && hecho.getCategoria() != null
 //                && hecho.getContenidoMultimedia() != null
                 && hecho.getLatitud() != null
-                && hecho.getLongitud() != null
-                && hecho.getFechaAcontecimiento() != null;
+                && hecho.getLongitud() != null;
 
     }
 

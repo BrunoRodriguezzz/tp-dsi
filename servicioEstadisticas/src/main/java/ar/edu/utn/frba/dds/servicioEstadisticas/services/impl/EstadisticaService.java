@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.services.impl;
 
+import ar.edu.utn.frba.dds.servicioEstadisticas.controllers.advice.exceptions.NotFound;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
@@ -97,7 +98,7 @@ public class EstadisticaService implements IEstadisticaService {
 
     public EstadisticaProvinciaXColeccionDTO provinciaConMasHechosDeUnaColeccion(Long idColeccion) {
         Coleccion coleccion = coleccionRepository.findById(idColeccion)
-            .orElseThrow(() -> new RuntimeException("Colección no encontrada"));
+            .orElseThrow(() -> new NotFound("Colección no encontrada"));
 
         // Obtener los resultados del repository como Object[]
         List<Object[]> resultados = estadisticaRepository.findProvinciaConHechosPorColeccion(idColeccion);
@@ -158,7 +159,7 @@ public class EstadisticaService implements IEstadisticaService {
 
     public EstadisticaProvinciaXCategoria provinciaConMasHechosSegunCategoria(Long idCategoria) {
         Categoria categoria = categoriaRepository.findById(idCategoria)
-            .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+            .orElseThrow(() -> new NotFound("Categoría no encontrada"));
 
         List<Object[]> resultados = estadisticaRepository.findProvinciasConHechosPorCategoria(idCategoria);
 
@@ -203,7 +204,7 @@ public class EstadisticaService implements IEstadisticaService {
 
     public EstadisticaHoraXCategoria horaConMasHechosSegunCategoria(Long idCategoria) {
         Categoria categoria = categoriaRepository.findById(idCategoria)
-            .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+            .orElseThrow(() -> new NotFound("Categoría no encontrada"));
 
         List<Object[]> resultados = estadisticaRepository.findHorasConHechosPorCategoria(idCategoria);
 
@@ -505,7 +506,7 @@ public class EstadisticaService implements IEstadisticaService {
                 Files.createDirectories(directorioPublic);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al exportar estadísticas a CSV");
         }
 
         this.estadisticasCsvService.exportarEstadisticas(

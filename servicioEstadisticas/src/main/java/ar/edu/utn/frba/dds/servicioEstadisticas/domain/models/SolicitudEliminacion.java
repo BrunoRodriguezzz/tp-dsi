@@ -13,6 +13,6 @@ public class SolicitudEliminacion {
     @Enumerated(EnumType.STRING)
     EstadoSolicitudEliminacion estado;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     Hecho hecho;
 }

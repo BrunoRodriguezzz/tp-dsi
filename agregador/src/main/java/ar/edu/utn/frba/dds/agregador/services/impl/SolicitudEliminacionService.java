@@ -22,6 +22,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.EstadoSo
 import ar.edu.utn.frba.dds.agregador.models.domain.solicitudEliminacion.SolicitudEliminacion;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Administrador;
 import ar.edu.utn.frba.dds.agregador.models.domain.usuarios.Contribuyente;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -93,8 +94,8 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
     }
   }
 
+  @Transactional
   @Override
-  // TODO: Emprolijar codigo
   public SolicitudEliminacionOutputDTO rechazarSolicitud(Long idAdministrador, Long idSolicitud) {
     SolicitudEliminacion solicitud = this.buscarSolicitudEliminacionPorID(idSolicitud);
 
@@ -114,8 +115,8 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
     return solicitudRechazadaDTO;
   }
 
+  @Transactional
   @Override
-  // TODO: Emprolijar codigo
   public SolicitudEliminacionOutputDTO aceptarSolicitud(Long idAdministrador, Long idSolicitud) {
     SolicitudEliminacion solicitud = this.buscarSolicitudEliminacionPorID(idSolicitud);
     if(solicitud == null) {
