@@ -25,7 +25,8 @@ public class GeneradorDatosPrueba {
      * Genera una lista de colecciones con hechos para testing
      */
     public static List<ColeccionInputDTO> generarColecciones() {
-        return buscarColeccionesConHechos();
+        List<ColeccionInputDTO> colecciones = buscarColeccionesConHechos();
+        return colecciones;
 //
 //        List<ColeccionInputDTO> colecciones = new ArrayList<>();
 //
