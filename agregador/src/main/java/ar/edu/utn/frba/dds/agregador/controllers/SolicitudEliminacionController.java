@@ -1,21 +1,15 @@
 package ar.edu.utn.frba.dds.agregador.controllers;
 
 import ar.edu.utn.frba.dds.agregador.controllers.validadores.ValidadorInput;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.AdministradorInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.GestionInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInputDTO;
-import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.SolicitudEliminacionOutputDTO;
 import ar.edu.utn.frba.dds.agregador.services.ISolicitudEliminacionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -28,10 +22,7 @@ public class SolicitudEliminacionController {
   @PostMapping
   public ResponseEntity guardarSolicitud(@RequestBody SolicitudEliminacionInputDTO solicitud) {
     ValidadorInput.validarSolicitudInputDTO(solicitud);
-    SolicitudEliminacionOutputDTO solicitudEliminacion =
-        this.solicitudEliminacionService.guardarSolicitud(
-            solicitud
-        );
+    SolicitudEliminacionOutputDTO solicitudEliminacion = this.solicitudEliminacionService.guardarSolicitud(solicitud);
     return ResponseEntity.status(HttpStatus.CREATED).body(solicitudEliminacion);
   }
 

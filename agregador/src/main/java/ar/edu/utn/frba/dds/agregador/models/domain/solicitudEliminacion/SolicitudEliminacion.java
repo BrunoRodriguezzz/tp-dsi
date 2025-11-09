@@ -40,7 +40,7 @@ public class SolicitudEliminacion {
     @JoinColumn(name = "resolucion_id", referencedColumnName = "id")
     private ResolucionSolicitudEliminacion resolucionSolicitudEliminacion;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contribuyente_id", referencedColumnName = "id")
     private Contribuyente contribuyente;
 
