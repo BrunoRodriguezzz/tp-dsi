@@ -22,36 +22,11 @@ public class ImportadorService implements IImportadorService {
 
     @Override
     public List<HechoInputDTO> importarHechos() {
-        /*try {
-            List<HechoInputDTO> hechos = webClient
-                    .get()
-                    .uri("/hechos")
-                    .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<List<HechoInputDTO>>() {})
-                    .block();
-
-            return hechos != null ? hechos : new ArrayList<>();
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error al importar hechos: " + e.getMessage());
-        }*/
         return GeneradorDatosPrueba.generarHechosIndependientes();
     }
 
     @Override
     public List<ColeccionInputDTO> importarColecciones() {
-        /*try {
-            List<ColeccionInputDTO> colecciones = webClient
-                    .get()
-                    .uri("/colecciones")
-                    .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<List<ColeccionInputDTO>>() {})
-                    .block();
-            return colecciones != null ? colecciones : new ArrayList<>();
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error al importar colecciones: " + e.getMessage());
-        }*/
         return GeneradorDatosPrueba.generarColecciones();
     }
 

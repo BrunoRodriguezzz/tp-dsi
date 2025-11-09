@@ -58,7 +58,7 @@ public interface IHechoRepository extends JpaRepository<Hecho, Long>, JpaSpecifi
         WHERE h.id NOT IN (
             SELECT h2.id
             FROM Coleccion c JOIN c.hechos h2
-        )
+        ) AND h.estaEliminado = false
     """)
-    List<Hecho> buscarHechosIndependientes();
+    List<Hecho> buscarHechosIndependientes(Specification<Hecho> spec);
 }
