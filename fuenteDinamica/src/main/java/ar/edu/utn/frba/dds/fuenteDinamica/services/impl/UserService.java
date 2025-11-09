@@ -49,7 +49,7 @@ public class UserService implements IUserService {
     @Override
     public SolicitudOutputDTO crear(HechoInputDTO hechoInputDTO) {
 
-        if(this.verificarEdadNecesaria(hechoInputDTO)){
+        if(true){
 
             Usuario usuario = Usuario
                     .builder()

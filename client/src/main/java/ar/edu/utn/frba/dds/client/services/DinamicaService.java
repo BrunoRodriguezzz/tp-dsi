@@ -10,8 +10,10 @@ import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -115,18 +117,24 @@ public class DinamicaService {
 
     public void enviarHecho(HechoInputDTO hecho){
         try {
-            // Intentar con token (si hay sesión con tokens)
-            this.webApiCallerService.post(this.dinamicaUrl + "/solicitud", hecho, Void.class);
-        } catch (RuntimeException ex) {
-            // Si el error es por falta de token o contexto de sesión, intentar sin token
-            String msg = ex.getMessage() != null ? ex.getMessage() : "";
-            boolean porToken = msg.contains("No hay token de acceso") || msg.contains("current request attributes") || msg.contains("401") || msg.contains("403");
-            if (porToken) {
-                this.webApiCallerService.postWithoutToken(this.dinamicaUrl + "/solicitud", hecho, Void.class);
-            } else {
-                throw ex;
-            }
+            log.info("Tratando de enviar el hecho...");
+            WebClient.builder()
+                    .baseUrl(dinamicaUrl)
+                    .build()
+                    .post()
+                    .uri("/solicitud")
+                    .bodyValue(hecho)
+                    .retrieve()
+                    .onStatus(
+                            status -> status.is4xxClientError() || status.is5xxServerError(),
+                            response -> response.bodyToMono(String.class).map(RuntimeException::new)
+                    )
+                    .toBodilessEntity()
+                    .block();
+        } catch (Exception e) {
+            log.error("Error al enviar el hecho", e);
         }
+
     }
 
     public void gestionarHecho(HechoRevisadoForm form) {
