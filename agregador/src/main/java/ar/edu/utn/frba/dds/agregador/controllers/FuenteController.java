@@ -37,7 +37,6 @@ public class FuenteController {
 
   @GetMapping
   public ResponseEntity<List<FuenteOutputDTO>> buscarFuentes() {
-    System.out.println("Buscando fuentesssssssssss");
     List<FuenteOutputDTO> fuentes = fuenteService.buscarFuentesOutput();
     if (fuentes.isEmpty()) {
       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
