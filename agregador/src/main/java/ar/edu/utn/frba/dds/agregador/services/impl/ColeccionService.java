@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
@@ -34,6 +36,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class ColeccionService implements IColeccionService {
   @Autowired
@@ -178,96 +181,25 @@ public class ColeccionService implements IColeccionService {
 
    @Async
    public void importarYAsociarHechos(Long idColeccion, List<Fuente> fuentesColeccion) {
-     List<Hecho> hechosGuardadosTotales = new ArrayList<>();
-     for (Fuente f : fuentesColeccion) {
-       try {
-         List<Hecho> hechosDesdeFuente = f.importarHechos().collectList().block();
-         if (hechosDesdeFuente == null || hechosDesdeFuente.isEmpty()) {
-           continue;
-         }
-         for (Hecho h : hechosDesdeFuente) {
-           try {
-             Hecho guardado = this.hechoService.guardarHechoDinamica(h);
-             if (guardado != null) {
-               hechosGuardadosTotales.add(guardado);
-             }
-           } catch (Exception e) {
-           }
-         }
-       } catch (Exception e) {
-       }
-     }
+     fuentesColeccion.forEach(fuente -> fuente.importarHechosNuevos().blockLast());
+     List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentesColeccion);
 
-     if (!hechosGuardadosTotales.isEmpty()) {
-       applicationContext.getBean(ColeccionService.class).asociarHechos(idColeccion, hechosGuardadosTotales);
-     } else {
-       try {
-         List<Hecho> hechosExistentes = this.hechoRepository.findByFuentes(fuentesColeccion);
-         if (hechosExistentes != null && !hechosExistentes.isEmpty()) {
-           applicationContext.getBean(ColeccionService.class).asociarHechos(idColeccion, hechosExistentes);
-         }
-       } catch (Exception e) {
-       }
+     if(!fuentesColeccion.isEmpty()){
+       applicationContext.getBean(ColeccionService.class).asociarHechos(idColeccion, hechosFuentes);
      }
    }
 
    @Transactional
    public void asociarHechos(Long idColeccion, List<Hecho> hechos) {
-     Optional<Coleccion> opt = this.coleccionRepository.findById(idColeccion);
-     if (opt.isEmpty()) {
-       throw new NotFoundException("Coleccion no encontrada id=" + idColeccion);
-     }
-
-     Coleccion coleccion = opt.get();
-     coleccion.getFuentes().size();
-     coleccion.getHechos().size();
-
-     int inicial = coleccion.getHechos() == null ? 0 : coleccion.getHechos().size();
-     int agregados = 0;
-     if (hechos != null) {
-       for (Hecho h : hechos) {
-         Long idHecho = h.getId();
-         if (idHecho == null) {
-           try {
-             Hecho saved = this.hechoRepository.save(h);
-             if (saved.getFuenteSet() != null) saved.getFuenteSet().size();
-             boolean added = coleccion.cargarHecho(saved);
-             if (added) {
-               agregados++;
-               try {
-                 if (!this.coleccionRepository.existsHechoInColeccion(idColeccion, saved.getId())) {
-                   this.coleccionRepository.insertHechoEnColeccion(idColeccion, saved.getId());
-                 }
-               } catch (Exception e) {
-               }
-             }
-           } catch (Exception e) {
-           }
-           continue;
-         }
-
-         boolean existe = coleccion.getHechos().stream().anyMatch(existing -> existing.getId() != null && existing.getId().equals(idHecho));
-         if (!existe) {
-           var optHecho = this.hechoRepository.findById(idHecho);
-           if (optHecho.isPresent()) {
-             Hecho hechoExistente = optHecho.get();
-             if (hechoExistente.getFuenteSet() != null) hechoExistente.getFuenteSet().size();
-             boolean added = coleccion.cargarHecho(hechoExistente);
-             if (added) {
-               agregados++;
-               try {
-                 if (!this.coleccionRepository.existsHechoInColeccion(idColeccion, idHecho)) {
-                   this.coleccionRepository.insertHechoEnColeccion(idColeccion, idHecho);
-                 }
-               } catch (Exception e) {
-               }
-             }
-           }
-         }
-       }
-     }
-
-     this.coleccionRepository.saveAndFlush(coleccion);
+    log.info("Asociando {} hechos a la coleccion ID = {}", hechos.size(), idColeccion);
+    Coleccion coleccion = this.coleccionRepository
+             .findById(idColeccion)
+             .orElseThrow(() -> new NotFoundException("Coleccion no encontrada ID = " + idColeccion));
+    log.info("Por cargar {} hechos a la coleccion {}", hechos.size(), coleccion.getTitulo());
+    coleccion.cargarHechos(hechos);
+    log.info("Hechos cargados a la coleccion {}, guardando cambios...", coleccion.getTitulo());
+    this.coleccionRepository.saveAndFlush(coleccion);
+    log.info("Hechos guardados en la coleccion {}", coleccion.getTitulo());
    }
 
    @Override
