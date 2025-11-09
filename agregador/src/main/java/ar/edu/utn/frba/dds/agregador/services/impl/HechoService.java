@@ -51,7 +51,7 @@ public class HechoService implements IHechoService {
 
   @Override
   public Page<HechoOutputDTO> buscarHechos(QueryParamsFiltro params, Pageable pageable) {
-    //this.actualizarHechosProxy();
+    this.actualizarHechosProxy();
 
     Specification<Hecho> spec = HechoSpecification.conFiltros(params)
             .and(HechoSpecification.noEliminado());
@@ -102,35 +102,31 @@ public class HechoService implements IHechoService {
     // Instrumentación para depurar el pipeline reactivo
     Flux<Hecho> entrada = hechosFlux
             .doOnSubscribe(s -> log.info("🔁 Inicio de pipeline guardarHechos"))
-            .doOnNext(h -> log.info("🔁 flujo entrada - hecho: {} (fuentes: {})", h == null ? "<null>" : h.getTitulo(), h == null || h.getFuenteSet() == null ? 0 : h.getFuenteSet().size()))
             .doOnError(e -> log.error("❌ Error en flujo de entrada de hechos: {}", e.getMessage(), e));
 
     Flux<Hecho> normalizados = this.normalizadorService
             .normalizarHechosReactivo(entrada)
             .doOnSubscribe(s -> log.info("🔁 Normalización: suscrito"))
-            .doOnNext(h -> log.info("🔁 Normalizador emitió: {} (categoria: {})", h == null ? "<null>" : h.getTitulo(), h == null || h.getCategoria() == null ? "null" : h.getCategoria().getTitulo()))
             .doOnError(e -> log.error("❌ Error durante la normalización reactiva: {}", e.getMessage(), e))
             .doOnComplete(() -> log.info("🔁 Normalización completada"));
 
     Flux<Hecho> conUbicaciones = this.ubicacionService
             .obtenerUbicacionesReactivo(normalizados)
             .doOnSubscribe(s -> log.info("🔁 Obtención de ubicaciones: suscrito"))
-            .doOnNext(h -> log.info("🔁 Ubicacion emitió: {} (lat: {}, lon: {})", h == null ? "<null>" : h.getTitulo(), h == null || h.getUbicacion() == null ? "null" : h.getUbicacion().getLatitud(), h == null || h.getUbicacion() == null ? "null" : h.getUbicacion().getLongitud()))
             .doOnError(e -> log.error("❌ Error durante la obtención de ubicaciones: {}", e.getMessage(), e))
             .doOnComplete(() -> log.info("🔁 Obtención de ubicaciones completada"));
 
-    // No silenciamos errores globales aquí: queremos ver qué falla y por qué el pipeline queda vacío.
     return conUbicaciones
             .collectList()
             .doOnNext(list -> log.info("🔁 Resultado del pipeline - cantidad de hechos antes de guardar: {}", list == null ? 0 : list.size()))
             .flatMapMany(hechosParaGuardar -> {
               if (hechosParaGuardar == null || hechosParaGuardar.isEmpty()) {
-                log.warn("⚠️ No hay hechos para guardar (pipeline vacío o con errores). hechosParaGuardar={}", hechosParaGuardar == null ? 0 : hechosParaGuardar.size());
+                log.warn("⚠️ No hay hechos para guardar (pipeline vacío o con errores). hechosParaGuardar={}", 0);
                 return Flux.empty();
               }
 
               log.info("🗂 Guardando {} hechos en la base de datos...", hechosParaGuardar.size());
-              // Reatachar categorías evitando detached
+              // Reatachar categorías evitando detached --> Queremos que las entidades categoría estén gestionadas por el contexto de persistencia
               hechosParaGuardar.forEach(h -> {
                 if (h.getCategoria() != null) {
                   Categoria cat = h.getCategoria();
@@ -143,7 +139,6 @@ public class HechoService implements IHechoService {
               });
               List<Hecho> guardados = this.hechoRepository.saveAll(hechosParaGuardar);
               log.info("✅ Se guardaron {} hechos correctamente.", guardados.size());
-              guardados.forEach(g -> log.debug("Hecho persistido id={} categoriaId={} categoriaTitulo={}", g.getId(), g.getCategoria() != null ? g.getCategoria().getId() : null, g.getCategoria() != null ? g.getCategoria().getTitulo() : null));
               return Flux.fromIterable(guardados);
             });
   }

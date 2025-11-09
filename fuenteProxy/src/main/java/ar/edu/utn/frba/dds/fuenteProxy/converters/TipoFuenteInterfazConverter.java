@@ -37,7 +37,7 @@ public class TipoFuenteInterfazConverter implements AttributeConverter<TipoFuent
         String rutaMetaMapa = ""; // TODO: falta que le llegue la url de la instancia de metamapa
 
         fuente = switch (s) {
-            case "ApiCatedra" -> new APICatedra(rutaApiCatedra);
+            case "ApiCatedra" -> APICatedra.getInstance(rutaApiCatedra);
             case "InstanciaMetaMapa" -> new InstanciaMetaMapa(rutaMetaMapa);
             default -> null;
         };
