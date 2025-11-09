@@ -50,6 +50,13 @@ public class Fuente {
   @Transient
   private IAdapImpC iAdapImpC;
 
+  // Evita múltiples suscripciones concurrentes a la misma importación
+  @Transient
+  private transient volatile Flux<Hecho> importNuevosEnVuelo; // Son los flujos que estan en curso --> evita multiples suscripciones
+
+  @Transient
+  private transient volatile Flux<Hecho> importTodosEnVuelo;
+
   public Fuente(String nombre, String path, TipoFuente tipoFuente, Long idInternoFuente) {
     this.nombre = nombre;
     this.path = path;
@@ -60,26 +67,50 @@ public class Fuente {
 
   public Flux<Hecho> importarHechos() {
       log.info("Importando hechos de la fuente: {}", this.nombre);
-      return iAdapImpH.importarHechos(this.webClient, this)
-          .onErrorResume(error -> {
-            System.err.println("Error en importarHechos de fuente " + this.nombre + ": " + error.getMessage());
-            return Flux.empty();
-          });
+      Flux<Hecho> enVuelo = this.importTodosEnVuelo;
+      if (enVuelo != null) {
+        return enVuelo;
+      }
+      synchronized (this) {
+        if (this.importTodosEnVuelo != null) return this.importTodosEnVuelo;
+        Flux<Hecho> source = iAdapImpH.importarHechos(this.webClient, this)
+            .onErrorResume(error -> {
+              System.err.println("Error en importarHechos de fuente " + this.nombre + ": " + error.getMessage());
+              return Flux.empty();
+            })
+            .doFinally(sig -> { synchronized (this) { this.importTodosEnVuelo = null; } })
+            .publish()
+            .refCount(1);
+        this.importTodosEnVuelo = source;
+        return source;
+      }
   }
 
   public Flux<Hecho> importarHechosNuevos() {
     log.info("Importando hechosNuevos de la fuente: {}", this.nombre);
-    Flux<Hecho> flujo = iAdapImpH.importarNuevos(this.webClient, this);
-    if (flujo == null) {
-      log.warn("El adaptador {} devolvió null en importarNuevos para fuente IDInterno={} ({}). Se devuelve Flux.empty().",
-          iAdapImpH.getClass().getSimpleName(), this.idInternoFuente, this.nombre);
-      return Flux.empty();
+    Flux<Hecho> enVuelo = this.importNuevosEnVuelo;
+    if (enVuelo != null) {
+      return enVuelo;
     }
-    return flujo
-            .onErrorResume(error -> {
-                log.error("Error en importarHechosNuevos de fuente {}: {}", this.nombre, error.getMessage());
-              return Flux.empty();
-            });
+    synchronized (this) {
+      if (this.importNuevosEnVuelo != null) return this.importNuevosEnVuelo;
+      Flux<Hecho> flujo = iAdapImpH.importarNuevos(this.webClient, this);
+      if (flujo == null) {
+        log.warn("El adaptador {} devolvió null en importarNuevos para fuente IDInterno={} ({}). Se devuelve Flux.empty().",
+            iAdapImpH.getClass().getSimpleName(), this.idInternoFuente, this.nombre);
+        return Flux.empty();
+      }
+      Flux<Hecho> compartido = flujo
+              .onErrorResume(error -> {
+                  log.error("Error en importarHechosNuevos de fuente {}: {}", this.nombre, error.getMessage());
+                return Flux.empty();
+              })
+              .doFinally(sig -> { synchronized (this) { this.importNuevosEnVuelo = null; } })
+              .publish()
+              .refCount(1); // Compartir la suscripción
+      this.importNuevosEnVuelo = compartido;
+      return compartido;
+    }
   }
 
   public Flux<Hecho> importarHechosMismoTitulo(Hecho hecho) {
