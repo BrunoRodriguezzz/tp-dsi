@@ -74,12 +74,11 @@ public class Fuente {
     private void contruirTipoFuente() {
         switch (this.tipoFuenteEnum) {
             case APICATEDRA -> {
-                APICatedra tipo = new APICatedra(this.ruta);
-                this.tipoFuente = tipo;
+                // Usamos el singleton para evitar múltiple login/instancias
+                this.tipoFuente = APICatedra.getInstance(this.ruta);
             }
             case INSTANCIAMETAMAPA -> {
-                InstanciaMetaMapa tipo = new InstanciaMetaMapa(this.ruta);
-                this.tipoFuente = tipo;
+                this.tipoFuente = new InstanciaMetaMapa(this.ruta);
             }
             default -> {}
         }
