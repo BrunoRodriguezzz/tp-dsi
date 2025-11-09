@@ -47,11 +47,14 @@ public class ColeccionController {
       @RequestParam(name = "fechaCargaInicio", required = false) LocalDateTime fechaCargaInicio,
       @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin,
       @RequestParam(name = "fuente", required = false) String fuente,
+      @RequestParam(name = "all", required = false) Boolean all,
       Pageable pageable
   ) {
     QueryParamsFiltro params = Utils.crearFiltros(categoria, fechaAcontecimientoInicio, fechaAcontecimientoFin,
             titulo, latitud, longitud, fechaCargaInicio, fechaCargaFin, fuente);
-
+    if (all != null && all) {
+        pageable = Pageable.unpaged();
+    }
     Page<HechoOutputDTO> hechos = this.coleccionService.buscarHechosColeccion(id, params, pageable);
     return ResponseEntity.status(HttpStatus.OK).body(hechos);
   }

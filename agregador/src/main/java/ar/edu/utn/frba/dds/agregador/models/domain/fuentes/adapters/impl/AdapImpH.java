@@ -120,7 +120,8 @@ public class AdapImpH implements IAdapImpH {
             logError(error, operationName, String.valueOf(fuente.getIdInternoFuente()));
             return Flux.empty();
         })
-        .doOnComplete(() -> log.info("{} completada para fuente ID: {}", operationName, fuente.getIdInternoFuente()));
+        .doOnComplete(() -> log.info("{} completada para fuente ID: {}", operationName, fuente.getIdInternoFuente()))
+        .cache();
   }
 
   private void logError(Throwable error, String operation, String fuenteId) {

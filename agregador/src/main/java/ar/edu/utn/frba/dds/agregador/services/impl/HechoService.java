@@ -99,13 +99,15 @@ public class HechoService implements IHechoService {
   @Transactional
   @Override
   public Flux<Hecho> guardarHechos(Flux<Hecho> hechosFlux) {
-    // Instrumentación para depurar el pipeline reactivo
-    Flux<Hecho> entrada = hechosFlux
+    // Entrada fría -> la convertimos en compartida (un solo subscribe aguas arriba)
+    Flux<Hecho> entradaCompartida = hechosFlux
             .doOnSubscribe(s -> log.info("🔁 Inicio de pipeline guardarHechos"))
-            .doOnError(e -> log.error("❌ Error en flujo de entrada de hechos: {}", e.getMessage(), e));
+            .doOnError(e -> log.error("❌ Error en flujo de entrada de hechos: {}", e.getMessage(), e))
+            .publish()
+            .refCount(1); // primer subscriber activa la cadena, posteriores comparten
 
     Flux<Hecho> normalizados = this.normalizadorService
-            .normalizarHechosReactivo(entrada)
+            .normalizarHechosReactivo(entradaCompartida)
             .doOnSubscribe(s -> log.info("🔁 Normalización: suscrito"))
             .doOnError(e -> log.error("❌ Error durante la normalización reactiva: {}", e.getMessage(), e))
             .doOnComplete(() -> log.info("🔁 Normalización completada"));
@@ -117,7 +119,7 @@ public class HechoService implements IHechoService {
             .doOnComplete(() -> log.info("🔁 Obtención de ubicaciones completada"));
 
     return conUbicaciones
-            .collectList()
+            .collectList() // materializa una sola vez el flujo compartido aguas arriba
             .doOnNext(list -> log.info("🔁 Resultado del pipeline - cantidad de hechos antes de guardar: {}", list == null ? 0 : list.size()))
             .flatMapMany(hechosParaGuardar -> {
               if (hechosParaGuardar == null || hechosParaGuardar.isEmpty()) {
@@ -126,7 +128,6 @@ public class HechoService implements IHechoService {
               }
 
               log.info("🗂 Guardando {} hechos en la base de datos...", hechosParaGuardar.size());
-              // Reatachar categorías evitando detached --> Queremos que las entidades categoría estén gestionadas por el contexto de persistencia
               hechosParaGuardar.forEach(h -> {
                 if (h.getCategoria() != null) {
                   Categoria cat = h.getCategoria();
@@ -139,7 +140,7 @@ public class HechoService implements IHechoService {
               });
               List<Hecho> guardados = this.hechoRepository.saveAll(hechosParaGuardar);
               log.info("✅ Se guardaron {} hechos correctamente.", guardados.size());
-              return Flux.fromIterable(guardados);
+              return Flux.fromIterable(guardados).publish().refCount(1); // compartir también la salida
             });
   }
 
@@ -204,7 +205,8 @@ public class HechoService implements IHechoService {
     Flux<Hecho> hechos = Flux.fromIterable(
                     this.fuenteRepository.findByTipoFuente(TipoFuente.PROXY)
             )
-            .flatMap(Fuente::importarHechosNuevos);
+            .distinct(Fuente::getId) // evita llamar dos veces a la misma fuente si aparece duplicada
+            .concatMap(Fuente::importarHechosNuevos); // secuencial para no disparar concurrencia innecesaria
 
     Flux<Hecho> guardados = this.guardarHechos(hechos);
 
@@ -214,7 +216,8 @@ public class HechoService implements IHechoService {
   @Override
   public List<Hecho> actualizarHechos(List<Fuente> fuentes) {
     Flux<Hecho> hechos = Flux.fromIterable(fuentes)
-            .flatMap(Fuente::importarHechosNuevos);
+            .distinct(Fuente::getId)
+            .concatMap(Fuente::importarHechosNuevos);
 
     Flux<Hecho> guardados = this.guardarHechos(hechos);
 

@@ -1,131 +1,116 @@
-<!DOCTYPE html>
 <html lang="es" th:replace="~{layout/base :: html}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Colección</title>
-    <th:block th:fragment="additional-links">
-        <link rel="stylesheet" th:href="@{/css/styles.css}">
-        <link rel="stylesheet" th:href="@{/css/components.css}">
-        <link rel="stylesheet" th:href="@{/css/colecciones.css}">
-        <link rel="stylesheet" th:href="@{/css/header.css}">
-        <link rel="stylesheet" th:href="@{/css/footer.css}">
-        <link rel="stylesheet" th:href="@{/css/nuevaColeccion.css}">
-        <link rel="stylesheet" th:href="@{/css/publicarHecho.css}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
-        <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    </th:block>
-</head>
-<body>
-    <div th:fragment="contenido">
-        <div class="outer-form">
-            <h2><strong>Crear Nueva Colección</strong></h2>
-            <p>Define una nueva colección de hechos con criterios específicos de filtrado</p>
-        </div>
-        <form class="form-coleccion" th:action="@{/nuevaColeccion}" method="post">
-            <div class="header-form">
-                <h3><strong>Información Básica</strong></h3>
-                <p>Define el título y descripción de tu colección</p>
-            </div>
-            <div class="form-title">
-                <h6>Título de la Colección</h6>
-                <input type="text" class="form-control" placeholder="Ej: Protestas Sociales 2024" id="titleInput" name="nombre" required>
-            </div>
-            <div class="form-desc">
-                <h6>Descripción</h6>
-                <textarea class="form-control" placeholder="Describe el propósito y alcance de esta colección..." id="descripcionInput" name="descripcion" rows="4" required></textarea>
-            </div>
-            <div class="header-form">
-                <h3><strong>Fuentes</strong></h3>
-                <p>Selecciona las fuentes de datos que alimentarán esta colección</p>
-            </div>
-            <div class="form-title">
-                <div id="fuentesContainer" class="mb-2">
-                    <div th:each="fuente : ${fuentes}" class="form-check fade-in">
-                        <input class="form-check-input" type="checkbox" name="fuentes" th:value="${fuente.nombre}" th:id="${'fuente_' + fuente.id}">
-                        <label class="form-check-label" th:for="${'fuente_' + fuente.id}" th:text="${fuente.nombre}"></label>
-                    </div>
-                    <div th:if="${fuentes == null || #lists.isEmpty(fuentes)}">
-                        <p>No hay fuentes disponibles.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="header-form">
-                <h3><strong>Criterios de Filtrado</strong></h3>
-                <p>Define los criterios para filtrar los hechos de la colección</p>
-            </div>
-            <div class="form-group">
-                <h6>Categoría</h6>
-                <input type="text" class="form-control" placeholder="Ej: Accidente de avión" id="categoriaInput" name="criterio.categoria">
-            </div>
-            <div class="form-group">
-                <h6>Fecha de carga (inicio)</h6>
-                <input type="datetime-local" class="form-control" id="fechaCargaInicioInput" name="criterio.fechaCargaInicio">
-            </div>
-            <div class="form-group">
-                <h6>Fecha de carga (fin)</h6>
-                <input type="datetime-local" class="form-control" id="fechaCargaFinInput" name="criterio.fechaCargaFin">
-            </div>
-            <div class="form-group">
-                <h6>Fecha de acontecimiento (inicio)</h6>
-                <input type="datetime-local" class="form-control" id="fechaAcontecimientoInicioInput" name="criterio.fechaAcontecimientoInicio">
-            </div>
-            <div class="form-group">
-                <h6>Fecha de acontecimiento (fin)</h6>
-                <input type="datetime-local" class="form-control" id="fechaAcontecimientoFinInput" name="criterio.fechaAcontecimientoFin">
-            </div>
-            <div class="form-group">
-                <h6>Título</h6>
-                <input type="text" class="form-control" placeholder="Filtrar por título..." id="criterioTituloInput" name="criterio.titulo">
-            </div>
-            <div class="form-group">
-                <h6>Ubicación</h6>
-                <input type="hidden" id="latInput" name="criterio.latitud">
-                <input type="hidden" id="lngInput" name="criterio.longitud">
-                <div id="geocoder" class="mb-3" style="width: 100%"></div>
-                <div id="map" class="map"></div>
-            </div>
-            <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
-            <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
-            <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
-            <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
-            <script th:src="@{/js/mapa.js}"></script>
-            <div class="header-form">
-                <h3><strong>Consensos</strong></h3>
-                <p>Selecciona los consensos requeridos para la colección</p>
-            </div>
-            <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="consensos" value="ABSOLUTO" id="consenso_absoluto">
-                    <label class="form-check-label" for="consenso_absoluto">Absoluto</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="consensos" value="MULTMENCIONES" id="consenso_multmenciones">
-                    <label class="form-check-label" for="consenso_multmenciones">Multmenciones</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="consensos" value="MAYSIMPLE" id="consenso_maysimple">
-                    <label class="form-check-label" for="consenso_maysimple">Mayoría simple</label>
-                </div>
-                <small class="form-text text-muted">Podés seleccionar uno o más consensos.</small>
-            </div>
-            <div class="botones-formulario mt-4">
-                <button type="submit" class="btn btn-dark">Crear Colección</button>
-                <a th:href="@{/colecciones}" class="btn btn-outline-secondary btn-cancelar">Cancelar</a>
-            </div>
-        </form>
+<th:block th:fragment="additional-links">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <link rel="stylesheet" th:href="@{/css/nuevaColeccion.css}">
+    <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</th:block>
+<div th:fragment="contenido" class="container">
+    <div class="outer-form">
+        <h2><strong>Crear Nueva Colección</strong></h2>
+        <p>Define una nueva colección de hechos con criterios específicos de filtrado</p>
     </div>
+    <form class="form-coleccion w-100" th:action="@{/nuevaColeccion}" method="post">
+        <div class="header-form">
+            <h3><strong>Información Básica</strong></h3>
+            <p>Define el título y descripción de tu colección</p>
+        </div>
+        <div class="form-title">
+            <h6>Título de la Colección</h6>
+            <input type="text" class="form-control" placeholder="Ej: Protestas Sociales 2024" id="titleInput" name="nombre" required>
+        </div>
+        <div class="form-desc">
+            <h6>Descripción</h6>
+            <textarea class="form-control" placeholder="Describe el propósito y alcance de esta colección..." id="descripcionInput" name="descripcion" rows="4" required></textarea>
+        </div>
+        <div class="header-form">
+            <h3><strong>Fuentes</strong></h3>
+            <p>Selecciona las fuentes de datos que alimentarán esta colección</p>
+        </div>
+        <div class="form-title">
+            <div id="fuentesContainer" class="mb-2">
+                <div th:each="fuente : ${fuentes}" class="form-check fade-in">
+                    <input class="form-check-input" type="checkbox" name="fuentes" th:value="${fuente.nombre}" th:id="${'fuente_' + fuente.id}">
+                    <label class="form-check-label" th:for="${'fuente_' + fuente.id}" th:text="${fuente.nombre}"></label>
+                </div>
+                <div th:if="${fuentes == null || #lists.isEmpty(fuentes)}">
+                    <p>No hay fuentes disponibles.</p>
+                </div>
+            </div>
+        </div>
+        <div class="header-form">
+            <h3><strong>Criterios de Filtrado</strong></h3>
+            <p>Define los criterios para filtrar los hechos de la colección</p>
+        </div>
+        <div class="form-group">
+            <h6>Categoría</h6>
+            <input type="text" class="form-control" placeholder="Ej: Accidente de avión" id="categoriaInput" name="criterio.categoria">
+        </div>
+        <div class="form-group">
+            <h6>Fecha de carga (inicio)</h6>
+            <input type="datetime-local" class="form-control" id="fechaCargaInicioInput" name="criterio.fechaCargaInicio">
+        </div>
+        <div class="form-group">
+            <h6>Fecha de carga (fin)</h6>
+            <input type="datetime-local" class="form-control" id="fechaCargaFinInput" name="criterio.fechaCargaFin">
+        </div>
+        <div class="form-group">
+            <h6>Fecha de acontecimiento (inicio)</h6>
+            <input type="datetime-local" class="form-control" id="fechaAcontecimientoInicioInput" name="criterio.fechaAcontecimientoInicio">
+        </div>
+        <div class="form-group">
+            <h6>Fecha de acontecimiento (fin)</h6>
+            <input type="datetime-local" class="form-control" id="fechaAcontecimientoFinInput" name="criterio.fechaAcontecimientoFin">
+        </div>
+        <div class="form-group">
+            <h6>Título</h6>
+            <input type="text" class="form-control" placeholder="Filtrar por título..." id="criterioTituloInput" name="criterio.titulo">
+        </div>
+        <div class="form-group">
+            <h6>Ubicación</h6>
+            <input type="hidden" id="latInput" name="criterio.latitud">
+            <input type="hidden" id="lngInput" name="criterio.longitud">
+            <div id="geocoder" class="mb-3" style="width: 100%"></div>
+            <div id="map" class="map"></div>
+        </div>
+        <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+        <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
+        <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+        <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+        <script th:src="@{/js/mapa.js}"></script>
+        <div class="header-form">
+            <h3><strong>Consensos</strong></h3>
+            <p>Selecciona los consensos requeridos para la colección</p>
+        </div>
+        <div class="form-group">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="consensos" value="ABSOLUTO" id="consenso_absoluto">
+                <label class="form-check-label" for="consenso_absoluto">Absoluto</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="consensos" value="MULTMENCIONES" id="consenso_multmenciones">
+                <label class="form-check-label" for="consenso_multmenciones">Multmenciones</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="consensos" value="MAYSIMPLE" id="consenso_maysimple">
+                <label class="form-check-label" for="consenso_maysimple">Mayoría simple</label>
+            </div>
+            <small class="form-text text-muted">Podés seleccionar uno o más consensos.</small>
+        </div>
+        <div class="botones-formulario mt-4">
+            <button type="submit" class="btn btn-dark">Crear Colección</button>
+            <a th:href="@{/colecciones}" class="btn btn-outline-secondary btn-cancelar">Cancelar</a>
+        </div>
+    </form>
+</div>
 
-    <style>
-        .fade-in {
-            animation: fadeIn 0.5s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-    </style>
-</body>
+<style>
+    .fade-in {
+        animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
 </html>
