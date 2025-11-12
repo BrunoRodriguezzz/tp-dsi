@@ -56,3 +56,24 @@ p {
     background-color: #e9ecef !important;
     border-color: #adb5bd !important;
 }
+
+@media (max-width: 768px) {
+    .mb-md-1 {
+        margin-bottom: 1rem;
+    }
+}
+
+@media screen and (min-width: 640px) {
+    .mapboxgl-ctrl-geocoder {
+        max-width: none; !important;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
