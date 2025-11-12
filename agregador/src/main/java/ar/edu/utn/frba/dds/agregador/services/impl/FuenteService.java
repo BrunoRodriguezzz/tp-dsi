@@ -105,7 +105,7 @@ public class FuenteService implements IFuenteService {
                   .stream()
                   .map(HechoFuente::getFuente)
                   .toList();
-          fuentes.forEach(f -> eliminarHecho(hecho));
+          fuentes.forEach(f -> f.eliminarHecho(hecho));
         })
         .subscribeOn(Schedulers.boundedElastic())
         .block(); 
