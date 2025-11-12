@@ -77,9 +77,14 @@ public class ValidadorInput {
       throw new RequestException("Gestión faltante");
     }
 
-    if (gestionInputDTO.getIdAdministrador() == null) {
-      throw new RequestException("ID del administrador faltante");
+    if (gestionInputDTO.getAdministradorNombre() == null) {
+      throw new RequestException("Nombre del administrador faltante");
     }
+
+    if (gestionInputDTO.getAdministradorApellido() == null) {
+      throw new RequestException("Apellido del administrador faltante");
+    }
+
   }
 
   public static void validarColeccionInput(ColeccionInputDTO coleccion) {

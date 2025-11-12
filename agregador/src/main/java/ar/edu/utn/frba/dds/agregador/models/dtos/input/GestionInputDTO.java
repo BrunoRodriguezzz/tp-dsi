@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class GestionInputDTO {
-  private Long idAdministrador;
+  private String administradorNombre;
+  private String administradorApellido;
 }

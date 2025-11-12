@@ -45,7 +45,7 @@ public class SolicitudEliminacionController {
   // TODO: Buscar los admins
   public ResponseEntity rechazarSolicitud(@RequestBody GestionInputDTO input, @PathVariable("id") Long id) {
     ValidadorInput.validarGestionInputDTO(input);
-    SolicitudEliminacionOutputDTO rechazada = this.solicitudEliminacionService.rechazarSolicitud(input.getIdAdministrador(), id);
+    SolicitudEliminacionOutputDTO rechazada = this.solicitudEliminacionService.rechazarSolicitud(input, id);
     return ResponseEntity.status(HttpStatus.OK).body(rechazada);
   }
 
@@ -53,7 +53,7 @@ public class SolicitudEliminacionController {
   // TODO: Buscar los admins
   public ResponseEntity aceptarSolicitud(@RequestBody GestionInputDTO input, @PathVariable("id") Long id) {
     ValidadorInput.validarGestionInputDTO(input);
-    SolicitudEliminacionOutputDTO aceptada = this.solicitudEliminacionService.aceptarSolicitud(input.getIdAdministrador(), id);
+    SolicitudEliminacionOutputDTO aceptada = this.solicitudEliminacionService.aceptarSolicitud(input, id);
     return ResponseEntity.status(HttpStatus.OK).body(aceptada);
   }
 }

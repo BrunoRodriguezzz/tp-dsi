@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.agregador.services.impl;
 
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.HechoYaEliminadoException;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.NotFoundException;
+import ar.edu.utn.frba.dds.agregador.models.dtos.input.GestionInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO;
@@ -96,13 +97,10 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
 
   @Transactional
   @Override
-  public SolicitudEliminacionOutputDTO rechazarSolicitud(Long idAdministrador, Long idSolicitud) {
+  public SolicitudEliminacionOutputDTO rechazarSolicitud(GestionInputDTO input, Long idSolicitud) {
     SolicitudEliminacion solicitud = this.buscarSolicitudEliminacionPorID(idSolicitud);
 
-    Administrador administrador = this.buscarAdministradorPorID(idAdministrador);
-    if(administrador == null) {
-      throw new NotFoundException("No se encontró el administrador de id: " + idAdministrador);
-    }
+    Administrador administrador = this.actualizarAdmin(input);
 
     try {
       solicitud.serRechazada(administrador);
@@ -117,16 +115,13 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
 
   @Transactional
   @Override
-  public SolicitudEliminacionOutputDTO aceptarSolicitud(Long idAdministrador, Long idSolicitud) {
+  public SolicitudEliminacionOutputDTO aceptarSolicitud(GestionInputDTO input, Long idSolicitud) {
     SolicitudEliminacion solicitud = this.buscarSolicitudEliminacionPorID(idSolicitud);
     if(solicitud == null) {
       throw new NotFoundException("No se encontró la solicitud de id: " + idSolicitud);
     }
 
-    Administrador administrador = this.buscarAdministradorPorID(idAdministrador);
-    if(administrador == null) {
-      throw new NotFoundException("No se encontró el administrador de id: " + idAdministrador);
-    }
+    Administrador administrador = this.actualizarAdmin(input);
 
     try {
       solicitud.serAceptada(administrador);
@@ -194,14 +189,8 @@ public class SolicitudEliminacionService implements ISolicitudEliminacionService
     }
   }
 
-  private Administrador buscarAdministradorPorID(Long id){
-    Optional<Administrador> administradorOptional = this.administradorRepository.findById(id);
-    if(administradorOptional.isPresent()){
-      return administradorOptional.get();
-    }
-    else {
-      throw new NotFoundException("Administrador no encontrado.");
-    }
+  private Administrador actualizarAdmin(GestionInputDTO input){
+    return this.administradorRepository.save(new Administrador(input.getAdministradorNombre(), input.getAdministradorApellido()));
   }
 }
 
