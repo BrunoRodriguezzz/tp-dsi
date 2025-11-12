@@ -1,9 +1,6 @@
 package ar.edu.utn.frba.dds.client.services;
 
-import ar.edu.utn.frba.dds.client.dtos.HechoInputDTO;
-import ar.edu.utn.frba.dds.client.dtos.SolicitudCambiosDTO;
-import ar.edu.utn.frba.dds.client.dtos.SolicitudModOutputDTO;
-import ar.edu.utn.frba.dds.client.dtos.UbicacionDTO;
+import ar.edu.utn.frba.dds.client.dtos.*;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDinamicaDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
