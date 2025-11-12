@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div class="botones">
-                        <a href="reportarHecho.html" class="btn btn-red">Reportar</a>
+                        <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-red">Solicitar Eliminacion</a>
                         <a class="btn btn-grey" th:href="@{/hechos}">Volver a Hechos</a>
                     </div>
                 </div>

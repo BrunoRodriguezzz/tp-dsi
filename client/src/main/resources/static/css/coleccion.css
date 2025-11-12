@@ -131,17 +131,13 @@ body {
     background: #333;
 }
 
-.btn-red {
-    background: #fff;
-    color: #e53935;
-    border: 1.5px solid #e53935;
-    border-radius: 8px;
-    padding: 0.4rem 1.1rem;
-    font-size: 0.95rem;
-    font-weight: 500;
+.btn.btn-red {
+    background-color: white;
+    color: red;
+    border-color: rgb(250, 137, 137);
 }
 
-.btn-red:hover {
+.btn.btn-red:hover {
     background: #e53935;
     color: #fff;
 }

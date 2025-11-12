@@ -1,0 +1,74 @@
+<html lang="en" th:replace="~{layout/base :: html}">
+
+<th:block th:fragment="additional-links">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/eliminarHecho.css}">
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+</th:block>
+
+<div class="container" style="padding-top: 1rem; padding-bottom: 1rem" th:fragment="contenido">
+    <div class="outer-form">
+        <h2><strong>Eliminar Hecho</strong></h2>
+        <p th:if="${hecho}" th:text="'Solicita la eliminación del Hecho: ' + ${hecho.titulo}">Solicita la eliminación del Hecho</p>
+        <p th:unless="${hecho}" th:text="'Solicita la eliminación del Hecho ID: ' + ${idHecho}">Solicita la eliminación del Hecho</p>
+    </div>
+    <!-- Mensajes flash -->
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
+    <form th:action="@{/hechos/eliminacion/{id}(id=${idHecho})}" method="post" class="form-hecho" id="eliminarHechoForm">
+        <div class="header-form">
+            <h3><strong>Información del Hecho</strong></h3>
+            <p>Completa un fundamento de 500 caracteres al menos para solicitar la eliminación del hecho</p>
+        </div>
+        <div class="form-desc">
+            <h6>Fundamento</h6>
+            <textarea class="form-control"
+                      placeholder="Describe los detalles del fundamento para eliminar este hecho"
+                      id="fundamentoInput"
+                      name="fundamento"
+                      rows="4"
+                      th:text="${fundamento}"></textarea>
+        </div>
+        <button type="submit" class="btn btn-dark" style="width: 100%; margin-top: 1rem;">Solicitar Eliminación</button>
+    </form>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    (function(){
+        const form = document.getElementById('eliminarHechoForm');
+        const fundamentoInput = document.getElementById('fundamentoInput');
+
+        if(!form || !fundamentoInput) return;
+
+        // Validación del formulario
+        form.addEventListener('submit', function(ev){
+            const fundamento = fundamentoInput.value.trim();
+
+            // Validar que el fundamento tenga al menos 500 caracteres
+            if (fundamento.length < 500) {
+                ev.preventDefault();
+
+                // Marcar campo como inválido
+                fundamentoInput.classList.add('is-invalid');
+
+                // Enfocar el campo de fundamento
+                fundamentoInput.focus();
+
+                return false;
+            }
+        });
+
+        // Remover clase de error cuando el usuario empiece a escribir
+        fundamentoInput.addEventListener('input', function() {
+            if (this.classList.contains('is-invalid')) {
+                this.classList.remove('is-invalid');
+            }
+        });
+    })();
+    /*]]>*/
+</script>
+</html>

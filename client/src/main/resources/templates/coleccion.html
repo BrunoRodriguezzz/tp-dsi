@@ -72,7 +72,7 @@
                     <div class="opciones">
                         <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Sin Categoría</p>
                         <a class="btn btn-primary btn-dark config-opciones" th:href="@{/hechos/{id}(id=${hecho.id})}">Ver Detalles</a>
-                        <a th:href="@{/reportarHecho}" class="btn btn-red config-opciones">Reportar</a>
+                        <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-red config-opciones">Solicitar Eliminacion</a>
                     </div>
                 </div>
                 <div class="informacion-general">

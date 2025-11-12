@@ -45,9 +45,6 @@
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMINISTRADOR','CONTRIBUYENTE')">
                     <a class="nav-link" th:href="@{/hechos/misHechos}">Mis hechos</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="reportarHecho.html">Reportar Hecho</a>
-                </li>
                 <li class="nav-item" sec:authorize="hasRole('ADMINISTRADOR')">
                     <a class="nav-link" th:href="@{/panelControl}">Panel de Control</a>
                 </li>
