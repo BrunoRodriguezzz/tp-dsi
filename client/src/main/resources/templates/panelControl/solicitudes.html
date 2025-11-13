@@ -11,6 +11,10 @@
     <a th:href="@{/panelControl}" class="link" id="link-panelDeControl">← Volver al Panel de Control</a>
     <h2><strong>Solicitudes de Eliminación</strong></h2>
     <p>Revisa y procesa las solicitudes de eliminación de hechos</p>
+
+    <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
     <div class="container-totalSolicitudes">
         <div class="logo-alerta">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="m12 17 .01 0"></path></svg>
@@ -26,7 +30,8 @@
                 <option value="todas" selected>Todas las solicitudes</option>
                 <option value="pendiente">Pendientes</option>
                 <option value="rechazada">Rechazadas</option>
-                <option value="aprobada">Aprobadas</option>
+                <option value="aceptada">Aceptadas</option>
+                <option value="spam">Spam</option>
             </select>
             <span class="filtro-contador">0 solicitudes mostradas</span>
         </div>
@@ -35,34 +40,54 @@
         <section th:each="solicitud : ${solicitudes}">
             <div class="solicitud-card" th:attr="data-estado=${solicitud.estado.toLowerCase()}">
                 <div class="solicitud-header">
-                    <h3 class="solicitud-titulo" th:text="'Solicitud número: ' + ${solicitud.id}">Sin título</h3>
+                    <h3 class="solicitud-titulo" th:text="'Solicitud ID: ' + ${solicitud.id}">Sin título</h3>
                     <div th:class="${'solicitud-estado ' + solicitud.estado.toLowerCase()}" th:text="${solicitud.estado}">-</div>
                 </div>
                 <div class="solicitud-fecha">
-                    <span><strong>Fecha:</strong> <span th:text="${solicitud.fechaCreacion}">-</span></span>
+                    <span><strong>Fecha:</strong> <span th:text="${#temporals.format(solicitud.fechaCreacion, 'dd/MM/yyyy HH:mm')}">-</span></span>
                 </div>
                 <div class="solicitud-seccion">
                     <h4>Hecho Reportado:</h4>
-                    <p class="hecho-nombre" th:text="${solicitud.hecho.titulo}">El hecho no tiene título</p>
+                    <p class="hecho-nombre" th:text="${solicitud.hecho?.titulo ?: 'Sin título'}">El hecho no tiene título</p>
+                    <p class="hecho-descripcion" th:text="${#strings.abbreviate(solicitud.hecho?.descripcion ?: 'Sin descripción', 200)}"></p>
+                    <p><strong>Categoría:</strong> <span th:text="${solicitud.hecho?.categoria ?: 'Sin categoría'}"></span></p>
+                    <p><strong>Ubicación:</strong>
+                        <span th:if="${solicitud.hecho?.ubicacion != null}">
+                            <span th:text="${solicitud.hecho.ubicacion.municipio != null and !#strings.isEmpty(solicitud.hecho.ubicacion.municipio) ? solicitud.hecho.ubicacion.municipio : ''}"></span><span th:if="${solicitud.hecho.ubicacion.municipio != null and !#strings.isEmpty(solicitud.hecho.ubicacion.municipio) and solicitud.hecho.ubicacion.provincia != null and !#strings.isEmpty(solicitud.hecho.ubicacion.provincia)}">, </span><span th:text="${solicitud.hecho.ubicacion.provincia != null and !#strings.isEmpty(solicitud.hecho.ubicacion.provincia) ? solicitud.hecho.ubicacion.provincia : ''}"></span>
+                        </span>
+                        <span th:unless="${solicitud.hecho?.ubicacion != null}">Sin ubicación</span>
+                    </p>
                 </div>
                 <div class="solicitud-seccion">
-                    <h4>Motivo:</h4>
-                    <p class="motivo-descripcion" th:text="${solicitud.fundamento}">No hay fundamento</p>
+                    <h4>Motivo de la Solicitud:</h4>
+                    <p class="motivo-descripcion" th:text="${#strings.abbreviate(solicitud.fundamento ?: 'Sin fundamento', 300)}">No hay fundamento</p>
                 </div>
                 <div class="solicitud-seccion">
-                    <h4>Usuario:</h4>
-                    <p class="contacto-info" th:text="${solicitud.contribuyente?.nombre}">No hay un usuario asociado</p>
+                    <h4>Contribuyente:</h4>
+                    <p class="contacto-info" th:text="${'ID: ' + (solicitud.contribuyente ?: 'Sin asignar')}">No hay un usuario asociado</p>
+                </div>
+                <div class="solicitud-seccion" th:if="${solicitud.resolucion != null}">
+                    <h4>Resolución:</h4>
+                    <p><strong>Administrador:</strong> <span th:text="${solicitud.resolucion.administrador?.nombre + ' ' + solicitud.resolucion.administrador?.apellido}"></span></p>
+                    <p><strong>Fecha de Resolución:</strong> <span th:text="${#temporals.format(solicitud.resolucion.fechaResolucion, 'dd/MM/yyyy HH:mm')}"></span></p>
                 </div>
                 <div class="solicitud-acciones" th:if="${solicitud.estado.toLowerCase() == 'pendiente'}">
-                    <button class="btn btn-aprobar-full">
-                        Aprobar Eliminación
-                    </button>
-                    <button class="btn btn-rechazar-full">
-                        Rechazar Solicitud
-                    </button>
+                    <form th:action="@{/panelControl/solicitudes/{id}/aceptar(id=${solicitud.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-aprobar-full" onclick="return confirm('¿Está seguro de aprobar esta solicitud de eliminación?')">
+                            Aprobar Eliminación
+                        </button>
+                    </form>
+                    <form th:action="@{/panelControl/solicitudes/{id}/rechazar(id=${solicitud.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-rechazar-full" onclick="return confirm('¿Está seguro de rechazar esta solicitud?')">
+                            Rechazar Solicitud
+                        </button>
+                    </form>
                 </div>
             </div>
         </section>
+        <div th:if="${#lists.isEmpty(solicitudes)}" class="no-solicitudes">
+            <p>No hay solicitudes para mostrar.</p>
+        </div>
     </div>
     <script th:src="@{/js/filtroSolicitudes.js}"></script>
 </div>

@@ -23,7 +23,7 @@ public class SolicitudEliminacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     private Hecho hecho;
 
@@ -56,7 +56,7 @@ public class SolicitudEliminacion {
 
     public void serAceptada(Administrador administrador) throws Exception {
         try {
-            if(this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.ACEPTADA || this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.RECHAZADA){
+            if(this.estadoSolicitudEliminacion == EstadoSolicitudEliminacion.ACEPTADA || this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.RECHAZADA){
                 this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador);
                 this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.ACEPTADA;
                 this.hecho.eliminar();
