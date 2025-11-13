@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AdministradorService {
-  private IAdministradorRepository administradorRepository;
+  private final IAdministradorRepository administradorRepository;
 
-  @Autowired
   public AdministradorService(IAdministradorRepository administradorRepository) {
     this.administradorRepository = administradorRepository;
   }

@@ -528,9 +528,9 @@ const EstadisticasApp = {
             this.chart.data.datasets[0].data =this.datos.values;
             this.chart.update();
 
-            actualizarElementoTexto('porcentajeSpam', porcentajeSpam + '%');
+            actualizarElementoTexto('porcentajeSpam', '('+ porcentajeSpam + '%)');
             actualizarElementoTexto('porcentaje', porcentajeSpam + '%');
-            actualizarElementoTexto('porcentajeNoSpam', 100-porcentajeSpam + '%');
+            actualizarElementoTexto('porcentajeNoSpam', '('+ (100-porcentajeSpam) + '%)');
             console.log(`Total solicitudes: ${total}`);
             console.log(`Spam: ${spam} (${porcentajeSpam}%)`);
         }

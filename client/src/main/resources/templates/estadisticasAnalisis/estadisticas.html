@@ -115,7 +115,7 @@
                 <div class="card-body">
                     <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('provinciaChart')}"></div>
 
-                    <div class="bg-primary bg-opacity-10 result-box">
+                    <div class="bg-primary bg-opacity-10 result-box" th:if="${totalColecciones > 0}">
                         <p class="text-primary mb-0">
                             <strong>Resultado:</strong>
                             En la colección "<strong id="resultColeccion" th:text="${colecciones[0]}"></strong>",
