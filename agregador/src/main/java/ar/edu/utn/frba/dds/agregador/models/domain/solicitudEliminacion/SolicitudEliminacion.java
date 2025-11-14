@@ -56,7 +56,7 @@ public class SolicitudEliminacion {
 
     public void serAceptada(Administrador administrador) throws Exception {
         try {
-            if(this.estadoSolicitudEliminacion == EstadoSolicitudEliminacion.ACEPTADA || this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.RECHAZADA){
+            if(this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.ACEPTADA && estadoSolicitudEliminacion != EstadoSolicitudEliminacion.RECHAZADA){
                 this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador);
                 this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.ACEPTADA;
                 this.hecho.eliminar();
@@ -72,7 +72,7 @@ public class SolicitudEliminacion {
 
     public void serRechazada(Administrador administrador) throws Exception {
         try {
-            if(this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.ACEPTADA || this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.RECHAZADA){
+            if(this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.ACEPTADA && this.estadoSolicitudEliminacion != EstadoSolicitudEliminacion.RECHAZADA){
                 this.resolucionSolicitudEliminacion = crearResolucionSolicitudEliminacion(administrador);
                 this.estadoSolicitudEliminacion = EstadoSolicitudEliminacion.RECHAZADA;
             }
