@@ -6,9 +6,9 @@ import lombok.Data;
 
 @Data @JsonIgnoreProperties(ignoreUnknown = true)
 public class UbicacionInputDTO {
-  private String latitud;
-  private String longitud;
-  private String Pais;
+  private Double latitud;
+  private Double longitud;
+  private String pais;
   private Provincia provincia;
   private String muncipio;
 }

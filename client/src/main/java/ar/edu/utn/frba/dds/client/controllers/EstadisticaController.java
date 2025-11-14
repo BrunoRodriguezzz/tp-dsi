@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -42,8 +43,22 @@ public class EstadisticaController {
         model.addAttribute("totalColecciones",estadisticasProvinciasPorColecciones.size());
         model.addAttribute("colecciones", estadisticasProvinciasPorColecciones.stream().map(EstadisticaProvinciaXColeccionDTO::getColeccion).toList());
         model.addAttribute("coleccionPorProvincia", this.estadisticaService.convertToMap(estadisticasProvinciasPorColecciones));
-        model.addAttribute("resultProvincia",estadisticasProvinciasPorColecciones.get(0).getProvinciasConHechos().entrySet().iterator().next().getKey());
-        model.addAttribute("resultCantidad",estadisticasProvinciasPorColecciones.get(0).getProvinciasConHechos().values().iterator().next());
+//        model.addAttribute("resultProvincia",estadisticasProvinciasPorColecciones.get(0).getProvinciasConHechos().entrySet().iterator().next().getKey());
+//        model.addAttribute("resultCantidad",estadisticasProvinciasPorColecciones.get(0).getProvinciasConHechos().values().iterator().next());
+        Optional.of(estadisticasProvinciasPorColecciones)
+                .filter(lista -> !lista.isEmpty())
+                .map(lista -> lista.get(0))
+                .flatMap(primera -> primera.getProvinciasConHechos().entrySet().stream().findFirst())
+                .ifPresentOrElse(
+                        entry -> {
+                            model.addAttribute("resultProvincia", entry.getKey());
+                            model.addAttribute("resultCantidad", entry.getValue());
+                        },
+                        () -> {
+                            model.addAttribute("resultProvincia", "N/A");
+                            model.addAttribute("resultCantidad", 0);
+                        }
+                );
 
         // Tab Content "Ranking de Categorías"
         model.addAttribute("rankingCategorias", categorias.getCategoriasConMasHechos());

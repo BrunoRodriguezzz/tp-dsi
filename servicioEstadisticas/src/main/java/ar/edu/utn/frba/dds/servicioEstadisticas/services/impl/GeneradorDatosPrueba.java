@@ -543,25 +543,20 @@ public class GeneradorDatosPrueba {
             .build();
 
         try {
-          String response = webClient.get()
+            // bloquea y devuelve la lista
+            return webClient.get()
               .uri("/hechos/independientes")
               .retrieve()
-              .bodyToMono(String.class)
-              .block();
-
-          ObjectMapper mapper = new ObjectMapper();
-          mapper.registerModule(new JavaTimeModule());
-
-          List<HechoInputDTO> hechos = mapper.readValue(
-              response,
-              new TypeReference<List<HechoInputDTO>>() {
-              }
-          );
-
-          return hechos;
+                  .bodyToFlux(HechoInputDTO.class) // convierte cada objeto del array
+                  .collectList()                   // junta todo en una lista
+                  .block()
+                    .stream()
+                    .filter(hecho->hecho.getUbicacion().getProvincia() != null)
+                    .toList();
 
         } catch (Exception e) {
           System.err.println("Error al buscar hechos independientes: " + e.getMessage());
+            e.printStackTrace();
           return new ArrayList<>();
         }
     }

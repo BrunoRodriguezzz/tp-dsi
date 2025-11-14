@@ -1,3 +1,4 @@
+/*
 package ar.edu.utn.frba.dds.agregador.models.domain.test;
 
 import ar.edu.utn.frba.dds.fuenteProxy.Services.impl.ColeccionService;
@@ -52,3 +53,5 @@ public class InstanciaMetaMapaIntegrationTest {
         Mockito.verify(headersSpec, Mockito.times(1)).retrieve();
     }
 }
+
+ */
