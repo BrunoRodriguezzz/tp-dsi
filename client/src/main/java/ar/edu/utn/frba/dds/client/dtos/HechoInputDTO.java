@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.client.dtos;
 
+import ar.edu.utn.frba.dds.client.dtos.hecho.HechoFormDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,4 +28,22 @@ public class HechoInputDTO {
     private String        municipio;
     private LocalDateTime fechaAcontecimiento;
     private Long          idUsuario;
+
+    public static  HechoInputDTO fromHechoFormDTO(HechoFormDTO hechoFormDTO, List<String> pathMultimedia) {
+        return HechoInputDTO.builder()
+                .nombreUsuario(hechoFormDTO.getNombreUsuario())
+                .apellidoUsuario(hechoFormDTO.getApellidoUsuario())
+                .fechaNacimientoUsuario(hechoFormDTO.getFechaNacimientoUsuario())
+                .titulo(hechoFormDTO.getTitulo())
+                .descripcion(hechoFormDTO.getDescripcion())
+                .categoria(hechoFormDTO.getCategoria())
+                .contenidoMultimedia(pathMultimedia)
+                .latitud(hechoFormDTO.getLatitud())
+                .longitud(hechoFormDTO.getLongitud())
+                .provincia(hechoFormDTO.getProvincia())
+                .municipio(hechoFormDTO.getMunicipio())
+                .fechaAcontecimiento(hechoFormDTO.getFechaAcontecimiento())
+                .idUsuario(hechoFormDTO.getIdUsuario())
+                .build();
+    }
 }
