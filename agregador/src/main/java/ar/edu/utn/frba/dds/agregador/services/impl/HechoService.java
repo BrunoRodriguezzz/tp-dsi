@@ -62,7 +62,7 @@ public class HechoService implements IHechoService {
 
   @Override
   public List<HechoOutputDTO> buscarHechosIndependientes() {
-    List<Hecho> hechos = this.hechoRepository.buscarHechosIndependientes(HechoSpecification.noEliminado());
+    List<Hecho> hechos = this.hechoRepository.buscarHechosIndependientes();
     return hechos.stream().map(HechoOutputDTO::HechoToDTO).collect(Collectors.toList());
   }
 
