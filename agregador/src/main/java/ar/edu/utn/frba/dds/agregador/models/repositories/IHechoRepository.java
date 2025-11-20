@@ -60,5 +60,8 @@ public interface IHechoRepository extends JpaRepository<Hecho, Long>, JpaSpecifi
             FROM Coleccion c JOIN c.hechos h2
         ) AND h.estaEliminado = false
     """)
-    List<Hecho> buscarHechosIndependientes(Specification<Hecho> spec);
+    List<Hecho> buscarHechosIndependientes();
+
+    @Query(value = "SELECT fecha_acontecimiento FROM hecho WHERE id = :id", nativeQuery = true)
+    Object getFechaRaw(@Param("id") Long id);
 }

@@ -5,6 +5,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
     <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/publicarHecho.css}">
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
@@ -15,7 +16,7 @@
         <h2><strong>Publicar Hecho</strong></h2>
         <p>Comparte información relevante para la comunidad de forma colaborativa</p>
     </div>
-
+    <!-- Mensajes flash -->
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
     <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
 
@@ -49,12 +50,10 @@
                 <option value="Infraestructura">Infraestructura</option>
             </select>
         </div>
-
         <div class="form-fechaAcontecimiento">
             <h6>Fecha y Hora del Acontecimiento</h6>
             <input type="datetime-local" class="form-control" id="fechaInput" name="fechaAcontecimiento">
         </div>
-
         <input type="hidden" id="latInput" name="latitud">
         <input type="hidden" id="lngInput" name="longitud">
         <input type="hidden" id="municipioInput" name="municipio">
