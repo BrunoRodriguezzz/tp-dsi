@@ -20,7 +20,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -88,8 +91,24 @@ public class HechoController {
   @GetMapping("/misHechos")
   public String mostrarMisHechos(@SessionAttribute("id") Long id, Model model){
     List<HechoDTO> hechos = this.dinamicaService.mostrarMisHechos(id);
+
+      Map<Long, Long> diasRestantesMap = new HashMap<>();
+
+      LocalDate hoy = LocalDate.now();
+      for (HechoDTO hecho : hechos) {
+          LocalDateTime fechaCarga = hecho.getFechaCarga();
+          if (fechaCarga != null) {
+              long diasRestantes = ChronoUnit.DAYS.between(hoy, fechaCarga.plusDays(7));
+              if (diasRestantes < 0) diasRestantes = 0;
+              diasRestantesMap.put(hecho.getId(), diasRestantes);
+          } else {
+              diasRestantesMap.put(hecho.getId(), 0L);
+          }
+      }
+
     model.addAttribute("hechos", hechos);
     model.addAttribute("cantidad", hechos.size());
+    model.addAttribute("diasRestantesMap", diasRestantesMap);
     model.addAttribute("titulo", "Mis Hechos");
     return "misHechos";
   }

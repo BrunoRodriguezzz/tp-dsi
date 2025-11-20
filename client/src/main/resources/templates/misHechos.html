@@ -58,7 +58,9 @@
                         </div>
                         <div class="tiempoRestante">
                             <i class="fa-regular fa-clock"></i>
-                            <p class="alineacion">0 días restantes para editar</p>
+                            <p class="alineacion">
+                                <span th:text="${diasRestantesMap[hecho.id]}">0</span> días restantes para editar
+                            </p>
                         </div>
                     </div>
                     <div class="acciones">
@@ -68,7 +70,7 @@
                         <a  class="btn btn-primary btn-dark config-opciones icono" th:if="${hecho.estado != 'PENDIENTE_DE_REVISION'}" th:href="@{/hechos/contribuyentes/{id}(id=${hecho.id})}">
                             <i class="bi bi-info-circle"></i>
                         </a>
-                        <a  class="btn btn-white config-opciones icono" th:href="@{modificarHecho/contribuyentes/{id}(id=${hecho.id})}">
+                        <a  class="btn btn-white config-opciones icono" th:if="${diasRestantesMap[hecho.id] != 0}" th:href="@{modificarHecho/contribuyentes/{id}(id=${hecho.id})}">
                             <i class="bi bi-pencil-square"></i>
                         </a>
                     </div>

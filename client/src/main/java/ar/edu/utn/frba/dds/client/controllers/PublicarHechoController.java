@@ -8,8 +8,14 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +26,7 @@ public class PublicarHechoController {
 
     private final DinamicaService dinamicaService;
     private final Logger LOGGER = LogManager.getLogger(PublicarHechoController.class);
-
+    private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads";
     @GetMapping
     public String publicacionHecho(Model model){
         model.addAttribute("titulo", "Publicar Hecho");
@@ -28,11 +34,36 @@ public class PublicarHechoController {
     }
 
     @PostMapping
-    public String publicarHecho(@ModelAttribute HechoInputDTO hecho, RedirectAttributes redirect) {
+    public String publicarHecho(@ModelAttribute HechoInputDTO hecho,
+                                @RequestParam(value = "archivo") MultipartFile[] archivos,
+                                RedirectAttributes redirect) {
 
         LOGGER.info("ID del usuario: {}", hecho.getIdUsuario());
 
+        File uploadDir = new File(UPLOAD_DIR);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
         List<String> mult = new ArrayList<>();
+
+        try {
+            for (MultipartFile archivo : archivos) {
+                if (archivo.isEmpty()) continue;
+
+                String filename = System.currentTimeMillis() + "_" + archivo.getOriginalFilename();
+
+                Path filePath = Paths.get(UPLOAD_DIR, filename);
+                Files.write(filePath, archivo.getBytes());
+
+                mult.add("/uploads/" + filename);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            redirect.addFlashAttribute("error", "Error al guardar archivo multimedia");
+            return "redirect:/publicarHecho";
+        }
+
         hecho.setContenidoMultimedia(mult);
 
         // Validaciones mínimas del lado cliente-servidor con detalle de campos faltantes

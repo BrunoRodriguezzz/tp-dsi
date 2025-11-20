@@ -23,6 +23,7 @@ public class HechoDTO {
     private LocalDateTime fechaAcontecimiento;
     private LocalDateTime fechaCarga;
     private List<String> etiquetas;
+    private List<String> contenidoMultimedia;
     private String estado;
     private String origen;
     private String fuente;
