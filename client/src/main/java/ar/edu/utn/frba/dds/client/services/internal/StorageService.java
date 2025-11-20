@@ -43,7 +43,7 @@ public class StorageService {
                 Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
             }
 
-            return filename; // devolver la URL completa si la generas
+            return filename; 
         } catch (IOException e) {
             throw new RuntimeException("Fallo al guardar el archivo.", e);
         }

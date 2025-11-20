@@ -70,6 +70,7 @@ public class HechoController {
   @GetMapping("/contribuyentes/{id}")
   public String verDetalleHechoContribuyente(@PathVariable Long id, Model model) {
     HechoDTO hecho = dinamicaService.buscarHechoId(id);
+    log.info("Contenido Multimedia: {}", hecho.getContenidoMultimedia());
     model.addAttribute("hecho", hecho);
     model.addAttribute("titulo", hecho.getTitulo());
     return "hecho";

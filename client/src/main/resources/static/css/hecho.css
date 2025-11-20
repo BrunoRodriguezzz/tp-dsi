@@ -198,7 +198,7 @@ main {
 /* En desktop: grid de dos columnas con orden específico */
 @media (min-width: 768px) {
     .cuadros-grid {
-        grid-template-columns: 72% 28%;
+        grid-template-columns: 75% 24%;
     }
 
     .columna-1{grid-column: 1;}
