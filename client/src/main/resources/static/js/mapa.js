@@ -214,6 +214,10 @@ function bindUsarUbicButton() {
 
 bindUsarUbicButton();
 
-document.getElementById('filtrosCollapse').addEventListener('shown.bs.collapse', function () {
-    map.resize();
-});
+// Solo agregar listener si el elemento existe (no todas las páginas tienen filtrosCollapse)
+const filtrosCollapse = document.getElementById('filtrosCollapse');
+if (filtrosCollapse) {
+    filtrosCollapse.addEventListener('shown.bs.collapse', function () {
+        map.resize();
+    });
+}

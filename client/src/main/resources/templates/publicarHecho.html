@@ -15,22 +15,27 @@
         <h2><strong>Publicar Hecho</strong></h2>
         <p>Comparte información relevante para la comunidad de forma colaborativa</p>
     </div>
-    <!-- Mensajes flash -->
+
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
     <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
-    <form th:action="@{/publicarHecho}" method="post" class="form-hecho" id="publicarHechoForm">
+
+    <form th:action="@{/publicarHecho}" method="post" class="form-hecho" id="publicarHechoForm" enctype="multipart/form-data">
+
         <div class="header-form">
             <h3><strong>Información del Hecho</strong></h3>
             <p>Completa todos los campos para registrar un nuevo hecho en el sistema</p>
         </div>
+
         <div class="form-title">
             <h6>Titulo</h6>
             <input type="text" class="form-control" placeholder="Titulo descriptivo del hecho" id="titleInput" name="titulo">
         </div>
+
         <div class="form-desc">
             <h6>Descripcion</h6>
             <textarea class="form-control" placeholder="Describe los detalles del hecho" id="descripcionInput" name="descripcion" rows="4"></textarea>
         </div>
+
         <div class="form-category">
             <h6>Categoria</h6>
             <select class="form-select" id="categoriaSelect" name="categoria">
@@ -44,10 +49,12 @@
                 <option value="Infraestructura">Infraestructura</option>
             </select>
         </div>
+
         <div class="form-fechaAcontecimiento">
             <h6>Fecha y Hora del Acontecimiento</h6>
             <input type="datetime-local" class="form-control" id="fechaInput" name="fechaAcontecimiento">
         </div>
+
         <input type="hidden" id="latInput" name="latitud">
         <input type="hidden" id="lngInput" name="longitud">
         <input type="hidden" id="municipioInput" name="municipio">
@@ -60,65 +67,35 @@
         <h6>Ubicacion</h6>
         <div id="geocoder" class="mb-3" style="width: 100%"></div>
         <div id="map" class="map"></div>
-        <div class="form-title">
-            <h6>Contenido Multimedia</h6>
-<!--            <input type="file" class="form-control" id="multimediaInput" name="multimedia">-->
-        </div>
-        <script th:src="@{/js/mapa.js}"></script>
-        <button type="submit" class="btn btn-dark" style="width: 100%">Publicar Hecho</button>
-    </form>
-</div>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    (function(){
-      const form = document.getElementById('publicarHechoForm');
-      if(!form) return;
-      const requiredIds = {
-        titulo: 'titleInput',
-        descripcion: 'descripcionInput',
-        categoria: 'categoriaSelect',
-        fechaAcontecimiento: 'fechaInput'
-      };
-      function markInvalid(el){
-        if(!el) return;
-        el.classList.add('is-invalid');
-        el.addEventListener('input', () => el.classList.remove('is-invalid'), { once: true });
-      }
-      form.addEventListener('submit', function(ev){
-        let errores = [];
-        // limpiar clases previas
-        Object.values(requiredIds).forEach(id => { const el = document.getElementById(id); if(el) el.classList.remove('is-invalid'); });
-        // Validar campos texto/select
-        if(!document.getElementById('titleInput')?.value?.trim()){ errores.push('Título'); markInvalid(document.getElementById('titleInput')); }
-        if(!document.getElementById('descripcionInput')?.value?.trim()){ errores.push('Descripción'); markInvalid(document.getElementById('descripcionInput')); }
-        const catSel = document.getElementById('categoriaSelect');
-        if(!catSel || !catSel.value){ errores.push('Categoría'); markInvalid(catSel); }
-        const fecha = document.getElementById('fechaInput');
-        if(!fecha || !fecha.value){ errores.push('Fecha Acontecimiento'); markInvalid(fecha); }
-        const lat = document.getElementById('latInput')?.value;
-        const lng = document.getElementById('lngInput')?.value;
-        if(!lat || !lng){ errores.push('Ubicación (selecciona en el mapa)'); }
-        // Datos de usuario ocultos
-        const nombre = document.getElementById('nombre')?.value;
-        const apellido = document.getElementById('apellido')?.value;
-        const fechaNac = document.getElementById('fechaNac')?.value;
-        if(!nombre || !apellido || !fechaNac){ errores.push('Datos de usuario (inicia sesión)'); }
 
-        if(errores.length){
-          ev.preventDefault();
-          // Si ya existe alerta de validación, reemplazar
-          let alert = document.querySelector('#validationAlert');
-          if(!alert){
-            alert = document.createElement('div');
-            alert.id = 'validationAlert';
-            alert.className = 'alert alert-danger';
-            form.parentElement.insertBefore(alert, form);
-          }
-          alert.textContent = 'Revisa los campos obligatorios: ' + errores.join(', ');
-          window.scrollTo({ top: alert.offsetTop - 20, behavior: 'smooth' });
-        }
-      });
-    })();
-    /*]]>*/
-</script>
+        <div class="form-title mb-3 mt-4">
+            <h6>Contenido Multimedia</h6>
+
+            <label for="multimediaInput" id="drop-area" class="d-block border rounded p-4 text-center mb-3 bg-light"
+                   style="border: 2px dashed #ced4da; cursor: pointer; transition: all 0.2s ease;">
+                <div class="mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-cloud-arrow-up text-secondary" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 0 1-.708-.708l2-2z"/>
+                        <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383zm.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z"/>
+                    </svg>
+                </div>
+                <p class="mb-0 text-muted fw-bold">Haz clic para subir o arrastra tus fotos aquí</p>
+                <small class="text-muted">(Imágenes o PDF, máx 10MB)</small>
+            </label>
+
+            <input type="file" id="multimediaInput" name="contenidoMultimedia" multiple accept="image/*,.pdf"
+                   style="opacity: 0; position: absolute; z-index: -1; width: 0; height: 0;">
+
+            <div id="preview-container" class="list-group mt-3">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-dark mt-3" style="width: 100%">Publicar Hecho</button>
+    </form>
+
+    <!-- Scripts -->
+    <script th:src="@{/js/mapa.js}"></script>
+    <script th:src="@{/js/publicarHecho/validarForm.js}"></script>
+    <script th:src="@{/js/publicarHecho/dragAndDrop.js}"></script>
+</div>
 </html>
