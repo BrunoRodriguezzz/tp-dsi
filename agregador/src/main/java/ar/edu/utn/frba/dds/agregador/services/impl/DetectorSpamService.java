@@ -41,7 +41,7 @@ public class DetectorSpamService implements IDetectorSpamService {
     if (fundamento.matches(".*(.)\\1{4,}.*")) {
       return false;
     }
-    Boolean resultado = score > 0.02;
+    Boolean resultado = score + 0.03 > 0.02;
     return resultado; // Umbral ajustable
   }
 

@@ -17,6 +17,7 @@ import ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpe
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -63,6 +64,19 @@ public class HechoService implements IHechoService {
   @Override
   public List<HechoOutputDTO> buscarHechosIndependientes() {
     List<Hecho> hechos = this.hechoRepository.buscarHechosIndependientes();
+
+    if (!hechos.isEmpty()) {
+      Long primeraId = hechos.get(0).getId();
+      Object fechaRaw = this.hechoRepository.getFechaRaw(primeraId);
+      LocalDateTime fechaMapeada = hechos.get(0).getFechaAcontecimiento();
+
+      System.out.println("=== DEBUG FECHA ===");
+      System.out.println("ID: " + primeraId);
+      System.out.println("Fecha RAW de BD: " + fechaRaw);
+      System.out.println("Fecha MAPEADA: " + fechaMapeada);
+      System.out.println("===================");
+    }
+
     return hechos.stream().map(HechoOutputDTO::HechoToDTO).collect(Collectors.toList());
   }
 
