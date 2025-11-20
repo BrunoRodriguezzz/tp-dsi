@@ -40,7 +40,7 @@ public class PanelControlController {
   public String panelControl(Model model) {
     model.addAttribute("cantidadHechosPendientes", dinamicaService.obtenerHechosPendientes().size());
     model.addAttribute("titulo", "Panel de Control");
-    model.addAttribute("cantidadHechos", hechoService.obtenerHechos().size());
+    model.addAttribute("cantidadHechos", hechoService.obtenerHechosAgregador().getTotalElements());
     model.addAttribute("cantModificaciones", fuenteService.obtenerFuentesNuevas().size());
 
     try {

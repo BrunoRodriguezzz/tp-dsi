@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.client.controllers;
 
 import ar.edu.utn.frba.dds.client.dtos.estadisticas.*;
 import ar.edu.utn.frba.dds.client.services.EstadisticaService;
+import ar.edu.utn.frba.dds.client.services.HechoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,9 @@ import java.util.stream.Collectors;
 public class EstadisticaController {
     @Autowired
     private EstadisticaService estadisticaService;
+
+    @Autowired
+    private HechoService hechoService;
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping

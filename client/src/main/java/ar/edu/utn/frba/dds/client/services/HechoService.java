@@ -33,14 +33,13 @@ public class HechoService {
     this.mockService = new MockService();
   }
 
-  public List<HechoDTO> obtenerHechosDestacados() {
-//        List<HechoDTO> response = this.webApiCallerService.getList(this.hechoServiceUrl, HechoDTO.class);
-//        return response != null ? response : List.of();
-    return this.mockService.obtenerHechosMockeados();
-  }
-
   public List<HechoDTO> obtenerHechos() {
-    return mockService.obtenerHechosMockeados();
+    try {
+      return this.webApiCallerService.get(this.agregadorURL + "/hechos?size=400", PaginadoHechoDTO.class).getContent();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return null;
+    }
   }
 
   public PaginadoHechoDTO obtenerHechosAgregador() {
