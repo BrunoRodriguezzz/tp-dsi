@@ -95,3 +95,50 @@ body p {
     border-color: #86b7fe;
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
+
+.caja-de-imagenes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.config-image {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 0.5rem;
+    width: 150px; /* tamaño fijo para miniaturas */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.config-image .preview img.preview-img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.config-image .preview video.preview-video {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.nombre-imagen {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.btn-red {
+    color: white;
+    background-color: red;
+    border: none;
+    padding: 0 6px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}

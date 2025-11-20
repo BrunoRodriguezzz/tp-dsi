@@ -214,3 +214,27 @@ main {
 .columna-1{}
 
 .columna-2{}
+
+.galeria-imagenes {
+    display: flex;           /* organiza las imágenes en fila */
+    flex-wrap: wrap;         /* pasa a la siguiente línea si no caben */
+    gap: 10px;               /* espacio entre imágenes */
+    justify-content: flex-start;
+    padding: 10px 0;         /* separación interna */
+    border: 1px solid #ddd;  /* opcional: borde para ver el contenedor */
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.galeria-imagenes img {
+    width: 200px;            /* ancho fijo */
+    height: 150px;           /* alto fijo */
+    object-fit: cover;       /* mantiene proporción y recorta si es necesario */
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+.galeria-imagenes img:hover {
+    transform: scale(1.05);  /* zoom al pasar el mouse */
+}

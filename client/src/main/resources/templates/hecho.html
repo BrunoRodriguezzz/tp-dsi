@@ -117,6 +117,9 @@
                         <i class="fa-solid fa-image" style="font-size: 1.3rem;"></i>
                         <h2 style="font-size: 1.5rem; margin-bottom: 0rem;">Contenido Multimedia</h2>
                     </div>
+                    <div class="galeria-imagenes">
+                        <img th:each="img : ${hecho.contenidoMultimedia}" th:src="@{${img}}" alt="Imagen del hecho">
+                    </div>
                 </div>
                 <div class="bloques columna-2">
                     <h2 style="font-size: 1.4rem; margin-bottom: 1rem; text-align: center;">Ubicación en Mapa</h2>

@@ -40,8 +40,10 @@ body{
         max-width: 760px;
     }
 
-    .caja-de-imagenes{
-        grid-template-columns: auto auto;
+    .caja-de-imagenes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
     }
 
 }
@@ -54,12 +56,17 @@ body{
     margin-bottom: 1rem;
 }
 
-.caja-de-imagenes{
-    display: grid;
-    gap:1rem;
-    margin-bottom: 1rem;
+.caja-de-imagenes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
+.preview-img, .preview-video {
+    width: 100%;
+    border-radius: 5px;
+    margin-top: 8px;
+}
 
 .config-label{
     font-size: 0.9rem;
@@ -94,14 +101,15 @@ body{
 }
 
 .btn-red {
-    background-color: white;
-    color: red;
-    border-color: rgb(250, 137, 137);
+    background-color: #c0392b;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-.btn-red:hover{
-    border-color: red;
-    color: red;
+.btn-red:hover {
+    background-color: #e74c3c;
 }
 
 .nombre-imagen{
@@ -112,11 +120,13 @@ body{
     margin-bottom: 1rem;
 }
 
-.config-image{
-    border:1px solid;
-    border-radius: 5px;
-    border-color: rgb(204, 204, 204);
-    padding: 1rem;
+.config-image {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 200px;
+    border-radius: 8px;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 .preview{
