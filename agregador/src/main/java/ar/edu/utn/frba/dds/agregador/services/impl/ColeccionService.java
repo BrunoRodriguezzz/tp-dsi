@@ -290,21 +290,44 @@ public class ColeccionService implements IColeccionService {
      this.actualizarDatosColeccion(coleccion, coleccionInputDTO);
 
     if (coleccionInputDTO.getConsensos() != null && !coleccionInputDTO.getConsensos().isEmpty()) {
+      coleccion.getConsensos().clear();
       coleccionInputDTO.getConsensos().stream()
           .map(Consenso::valueOf)
           .forEach(coleccion::agregarConsenso);
     }
 
+    boolean fuentesCambiaron = false;
+    if (coleccionInputDTO.getFuentes() != null && !coleccionInputDTO.getFuentes().isEmpty()) {
+      List<Fuente> nuevasFuentes = new ArrayList<>();
+      coleccionInputDTO.getFuentes().forEach(fuenteDTO -> {
+        Fuente fuente = this.fuenteRepository.findByNombre(fuenteDTO.getNombre());
+        if (fuente == null) {
+          throw new RuntimeException("La fuente " + fuenteDTO.getNombre() + " no existe");
+        }
+        nuevasFuentes.add(fuente);
+      });
+
+      if (!coleccion.getFuentes().equals(nuevasFuentes)) {
+        fuentesCambiaron = true;
+        coleccion.getFuentes().clear();
+        coleccion.getFuentes().addAll(nuevasFuentes);
+      }
+    }
+
+    boolean criterioCambio = false;
     if (coleccionInputDTO.getCriterio() != null) {
       List<Filtro> filtrosTransitorios = CriterioInputDTO.crearFiltros(coleccionInputDTO.getCriterio());
       List<EntidadFiltro> filtrosGestionados = this.filtroMapper.toEntities(filtrosTransitorios);
 
       coleccion.cambiarCriterio(new Criterio(filtrosGestionados));
+      criterioCambio = true;
+     }
 
-      List<Fuente> fuentes = coleccion.getFuentes();
-      List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentes);
-      coleccion.cargarHechos(hechosFuentes);
-      coleccion.recalcularHechos();
+     if (fuentesCambiaron || criterioCambio) {
+       List<Fuente> fuentes = coleccion.getFuentes();
+       List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentes);
+       coleccion.getHechos().clear();
+       coleccion.cargarHechos(hechosFuentes);
      }
 
      this.coleccionRepository.save(coleccion);
