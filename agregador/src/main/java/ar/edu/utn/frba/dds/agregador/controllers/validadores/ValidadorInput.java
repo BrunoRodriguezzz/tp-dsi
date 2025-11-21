@@ -96,17 +96,19 @@ public class ValidadorInput {
       throw new RequestException("Descripcion faltante");
     }
 
-    if (coleccion.getFuentes().isEmpty()) {
+    if (coleccion.getFuentes() == null || coleccion.getFuentes().isEmpty()) {
       throw new RequestException("Fuentes faltantes");
     }
 
-   coleccion.getConsensos().forEach(c -> {
-     try {
-       Consenso.valueOf(c.toUpperCase());
-     } catch (IllegalArgumentException e) {
-       throw new RuntimeException("El consenso " + c + " no es valido");
-     }
-   });
+   if (coleccion.getConsensos() != null) {
+     coleccion.getConsensos().forEach(c -> {
+       try {
+         Consenso.valueOf(c.toUpperCase());
+       } catch (IllegalArgumentException e) {
+         throw new RuntimeException("El consenso " + c + " no es valido");
+       }
+     });
+   }
   }
 
   public static void validarFuenteInputDTO(FuenteInputDTO fuente) {

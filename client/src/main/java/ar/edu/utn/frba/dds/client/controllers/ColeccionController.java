@@ -52,7 +52,6 @@ public class ColeccionController {
         .bodyToMono(new ParameterizedTypeReference<PaginaDTO<ColeccionOutputDTO>>() {})
         .block();
     List<ColeccionOutputDTO> colecciones = pagina != null ? pagina.getContent() : List.of();
-    log.info("Colecciones recibidas del agregador: {}", colecciones);
     model.addAttribute("colecciones", colecciones);
     return "colecciones";
   }
@@ -200,32 +199,66 @@ public class ColeccionController {
   }
 
   @PostMapping("/nuevaColeccion")
-  public String crearColeccion(@RequestParam String nombre,
-                            @RequestParam String descripcion,
-                            @RequestParam(required = false) List<String> fuentes,
-                            @ModelAttribute CriterioInputDTO criterio,
-                            @RequestParam(required = false) List<String> consensos) {
-    ColeccionInputDTO coleccionInputDTO = new ColeccionInputDTO();
-    coleccionInputDTO.setNombre(nombre);
-    coleccionInputDTO.setDescripcion(descripcion);
-    coleccionInputDTO.setCriterio(criterio);
-    if (fuentes != null) {
-        List<NombreFuenteInputDTO> fuentesDTO = fuentes.stream().map(f -> {
-            NombreFuenteInputDTO dto = new NombreFuenteInputDTO();
-            dto.setNombre(f);
-            return dto;
-        }).toList();
-        coleccionInputDTO.setFuentes(fuentesDTO);
+  public String crearColeccion(@ModelAttribute NuevaColeccionForm form) {
+    try {
+      CriterioInputDTO criterio = new CriterioInputDTO();
+      criterio.setCategoria(form.getCriterioCategoria() != null && !form.getCriterioCategoria().trim().isEmpty()
+          ? form.getCriterioCategoria() : null);
+      criterio.setTitulo(form.getCriterioTitulo() != null && !form.getCriterioTitulo().trim().isEmpty()
+          ? form.getCriterioTitulo() : null);
+      criterio.setLatitud(form.getCriterioLatitud() != null && !form.getCriterioLatitud().trim().isEmpty()
+          ? form.getCriterioLatitud() : null);
+      criterio.setLongitud(form.getCriterioLongitud() != null && !form.getCriterioLongitud().trim().isEmpty()
+          ? form.getCriterioLongitud() : null);
+
+      try {
+        if (form.getCriterioFechaCargaInicio() != null && !form.getCriterioFechaCargaInicio().isBlank()) {
+          criterio.setFechaCargaInicio(java.time.LocalDateTime.parse(form.getCriterioFechaCargaInicio()));
+        }
+        if (form.getCriterioFechaCargaFin() != null && !form.getCriterioFechaCargaFin().isBlank()) {
+          criterio.setFechaCargaFin(java.time.LocalDateTime.parse(form.getCriterioFechaCargaFin()));
+        }
+        if (form.getCriterioFechaAcontecimientoInicio() != null && !form.getCriterioFechaAcontecimientoInicio().isBlank()) {
+          criterio.setFechaAcontecimientoInicio(java.time.LocalDateTime.parse(form.getCriterioFechaAcontecimientoInicio()));
+        }
+        if (form.getCriterioFechaAcontecimientoFin() != null && !form.getCriterioFechaAcontecimientoFin().isBlank()) {
+          criterio.setFechaAcontecimientoFin(java.time.LocalDateTime.parse(form.getCriterioFechaAcontecimientoFin()));
+        }
+      } catch (Exception e) {
+        log.error("Error parseando fechas: {}", e.getMessage());
+      }
+
+      ColeccionInputDTO coleccionInputDTO = new ColeccionInputDTO();
+      coleccionInputDTO.setNombre(form.getNombre());
+      coleccionInputDTO.setDescripcion(form.getDescripcion());
+      coleccionInputDTO.setCriterio(criterio);
+
+      if (form.getFuentes() == null || form.getFuentes().isEmpty()) {
+          log.error("No se seleccionaron fuentes");
+          throw new RuntimeException("Debe seleccionar al menos una fuente");
+      }
+
+      List<NombreFuenteInputDTO> fuentesDTO = form.getFuentes().stream().map(f -> {
+          NombreFuenteInputDTO dto = new NombreFuenteInputDTO();
+          dto.setNombre(f);
+          return dto;
+      }).toList();
+      coleccionInputDTO.setFuentes(fuentesDTO);
+
+      coleccionInputDTO.setConsensos(form.getConsensos());
+
+      getWebClient().post()
+          .uri("/colecciones")
+          .bodyValue(coleccionInputDTO)
+          .retrieve()
+          .toBodilessEntity()
+          .block();
+
+      return "redirect:/colecciones";
+    } catch (Exception e) {
+      log.error("Error creando colección: {}", e.getMessage(), e);
+      throw e;
     }
-    coleccionInputDTO.setConsensos(consensos);
-    log.info("Informacion que vamos a mandar: {}", coleccionInputDTO);
-    getWebClient().post()
-        .uri("/colecciones")
-        .bodyValue(coleccionInputDTO)
-        .retrieve()
-        .toBodilessEntity()
-        .block();
-    return "redirect:/colecciones";
   }
 
   @CrossOrigin(origins = "*")

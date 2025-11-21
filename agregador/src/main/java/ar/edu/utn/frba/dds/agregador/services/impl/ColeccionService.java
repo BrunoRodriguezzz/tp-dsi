@@ -124,7 +124,7 @@ public class ColeccionService implements IColeccionService {
     List<String> nombreColecciones = this.agregarHechoAColecciones(colecciones, hecho);
     boolean resultado = this.guardarColecciones(colecciones);
     if(!resultado){
-      throw new RuntimeException("No se puedieron guardar las colecciones"); //TODO una excepción personalizar
+      throw new RuntimeException("No se puedieron guardar las colecciones");
     }
     return nombreColecciones;
   }
@@ -141,7 +141,6 @@ public class ColeccionService implements IColeccionService {
   public Boolean eliminarHechoDeColecciones(Hecho hecho) {
     return this.deleteHechoFromColeccion(hecho);
   }
-
 
   @Override
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
@@ -173,7 +172,8 @@ public class ColeccionService implements IColeccionService {
            .forEach(nuevaColeccion::agregarConsenso);
      }
 
-      Coleccion coleccionGuardada = this.coleccionRepository.save(nuevaColeccion);
+      Coleccion coleccionGuardada = this.coleccionRepository.saveAndFlush(nuevaColeccion);
+
       applicationContext.getBean(ColeccionService.class).importarYAsociarHechos(coleccionGuardada.getId(), fuentesColeccion);
 
       return ColeccionOutputDTO.coleccionToDTO(coleccionGuardada);
@@ -407,3 +407,4 @@ public class ColeccionService implements IColeccionService {
         return HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
     }
 }
+

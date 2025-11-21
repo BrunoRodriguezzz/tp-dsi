@@ -40,7 +40,7 @@
                         </div>
                         <div class="text-end buttons">
                             <button type="submit" class="btn btn-primary btn-dark">Filtrar</button>
-                            <a th:href="${clearUrl}" th:attr="data-clear=${clearUrl}" onclick="window.location.href=this.getAttribute('data-clear')" class="btn btn-outline-secondary">Limpiar</a>
+                            <button type="button" class="btn btn-outline-secondary" onclick="limpiarFiltros()">Limpiar</button>
                         </div>
                     </div>
 
@@ -48,4 +48,11 @@
             </form>
         </div>
     </div>
+
+    <script>
+        function limpiarFiltros() {
+            // Redirigir a la URL base sin query params
+            window.location.href = window.location.origin + window.location.pathname;
+        }
+    </script>
 </div>

@@ -24,10 +24,12 @@ public class FiltroMapper {
     public EntidadFiltro toEntity(Filtro filtro) {
         if (filtro instanceof FiltroCategoria f) {
             String tituloCategoria = f.getCategoria().getTitulo();
+            // Busca categoría existente o la crea si no existe
             Categoria categoriaExistente = categoriaRepository.findByTitulo(tituloCategoria)
-                    .orElseThrow(() -> new RuntimeException(
-                            "La categoría '" + tituloCategoria + "' no existe en la base de datos.")
-                    );
+                    .orElseGet(() -> {
+                        Categoria nuevaCategoria = new Categoria(tituloCategoria);
+                        return categoriaRepository.save(nuevaCategoria);
+                    });
             return new FiltroCategoria(categoriaExistente);
         }
         if (filtro instanceof FiltroEtiqueta f) {

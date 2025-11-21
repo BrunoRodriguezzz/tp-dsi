@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.agregador.models.domain.colecciones;
 
-import ar.edu.utn.frba.dds.agregador.converters.OrigenConverter;
 import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import ar.edu.utn.frba.dds.agregador.models.domain.criterio.FiltroMapper;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
@@ -44,7 +43,7 @@ public class Coleccion {
     )
     private List<Fuente> fuentes = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "criterio_id")
     private Criterio criterio;
 
@@ -88,6 +87,8 @@ public class Coleccion {
 
     public List<Hecho> cargarHechos(List<Hecho> hechos) {
         List<Hecho> filtrados = this.filtrarHechosSegunCriterioYFuentes(hechos);
+        System.out.println("Hechos después de filtrar: " + (filtrados != null ? filtrados.size() : 0));
+
         if (filtrados == null || filtrados.isEmpty()) {
             return this.hechos;
         }
@@ -187,16 +188,33 @@ public class Coleccion {
                 .map(Fuente::getId)
                 .toList();
 
-        return hechos.stream()
-            .filter(hecho ->
-                this.cumpleCriterioColeccion(hecho) &&
-                    !hecho.getEstaEliminado() &&
-                    hecho.getFuenteSet()
-                            .stream()
-                            .map(hechoFuente -> hechoFuente.getFuente().getId())
-                            .anyMatch(IDfuentes::contains)
-            )
+        System.out.println("Filtros del criterio:");
+        if (this.criterio != null && this.criterio.getFiltros() != null) {
+            this.criterio.getFiltros().forEach(f ->
+                System.out.println("  - " + f.getClass().getSimpleName())
+            );
+        }
+
+        List<Hecho> resultado = hechos.stream()
+            .filter(hecho -> {
+                boolean cumpleCriterio = this.cumpleCriterioColeccion(hecho);
+                boolean noEliminado = !hecho.getEstaEliminado();
+                boolean esDeFuente = hecho.getFuenteSet()
+                        .stream()
+                        .map(hechoFuente -> hechoFuente.getFuente().getId())
+                        .anyMatch(IDfuentes::contains);
+
+                boolean pasa = cumpleCriterio && noEliminado && esDeFuente;
+
+                if (!pasa && !cumpleCriterio) {
+                    System.out.println("Hecho rechazado por criterio: " + hecho.getTitulo());
+                }
+
+                return pasa;
+            })
             .collect(Collectors.toList());
+
+        return resultado;
     }
 
     private Boolean cumpleCriterioColeccion(Hecho hecho) {

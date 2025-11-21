@@ -29,7 +29,10 @@ public class Criterio {
     private List<EntidadFiltro> filtros = new ArrayList<>();
 
     public Criterio(List<EntidadFiltro> filtros) {
-        this.filtros = filtros;
+        this.filtros = new ArrayList<>();
+        if (filtros != null) {
+            agregarFiltros(filtros);
+        }
     }
 
     public Boolean coincideCon(Hecho hecho) {

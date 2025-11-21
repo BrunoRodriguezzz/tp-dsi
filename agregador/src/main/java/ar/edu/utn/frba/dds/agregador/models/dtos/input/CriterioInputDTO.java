@@ -35,14 +35,12 @@ public class CriterioInputDTO {
                 return new ArrayList<>();
             }
 
-            if (criterioInputDTO.getTitulo() != null) { // Quiero filtrar por título
-                if(!criterioInputDTO.getTitulo().isEmpty()) {
-                    FiltroTitulo filtroTitulo = new FiltroTitulo(criterioInputDTO.getTitulo());
-                    filtros.add(filtroTitulo);
-                }
+            if (criterioInputDTO.getTitulo() != null && !criterioInputDTO.getTitulo().trim().isEmpty()) {
+                FiltroTitulo filtroTitulo = new FiltroTitulo(criterioInputDTO.getTitulo());
+                filtros.add(filtroTitulo);
             }
 
-            if (criterioInputDTO.getCategoria() != null) {
+            if (criterioInputDTO.getCategoria() != null && !criterioInputDTO.getCategoria().trim().isEmpty()) {
                 Categoria categoria = new Categoria();
                 categoria.setTitulo(criterioInputDTO.getCategoria());
                 filtros.add(new FiltroCategoria(categoria));
@@ -72,26 +70,16 @@ public class CriterioInputDTO {
                 filtros.add(filtroFechaCargaFinal);
             }
 
-            if (criterioInputDTO.getLatitud() != null) {
+            if (criterioInputDTO.getLatitud() != null && !criterioInputDTO.getLatitud().trim().isEmpty()) {
                 FiltroLatitud filtroLatitud = new FiltroLatitud(Double.parseDouble(criterioInputDTO.getLatitud()));
                 filtros.add(filtroLatitud);
             }
 
-            if (criterioInputDTO.getLongitud() != null) {
+            if (criterioInputDTO.getLongitud() != null && !criterioInputDTO.getLongitud().trim().isEmpty()) {
                 FiltroLongitud filtroLongitud = new FiltroLongitud(Double.parseDouble(criterioInputDTO.getLongitud()));
                 filtros.add(filtroLongitud);
             }
 
-            if (criterioInputDTO.getCategoria() != null) { // Quiero filtrar por categoría
-                if(!criterioInputDTO.getCategoria().isEmpty()) {
-                    try {
-                        FiltroCategoria filtroCategoria = new FiltroCategoria(new Categoria(criterioInputDTO.getCategoria()));
-                        filtros.add(filtroCategoria);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
 
         } catch (Exception e){ throw new RuntimeException(e); }
 
