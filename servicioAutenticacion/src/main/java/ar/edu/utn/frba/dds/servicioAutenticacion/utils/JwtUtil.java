@@ -5,13 +5,18 @@ import lombok.Getter;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
 public class JwtUtil {
+    @Value("${SECRET_KEY}")
+    private static final String SECRET_KEY = "mySecretKey123456789012345678901234567890"; // Mínimo 256 bits para HS256
+
     @Getter
-    private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     private static final long ACCESS_TOKEN_VALIDITY = 15 * 60 * 1000; // 15 min
     private static final long REFRESH_TOKEN_VALIDITY = 7 * 24 * 60 * 60 * 1000; // 7 días
