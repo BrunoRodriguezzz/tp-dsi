@@ -133,17 +133,14 @@ public class UserService implements IUserService {
     @Override
     public SolicitudModOutputDTO actualizar(HechoModificadoInputDTO hechoModificado) {
 
-        // 1️⃣ Verificar usuario
         if (!this.verificarUsuarioRegistrado(hechoModificado)) {
             throw new ErrorAccesoNoAutorizado("No existe un usuario registrado con estos datos.");
         }
 
-        // 2️⃣ Verificar tiempo para actualizar
         if (!this.verificarTiempoParaActualizar(hechoModificado)) {
             throw new ErrorDeTiempo("El plazo para modificar el hecho se ha terminado y no es posible modificar el hecho.");
         }
 
-        // 3️⃣ Procesar contenido multimedia
         List<ContenidoMultimedia> contenido;
         if (hechoModificado.getContenidoMultimedia() == null) {
             // Lista vacía si el usuario borró todas las imágenes
@@ -155,7 +152,6 @@ public class UserService implements IUserService {
                     .collect(Collectors.toList());
         }
 
-        // 4️⃣ Procesar categoría y ubicación
         Categoria categoria = this.categoriaExistente(hechoModificado.getCategoria());
         Ubicacion ubicacion = this.ubicacionExistente(
                 hechoModificado.getLatitud(),
@@ -164,19 +160,17 @@ public class UserService implements IUserService {
                 hechoModificado.getMunicipio()
         );
 
-        // 5️⃣ Crear la solicitud de modificación
         SolicitudModificacion nuevaSolicitud = SolicitudModificacion.builder()
                 .idHecho(hechoModificado.getId())
                 .titulo(hechoModificado.getTitulo())
                 .descripcion(hechoModificado.getDescripcion())
                 .categoria(categoria)
                 .ubicacion(ubicacion)
-                .contenidoMultimedia(contenido) // puede ser lista vacía
+                .contenidoMultimedia(contenido)
                 .fechaAcontecimiento(hechoModificado.getFechaAcontecimiento())
                 .estadoSolicitud(EstadoHecho.PENDIENTE_DE_REVISION)
                 .build();
 
-        // 6️⃣ Persistir solicitud
         this.dinamicaRepository.guardarSolicitudModificacion(nuevaSolicitud);
 
         return SolicitudModOutputDTO.convertir(nuevaSolicitud);

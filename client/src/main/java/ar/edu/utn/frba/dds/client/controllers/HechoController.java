@@ -272,12 +272,10 @@ public class HechoController {
           original.addAll(hechoDTO.getContenidoMultimedia());
       }
 
-      // === 2. Quitar los eliminados ===
       if (eliminados != null) {
           original.removeAll(eliminados);
       }
 
-      // === 3. Guardar nuevos archivos si existen ===
       if (nuevosArchivos != null) {
           for (MultipartFile file : nuevosArchivos) {
               if (!file.isEmpty()) {
