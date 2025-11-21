@@ -133,6 +133,8 @@ public class DinamicaService {
     }
 
     public void gestionarHecho(HechoRevisadoForm form) {
+        if(form.getEtiquetas().isEmpty()) form.setEtiquetas(null);
+
         HechoDinamicaDTO dto = HechoDinamicaDTO.builder()
                 .idAdministrador(form.getIdAdministrador())
                 .id(form.getId())
@@ -146,7 +148,7 @@ public class DinamicaService {
         try {
             WebClient.create(dinamicaUrl)
                     .post()
-                    .uri("/api/fuenteDinamica/gestion")
+                    .uri("/gestion")
                     .bodyValue(dto)
                     .retrieve()
                     .onStatus(httpStatusCode -> httpStatusCode.is4xxClientError() || httpStatusCode.is5xxServerError(),

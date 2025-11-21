@@ -19,13 +19,16 @@ public class FuenteService implements IFuenteService {
   @Autowired
   private IHechoService hechoService;
 
-  @Value("${servicio.agregador}")
-  private String urlAgregador;
+  private WebClient webClient;
+  private UtilsDTO utilsDTO;
 
-  private final WebClient webClient = WebClient
-      .builder()
-      .baseUrl(urlAgregador)
-      .build();
+  public FuenteService (@Value("${servicio.agregador}") String urlAgregador, @Value("${servicio.proxy}") String urlProxy) {
+    this.webClient = WebClient
+        .builder()
+        .baseUrl(urlAgregador)
+        .build();
+    this.utilsDTO = new UtilsDTO(urlProxy);
+  }
 
   @Override
   public void guardarFuenteInput(InputFuenteDTO inputFuenteDTO) {
@@ -48,7 +51,7 @@ public class FuenteService implements IFuenteService {
     fuente.getAllHechos()
             .doOnNext(hechoService::guardarHecho)
             .blockLast(); // Para que espere a que termine
-    OutputFuenteAgregador fuenteOutputDTO = UtilsDTO.toOutputFuenteAgregador(fuente);
+    OutputFuenteAgregador fuenteOutputDTO = this.utilsDTO.toOutputFuenteAgregador(fuente);
     this.webClient.post()
         .uri(uriBuilder -> uriBuilder.path("/fuentes").build())
         .bodyValue(fuenteOutputDTO)

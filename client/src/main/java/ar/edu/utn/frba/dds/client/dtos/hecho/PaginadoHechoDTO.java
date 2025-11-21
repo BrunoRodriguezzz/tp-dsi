@@ -10,7 +10,7 @@ import java.util.List;
 public class PaginadoHechoDTO {
     List<HechoDTO> content;
     int totalElements;
-    int toalPages;
+    int totalPages;
     int size;
     int number;
     int numberOfElements;

@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.IArchivoRepository;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.fuenteEstatica.services.IArchivoService;
+import java.net.URI;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,36 +20,48 @@ public class ArchivoService implements IArchivoService {
   private static final Logger logger = LoggerFactory.getLogger(ArchivoService.class);
   private IArchivoRepository archivoRepository;
   private IHechoRepository hechoRepository;
+  private final WebClient webClient;
+  private final UtilsDTO utilsDTO;
 
-  @Value("${servicio.agregador}")
-  private String urlAgregador;
-
-  private final WebClient webClient = WebClient
-      .builder()
-      .baseUrl(urlAgregador)
-      .build();
-
-  public ArchivoService(IArchivoRepository archivoRepository, IHechoRepository hechoRepository) {
+  public ArchivoService(IArchivoRepository archivoRepository, IHechoRepository hechoRepository, @Value("${servicio.agregador}") String urlAgregador,  @Value("${servicio.estatica}") String urlEstatica) {
     this.archivoRepository = archivoRepository;
     this.hechoRepository = hechoRepository;
+    this.webClient = WebClient
+        .builder()
+        .baseUrl(urlAgregador)
+        .build();
+    this.utilsDTO = new UtilsDTO(urlEstatica);
   }
 
   @Override
   public void guardarArchivo(Archivo archivo) {
-    archivoRepository.findByNombre(archivo.getNombre())
-        .stream()
-        .findFirst()
-        .ifPresent(a -> archivo.setId(a.getId()));
-    archivoRepository.save(archivo);
-    importarHechosArchivo(archivo);
-    ArchivoOutputAgregadorDTO outputAgregadorDTO = UtilsDTO.toOutputArchivoAgregador(archivo);
-    this.webClient.post()
-        .uri(uriBuilder -> uriBuilder.path("/fuentes").build())
-        .bodyValue(outputAgregadorDTO)
-        .retrieve()
-        .toBodilessEntity()
-        .subscribe();
+    try {
+      archivoRepository.findByNombre(archivo.getNombre())
+          .stream()
+          .findFirst()
+          .ifPresent(a -> archivo.setId(a.getId()));
+
+      archivoRepository.save(archivo);
+      importarHechosArchivo(archivo);
+
+      ArchivoOutputAgregadorDTO outputAgregadorDTO = this.utilsDTO.toOutputArchivoAgregador(archivo);
+      this.webClient.post()
+          .uri(uriBuilder -> {
+            URI finalUri = uriBuilder.path("/fuentes").build();
+            return finalUri;
+          })
+          .bodyValue(outputAgregadorDTO)
+          .retrieve()
+          .toBodilessEntity()
+          .doOnError(error -> {
+          })
+          .subscribe();
+
+    } catch (Exception e) {
+      logger.error(e.getMessage());
+    }
   }
+
 
   @Override
   public List<Archivo> obtenerArchivos() {

@@ -43,8 +43,8 @@ public class HechoController {
       @RequestParam(name = "lat", required = false) Double lat,
       @RequestParam(name = "lng", required = false) Double lon,
       @RequestParam(name = "fuente", required = false) String fuente,
-      @RequestParam(name = "page", required = false) Long page,
-      @RequestParam(name = "size", required = false) Long size
+      @RequestParam(name = "page", required = false, defaultValue = "0") Long page,
+      @RequestParam(name = "size", required = false, defaultValue = "10") Long size
   ) {
     Params params = new Params(fechaAcontecimientoInicio, fechaAcontecimientoFin, categoria, lat, lon, fuente, page, size);
     model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
@@ -52,14 +52,17 @@ public class HechoController {
     if (paginado != null) {
       model.addAttribute("hechos", paginado.getContent());
       model.addAttribute("cantidad", paginado.getTotalElements());
-      LOGGER.info("Mostrando {} hechos.", paginado.getTotalElements());
+      model.addAttribute("currentPage", paginado.getNumber());
+      model.addAttribute("totalPages", paginado.getTotalPages());
     } else {
       model.addAttribute("hechos", List.of());
       model.addAttribute("cantidad", 0);
-      LOGGER.info("No se encontraron hechos.");
+      model.addAttribute("currentPage", 0);
+      model.addAttribute("totalPages", 1);
     }
     return "hechos";
   }
+
 
   @GetMapping("/{id}")
   public String verDetalleHecho(@PathVariable Long id, Model model) {

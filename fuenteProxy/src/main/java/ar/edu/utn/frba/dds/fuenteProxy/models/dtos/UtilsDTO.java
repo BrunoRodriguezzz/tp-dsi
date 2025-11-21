@@ -15,8 +15,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 
 public class UtilsDTO {
-    @Value("${servicio.proxy}")
-    private static String urlProxy;
+    private final String path;
+    public UtilsDTO(@Value("${servicio.proxy}") String urlProxy) {
+      this.path = urlProxy;
+    }
 
     public static OutputHecho hechoToDtoOutput(HechoProxy hecho) {
         OutputHecho dto = new OutputHecho();
@@ -78,14 +80,13 @@ public class UtilsDTO {
     }
 
   public static Fuente toFuente(InputFuenteDTO inputFuenteDTO) {
-        // TODO: COMO SABEMOS EL TIPO??
         return null;
   }
 
-    public static OutputFuenteAgregador toOutputFuenteAgregador(Fuente fuente) {
+    public OutputFuenteAgregador toOutputFuenteAgregador(Fuente fuente) {
         OutputFuenteAgregador output = new OutputFuenteAgregador();
         output.setNombre(fuente.getNombre());
-        output.setPath(urlProxy);
+        output.setPath(this.path);
         output.setTipoFuente("PROXY");
         output.setIdInterno(fuente.getId());
         return output;
