@@ -10,62 +10,106 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
 </th:block>
 <div th:fragment="contenido" class="container-responsive container">
-        <div class="container-principal">
-            <div class="container-secundario">
-                <div>
-                    <h1 class="p1">Todos los Hechos</h1>
-                    <p class="p2">Explora y filtra todos los hechos registrados en el sistema</p>
-                    <p class="p3" th:text="|${cantidad} hechos mostrados|"></p>
+    <div class="container-principal">
+        <div class="container-secundario">
+            <div>
+                <h1 class="p1">Todos los Hechos</h1>
+                <p class="p2">Explora y filtra todos los hechos registrados en el sistema</p>
+                <p class="p3" th:text="|${cantidad} hechos mostrados|"></p>
+            </div>
+            <div class="botones-header">
+                <button class="btn btn-outline-secondary config-mostrarFiltros" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">Mostrar Filtros</button>
+                <a th:href="@{/publicarHecho}" class="btn btn-primary btn-dark config-nuevoHecho">+ Publicar Hecho</a>
+            </div>
+        </div>
+
+        <div th:with="filtAction=@{/hechos}, filtClear=@{/hechos}">
+            <div th:insert="~{fragments/filtros :: filtros(actionUrl=${filtAction}, clearUrl=${filtClear})}"></div>
+        </div>
+
+        <div th:if="${cantidad == 0}">
+            <div th:insert="~{fragments/vacio :: vacio}"></div>
+        </div>
+
+        <div class="hecho-card" th:each="hecho: ${hechos}">
+            <div class="hecho-card-mas-opciones">
+                <div class="titulo-mas-descripcion">
+                    <h2 class="titulo-Hecho" th:text="${hecho.titulo}">Sin título</h2>
+                    <p class="descripcion" th:text="${hecho.descripcion}">Sin descripción</p>
                 </div>
-                <div class="botones-header">
-                    <button class="btn btn-outline-secondary config-mostrarFiltros" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">Mostrar Filtros</button>
-                    <a th:href="@{/publicarHecho}" class="btn btn-primary btn-dark config-nuevoHecho">+ Publicar Hecho</a>
+                <div class="opciones">
+                    <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Sin Categoría</p>
+                    <a href="verDetalle-hecho1.html" class="btn btn-primary btn-dark config-opciones" th:href="@{/hechos/{id}(id=${hecho.id})}">Ver Detalles</a>
+                    <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-red config-opciones">Solicitar Eliminacion</a>
                 </div>
             </div>
-
-            <div th:with="filtAction=@{/hechos}, filtClear=@{/hechos}">
-                <div th:insert="~{fragments/filtros :: filtros(actionUrl=${filtAction}, clearUrl=${filtClear})}"></div>
-            </div>
-
-            <div th:if="${cantidad == 0}">
-                <div th:insert="~{fragments/vacio :: vacio}"></div>
-            </div>
-
-            <div class="hecho-card" th:each="hecho: ${hechos}">
-                <div class="hecho-card-mas-opciones">
-                    <div class="titulo-mas-descripcion">
-                        <h2 class="titulo-Hecho" th:text="${hecho.titulo}">Sin título</h2>
-                        <p class="descripcion" th:text="${hecho.descripcion}">Sin descripción</p>
-                    </div>
-                    <div class="opciones">
-                        <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Sin Categoría</p>
-                        <a href="verDetalle-hecho1.html" class="btn btn-primary btn-dark config-opciones" th:href="@{/hechos/{id}(id=${hecho.id})}">Ver Detalles</a>
-                        <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-red config-opciones">Solicitar Eliminacion</a>
-                    </div>
-                </div>
-                <div class="informacion-general">
-                    <div class="fecha-ubicacion-fuente encolumnar">
-                        <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento}|"></p>
-                        <p class="info-fecha-ubicacion-fuente"
-                           th:text="${
+            <div class="informacion-general">
+                <div class="fecha-ubicacion-fuente encolumnar">
+                    <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento}|"></p>
+                    <p class="info-fecha-ubicacion-fuente"
+                       th:text="${
                                hecho.ubicacion == null or hecho.ubicacion.nombreProvincia == null
                                ? 'Sin provincia'
                                : (hecho.ubicacion.municipio != null
                                    ? 'Ubicación: ' + hecho.ubicacion.nombreProvincia + ', ' + hecho.ubicacion.municipio
                                    : 'Ubicación: ' + hecho.ubicacion.nombreProvincia)
                            }">
-                        </p>
+                    </p>
 
-                        <p class="info-fecha-ubicacion-fuente" th:text="|Fuente: ${hecho.fuente}|"></p>
-                    </div>
-                    <div class="etiquetas">
-                        <div th:each="etiqueta, iterStat: ${hecho.etiquetas}" th:if="${iterStat.index < 3}">
-                            <p class="titulo-etiqueta etiqueta-interes" th:text="${etiqueta}">Sin etiqueta</p>
-                        </div>
+                    <p class="info-fecha-ubicacion-fuente" th:text="|Fuente: ${hecho.fuente}|"></p>
+                </div>
+                <div class="etiquetas">
+                    <div th:each="etiqueta, iterStat: ${hecho.etiquetas}" th:if="${iterStat.index < 3}">
+                        <p class="titulo-etiqueta etiqueta-interes" th:text="${etiqueta}">Sin etiqueta</p>
                     </div>
                 </div>
             </div>
         </div>
-    <script th:src="@{/js/mapa.js}"></script>
+    </div>
+
+    <div th:if="${totalPages > 1}" style="margin: 2rem 0; text-align: center;">
+        <div style="display: inline-flex; gap: 0.5rem; align-items: center;">
+            <a th:if="${currentPage > 0}"
+               th:href="@{/hechos(page=${currentPage - 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+               class="btn btn-primary btn-dark config-opciones">Página Anterior</a>
+
+            <!-- Primera página -->
+            <span th:if="${0 == currentPage}"
+                  th:text="1"
+                  style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; background: #007bff; color: white; border-radius: 4px; font-weight: bold;"></span>
+            <a th:if="${0 != currentPage}"
+               th:href="@{/hechos(page=0, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+               th:text="1"
+               style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; text-decoration: none; color: #333; border: 1px solid #ddd; border-radius: 4px;"></a>
+
+            <span th:if="${currentPage > 3}" style="margin: 0 0.5rem;">...</span>
+                <span th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}" th:if="${i > 0 and i < totalPages - 1}">
+                <span th:if="${i == currentPage}"
+                      th:text="${i + 1}"
+                      style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; background: #007bff; color: white; border-radius: 4px; font-weight: bold;"></span>
+                <a th:if="${i != currentPage}"
+                   th:href="@{/hechos(page=${i}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                   th:text="${i + 1}"
+                   style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; text-decoration: none; color: #333; border: 1px solid #ddd; border-radius: 4px;"></a>
+            </span>
+
+            <span th:if="${currentPage < totalPages - 4}" style="margin: 0 0.5rem;">...</span>
+
+            <span th:if="${totalPages - 1 == currentPage}"
+                  th:text="${totalPages}"
+                  style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; background: #007bff; color: white; border-radius: 4px; font-weight: bold;"></span>
+            <a th:if="${totalPages - 1 != currentPage}"
+               th:href="@{/hechos(page=${totalPages - 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+               th:text="${totalPages}"
+               style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; text-decoration: none; color: #333; border: 1px solid #ddd; border-radius: 4px;"></a>
+
+
+            <a th:if="${currentPage < totalPages - 1}"
+               th:href="@{/hechos(page=${currentPage + 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+               class="btn btn-primary btn-dark config-opciones">Página Siguiente</a>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/mapa.js}"></script>
 </div>
 </html>
