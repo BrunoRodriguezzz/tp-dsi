@@ -1,18 +1,17 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorNotFound;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoEliminarInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.SolicitudRevisadaInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.HechoOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudModOutputDTO;
-import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output.SolicitudOutputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.EstadoHecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Etiqueta;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.SolicitudModificacion;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IAdminService;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -27,15 +26,15 @@ import java.util.stream.Collectors;
 public class AdminService implements IAdminService {
 
     private IRepositoryService dinamicaRepository;
+    private final WebClient webClient;
 
-    public AdminService(IRepositoryService dinamicaRepository){
+    public AdminService(IRepositoryService dinamicaRepository, @Value("${servicio.agregador}") String urlAgregador) {
         this.dinamicaRepository = dinamicaRepository;
-    }
-
-    private final WebClient webClient = WebClient
+        this.webClient = WebClient
             .builder()
-            .baseUrl("http://localhost:8082")
+            .baseUrl(urlAgregador)
             .build();
+    }
 
     @Override
     public HechoOutputDTO gestionarHecho(HechoRevisadoInputDTO hechoRevisado){

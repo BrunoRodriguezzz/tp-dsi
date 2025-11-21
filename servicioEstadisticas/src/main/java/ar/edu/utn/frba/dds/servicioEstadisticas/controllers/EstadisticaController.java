@@ -18,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/estadisticas")
-@CrossOrigin(origins = "http://localhost:8085")
 public class EstadisticaController {
     @Autowired
     private IEstadisticaService estadisticaService;

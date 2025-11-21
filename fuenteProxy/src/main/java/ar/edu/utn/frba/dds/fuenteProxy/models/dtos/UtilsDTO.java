@@ -12,9 +12,11 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Value;
 
 public class UtilsDTO {
-    private static final String rutaProxy = "http://localhost:8083";
+    @Value("${servicio.proxy}")
+    private static String urlProxy;
 
     public static OutputHecho hechoToDtoOutput(HechoProxy hecho) {
         OutputHecho dto = new OutputHecho();
@@ -83,7 +85,7 @@ public class UtilsDTO {
     public static OutputFuenteAgregador toOutputFuenteAgregador(Fuente fuente) {
         OutputFuenteAgregador output = new OutputFuenteAgregador();
         output.setNombre(fuente.getNombre());
-        output.setPath(rutaProxy);
+        output.setPath(urlProxy);
         output.setTipoFuente("PROXY");
         output.setIdInterno(fuente.getId());
         return output;

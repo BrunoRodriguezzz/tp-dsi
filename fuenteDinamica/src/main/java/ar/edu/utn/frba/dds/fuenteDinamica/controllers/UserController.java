@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/api/fuenteDinamica")
-@CrossOrigin(origins = "http://localhost:8081")
 public class UserController {
 
     @Autowired

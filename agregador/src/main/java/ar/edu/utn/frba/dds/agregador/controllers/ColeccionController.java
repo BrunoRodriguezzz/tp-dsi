@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/colecciones")
-@CrossOrigin(origins = "http://localhost:8080")
 @Slf4j
 public class ColeccionController {
   @Autowired

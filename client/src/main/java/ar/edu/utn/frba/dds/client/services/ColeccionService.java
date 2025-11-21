@@ -27,7 +27,7 @@ public class ColeccionService {
 
   public ColeccionService(
       WebApiCallerService webApiCallerService,
-      @Value("${hechos.service.url}") String hechoServiceUrl) {
+      @Value("${servicio.agregador}") String hechoServiceUrl) {
     this.webClient = WebClient.builder().build();
     this.webApiCallerService = webApiCallerService;
     this.hechoServiceUrl = hechoServiceUrl;
@@ -35,7 +35,7 @@ public class ColeccionService {
   }
 
   public List<HechoDTO> obtenerHechosDestacados() {
-//        List<HechoDTO> response = this.webApiCallerService.getList(this.hechoServiceUrl, HechoDTO.class);
+//        List<HechoDTO> response = this.webApiCallerService.getList(this.hechoServiceUrl + "/hechos", HechoDTO.class);
 //        return response != null ? response : List.of();
     return this.mockService.obtenerHechosMockeados();
   }

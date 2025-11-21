@@ -7,10 +7,8 @@ import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ public class DinamicaService {
     private final String dinamicaUrl;
 
     public DinamicaService(WebApiCallerService webApiCallerService,
-                           @Value("${dinamica.service.url}") String dinamicaUrl){
+                           @Value("${servicio.dinamica}") String dinamicaUrl){
         this.webApiCallerService = webApiCallerService;
         this.dinamicaUrl = dinamicaUrl;
     }
@@ -146,7 +144,7 @@ public class DinamicaService {
         System.out.println("[LOG] Enviando a fuenteDinamica: " + dto);
 
         try {
-            WebClient.create("http://localhost:8081")
+            WebClient.create(dinamicaUrl)
                     .post()
                     .uri("/api/fuenteDinamica/gestion")
                     .bodyValue(dto)

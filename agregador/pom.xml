@@ -83,6 +83,12 @@
 			<scope>test</scope>
 		</dependency>
 
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry-spring-boot-starter</artifactId>
+            <version>8.26.0</version>
+        </dependency>
+
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
@@ -127,6 +133,28 @@
 					</excludes>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>io.sentry</groupId>
+                <artifactId>sentry-maven-plugin</artifactId>
+                <version>0.10.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <debugSentryCli>true</debugSentryCli>
+
+                    <org>utn-cj</org>
+
+                    <project>java-spring-boot</project>
+
+                    <authToken>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</authToken>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>uploadSourceBundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 

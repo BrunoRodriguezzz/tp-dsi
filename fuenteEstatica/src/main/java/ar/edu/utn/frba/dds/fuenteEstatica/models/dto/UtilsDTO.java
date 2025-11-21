@@ -12,9 +12,11 @@ import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Ubicacion;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Value;
 
 public class UtilsDTO {
-    private static String path = "http://localhost:8084";
+    @Value("${servicio.estatica}")
+    private static String path;
 
     public static ArchivoOutputDTO toOutputArchivo(Archivo archivo, List<HechoEstatica> hechos) {
         if (hechos == null || hechos.isEmpty()) return null;

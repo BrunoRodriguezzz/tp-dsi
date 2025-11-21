@@ -28,7 +28,7 @@ public class AuthApiService {
     @Autowired
     public AuthApiService(
             WebApiCallerService webApiCallerService,
-            @Value("${auth.service.url}") String authServiceUrl) {
+            @Value("${servicio.auth}") String authServiceUrl) {
         this.webClient = WebClient.builder().build();
         this.webApiCallerService = webApiCallerService;
         this.authServiceUrl = authServiceUrl;

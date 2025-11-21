@@ -20,7 +20,7 @@ public class EstadisticaService {
 
     public EstadisticaService(
             WebApiCallerService webApiCallerService,
-            @Value("${estadisticas.service.url}") String estadisticasServiceUrl) {
+            @Value("${servicio.estadisticas}") String estadisticasServiceUrl) {
         this.webClient = WebClient.builder().build();
         this.webApiCallerService = webApiCallerService;
         this.estadisticasServiceUrl = estadisticasServiceUrl;

@@ -10,6 +10,7 @@ import ar.edu.utn.frba.dds.fuenteEstatica.services.IArchivoService;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -19,9 +20,12 @@ public class ArchivoService implements IArchivoService {
   private IArchivoRepository archivoRepository;
   private IHechoRepository hechoRepository;
 
+  @Value("${servicio.agregador}")
+  private String urlAgregador;
+
   private final WebClient webClient = WebClient
       .builder()
-      .baseUrl("http://localhost:8082")
+      .baseUrl(urlAgregador)
       .build();
 
   public ArchivoService(IArchivoRepository archivoRepository, IHechoRepository hechoRepository) {

@@ -8,6 +8,7 @@ import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputFuenteDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuenteAgregador;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -18,9 +19,12 @@ public class FuenteService implements IFuenteService {
   @Autowired
   private IHechoService hechoService;
 
+  @Value("${servicio.agregador}")
+  private String urlAgregador;
+
   private final WebClient webClient = WebClient
       .builder()
-      .baseUrl("http://localhost:8082")
+      .baseUrl(urlAgregador)
       .build();
 
   @Override

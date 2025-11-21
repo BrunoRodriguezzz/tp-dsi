@@ -30,8 +30,10 @@ public class ColeccionController {
   @Value("${mapbox.token:}")
   private String mapboxToken;
 
-  public ColeccionController(ColeccionService coleccionService,
-                             @Value("http://localhost:8082") String agregadorUrl) {
+  @Value("${servicio.agregador}")
+  private String agregadorUrl;
+
+  public ColeccionController(ColeccionService coleccionService) {
     this.coleccionService = coleccionService;
     this.webClient = WebClient.builder().baseUrl(agregadorUrl).build();
   }

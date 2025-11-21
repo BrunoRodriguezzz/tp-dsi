@@ -12,24 +12,24 @@ public class SolicitudesService {
   private final WebApiCallerService webApiCallerService;
   private final String backendBaseUrl;
 
-  public SolicitudesService(WebApiCallerService webApiCallerService, @Value("${backend.url:localhost:8082}") String backendBaseUrl) {
+  public SolicitudesService(WebApiCallerService webApiCallerService, @Value("${servicio.agregador}") String backendBaseUrl) {
     this.webApiCallerService = webApiCallerService;
     this.backendBaseUrl = backendBaseUrl;
   }
 
   public List<SolicitudEliminacionConHechoDTO> obtenerSolicitudesEliminacion() {
-    String url = "http://" + backendBaseUrl + "/solicitudesEliminacion";
+    String url = backendBaseUrl +  "/solicitudesEliminacion";
     return webApiCallerService.getList(url, SolicitudEliminacionConHechoDTO.class);
   }
 
   public void aceptarSolicitud(Long id, String adminNombre, String adminApellido) {
-    String url = "http://" + backendBaseUrl + "/solicitudesEliminacion/aceptacion/" + id;
+    String url = backendBaseUrl + "/solicitudesEliminacion/aceptacion/" + id;
     AdminDTO body = new AdminDTO(adminNombre, adminApellido);
     webApiCallerService.patch(url, body, Void.class);
   }
 
   public void rechazarSolicitud(Long id, String adminNombre, String adminApellido) {
-    String url = "http://" + backendBaseUrl + "/solicitudesEliminacion/rechazo/" + id;
+    String url = backendBaseUrl + "/solicitudesEliminacion/rechazo/" + id;
     AdminDTO body = new AdminDTO(adminNombre, adminApellido);
     webApiCallerService.patch(url, body, Void.class);
   }

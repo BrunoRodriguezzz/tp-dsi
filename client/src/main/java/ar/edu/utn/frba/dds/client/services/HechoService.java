@@ -18,19 +18,14 @@ import java.util.List;
 @Slf4j
 @Service
 public class HechoService {
-  private final WebClient webClient;
   private final WebApiCallerService webApiCallerService;
-  private final String hechoServiceUrl;
-  private final MockService mockService;
-  private final String agregadorURL = "http://localhost:8082";
+
+  @Value("${servicio.agregador}")
+  private String agregadorURL;
 
   public HechoService(
-      WebApiCallerService webApiCallerService,
-      @Value("${hechos.service.url}") String hechoServiceUrl) {
-    this.webClient = WebClient.builder().build();
+      WebApiCallerService webApiCallerService) {
     this.webApiCallerService = webApiCallerService;
-    this.hechoServiceUrl = hechoServiceUrl;
-    this.mockService = new MockService();
   }
 
   public List<HechoDTO> obtenerHechos() {
