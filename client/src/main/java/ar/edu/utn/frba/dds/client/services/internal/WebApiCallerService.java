@@ -199,7 +199,7 @@ public class WebApiCallerService {
 
       AuthResponseDTO response = webClient
           .post()
-          .uri(authServiceUrl + "/auth/refresh")
+          .uri(authServiceUrl + "/refresh")
           .bodyValue(refreshRequestDTO)
           .retrieve()
           .bodyToMono(AuthResponseDTO.class)
