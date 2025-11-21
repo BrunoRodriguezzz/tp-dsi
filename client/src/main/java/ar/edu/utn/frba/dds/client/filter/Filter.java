@@ -39,7 +39,6 @@ public class Filter implements jakarta.servlet.Filter {
     // 2. Check rate limit
     if (!rateLimitService.isAllowed(clientIP)) {
       ipControlService.blockTemporarily(clientIP); // Bloquear si abusa
-      log.warn("IP blocked for request: {}", clientIP);
       res.setStatus(429);
       res.getWriter().write("{\"error\":\"Too many requests\"}");
       return;

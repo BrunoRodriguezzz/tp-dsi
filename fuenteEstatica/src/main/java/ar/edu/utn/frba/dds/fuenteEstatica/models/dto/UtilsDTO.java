@@ -13,10 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UtilsDTO {
-    @Value("${servicio.estatica}")
-    private static String path;
+    private String path;
+
+    public UtilsDTO(@Value("${servicio.estatica}") String path) {
+      this.path = path;
+    }
 
     public static ArchivoOutputDTO toOutputArchivo(Archivo archivo, List<HechoEstatica> hechos) {
         if (hechos == null || hechos.isEmpty()) return null;
@@ -81,13 +86,12 @@ public class UtilsDTO {
     }
 
 
-    public static ArchivoOutputAgregadorDTO toOutputArchivoAgregador(Archivo archivo) {
+    public ArchivoOutputAgregadorDTO toOutputArchivoAgregador(Archivo archivo) {
         ArchivoOutputAgregadorDTO dto = new ArchivoOutputAgregadorDTO();
         dto.setNombre(archivo.getNombre());
         dto.setIdInterno(archivo.getId());
         dto.setTipoFuente("ESTATICA");
         dto.setPath(path);
-
         return dto;
     }
 }
