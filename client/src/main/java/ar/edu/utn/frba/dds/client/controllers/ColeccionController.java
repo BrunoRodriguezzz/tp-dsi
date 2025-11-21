@@ -88,6 +88,7 @@ public class ColeccionController {
     String fcIni = fechaCargaInicio;
     String fcFin = fechaCargaFin;
 
+    // la regex funciona asi: \\d{4} → 4 dígitos  || \\d{2} → 2 dígitos
     if (faIni != null && faIni.matches("\\d{4}-\\d{2}-\\d{2}")) {
       faIni = faIni + "T00:00:00";
     }
@@ -181,8 +182,80 @@ public class ColeccionController {
     if (coleccion.getConsensos() == null) {
       coleccion.setConsensos(java.util.Collections.emptyList());
     }
+
+    List<FuenteOutputDTO> fuentes = getWebClient().get()
+            .uri("/fuentes")
+            .retrieve()
+            .bodyToFlux(FuenteOutputDTO.class)
+            .collectList()
+            .block();
+
     model.addAttribute("coleccion", coleccion);
+    model.addAttribute("fuentes", fuentes);
      return "editarColeccion";
+  }
+
+  @PostMapping("/editarColeccion/{id}")
+  public String actualizarColeccion(@PathVariable Long id, @ModelAttribute NuevaColeccionForm form) {
+    try {
+      CriterioInputDTO criterio = new CriterioInputDTO();
+      criterio.setCategoria(form.getCriterioCategoria() != null && !form.getCriterioCategoria().trim().isEmpty()
+          ? form.getCriterioCategoria() : null);
+      criterio.setTitulo(form.getCriterioTitulo() != null && !form.getCriterioTitulo().trim().isEmpty()
+          ? form.getCriterioTitulo() : null);
+      criterio.setLatitud(form.getCriterioLatitud() != null && !form.getCriterioLatitud().trim().isEmpty()
+          ? form.getCriterioLatitud() : null);
+      criterio.setLongitud(form.getCriterioLongitud() != null && !form.getCriterioLongitud().trim().isEmpty()
+          ? form.getCriterioLongitud() : null);
+
+      try {
+        if (form.getCriterioFechaCargaInicio() != null && !form.getCriterioFechaCargaInicio().isBlank()) {
+          criterio.setFechaCargaInicio(java.time.LocalDateTime.parse(form.getCriterioFechaCargaInicio()));
+        }
+        if (form.getCriterioFechaCargaFin() != null && !form.getCriterioFechaCargaFin().isBlank()) {
+          criterio.setFechaCargaFin(java.time.LocalDateTime.parse(form.getCriterioFechaCargaFin()));
+        }
+        if (form.getCriterioFechaAcontecimientoInicio() != null && !form.getCriterioFechaAcontecimientoInicio().isBlank()) {
+          criterio.setFechaAcontecimientoInicio(java.time.LocalDateTime.parse(form.getCriterioFechaAcontecimientoInicio()));
+        }
+        if (form.getCriterioFechaAcontecimientoFin() != null && !form.getCriterioFechaAcontecimientoFin().isBlank()) {
+          criterio.setFechaAcontecimientoFin(java.time.LocalDateTime.parse(form.getCriterioFechaAcontecimientoFin()));
+        }
+      } catch (Exception e) {
+        log.error("Error parseando fechas: {}", e.getMessage());
+      }
+
+      ColeccionInputDTO coleccionInputDTO = new ColeccionInputDTO();
+      coleccionInputDTO.setNombre(form.getNombre());
+      coleccionInputDTO.setDescripcion(form.getDescripcion());
+      coleccionInputDTO.setCriterio(criterio);
+
+      if (form.getFuentes() == null || form.getFuentes().isEmpty()) {
+          log.error("No se seleccionaron fuentes");
+          throw new RuntimeException("Debe seleccionar al menos una fuente");
+      }
+
+      List<NombreFuenteInputDTO> fuentesDTO = form.getFuentes().stream().map(f -> {
+          NombreFuenteInputDTO dto = new NombreFuenteInputDTO();
+          dto.setNombre(f);
+          return dto;
+      }).toList();
+      coleccionInputDTO.setFuentes(fuentesDTO);
+
+      coleccionInputDTO.setConsensos(form.getConsensos());
+
+      getWebClient().put()
+          .uri("/colecciones/" + id)
+          .bodyValue(coleccionInputDTO)
+          .retrieve()
+          .toBodilessEntity()
+          .block();
+
+      return "redirect:/colecciones";
+    } catch (Exception e) {
+      log.error("Error actualizando colección: {}", e.getMessage(), e);
+      throw e;
+    }
   }
 
   @PreAuthorize("hasRole('ADMINISTRADOR')")
