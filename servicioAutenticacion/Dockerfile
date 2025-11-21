@@ -20,7 +20,7 @@ WORKDIR /app
 # Copiamos el jar del módulo de build
 COPY --from=builder /app/servicioAutenticacion/target/*.jar app.jar
 
-EXPOSE 8080
+EXPOSE 8087
 
 # Ejecutar la app
 ENTRYPOINT ["java", "-jar", "app.jar"]
