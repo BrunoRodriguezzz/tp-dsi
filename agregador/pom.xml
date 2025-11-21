@@ -29,6 +29,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<!-- spring-cloud-dependencies heredado del POM padre -->
 		</dependencies>
 	</dependencyManagement>
 
@@ -37,6 +38,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
+		<!-- Eureka Client y Actuator heredados del POM padre -->
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>

@@ -1,0 +1,61 @@
+server:
+  port: 8086
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: lb://servicio-autenticacion
+          predicates:
+            - Path=/auth/**
+
+        - id: agregador-service
+          uri: lb://agregador
+          predicates:
+            - Path=/colecciones/**, /hechos/**, /solicitudesEliminacion/**, /media/**
+
+        - id: dinamica-service
+          uri: lb://fuenteDinamica
+          predicates:
+            - Path=/api/fuenteDinamica/**
+
+        - id: estadisticas-service
+          uri: lb://servicio-estadisticas
+          predicates:
+            - Path=/estadisticas/**
+
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+
+# Configuración JWT con servicio propio
+jwt:
+  secret: ${JWT_SECRET:mySecretKey123456789012345678901234567890}  # Debe coincidir con JwtUtil en servicioAutenticacion
+  issuer: servicio-autenticacion-server
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8088/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always

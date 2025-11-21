@@ -12,9 +12,9 @@ public class SolicitudesService {
   private final WebApiCallerService webApiCallerService;
   private final String backendBaseUrl;
 
-  public SolicitudesService(WebApiCallerService webApiCallerService, @Value("${servicio.agregador}") String backendBaseUrl) {
+  public SolicitudesService(WebApiCallerService webApiCallerService, @Value("${servicio.apiGateway}") String gatewayURL) {
     this.webApiCallerService = webApiCallerService;
-    this.backendBaseUrl = backendBaseUrl;
+    this.backendBaseUrl = gatewayURL;
   }
 
   public List<SolicitudEliminacionConHechoDTO> obtenerSolicitudesEliminacion() {

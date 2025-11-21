@@ -28,10 +28,10 @@ public class AuthApiService {
     @Autowired
     public AuthApiService(
             WebApiCallerService webApiCallerService,
-            @Value("${servicio.auth}") String authServiceUrl) {
+            @Value("${servicio.apiGateway}") String apiGatewayUrl) {
         this.webClient = WebClient.builder().build();
         this.webApiCallerService = webApiCallerService;
-        this.authServiceUrl = authServiceUrl;
+        this.authServiceUrl = apiGatewayUrl + "/auth";
     }
 
     public AuthResponseDTO login(String username, String password) {

@@ -10,8 +10,8 @@
                     <p class="card-text"><strong>Fecha: </strong><span th:text="${hecho.fechaAcontecimiento}"></span></p>
                     <p class="card-text">
                         <strong>Ubicación: </strong>
-                        <span th:text="${hecho.ubicacion.provincia != null ? hecho.ubicacion.provincia : 'N/A'}"></span>,
-                        <span th:text="${hecho.ubicacion.municipio != null ? hecho.ubicacion.municipio : 'N/A'}"></span>
+                        <span th:text="${hecho.ubicacion != null && hecho.ubicacion.provincia != null ? hecho.ubicacion.provincia : 'N/A'}"></span>,
+                        <span th:text="${hecho.ubicacion != null && hecho.ubicacion.municipio != null ? hecho.ubicacion.municipio : 'N/A'}"></span>
                     </p>
                     <div style="display: flex; gap: 0.5rem">
                         <p th:each="etiqueta : ${hecho.etiquetas}" class="etiqueta-interes" th:text="${etiqueta}"></p>
