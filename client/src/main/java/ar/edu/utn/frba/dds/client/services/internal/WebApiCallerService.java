@@ -21,9 +21,9 @@ public class WebApiCallerService {
   private final WebClient webClient;
   private final String authServiceUrl;
 
-  public WebApiCallerService(@Value("${servicio.auth}") String authServiceUrl) {
+  public WebApiCallerService(@Value("${servicio.apiGateway}") String gatewayURL) {
     this.webClient = WebClient.builder().build();
-    this.authServiceUrl = authServiceUrl;
+    this.authServiceUrl = gatewayURL + "/auth";
   }
 
   /**

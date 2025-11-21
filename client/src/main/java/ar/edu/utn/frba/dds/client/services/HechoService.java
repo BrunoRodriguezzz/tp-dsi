@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -30,7 +31,14 @@ public class HechoService {
 
   public List<HechoDTO> obtenerHechos() {
     try {
-      return this.webApiCallerService.get(this.agregadorURL + "/hechos?size=400", PaginadoHechoDTO.class).getContent();
+      return Objects.requireNonNull(WebClient.builder().baseUrl(agregadorURL)
+                      .build()
+                      .get()
+                      .uri("/hechos")
+                      .retrieve()
+                      .bodyToMono(PaginadoHechoDTO.class)
+                      .block())
+              .getContent();
     } catch (Exception e) {
       System.out.println(e.getMessage());
       return null;

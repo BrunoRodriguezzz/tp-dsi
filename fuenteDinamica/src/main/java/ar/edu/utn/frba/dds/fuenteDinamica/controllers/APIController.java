@@ -19,9 +19,9 @@ public class APIController {
 
     @GetMapping("/hechos")
     public List<HechoOutputDTO> buscarTodos(
-            @RequestParam(required = false) Boolean enviado,
-            @RequestParam(required = false) LocalDateTime dateTimeGT,
-            @RequestParam(required = false) String titulo){
+            @RequestParam(required = false, name = "enviado") Boolean enviado,
+            @RequestParam(required = false, name = "dateTimeGT") LocalDateTime dateTimeGT,
+            @RequestParam(required = false, name = "titulo") String titulo){
 
         if (titulo == null || titulo.isEmpty()){
             return this.apiService.buscarHechos(enviado,dateTimeGT);
@@ -31,12 +31,12 @@ public class APIController {
     }
 
     @GetMapping("/hechos/user/{id}")
-    public List<HechoOutputDTO> buscarHecho(@PathVariable Long id){
+    public List<HechoOutputDTO> buscarHecho(@PathVariable(name = "id") Long id){
         return this.apiService.hechosDeUsuario(id);
     }
 
     @GetMapping("/hechos/{id}")
-    public HechoOutputDTO buscarHechoPorId(@PathVariable Long id) {
+    public HechoOutputDTO buscarHechoPorId(@PathVariable(name = "id") Long id) {
         return this.apiService.buscarHechoPorId(id);
     }
 }

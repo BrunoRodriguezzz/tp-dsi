@@ -53,7 +53,7 @@ public class AdminController {
     // Eliminacion del hecho de manera directa
 
     @PatchMapping("/eliminacion/{id}")
-    public void eliminarHecho(@PathVariable Long id){
+    public void eliminarHecho(@PathVariable(name = "id") Long id){
         this.adminService.eliminar(id);
     }
 }

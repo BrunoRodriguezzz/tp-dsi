@@ -1,19 +1,16 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.output;
 
-import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoModificadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @ToString
 public class HechoOutputDTO {
@@ -68,4 +65,5 @@ public class HechoOutputDTO {
                 .fechaAcontecimiento(hecho.getFechaAcontecimiento())
                 .build();
     }
+
 }

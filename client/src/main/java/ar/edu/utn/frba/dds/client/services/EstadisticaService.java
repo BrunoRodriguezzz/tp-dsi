@@ -20,10 +20,10 @@ public class EstadisticaService {
 
     public EstadisticaService(
             WebApiCallerService webApiCallerService,
-            @Value("${servicio.estadisticas}") String estadisticasServiceUrl) {
+            @Value("${servicio.apiGateway}") String gatewayURL) {
         this.webClient = WebClient.builder().build();
         this.webApiCallerService = webApiCallerService;
-        this.estadisticasServiceUrl = estadisticasServiceUrl;
+        this.estadisticasServiceUrl = gatewayURL + "/estadisticas";
         this.mockService = new MockService();
     }
 

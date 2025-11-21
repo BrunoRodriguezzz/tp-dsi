@@ -78,7 +78,7 @@
                 <div class="informacion-general">
                     <div class="fecha-ubicacion-fuente encolumnar">
                         <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento}|"></p>
-                        <p class="info-fecha-ubicacion-fuente" th:text="|Ubicacion: ${hecho.ubicacion.provincia}, ${hecho.ubicacion.municipio}|"></p>
+                        <p class="info-fecha-ubicacion-fuente" th:text="${hecho.ubicacion != null ? 'Ubicacion: ' + hecho.ubicacion.provincia + ', ' + hecho.ubicacion.municipio : 'Ubicacion: N/A'}"></p>
                         <p class="info-fecha-ubicacion-fuente" th:text="|Fuente: ${hecho.fuente}|"></p>
                     </div>
                     <div class="etiquetas">

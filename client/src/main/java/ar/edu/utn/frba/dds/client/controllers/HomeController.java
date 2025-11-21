@@ -21,7 +21,7 @@ public class HomeController {
     @GetMapping("/home")
     public String home(Model model){
         model.addAttribute("titulo", "Sistema de Mapeo Colaborativo");
-        List<HechoDTO> hechosDestacados = this.hechoService.obtenerHechos().stream().limit(9).toList();
+        List<HechoDTO> hechosDestacados = this.hechoService.obtenerHechos();
         List<ColeccionOutputDTO> coleccionesDestacadas = this.coleccionService.obtenerColecciones().stream().limit(9).toList();
         model.addAttribute("hechosDestacados", hechosDestacados);
         model.addAttribute("coleccionesDestacadas", coleccionesDestacadas);
