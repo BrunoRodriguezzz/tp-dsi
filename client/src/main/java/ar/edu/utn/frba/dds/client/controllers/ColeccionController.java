@@ -25,7 +25,7 @@ import java.util.List;
 @Controller
 public class ColeccionController {
   private final ColeccionService coleccionService;
-  private final WebClient webClient;
+  private WebClient webClient;
 
   @Value("${mapbox.token:}")
   private String mapboxToken;
@@ -35,12 +35,18 @@ public class ColeccionController {
 
   public ColeccionController(ColeccionService coleccionService) {
     this.coleccionService = coleccionService;
-    this.webClient = WebClient.builder().baseUrl(agregadorUrl).build();
+  }
+
+  private WebClient getWebClient() {
+    if (this.webClient == null) {
+      this.webClient = WebClient.builder().baseUrl(agregadorUrl).build();
+    }
+    return this.webClient;
   }
 
   @GetMapping("/colecciones")
   public String listarColecciones(Model model) {
-    PaginaDTO<ColeccionOutputDTO> pagina = webClient.get()
+    PaginaDTO<ColeccionOutputDTO> pagina = getWebClient().get()
         .uri("/colecciones")
         .retrieve()
         .bodyToMono(new ParameterizedTypeReference<PaginaDTO<ColeccionOutputDTO>>() {})
@@ -68,7 +74,7 @@ public class ColeccionController {
       @RequestParam(name = "fechaCargaFin", required = false) String fechaCargaFin,
       @RequestParam(name = "fuente", required = false) String fuente
   ) {
-    ColeccionOutputDTO coleccion = webClient.get()
+    ColeccionOutputDTO coleccion = getWebClient().get()
         .uri("/colecciones/" + id)
         .retrieve()
         .bodyToMono(ColeccionOutputDTO.class)
@@ -132,7 +138,7 @@ public class ColeccionController {
     final String fqLat = (qLat != null && !qLat.isBlank()) ? qLat : null;
     final String fqLng = (qLng != null && !qLng.isBlank()) ? qLng : null;
 
-    PaginadoHechoDTO paginado = webClient.get()
+    PaginadoHechoDTO paginado = getWebClient().get()
         .uri(uriBuilder -> {
           var b = uriBuilder.path("/colecciones/" + id + "/hechos");
           if (qCategoria != null) b = b.queryParam("categoria", qCategoria);
@@ -165,7 +171,7 @@ public class ColeccionController {
 
   @GetMapping("/editarColeccion/{id}")
   public String editarColeccion(@PathVariable Long id, Model model) {
-      ColeccionOutputDTO coleccion = webClient.get()
+      ColeccionOutputDTO coleccion = getWebClient().get()
         .uri("/colecciones/" + id)
         .retrieve()
         .bodyToMono(ColeccionOutputDTO.class)
@@ -183,7 +189,7 @@ public class ColeccionController {
   @PreAuthorize("hasRole('ADMINISTRADOR')")
   @GetMapping("/nuevaColeccion")
   public String nuevaColeccion(Model model) {
-    List<FuenteOutputDTO> fuentes = webClient.get()
+    List<FuenteOutputDTO> fuentes = getWebClient().get()
             .uri("/fuentes")
             .retrieve()
             .bodyToFlux(FuenteOutputDTO.class)
@@ -213,7 +219,7 @@ public class ColeccionController {
     }
     coleccionInputDTO.setConsensos(consensos);
     log.info("Informacion que vamos a mandar: {}", coleccionInputDTO);
-    webClient.post()
+    getWebClient().post()
         .uri("/colecciones")
         .bodyValue(coleccionInputDTO)
         .retrieve()
@@ -226,7 +232,7 @@ public class ColeccionController {
   @GetMapping("/colecciones/fuentes")
   @ResponseBody
   public Mono<List<FuenteOutputDTO>> obtenerFuentes() {
-    return webClient.get()
+    return getWebClient().get()
             .uri("/fuentes")
             .retrieve()
             .bodyToFlux(FuenteOutputDTO.class)
