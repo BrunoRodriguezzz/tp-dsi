@@ -116,32 +116,34 @@ public class HechoService implements IHechoService {
   @Transactional
   @Override
   public Flux<Hecho> guardarHechos(Flux<Hecho> hechosFlux) {
-    // Entrada fría -> la convertimos en compartida (un solo subscribe aguas arriba)
-    Flux<Hecho> entradaCompartida = hechosFlux
-            .doOnSubscribe(s -> log.info("🔁 Inicio de pipeline guardarHechos"))
+    log.info("🔁 Inicio de pipeline guardarHechos");
+
+    // Construimos todo el pipeline de transformación de una sola vez
+    return hechosFlux
             .doOnError(e -> log.error("❌ Error en flujo de entrada de hechos: {}", e.getMessage(), e))
-            .publish()
-            .refCount(1); // primer subscriber activa la cadena, posteriores comparten
-
-    Flux<Hecho> normalizados = this.normalizadorService
-            .normalizarHechosReactivo(entradaCompartida)
-            .doOnSubscribe(s -> log.info("🔁 Normalización: suscrito"))
-            .doOnError(e -> log.error("❌ Error durante la normalización reactiva: {}", e.getMessage(), e))
-            .doOnComplete(() -> log.info("🔁 Normalización completada"));
-
-    Flux<Hecho> conUbicaciones = this.ubicacionService
-            .obtenerUbicacionesReactivo(normalizados)
-            .doOnSubscribe(s -> log.info("🔁 Obtención de ubicaciones: suscrito"))
-            .doOnError(e -> log.error("❌ Error durante la obtención de ubicaciones: {}", e.getMessage(), e))
-            .doOnComplete(() -> log.info("🔁 Obtención de ubicaciones completada"));
-
-    return conUbicaciones
-            .collectList() // materializa una sola vez el flujo compartido aguas arriba
+            // Normalización
+            .transform(flux -> {
+              log.info("🔁 Normalización: suscrito");
+              return this.normalizadorService
+                      .normalizarHechosReactivo(flux)
+                      .doOnError(e -> log.error("❌ Error durante la normalización reactiva: {}", e.getMessage(), e))
+                      .doOnComplete(() -> log.info("🔁 Normalización completada"));
+            })
+            // Ubicaciones
+            .transform(flux -> {
+              log.info("🔁 Obtención de ubicaciones: suscrito");
+              return this.ubicacionService
+                      .obtenerUbicacionesReactivo(flux)
+                      .doOnError(e -> log.error("❌ Error durante la obtención de ubicaciones: {}", e.getMessage(), e))
+                      .doOnComplete(() -> log.info("🔁 Obtención de ubicaciones completada"));
+            })
+            // Guardado en BD
+            .collectList()
             .doOnNext(list -> log.info("🔁 Resultado del pipeline - cantidad de hechos antes de guardar: {}", list == null ? 0 : list.size()))
-            .flatMapMany(hechosParaGuardar -> {
+            .flatMapIterable(hechosParaGuardar -> {
               if (hechosParaGuardar == null || hechosParaGuardar.isEmpty()) {
                 log.warn("⚠️ No hay hechos para guardar (pipeline vacío o con errores). hechosParaGuardar={}", 0);
-                return Flux.empty();
+                return Collections.emptyList();
               }
 
               log.info("🗂 Guardando {} hechos en la base de datos...", hechosParaGuardar.size());
@@ -157,7 +159,7 @@ public class HechoService implements IHechoService {
               });
               List<Hecho> guardados = this.hechoRepository.saveAll(hechosParaGuardar);
               log.info("✅ Se guardaron {} hechos correctamente.", guardados.size());
-              return Flux.fromIterable(guardados).publish().refCount(1); // compartir también la salida
+              return guardados;
             });
   }
 
@@ -219,24 +221,42 @@ public class HechoService implements IHechoService {
 
   @Override
   public List<Hecho> actualizarHechosProxy() {
-    Flux<Hecho> hechos = Flux.fromIterable(
+    // Materializar todos los hechos ANTES de procesarlos para evitar múltiples suscripciones
+    List<Hecho> hechosImportados = Flux.fromIterable(
                     this.fuenteRepository.findByTipoFuente(TipoFuente.PROXY)
             )
             .distinct(Fuente::getId) // evita llamar dos veces a la misma fuente si aparece duplicada
-            .concatMap(Fuente::importarHechosNuevos); // secuencial para no disparar concurrencia innecesaria
+            .concatMap(Fuente::importarHechosNuevos) // secuencial para no disparar concurrencia innecesaria
+            .collectList()
+            .block();
 
-    Flux<Hecho> guardados = this.guardarHechos(hechos);
+    if (hechosImportados == null || hechosImportados.isEmpty()) {
+      log.warn("No se importaron hechos de fuentes PROXY");
+      return Collections.emptyList();
+    }
+
+    // Ahora procesamos la lista ya materializada
+    Flux<Hecho> guardados = this.guardarHechos(Flux.fromIterable(hechosImportados));
 
     return guardados.collectList().block();
   }
 
   @Override
   public List<Hecho> actualizarHechos(List<Fuente> fuentes) {
-    Flux<Hecho> hechos = Flux.fromIterable(fuentes)
+    // Materializar todos los hechos ANTES de procesarlos para evitar múltiples suscripciones
+    List<Hecho> hechosImportados = Flux.fromIterable(fuentes)
             .distinct(Fuente::getId)
-            .concatMap(Fuente::importarHechosNuevos);
+            .concatMap(Fuente::importarHechosNuevos)
+            .collectList()
+            .block();
 
-    Flux<Hecho> guardados = this.guardarHechos(hechos);
+    if (hechosImportados == null || hechosImportados.isEmpty()) {
+      log.warn("No se importaron hechos de las fuentes proporcionadas");
+      return Collections.emptyList();
+    }
+
+    // Ahora procesamos la lista ya materializada
+    Flux<Hecho> guardados = this.guardarHechos(Flux.fromIterable(hechosImportados));
 
     return guardados.collectList().block();
   }

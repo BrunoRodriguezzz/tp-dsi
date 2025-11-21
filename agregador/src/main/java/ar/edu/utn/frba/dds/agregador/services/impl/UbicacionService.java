@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UbicacionService implements IUbicacionService {
     private IHechoRepository hechoRepository;
@@ -39,17 +42,39 @@ public class UbicacionService implements IUbicacionService {
 
     @Override
     public Flux<Hecho> obtenerUbicacionesReactivo(Flux<Hecho> hechos) {
+        // Primero buscar todas las ubicaciones en BD
         return hechos
                 .flatMap(this::buscarUbicacionEnBD)
-                .publish(shared -> Flux.merge(
-                        // Hechos que ya quedaron con ubicación
-                        shared.filter(h -> !h.getUbicacion().faltanDatos()),
+                .collectList()
+                .flatMapMany(listaHechos -> {
+                    // Separar hechos con ubicación completa vs incompleta
+                    List<Hecho> conUbicacion = new ArrayList<>();
+                    List<Hecho> sinUbicacion = new ArrayList<>();
 
-                        // Hechos incompletos → agrupar en lotes de 50 y consultar API
-                        shared.filter(h -> h.getUbicacion().faltanDatos())
-                                .buffer(50)
-                                .flatMap(IAdapUbicacion::buscarUbicacionesReactivo)
-                ));
+                    for (Hecho h : listaHechos) {
+                        if (h.getUbicacion().faltanDatos()) {
+                            sinUbicacion.add(h);
+                        } else {
+                            conUbicacion.add(h);
+                        }
+                    }
+
+                    // Si no hay hechos sin ubicación, devolver todos los que tienen
+                    if (sinUbicacion.isEmpty()) {
+                        return Flux.fromIterable(conUbicacion);
+                    }
+
+                    // Para los que faltan datos, consultar API en lotes de 50
+                    Flux<Hecho> hechosProcesados = Flux.fromIterable(sinUbicacion)
+                            .buffer(50)
+                            .flatMap(IAdapUbicacion::buscarUbicacionesReactivo);
+
+                    // Combinar ambos grupos
+                    return Flux.concat(
+                            Flux.fromIterable(conUbicacion),
+                            hechosProcesados
+                    );
+                });
     }
 
     private Mono<Hecho> buscarUbicacionEnBD(Hecho hecho) {
