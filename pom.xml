@@ -19,7 +19,7 @@
     <module>fuenteEstatica</module>
     <module>servicioAutenticacion</module>
     <module>servicioEstadisticas</module>
-
+    <module>serviceRegistry</module>
     <module>domain</module>
     <module>client</module>
   </modules>
