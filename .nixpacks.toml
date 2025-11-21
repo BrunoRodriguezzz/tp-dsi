@@ -1,0 +1,14 @@
+[phases.setup]
+nixPkgs = ["openjdk17", "maven"]
+
+[phases.build]
+cmds = [
+    # 1. Instalar el POM padre sin construir módulos
+    "mvn -B -DskipTests -N install",
+
+    # 2. Compilar solo el módulo especificado por variable de entorno
+    "cd $MODULE && mvn -B -DskipTests clean package"
+]
+
+[start]
+cmd = "java -jar $MODULE/target/*.jar"
