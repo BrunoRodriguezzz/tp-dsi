@@ -112,5 +112,29 @@ document.addEventListener('DOMContentLoaded', function() {
         updateView();
     }
 
+    // --- MANEJO DE IMÁGENES EXISTENTES ---
+
+    document.addEventListener("click", function (e) {
+        const btn = e.target.closest(".remove-existing-btn");
+        if (!btn) return;
+
+        const item = btn.closest(".media-item");
+        const hiddenInput = item.querySelector("input[name='eliminados']");
+
+        // Habilitar el hidden para enviar al backend
+        hiddenInput.removeAttribute("disabled");
+
+        // Ocultar visualmente el item (pero NO eliminarlo del DOM)
+        item.style.opacity = "0";
+        item.style.height = "0";
+        item.style.margin = "0";
+        item.style.padding = "0";
+        item.style.overflow = "hidden";
+
+        setTimeout(() => {
+            item.style.display = "none";
+        }, 200);
+    });
+
     // Drag and drop listo
 });

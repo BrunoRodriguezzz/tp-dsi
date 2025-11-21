@@ -126,7 +126,6 @@ public class AdminService implements IAdminService {
 
             this.dinamicaRepository.guardar(hechoGuardado);
 
-            //TODO: En realidad deberia enviar a un endpoint de PUT en el agregador
             this.enviarHechoMod(hechoGuardado);
 
             return SolicitudModOutputDTO.convertir(solicitudGuardada);

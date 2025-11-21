@@ -28,7 +28,7 @@ public class StorageService {
     public String store(MultipartFile file) {
         try {
             if (file.isEmpty()) {
-                throw new RuntimeException("Error: archivo vacío.");
+                return null;
             }
 
             // Generar nombre único para evitar colisiones (similar a lo que hacías en Multer)

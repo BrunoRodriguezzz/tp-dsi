@@ -26,7 +26,7 @@
             <p style="color: var(--color-gray-600);">Edita la información de tu hecho publicado</p>
         </div>
         <div>
-            <form th:action="@{'/hechos/modificarHecho/' + ${hecho.id}}" method="post">
+            <form th:action="@{'/hechos/modificarHecho/' + ${hecho.id}}" method="post" enctype="multipart/form-data">
                 <div class="config-form">
                     <div>
                         <h3 style="font-size: 1.5rem; margin-bottom: 0.2rem;">Información del Hecho</h3>
@@ -79,47 +79,49 @@
                     <div>
                         <p class="config-label">Contenido Actual</p>
                     </div>
-                    <div class="caja-de-imagenes">
-                        <div class="config-image">
-                            <div class="nombre-imagen">
-                                <div>
-                                    <i class="fa-solid fa-image"></i>
-                                    <span>imagen1.jpg</span>
-                                </div>
-                                <a class="btn btn-red">X</a>
-                            </div>
-                            <div class="preview">
-                                <i class="fa-solid fa-image"></i>
-                            </div>
-                        </div>
-                        <div class="config-image">
-                            <div class="nombre-imagen">
-                                <div>
-                                    <i class="fa-solid fa-file-video"></i>
-                                    <span>video1.mp4</span>
-                                </div>
-                                <a class="btn btn-red">X</a>
-                            </div>
-                            <div class="preview">
-                                <i class="fa-solid fa-file-video"></i>
-                            </div>
-                        </div>
-                        <div class="config-image">
-                            <div class="nombre-imagen">
-                                <div>
-                                    <i class="fa-solid fa-image"></i>
-                                    <span>imagen2.jpg</span>
-                                </div>
-                                <a class="btn btn-red">X</a>
-                            </div>
-                            <div class="preview">
-                                <i class="fa-solid fa-image"></i>
-                            </div>
-                        </div>
-                    </div>
                     <div>
-                        <label class="config-label">Agregar Nuevo Contenido</label>
-                        <input class="config-input" type="file">
+                        <label for="multimediaInput" id="drop-area" class="d-block border rounded p-4 text-center mb-3 bg-light"
+                               style="border: 2px dashed #ced4da; cursor: pointer; transition: all 0.2s ease;">
+                            <div class="mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-cloud-arrow-up text-secondary" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 0 1-.708-.708l2-2z"/>
+                                    <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383zm.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z"/>
+                                </svg>
+                            </div>
+                            <p class="mb-0 text-muted fw-bold">Haz clic para subir o arrastra tus fotos aquí</p>
+                            <small class="text-muted">(Imágenes o PDF, máx 10MB)</small>
+                        </label>
+
+                        <input type="file" id="multimediaInput" name="nuevosArchivos" multiple accept="image/*,.pdf"
+                               style="opacity: 0; position: absolute; z-index: -1; width: 0; height: 0;">
+
+                        <div id="existing-media" class="list-group mt-3">
+                            <div th:each="media : ${hecho.contenidoMultimedia}"
+                                 class="media-item list-group-item d-flex justify-content-between align-items-center mb-2">
+
+                                <div class="d-flex align-items-center gap-3">
+                                    <img th:src="@{'/media/' + ${media}}"
+                                         style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;">
+                                    <span th:text="${media}"></span>
+                                </div>
+
+                                <!-- Botón eliminar -->
+                                <button type="button"
+                                        class="btn btn-outline-danger btn-sm remove-existing-btn"
+                                        th:attr="data-id=${media}"
+                                        title="Eliminar">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+
+                                <!-- Campo que SIEMPRE viaja: lista original -->
+                                <input type="hidden" name="contenidoMultimedia" th:value="${media}">
+
+                                <!-- Campo que marca cuáles borrar -->
+                                <input type="hidden" name="eliminados" th:value="${media}" disabled>
+                            </div>
+                        </div>
+
+                        <div id="preview-container" class="list-group mt-3"></div>
                     </div>
                 </div>
                 <div class="opciones">
@@ -130,5 +132,6 @@
         </div>
     </div>
     <script th:src="@{/js/mapa.js}"></script>
+    <script th:src="@{/js/publicarHecho/dragAndDrop.js}"></script>
 </div>
 </html>

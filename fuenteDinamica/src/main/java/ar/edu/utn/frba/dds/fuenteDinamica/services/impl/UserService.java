@@ -131,50 +131,57 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public SolicitudModOutputDTO actualizar(HechoModificadoInputDTO hechoModificado){
+    public SolicitudModOutputDTO actualizar(HechoModificadoInputDTO hechoModificado) {
 
-        if(this.verificarUsuarioRegistrado(hechoModificado)){
-            if(this.verificarTiempoParaActualizar(hechoModificado)){
-                List<ContenidoMultimedia> contenido;
-                if (hechoModificado.getContenidoMultimedia() == null || hechoModificado.getContenidoMultimedia().isEmpty()) {
-                    contenido = new ArrayList<>();
-                } else {
-                    contenido = hechoModificado
-                            .getContenidoMultimedia()
-                            .stream()
-                            .map(this::convertirMultimedia)
-                            .collect(Collectors.toCollection(ArrayList::new));
-                }
-
-                Categoria categoria = this.categoriaExistente(hechoModificado.getCategoria());
-
-                Ubicacion ubicacion = this.ubicacionExistente(hechoModificado.getLatitud(),
-                        hechoModificado.getLongitud(),
-                        hechoModificado.getProvincia(),
-                        hechoModificado.getMunicipio());
-
-                SolicitudModificacion nuevaSolicitud = SolicitudModificacion
-                        .builder()
-                        .idHecho(hechoModificado.getId())
-                        .titulo(hechoModificado.getTitulo())
-                        .descripcion(hechoModificado.getDescripcion())
-                        .categoria(categoria)
-                        .ubicacion(ubicacion)
-                        .contenidoMultimedia(contenido)
-                        .fechaAcontecimiento(hechoModificado.getFechaAcontecimiento())
-                        .estadoSolicitud(EstadoHecho.PENDIENTE_DE_REVISION)
-                        .build();
-
-                this.dinamicaRepository.guardarSolicitudModificacion(nuevaSolicitud);
-
-                return SolicitudModOutputDTO.convertir(nuevaSolicitud);
-            }else{
-                throw new ErrorDeTiempo("El plazo para modificar el hecho se ha terminado y no es posible modificar el hecho.");
-            }
-        }else{
+        // 1️⃣ Verificar usuario
+        if (!this.verificarUsuarioRegistrado(hechoModificado)) {
             throw new ErrorAccesoNoAutorizado("No existe un usuario registrado con estos datos.");
         }
+
+        // 2️⃣ Verificar tiempo para actualizar
+        if (!this.verificarTiempoParaActualizar(hechoModificado)) {
+            throw new ErrorDeTiempo("El plazo para modificar el hecho se ha terminado y no es posible modificar el hecho.");
+        }
+
+        // 3️⃣ Procesar contenido multimedia
+        List<ContenidoMultimedia> contenido;
+        if (hechoModificado.getContenidoMultimedia() == null) {
+            // Lista vacía si el usuario borró todas las imágenes
+            contenido = new ArrayList<>();
+        } else {
+            contenido = hechoModificado.getContenidoMultimedia()
+                    .stream()
+                    .map(this::convertirMultimedia)
+                    .collect(Collectors.toList());
+        }
+
+        // 4️⃣ Procesar categoría y ubicación
+        Categoria categoria = this.categoriaExistente(hechoModificado.getCategoria());
+        Ubicacion ubicacion = this.ubicacionExistente(
+                hechoModificado.getLatitud(),
+                hechoModificado.getLongitud(),
+                hechoModificado.getProvincia(),
+                hechoModificado.getMunicipio()
+        );
+
+        // 5️⃣ Crear la solicitud de modificación
+        SolicitudModificacion nuevaSolicitud = SolicitudModificacion.builder()
+                .idHecho(hechoModificado.getId())
+                .titulo(hechoModificado.getTitulo())
+                .descripcion(hechoModificado.getDescripcion())
+                .categoria(categoria)
+                .ubicacion(ubicacion)
+                .contenidoMultimedia(contenido) // puede ser lista vacía
+                .fechaAcontecimiento(hechoModificado.getFechaAcontecimiento())
+                .estadoSolicitud(EstadoHecho.PENDIENTE_DE_REVISION)
+                .build();
+
+        // 6️⃣ Persistir solicitud
+        this.dinamicaRepository.guardarSolicitudModificacion(nuevaSolicitud);
+
+        return SolicitudModOutputDTO.convertir(nuevaSolicitud);
     }
+
 
     @Override
     public Boolean verificarUsuarioRegistrado(HechoModificadoInputDTO hechoParaActualizar){
