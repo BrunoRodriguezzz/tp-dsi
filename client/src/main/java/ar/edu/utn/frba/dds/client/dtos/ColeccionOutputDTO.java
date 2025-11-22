@@ -13,6 +13,7 @@ public class ColeccionOutputDTO {
     private String titulo;
     private String descripcion;
     private long cantidadHechos;
+    private long cantidadHechosCurados;
     private CriterioDTO criterio;
     private List<String> fuentes;
     private List<String> consensos;

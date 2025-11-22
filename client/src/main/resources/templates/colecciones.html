@@ -26,9 +26,9 @@
                         </label>
                         <span>Curado</span>
                     </div>
-                    <button class="btn-nueva" th:onclick="'window.location.href=\'' + @{/nuevaColeccion} + '\''">
+                    <a class="btn-nueva" th:href="@{/nuevaColeccion}">
                         + Nueva Colección
-                    </button>
+                    </a>
                 </div>
             </div>
             <div style="display: flex; flex-direction: column; align-items: center; margin-top: 2rem;">
@@ -41,9 +41,10 @@
         </header>
 
         <main class="colecciones-grid">
-            <div class="tarjeta" th:each="coleccion : ${colecciones}">
+            <div class="tarjeta" th:each="coleccion : ${colecciones}"
+                 th:attr="data-hechos-irrestricto=${coleccion.cantidadHechos}, data-hechos-curado=${coleccion.cantidadHechosCurados}">
                 <h2 th:text="${coleccion.titulo}">Nombre Colección</h2>
-                <p class="hechos" th:text="${coleccion.cantidadHechos + ' hechos registrados'}">10 hechos registrados</p>
+                <p class="hechos cantidad-hechos" th:text="${coleccion.cantidadHechos + ' hechos registrados'}">10 hechos registrados</p>
                 <p class="descripcion" th:text="${coleccion.descripcion}">Descripción de la colección.</p>
                 <p><strong>Algoritmos de Consenso:</strong></p>
                 <div class="chips">

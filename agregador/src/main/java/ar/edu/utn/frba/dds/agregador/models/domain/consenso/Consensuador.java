@@ -27,9 +27,14 @@ public class Consensuador {
   public List<Hecho> consensuarHechos(List<Fuente> fuentes, List<Hecho> hechos) {
     List<Hecho> hechosConsensuados = new ArrayList<>();
 
-    // Fuente envía los que tengan el mismo titulo
+    // Consensuar basándose en los hechos ya guardados en BD (no consultar fuentes externas)
     hechos.forEach(h -> {
-      List<Hecho> hechosMismoNombre = this.pedirHechosRepetidos(fuentes, h);
+      // Buscar hechos con el mismo título dentro de los hechos guardados
+      List<Hecho> hechosMismoNombre = hechos.stream()
+          .filter(otroHecho -> otroHecho.getTitulo() != null &&
+                               otroHecho.getTitulo().equalsIgnoreCase(h.getTitulo()))
+          .collect(Collectors.toList());
+
       this.stratConsensos.forEach(strat -> {
         strat.consensuados(hechosMismoNombre, fuentes, h);
       });
@@ -39,6 +44,7 @@ public class Consensuador {
     return hechosConsensuados;
   }
 
+  // Método antiguo que consulta fuentes externas (muy lento, dejarlo para casos específicos)
   private List<Hecho> pedirHechosRepetidos(List<Fuente> fuentes, Hecho hecho) {
     return Flux.fromIterable(fuentes)
         .flatMap(fuente -> fuente.importarHechosMismoTitulo(hecho)) // Flux<Hecho>

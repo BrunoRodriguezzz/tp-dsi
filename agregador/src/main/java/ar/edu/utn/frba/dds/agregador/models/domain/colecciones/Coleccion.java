@@ -87,7 +87,6 @@ public class Coleccion {
 
     public List<Hecho> cargarHechos(List<Hecho> hechos) {
         List<Hecho> filtrados = this.filtrarHechosSegunCriterioYFuentes(hechos);
-        System.out.println("Hechos después de filtrar: " + (filtrados != null ? filtrados.size() : 0));
 
         if (filtrados == null || filtrados.isEmpty()) {
             return this.hechos;
@@ -146,14 +145,19 @@ public class Coleccion {
     }
 
     private List<Hecho> filtrarCurados(List<Hecho> hechos) {
+        // Si la colección no tiene consensos definidos, devolver todos los hechos
+        if(this.consensos == null || this.consensos.isEmpty()){
+            return new ArrayList<>(hechos);
+        }
+
+        // Si la colección tiene consensos, filtrar solo los hechos que tengan TODOS esos consensos
         return hechos.stream().filter(h -> {
-                if(h.getConsensos().isEmpty()){
+                if(h.getConsensos() == null || h.getConsensos().isEmpty()){
                     return false;
                 }
-                else
-                    return h.getConsensos().stream().allMatch(consensoHecho ->
-                    this.consensos.stream().anyMatch(consensoInterno ->
-                        consensoInterno.equals(consensoHecho))
+                // El hecho debe tener TODOS los consensos que requiere la colección
+                return this.consensos.stream().allMatch(consensoRequerido ->
+                    h.getConsensos().contains(consensoRequerido)
                 );
             }
         ).collect(Collectors.toList());
@@ -188,13 +192,6 @@ public class Coleccion {
                 .map(Fuente::getId)
                 .toList();
 
-        System.out.println("Filtros del criterio:");
-        if (this.criterio != null && this.criterio.getFiltros() != null) {
-            this.criterio.getFiltros().forEach(f ->
-                System.out.println("  - " + f.getClass().getSimpleName())
-            );
-        }
-
         List<Hecho> resultado = hechos.stream()
             .filter(hecho -> {
                 boolean cumpleCriterio = this.cumpleCriterioColeccion(hecho);
@@ -206,9 +203,6 @@ public class Coleccion {
 
                 boolean pasa = cumpleCriterio && noEliminado && esDeFuente;
 
-                if (!pasa && !cumpleCriterio) {
-                    System.out.println("Hecho rechazado por criterio: " + hecho.getTitulo());
-                }
 
                 return pasa;
             })
@@ -232,7 +226,6 @@ public class Coleccion {
                     try {
                         return filtro.coincide(hecho);
                     } catch (Exception e) {
-                        System.out.println("Error en filtro: " + filtro.getClass().getSimpleName());
                         return false;
                     }
                 }))

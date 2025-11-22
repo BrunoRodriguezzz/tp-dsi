@@ -88,4 +88,11 @@ public class HechoController {
     List<String> incorporadoEn = this.agregadorService.incorporarHecho(hecho);
     return ResponseEntity.ok(incorporadoEn);
   }
+
+  // consenso de hechos manual
+  @PostMapping("/consensuar")
+  public ResponseEntity<String> consensuarHechos() {
+    this.hechoService.consensuarHechos();
+    return ResponseEntity.ok("Proceso de consenso ejecutado correctamente. Los hechos han sido actualizados con sus consensos.");
+  }
 }
