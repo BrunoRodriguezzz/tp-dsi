@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.services.impl;
 
+import ar.edu.utn.frba.dds.fuenteEstatica.clients.AgregadorClient;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.UtilsDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.ArchivoOutputAgregadorDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Archivo;
@@ -12,60 +13,43 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class ArchivoService implements IArchivoService {
   private static final Logger logger = LoggerFactory.getLogger(ArchivoService.class);
-  private IArchivoRepository archivoRepository;
-  private IHechoRepository hechoRepository;
-  private final WebClient webClient;
+  private final IArchivoRepository archivoRepository;
+  private final IHechoRepository hechoRepository;
   private final UtilsDTO utilsDTO;
+  private final AgregadorClient agregadorClient;
 
-  public ArchivoService(IArchivoRepository archivoRepository, IHechoRepository hechoRepository, @Value("${servicio.agregador}") String urlAgregador,  @Value("${servicio.estatica}") String urlEstatica) {
+  public ArchivoService(IArchivoRepository archivoRepository, IHechoRepository hechoRepository, @Value("${servicio.estatica}") String urlEstatica, AgregadorClient agregadorClient) {
     this.archivoRepository = archivoRepository;
     this.hechoRepository = hechoRepository;
-    this.webClient = WebClient
-        .builder()
-        .baseUrl(urlAgregador)
-        .build();
     this.utilsDTO = new UtilsDTO(urlEstatica);
+    this.agregadorClient = agregadorClient;
   }
 
   @Override
+  @Async
   public void guardarArchivo(Archivo archivo) {
-    try {
-      // Verificar si ya existe un archivo con el mismo nombre
       archivoRepository.findByNombre(archivo.getNombre())
           .stream()
           .findFirst()
-          .ifPresent(a -> {
-            archivo.setId(a.getId());
-            // Eliminar hechos antiguos de esta fuente para evitar mezclas
-            logger.info("Actualizando fuente existente. Eliminando hechos antiguos del archivo ID: {}", a.getId());
-            hechoRepository.deleteByIdArchivo(a.getId());
-          });
+          .ifPresent(a -> archivo.setId(a.getId()));
 
       archivoRepository.save(archivo);
       importarHechosArchivo(archivo);
 
       ArchivoOutputAgregadorDTO outputAgregadorDTO = this.utilsDTO.toOutputArchivoAgregador(archivo);
-      this.webClient.post()
-          .uri(uriBuilder -> {
-            URI finalUri = uriBuilder.path("/fuentes").build();
-            return finalUri;
-          })
-          .bodyValue(outputAgregadorDTO)
-          .retrieve()
-          .toBodilessEntity()
-          .doOnError(error -> {
-          })
-          .subscribe();
 
-    } catch (Exception e) {
-      logger.error(e.getMessage());
-    }
+      try {
+        this.agregadorClient.incorporarFuente(outputAgregadorDTO);
+      } catch (Exception e) {
+        logger.warn("Hubo un inconveniente al comunicar con el Agregador: {}", e.getMessage());
+      }
   }
 
 
@@ -77,14 +61,12 @@ public class ArchivoService implements IArchivoService {
   private void importarHechosArchivo(Archivo archivo) {
     archivo.importarHechos()
         .doOnNext(this::saveHecho)
-        .blockLast(); // Para que espere a que termine
+        .blockLast();
   }
 
   private void saveHecho(HechoEstatica hecho) {
-    // Buscar hecho con el mismo título Y del mismo archivo para evitar duplicados
     this.hechoRepository.findByTitulo(hecho.getTitulo())
         .stream()
-        .filter(h -> h.getIdArchivo().equals(hecho.getIdArchivo())) // FILTRAR POR ARCHIVO
         .findFirst()
         .ifPresent(h -> hecho.setId(h.getId()));
     this.hechoRepository.save(hecho);
