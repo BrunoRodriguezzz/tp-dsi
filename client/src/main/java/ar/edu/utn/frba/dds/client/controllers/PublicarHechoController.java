@@ -60,7 +60,7 @@ public class PublicarHechoController {
         try {
             this.dinamicaService.enviarHecho(hechoInputDTO);
             redirect.addFlashAttribute("exito", "Hecho enviado para revisión.");
-            return "redirect:/hechos/misHechos";
+            return "redirect:/home";
         } catch (Exception e) {
             LOGGER.error("Fallo al enviar hecho: {}", e.getMessage(), e);
             redirect.addFlashAttribute("error", e.getMessage());
