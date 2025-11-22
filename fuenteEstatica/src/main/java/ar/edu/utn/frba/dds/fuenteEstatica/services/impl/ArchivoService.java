@@ -13,6 +13,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -32,8 +33,8 @@ public class ArchivoService implements IArchivoService {
   }
 
   @Override
+  @Async
   public void guardarArchivo(Archivo archivo) {
-    try {
       archivoRepository.findByNombre(archivo.getNombre())
           .stream()
           .findFirst()
@@ -43,10 +44,12 @@ public class ArchivoService implements IArchivoService {
       importarHechosArchivo(archivo);
 
       ArchivoOutputAgregadorDTO outputAgregadorDTO = this.utilsDTO.toOutputArchivoAgregador(archivo);
-      this.agregadorClient.incorporarFuente(outputAgregadorDTO);
-    } catch (Exception e) {
-      logger.error(e.getMessage());
-    }
+
+      try {
+        this.agregadorClient.incorporarFuente(outputAgregadorDTO);
+      } catch (Exception e) {
+        logger.warn("Hubo un inconveniente al comunicar con el Agregador: {}", e.getMessage());
+      }
   }
 
 
