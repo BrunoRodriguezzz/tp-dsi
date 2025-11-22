@@ -32,7 +32,8 @@ public class APIController {
 
     @GetMapping("/hechos/user/{id}")
     public List<HechoOutputDTO> buscarHecho(@PathVariable(name = "id") Long id){
-        return this.apiService.hechosDeUsuario(id);
+        List<HechoOutputDTO> hechos = this.apiService.hechosDeUsuario(id);
+        return hechos;
     }
 
     @GetMapping("/hechos/{id}")
