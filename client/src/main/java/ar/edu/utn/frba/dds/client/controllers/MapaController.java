@@ -20,7 +20,7 @@ public class MapaController {
     @GetMapping("/mapa")
     public String mostrarMapa(Model model) {
 //        List<HechoDTO> hechos = hechoService.obtenerHechosAgregador().getContent();
-        List<HechoDTO> hechos = hechoService.obtenerHechos();
+        List<HechoDTO> hechos = hechoService.obtenerHechosMapa();
         model.addAttribute("hechos", hechos);
         model.addAttribute("mapboxToken", "pk.eyJ1IjoiZmVybmFuZG8xN2EiLCJhIjoiY21nbnk3MDg2MXpteTJucHJsdDllNzZuZCJ9.KuFr7I-l2wBE6ONQk3GpGw");
         return "mapa";
