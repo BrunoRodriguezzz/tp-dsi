@@ -1,0 +1,48 @@
+<html lang="en" th:replace="~{layout/base :: html}">
+
+<th:block th:fragment="additional-links">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/modificarHecho.css}">
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
+</th:block>
+
+<div th:fragment="contenido" class="container">
+    <div class="container-navegador">
+        <nav class="config-nav">
+            <a th:href="@{/home}" class="boton-navegacion">Home</a>
+        </nav>
+        <div style="margin-bottom: 2rem;">
+            <h3><b>Aceptar con sugerencia</b></h3>
+        </div>
+        <div>
+            <form th:action="@{'/hechos/gestionConSugerencia'}" method="post">
+                <div class="config-form">
+                    <div>
+                        <h3 style="font-size: 1.5rem; margin-bottom: 0.2rem;">Agrega la sugerencia al hecho</h3>
+                    </div>
+                    <hr>
+                    <div>
+                        <label class="config-label">Sugerencia *</label>
+                        <textarea name="sugerenciaDeCambio" class="config-input" rows="4" style="min-height: fit-content; margin-bottom: 0.4rem;"></textarea>
+                    </div>
+                    <input type="hidden" name="idAdministrador" th:value="${usuarioLogueado.id}">
+                    <input type="hidden" name="id" th:value="${hecho.id}">
+                    <input type="hidden" name="estadoHecho" th:value="ACEPTADA">
+                </div>
+                <div class="opciones">
+                    <button type="submit" class="btn btn-primary btn-dark config-opciones">Aceptar con Sugerencia</button>
+                    <a th:href="@{/panelControl/index}" class="btn btn-cancelar config-opciones">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script th:src="@{/js/mapa.js}"></script>
+    <script th:src="@{/js/publicarHecho/dragAndDrop.js}"></script>
+</div>
+</html>

@@ -210,7 +210,7 @@ public class HechoController {
 
   @PreAuthorize("hasRole('ADMINISTRADOR')")
   @PostMapping("/modificacion")
-  public String modificarHecho(@Valid @ModelAttribute HechoRevisadoForm form) {
+  public String aceptarModificacion(@Valid @ModelAttribute HechoRevisadoForm form) {
     this.dinamicaService.modificar(form);
     return "redirect:/panelControl";
   }
@@ -240,12 +240,29 @@ public class HechoController {
   }
 
   @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CONTRIBUYENTE')")
-  @GetMapping("modificarHecho/{id}")
+  @GetMapping("/modificarHecho/{id}")
   public String modificacionHecho(@PathVariable(name = "id") Long id, Model model){
     HechoDTO hecho = hechoService.obtenerHechoPorId(id);
     model.addAttribute("hecho", hecho);
     model.addAttribute("titulo", "Modificacion");
     return "modificarHecho";
+  }
+
+  @PreAuthorize("hasAnyRole('ADMINISTRADOR')")
+  @GetMapping("/aceptarConSugerencia/{id}")
+  public String aceptarConModificacionPantalla(@PathVariable(name = "id") String id, Model model){
+    Long idL = Long.parseLong(id);
+    HechoDTO hecho = dinamicaService.buscarHechoId(idL);
+    model.addAttribute("hecho", hecho);
+    model.addAttribute("titulo", "Aceptar con Sugerencia");
+    return "aceptarConSugerencia";
+  }
+
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
+  @PostMapping("/gestionConSugerencia")
+  public String gestionConSugerencia(@Valid @ModelAttribute HechoRevisadoForm form) {
+    this.dinamicaService.gestionarHecho(form);
+    return "redirect:/panelControl/hechosPendientes";
   }
 
   @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CONTRIBUYENTE')")

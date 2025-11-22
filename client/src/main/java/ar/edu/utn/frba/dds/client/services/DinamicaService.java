@@ -69,7 +69,7 @@ public class DinamicaService {
     }
 
     public void gestionarHecho(HechoRevisadoForm form) {
-        if(form.getEtiquetas().isEmpty()) form.setEtiquetas(null);
+        if(form.getEtiquetas() == null || form.getEtiquetas().isEmpty()) form.setEtiquetas(null);
 
         HechoDinamicaDTO dto = HechoDinamicaDTO.builder()
                 .idAdministrador(form.getIdAdministrador())
