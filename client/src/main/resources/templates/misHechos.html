@@ -55,7 +55,7 @@
                     <div class="data-hecho">
                         <div class="fechaPublicacion">
                             <i class="fa-regular fa-calendar"></i>
-                            <p class="alineacion" th:text="|Publicado: ${hecho.fechaCarga}|">Sin Fecha</p>
+                            <p class="alineacion" th:text="|Publicado: ${hecho.fechaCarga.toLocalDate()}|">Sin Fecha</p>
                         </div>
                         <div class="tiempoRestante">
                             <i class="fa-regular fa-clock"></i>
