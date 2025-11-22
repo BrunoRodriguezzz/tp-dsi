@@ -16,7 +16,7 @@ spring:
             - Path=/colecciones/**, /hechos/**, /solicitudesEliminacion/**, /media/**
 
         - id: dinamica-service
-          uri: lb://fuenteDinamica
+          uri: lb://fuente-dinamica
           predicates:
             - Path=/api/fuenteDinamica/**
 

@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteDinamica.services.impl;
 
+import ar.edu.utn.frba.dds.fuenteDinamica.clients.AgregadorClient;
 import ar.edu.utn.frba.dds.fuenteDinamica.excepciones.ErrorNotFound;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.HechoRevisadoInputDTO;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.dtos.input.SolicitudRevisadaInputDTO;
@@ -11,29 +12,24 @@ import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.Hecho;
 import ar.edu.utn.frba.dds.fuenteDinamica.models.entities.SolicitudModificacion;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IAdminService;
 import ar.edu.utn.frba.dds.fuenteDinamica.services.IRepositoryService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class AdminService implements IAdminService {
 
     private IRepositoryService dinamicaRepository;
-    private final WebClient webClient;
+    private final AgregadorClient agregadorClient;
 
-    public AdminService(IRepositoryService dinamicaRepository, @Value("${servicio.agregador}") String urlAgregador) {
+    public AdminService(IRepositoryService dinamicaRepository, AgregadorClient agregadorClient) {
         this.dinamicaRepository = dinamicaRepository;
-        this.webClient = WebClient
-            .builder()
-            .baseUrl(urlAgregador)
-            .build();
+        this.agregadorClient = agregadorClient;
     }
 
     @Override
@@ -138,28 +134,16 @@ public class AdminService implements IAdminService {
         }
     }
 
-    private void enviarHecho(Hecho hecho){
+    private void enviarHecho(Hecho hecho){ // TODO
         HechoOutputDTO hechoParaEnviar = HechoOutputDTO.convertir(hecho);
 
         try {
-            this.webClient.post()
-                    .uri(uriBuilder -> uriBuilder.path("/hechos").build())
-                    .contentType(MediaType.APPLICATION_JSON)  // aseguramos Content-Type
-                    .bodyValue(hechoParaEnviar)
-                    .retrieve()
-                    .toBodilessEntity()
-                    .block();  // bloquea y espera la respuesta
-
+            agregadorClient.incorporarHecho(hechoParaEnviar);
             hecho.setEnviado(true);
             this.dinamicaRepository.guardar(hecho);
 
-        } catch (WebClientResponseException e) {
-            // Capturamos la excepción específica de WebClient y mostramos detalles valiosos
-            System.err.println("Fallo el envio del Hecho. Status: " + e.getStatusCode() + ". Body: " + e.getResponseBodyAsString());
-            e.printStackTrace();
         } catch (Exception e){
-            System.err.println("Fallo el envio del Hecho por un error inesperado: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Fallo el envio del Hecho por un error inesperado: {}", e.getMessage());
         }
     }
 
@@ -170,28 +154,16 @@ public class AdminService implements IAdminService {
                 .build();
     }
 
-    private void enviarHechoMod(Hecho hecho){
+    private void enviarHechoMod(Hecho hecho){ // TODO
         HechoOutputDTO hechoParaEnviar = HechoOutputDTO.convertir(hecho);
 
         try {
-            this.webClient.put()
-                    .uri(uriBuilder -> uriBuilder.path("/hechos/contribuyentes/" + hecho.getId()).build())
-                    .contentType(MediaType.APPLICATION_JSON)  // aseguramos Content-Type
-                    .bodyValue(hechoParaEnviar)
-                    .retrieve()
-                    .toBodilessEntity()
-                    .block();  // bloquea y espera la respuesta
-
+            this.agregadorClient.actualizarHechoDinamica(hechoParaEnviar, hecho.getId());
             hecho.setEnviado(true);
             this.dinamicaRepository.guardar(hecho);
 
-        } catch (WebClientResponseException e) {
-            // Capturamos la excepción específica de WebClient y mostramos detalles valiosos
-            System.err.println("Fallo el envio del Hecho. Status: " + e.getStatusCode() + ". Body: " + e.getResponseBodyAsString());
-            e.printStackTrace();
         } catch (Exception e){
-            System.err.println("Fallo el envio del Hecho por un error inesperado: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Fallo el envio del Hecho por un error inesperado: {}", e.getMessage());
         }
     }
 }
