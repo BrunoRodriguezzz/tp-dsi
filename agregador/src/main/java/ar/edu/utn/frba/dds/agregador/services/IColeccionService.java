@@ -18,6 +18,7 @@ public interface IColeccionService {
   public Page<ColeccionOutputDTO> buscarColecciones(Pageable pageable);
   public Page<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params, Pageable pageable);
   public List<HechoOutputDTO> buscarHechosCuradosColeccion(Long id, QueryParamsFiltro params);
+  public Page<HechoOutputDTO> buscarHechosCuradosColeccionPaginado(Long id, QueryParamsFiltro params, Pageable pageable);
   public ColeccionOutputDTO buscarColeccion(Long id);
 
   // Operaciones sobre colecciones

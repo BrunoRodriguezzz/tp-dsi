@@ -93,6 +93,47 @@
                 </div>
             </div>
 
+            <div th:if="${totalPages > 1}" style="margin: 2rem 0; text-align: center;">
+                <div style="display: inline-flex; gap: 0.5rem; align-items: center;">
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{/coleccion/{id}(id=${coleccion.id}, page=${currentPage - 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                       class="btn btn-primary btn-dark config-opciones">Página Anterior</a>
+
+                    <span th:if="${0 == currentPage}"
+                          th:text="1"
+                          style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; background: #007bff; color: white; border-radius: 4px; font-weight: bold;"></span>
+                    <a th:if="${0 != currentPage}"
+                       th:href="@{/coleccion/{id}(id=${coleccion.id}, page=0, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                       th:text="1"
+                       style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; text-decoration: none; color: #333; border: 1px solid #ddd; border-radius: 4px;"></a>
+
+                    <span th:if="${currentPage > 3}" style="margin: 0 0.5rem;">...</span>
+                    <span th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}" th:if="${i > 0 and i < totalPages - 1}">
+                        <span th:if="${i == currentPage}"
+                              th:text="${i + 1}"
+                              style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; background: #007bff; color: white; border-radius: 4px; font-weight: bold;"></span>
+                        <a th:if="${i != currentPage}"
+                           th:href="@{/coleccion/{id}(id=${coleccion.id}, page=${i}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                           th:text="${i + 1}"
+                           style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; text-decoration: none; color: #333; border: 1px solid #ddd; border-radius: 4px;"></a>
+                    </span>
+
+                    <span th:if="${currentPage < totalPages - 4}" style="margin: 0 0.5rem;">...</span>
+
+                    <span th:if="${totalPages - 1 == currentPage}"
+                          th:text="${totalPages}"
+                          style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; background: #007bff; color: white; border-radius: 4px; font-weight: bold;"></span>
+                    <a th:if="${totalPages - 1 != currentPage}"
+                       th:href="@{/coleccion/{id}(id=${coleccion.id}, page=${totalPages - 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                       th:text="${totalPages}"
+                       style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; text-decoration: none; color: #333; border: 1px solid #ddd; border-radius: 4px;"></a>
+
+                    <a th:if="${currentPage < totalPages - 1}"
+                       th:href="@{/coleccion/{id}(id=${coleccion.id}, page=${currentPage + 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                       class="btn btn-primary btn-dark config-opciones">Página Siguiente</a>
+                </div>
+            </div>
+
          </div>
      </main>
 

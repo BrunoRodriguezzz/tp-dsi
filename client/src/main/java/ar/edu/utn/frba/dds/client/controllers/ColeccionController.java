@@ -72,7 +72,9 @@ public class ColeccionController {
       @RequestParam(name = "ubicacion", required = false) String ubicacion,
       @RequestParam(name = "fechaCargaInicio", required = false) String fechaCargaInicio,
       @RequestParam(name = "fechaCargaFin", required = false) String fechaCargaFin,
-      @RequestParam(name = "fuente", required = false) String fuente
+      @RequestParam(name = "fuente", required = false) String fuente,
+      @RequestParam(name = "page", required = false, defaultValue = "0") Long page,
+      @RequestParam(name = "size", required = false, defaultValue = "10") Long size
   ) {
     ColeccionOutputDTO coleccion = getWebClient().get()
         .uri("/colecciones/" + id)
@@ -140,34 +142,15 @@ public class ColeccionController {
     final String fqLat = (qLat != null && !qLat.isBlank()) ? qLat : null;
     final String fqLng = (qLng != null && !qLng.isBlank()) ? qLng : null;
 
-    List<HechoDTO> hechos;
+    PaginadoHechoDTO paginado;
 
-    // se hace la llamada según el modo
     if ("curado".equalsIgnoreCase(modo)) {
-      // Modo curado: se usa el endpoint /hechos/curados
-      List<HechoDTO> response = getWebClient().get()
+      // Modo curado: se usa el endpoint /hechos/curados con paginación
+      paginado = getWebClient().get()
           .uri(uriBuilder -> {
-            var b = uriBuilder.path("/colecciones/" + id + "/hechos/curados");
-            if (qCategoria != null) b = b.queryParam("categoria", qCategoria);
-            if (qFaIni != null) b = b.queryParam("fechaAcontecimientoInicio", qFaIni);
-            if (qFaFin != null) b = b.queryParam("fechaAcontecimientoFin", qFaFin);
-            if (qTitulo != null) b = b.queryParam("titulo", qTitulo);
-            if (fqLat != null) b = b.queryParam("latitud", fqLat);
-            if (fqLng != null) b = b.queryParam("longitud", fqLng);
-            if (qFcIni != null) b = b.queryParam("fechaCargaInicio", qFcIni);
-            if (qFcFin != null) b = b.queryParam("fechaCargaFin", qFcFin);
-            if (qFuente != null) b = b.queryParam("fuente", qFuente);
-            return b.build();
-          })
-          .retrieve()
-          .bodyToMono(new ParameterizedTypeReference<List<HechoDTO>>() {})
-          .block();
-      hechos = response != null ? response : List.of();
-    } else {
-      // Modo irrestricto: se usa el endpoint /hechos
-      PaginadoHechoDTO paginado = getWebClient().get()
-          .uri(uriBuilder -> {
-            var b = uriBuilder.path("/colecciones/" + id + "/hechos");
+            var b = uriBuilder.path("/colecciones/" + id + "/hechos/curados")
+                .queryParam("page", page)
+                .queryParam("size", size);
             if (qCategoria != null) b = b.queryParam("categoria", qCategoria);
             if (qFaIni != null) b = b.queryParam("fechaAcontecimientoInicio", qFaIni);
             if (qFaFin != null) b = b.queryParam("fechaAcontecimientoFin", qFaFin);
@@ -182,11 +165,40 @@ public class ColeccionController {
           .retrieve()
           .bodyToMono(PaginadoHechoDTO.class)
           .block();
-      hechos = paginado != null && paginado.getContent() != null ? paginado.getContent() : List.of();
+    } else {
+      // Modo irrestricto: se usa el endpoint /hechos con paginación
+      paginado = getWebClient().get()
+          .uri(uriBuilder -> {
+            var b = uriBuilder.path("/colecciones/" + id + "/hechos")
+                .queryParam("page", page)
+                .queryParam("size", size);
+            if (qCategoria != null) b = b.queryParam("categoria", qCategoria);
+            if (qFaIni != null) b = b.queryParam("fechaAcontecimientoInicio", qFaIni);
+            if (qFaFin != null) b = b.queryParam("fechaAcontecimientoFin", qFaFin);
+            if (qTitulo != null) b = b.queryParam("titulo", qTitulo);
+            if (fqLat != null) b = b.queryParam("latitud", fqLat);
+            if (fqLng != null) b = b.queryParam("longitud", fqLng);
+            if (qFcIni != null) b = b.queryParam("fechaCargaInicio", qFcIni);
+            if (qFcFin != null) b = b.queryParam("fechaCargaFin", qFcFin);
+            if (qFuente != null) b = b.queryParam("fuente", qFuente);
+            return b.build();
+          })
+          .retrieve()
+          .bodyToMono(PaginadoHechoDTO.class)
+          .block();
     }
 
-    model.addAttribute("hechos", hechos);
-    model.addAttribute("cantidad", hechos.size());
+    if (paginado != null) {
+      model.addAttribute("hechos", paginado.getContent());
+      model.addAttribute("cantidad", paginado.getTotalElements());
+      model.addAttribute("currentPage", paginado.getNumber());
+      model.addAttribute("totalPages", paginado.getTotalPages());
+    } else {
+      model.addAttribute("hechos", List.of());
+      model.addAttribute("cantidad", 0);
+      model.addAttribute("currentPage", 0);
+      model.addAttribute("totalPages", 1);
+    }
 
     return "coleccion";
   }

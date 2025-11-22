@@ -1,11 +1,13 @@
 package ar.edu.utn.frba.dds.client.services;
 
 import ar.edu.utn.frba.dds.client.dtos.ColeccionOutputDTO;
+import ar.edu.utn.frba.dds.client.dtos.PaginaDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.PaginadoHechoDTO;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -46,8 +48,13 @@ public class ColeccionService {
   }
 
   public List<ColeccionOutputDTO> obtenerColecciones() {
-    List<ColeccionOutputDTO> response = this.webApiCallerService.getList(this.hechoServiceUrl + "/colecciones?all=true", ColeccionOutputDTO.class);
-    return response != null ? response : List.of();
+    WebClient client = WebClient.builder().baseUrl(this.hechoServiceUrl).build();
+    PaginaDTO<ColeccionOutputDTO> pagina = client.get()
+        .uri("/colecciones?all=true")
+        .retrieve()
+        .bodyToMono(new ParameterizedTypeReference<PaginaDTO<ColeccionOutputDTO>>() {})
+        .block();
+    return pagina != null && pagina.getContent() != null ? pagina.getContent() : List.of();
   }
 
   public ColeccionOutputDTO obtenerColeccionPorId(Long id) {

@@ -59,7 +59,7 @@ public class ColeccionController {
   }
 
   @GetMapping("/{id}/hechos/curados")
-  public ResponseEntity buscarHechosCuradosColeccion(
+  public ResponseEntity<Page<HechoOutputDTO>> buscarHechosCuradosColeccion(
       @PathVariable("id") Long id,
       @RequestParam(name = "categoria", required = false) String categoria,
       @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDateTime fechaAcontecimientoInicio,
@@ -69,15 +69,18 @@ public class ColeccionController {
       @RequestParam(name = "longitud", required = false) Double longitud,
       @RequestParam(name = "fechaCargaInicio", required = false) LocalDateTime fechaCargaInicio,
       @RequestParam(name = "fechaCargaFin", required = false) LocalDateTime fechaCargaFin,
-      @RequestParam(name = "fuente", required = false) String fuente
+      @RequestParam(name = "fuente", required = false) String fuente,
+      @RequestParam(name = "all", required = false) Boolean all,
+      Pageable pageable
   ) {
     QueryParamsFiltro params = Utils.crearFiltros(categoria, fechaAcontecimientoInicio, fechaAcontecimientoFin, titulo,
             latitud, longitud, fechaCargaInicio, fechaCargaFin, fuente);
 
-    List<HechoOutputDTO> hechos = this.coleccionService.buscarHechosCuradosColeccion(id,params);
-    if(hechos == null) {
-      return new ResponseEntity(HttpStatus.NOT_FOUND);
+    if (all != null && all) {
+      pageable = Pageable.unpaged();
     }
+
+    Page<HechoOutputDTO> hechos = this.coleccionService.buscarHechosCuradosColeccionPaginado(id, params, pageable);
     return ResponseEntity.status(HttpStatus.OK).body(hechos);
   }
 

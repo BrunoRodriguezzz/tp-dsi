@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -110,6 +111,31 @@ public class ColeccionService implements IColeccionService {
     coleccion.cargarHechos(hechosProxy);
     List<Hecho> hechosOutput = coleccion.consultarHechosCurados(params.instanciarFiltros());
     return HechoOutputDTO.mapHechoToDTO(hechosOutput);
+  }
+
+  public Page<HechoOutputDTO> buscarHechosCuradosColeccionPaginado(Long id, QueryParamsFiltro params, Pageable pageable) {
+    Coleccion coleccion = this.findColecccionAux(id);
+    List<Consenso> consensos = coleccion.getConsensos();
+
+    if (consensos == null || consensos.isEmpty()) {
+      return new PageImpl<>(List.of(), pageable, 0);
+    }
+
+    List<Hecho> hechosProxy = this.pedirHechosProxy(coleccion.getFuentes().stream().filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY)).toList());
+    coleccion.cargarHechos(hechosProxy);
+
+    List<Hecho> hechosCurados = coleccion.consultarHechosCurados(params.instanciarFiltros());
+
+    // Paginación en memoria
+    int total = hechosCurados.size();
+    int page = pageable.getPageNumber();
+    int size = pageable.getPageSize();
+    int fromIndex = Math.min(page * size, total);
+    int toIndex = Math.min(fromIndex + size, total);
+    List<Hecho> content = hechosCurados.subList(fromIndex, toIndex);
+
+    Page<Hecho> hechosPage = new PageImpl<>(content, pageable, total);
+    return hechosPage.map(HechoOutputDTO::HechoToDTO);
   }
 
   public ColeccionOutputDTO buscarColeccion(Long id) {
