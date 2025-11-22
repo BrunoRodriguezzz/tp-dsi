@@ -82,7 +82,13 @@
                 <div class="informacion-general">
                     <div class="fecha-ubicacion-fuente encolumnar">
                         <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento}|"></p>
-                        <p class="info-fecha-ubicacion-fuente" th:text="${hecho.ubicacion != null ? 'Ubicacion: ' + hecho.ubicacion.provincia + ', ' + hecho.ubicacion.municipio : 'Ubicacion: N/A'}"></p>
+                        <p class="info-fecha-ubicacion-fuente" th:text="${
+                               hecho.ubicacion == null or hecho.ubicacion.nombreProvincia == null
+                               ? 'Sin provincia'
+                               : (hecho.ubicacion.municipio != null
+                                   ? 'Ubicación: ' + hecho.ubicacion.nombreProvincia + ', ' + hecho.ubicacion.municipio
+                                   : 'Ubicación: ' + hecho.ubicacion.nombreProvincia)
+                           }"></p>
                         <p class="info-fecha-ubicacion-fuente" th:text="|Fuente: ${hecho.fuente}|"></p>
                     </div>
                     <div class="etiquetas">
