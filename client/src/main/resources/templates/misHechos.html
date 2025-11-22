@@ -44,6 +44,7 @@
                     <p class="info-fecha-ubicacion-fuente"><b>Ubicacion:</b> <span th:text="${hecho.ubicacion != null ? hecho.ubicacion.provincia + ', ' + hecho.ubicacion.municipio : 'Sin Ubicacion'}">Sin Ubicacion</span></p>
                     <p class="info-fecha-ubicacion-fuente"><b>Fuente:</b> <span th:text="${hecho.fuente}">Sin Fuente</span></p>
                 </div>
+                <p class="info-fecha-ubicacion-fuente"><b th:if="${hecho.getSugerenciaCambio() != null && diasRestantesMap[hecho.id] > 0 && !hecho.getSugerenciaCambio().isEmpty()}">Sugerencia: </b><span th:text="${hecho.getSugerenciaCambio()}" th:if="${hecho.getSugerenciaCambio() != null && diasRestantesMap[hecho.id] > 0 && !hecho.getSugerenciaCambio().isEmpty()}"></span></p>
                 <div class="etiquetas">
                     <div th:each="etiqueta, iterStat: ${hecho.etiquetas}" th:if="${iterStat.index < 3}">
                         <p class="titulo-etiqueta etiqueta-interes" th:text="${etiqueta}">Sin etiqueta</p>
