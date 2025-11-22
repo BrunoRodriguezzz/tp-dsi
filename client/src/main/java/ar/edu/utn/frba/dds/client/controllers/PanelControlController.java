@@ -1,6 +1,5 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
-import ar.edu.utn.frba.dds.client.dtos.FuenteDTO;
 import ar.edu.utn.frba.dds.client.dtos.SolicitudCambiosDTO;
 import ar.edu.utn.frba.dds.client.dtos.SolicitudEliminacionConHechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.UsuarioLogueadoDTO;
@@ -9,6 +8,7 @@ import ar.edu.utn.frba.dds.client.services.DinamicaService;
 import ar.edu.utn.frba.dds.client.services.FuenteService;
 import ar.edu.utn.frba.dds.client.services.HechoService;
 import ar.edu.utn.frba.dds.client.services.SolicitudesService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -17,8 +17,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @RequestMapping("/panelControl")
@@ -28,6 +40,9 @@ public class PanelControlController {
   private final FuenteService fuenteService;
   private final SolicitudesService solicitudesService;
   private final DinamicaService dinamicaService;
+
+  @Value("${servicio.estatica}")
+  private String fuenteEstaticaURL;
 
   public PanelControlController(HechoService hechoService, FuenteService fuenteService, SolicitudesService solicitudesService, DinamicaService dinamicaService) {
     this.hechoService = hechoService;
@@ -77,6 +92,125 @@ public class PanelControlController {
   public String panelControlImportarCSV(Model model) {
     model.addAttribute("titulo", "Importar CSV");
     return "panelControl/importarCSV";
+  }
+
+  @PreAuthorize("hasRole('ADMINISTRADOR')")
+  @PostMapping("/importarCSV")
+  public String procesarImportacionCSV(
+      @RequestParam("archivo") MultipartFile archivo,
+      @RequestParam(value = "nombreFuente", required = false) String nombreFuente,
+      RedirectAttributes redirectAttributes) {
+
+    try {
+      // Validar que se haya subido un archivo
+      if (archivo.isEmpty()) {
+        redirectAttributes.addFlashAttribute("error", "Debe seleccionar un archivo CSV");
+        return "redirect:/panelControl/importarCSV";
+      }
+
+      // Validar que sea un archivo CSV
+      String nombreArchivo = archivo.getOriginalFilename();
+      if (nombreArchivo == null || !nombreArchivo.toLowerCase().endsWith(".csv")) {
+        redirectAttributes.addFlashAttribute("error", "El archivo debe ser de tipo CSV");
+        return "redirect:/panelControl/importarCSV";
+      }
+
+      // Usar el nombre del archivo si no se especificó un nombre de fuente
+      if (nombreFuente == null || nombreFuente.trim().isEmpty()) {
+        nombreFuente = nombreArchivo.replace(".csv", "").replace(".CSV", "");
+      }
+
+      // Guardar el archivo temporalmente
+      Path tempDir = Files.createTempDirectory("csv-import-");
+      Path tempFile = tempDir.resolve(nombreArchivo);
+      Files.copy(archivo.getInputStream(), tempFile, StandardCopyOption.REPLACE_EXISTING);
+
+      // Validar estructura del CSV
+      try (BufferedReader reader = new BufferedReader(
+          new InputStreamReader(archivo.getInputStream(), StandardCharsets.UTF_8))) {
+
+        String primeraLinea = reader.readLine();
+        if (primeraLinea == null) {
+          redirectAttributes.addFlashAttribute("error", "El archivo CSV está vacío");
+          Files.deleteIfExists(tempFile);
+          Files.deleteIfExists(tempDir);
+          return "redirect:/panelControl/importarCSV";
+        }
+
+        // Validar columnas requeridas
+        String[] columnas = primeraLinea.split(",");
+        boolean tieneTitulo = false, tieneDescripcion = false, tieneCategoria = false;
+        boolean tieneLatitud = false, tieneLongitud = false, tieneFecha = false;
+
+        for (String columna : columnas) {
+          // Normalizar: quitar tildes, convertir a minúsculas y quitar espacios
+          String columnaNormalizada = java.text.Normalizer.normalize(columna.trim(), java.text.Normalizer.Form.NFD)
+              .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
+              .toLowerCase();
+
+          if (columnaNormalizada.contains("titulo")) tieneTitulo = true;
+          if (columnaNormalizada.contains("descripcion")) tieneDescripcion = true;
+          if (columnaNormalizada.contains("categoria")) tieneCategoria = true;
+          if (columnaNormalizada.contains("latitud")) tieneLatitud = true;
+          if (columnaNormalizada.contains("longitud")) tieneLongitud = true;
+          if (columnaNormalizada.contains("fecha")) tieneFecha = true;
+        }
+
+        if (!tieneTitulo || !tieneDescripcion || !tieneCategoria ||
+            !tieneLatitud || !tieneLongitud || !tieneFecha) {
+          redirectAttributes.addFlashAttribute("error",
+              "El archivo CSV debe contener las columnas: Título, Descripción, Categoría, Latitud, Longitud, Fecha del hecho");
+          Files.deleteIfExists(tempFile);
+          Files.deleteIfExists(tempDir);
+          return "redirect:/panelControl/importarCSV";
+        }
+      }
+
+      // Llamar al servicio de fuente estática para crear la fuente desde el CSV
+      String rutaArchivo = tempFile.toAbsolutePath().toString();
+
+      try {
+        // Construir los parámetros para la llamada al servicio de fuente estática
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("nombre", nombreFuente);
+        formData.add("rutaArchivo", rutaArchivo);
+        formData.add("tipoArchivo", "CSV");
+
+        // Llamar al servicio de fuente estática
+        String response = WebClient.builder()
+            .baseUrl(fuenteEstaticaURL)
+            .build()
+            .post()
+            .uri("/archivos")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .bodyValue(formData)
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+
+        redirectAttributes.addFlashAttribute("mensaje",
+            String.format("Archivo '%s' importado exitosamente como fuente '%s'. Respuesta: %s",
+                nombreArchivo, nombreFuente, response));
+      } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("error",
+            "Error al comunicarse con el servicio de fuente estática: " + e.getMessage());
+        e.printStackTrace();
+        // Limpiar el archivo temporal en caso de error
+        Files.deleteIfExists(tempFile);
+        Files.deleteIfExists(tempDir);
+        return "redirect:/panelControl/importarCSV";
+      }
+
+      // Nota: El archivo temporal se dejará para que el servicio de fuente estática lo procese
+      // Idealmente, el servicio debería limpiarlo después de procesarlo
+
+    } catch (Exception e) {
+      redirectAttributes.addFlashAttribute("error",
+          "Error al procesar el archivo: " + e.getMessage());
+      e.printStackTrace();
+    }
+
+    return "redirect:/panelControl/importarCSV";
   }
 
   @PreAuthorize("hasRole('ADMINISTRADOR')")

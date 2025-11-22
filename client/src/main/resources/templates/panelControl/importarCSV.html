@@ -17,6 +17,17 @@
         <h1>Importar CSV</h1>
         <p>Importa grandes volúmenes de hechos desde archivos CSV</p>
     </div>
+
+    <!-- Mensajes de éxito o error -->
+    <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensaje}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <div class="estado-importacion col-12">
         <svg class="violet" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M8 13h2"></path><path d="M14 13h2"></path><path d="M8 17h2"></path><path d="M14 17h2"></path></svg>
         <div class="text-estado">
@@ -33,20 +44,26 @@
             <p>Requisitos del archivo CSV</p>
             <ul>
                 <li>Debe contener más de 10.000 entradas</li>
-                <li>Colimnas requeridas: título, descripcion, categoria, fecha, latitud, longitud</li>
-                <li>Columnas opcionales: etiquetas, fuente, ubicacion</li>
-                <li>Formato de fecha: YYYY-MM-DD</li>
-                <li>Coordenadas en formato decimal</li>
+                <li>Columnas requeridas: Título, Descripción, Categoría, Latitud, Longitud, Fecha del hecho</li>
+                <li>Formato de fecha: DD/MM/YYYY</li>
+                <li>Coordenadas en formato decimal (ej: -34.6037, -58.3816)</li>
+                <li>La fuente y ubicación serán asignadas automáticamente por el agregador</li>
             </ul>
         </div>
         <div class="subir-csv">
-            <form action="" method="post">
+            <form th:action="@{/panelControl/importarCSV}" method="post" enctype="multipart/form-data" id="csvForm">
+                <div class="mb-3">
+                    <label for="nombreFuente" class="form-label">Nombre de la Fuente Estática</label>
+                    <input type="text" class="form-control" id="nombreFuente" name="nombreFuente"
+                           placeholder="Ingresa un nombre para la fuente (opcional)">
+                    <small class="form-text text-muted">Si no se especifica, se usará el nombre del archivo</small>
+                </div>
                 <div class="mb-3">
                     <label for="formFile" class="form-label">Seleccionar archivo CSV</label>
-                    <input class="form-control" type="file" id="formFile">
-                    <p style="display: none;">Archivo seleccionado: </p>
+                    <input class="form-control" type="file" id="formFile" name="archivo" accept=".csv" required>
+                    <p id="archivoSeleccionado" style="display: none; margin-top: 0.5rem; color: #6c757d;">Archivo seleccionado: <span id="nombreArchivo"></span></p>
                 </div>
-                <button type="submit" class="btn btn-dark">
+                <button type="submit" class="btn btn-dark" id="btnImportar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload w-4 h-4 mr-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" x2="12" y1="3" y2="15"></line></svg>
                     Importar Hechos
                 </button>
@@ -55,12 +72,35 @@
         <div class="important-container">
             <p>⚠️ Importante</p>
             <ul>
-                <li>Los hechos importados requerirán aprobación manual</li>
+                <li>Los hechos importados se crearán en una nueva fuente estática</li>
                 <li>Se validará la integridad de los datos antes de la importación</li>
-                <li>Los hechos duplicados serán detectados y marcados</li>
-                <li>El proceso no se puede cancelar una vez iniciado</li>
+                <li>Los hechos duplicados serán detectados automáticamente</li>
+                <li>El proceso puede tardar varios minutos para archivos grandes</li>
+                <li>No cierres esta ventana hasta que el proceso finalice</li>
             </ul>
         </div>
     </div>
+
+    <script th:inline="javascript">
+        // Mostrar nombre del archivo seleccionado
+        document.getElementById('formFile').addEventListener('change', function(e) {
+            const archivoSeleccionado = document.getElementById('archivoSeleccionado');
+            const nombreArchivo = document.getElementById('nombreArchivo');
+
+            if (e.target.files.length > 0) {
+                nombreArchivo.textContent = e.target.files[0].name;
+                archivoSeleccionado.style.display = 'block';
+            } else {
+                archivoSeleccionado.style.display = 'none';
+            }
+        });
+
+        // Cambiar estado al enviar formulario
+        document.getElementById('csvForm').addEventListener('submit', function() {
+            document.getElementById('estado').textContent = 'Procesando...';
+            document.getElementById('btnImportar').disabled = true;
+            document.getElementById('btnImportar').innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Importando...';
+        });
+    </script>
 </main>
 </html>

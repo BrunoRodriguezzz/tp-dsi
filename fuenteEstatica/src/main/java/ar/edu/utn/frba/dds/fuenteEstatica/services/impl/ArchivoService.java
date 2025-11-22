@@ -36,10 +36,16 @@ public class ArchivoService implements IArchivoService {
   @Override
   public void guardarArchivo(Archivo archivo) {
     try {
+      // Verificar si ya existe un archivo con el mismo nombre
       archivoRepository.findByNombre(archivo.getNombre())
           .stream()
           .findFirst()
-          .ifPresent(a -> archivo.setId(a.getId()));
+          .ifPresent(a -> {
+            archivo.setId(a.getId());
+            // Eliminar hechos antiguos de esta fuente para evitar mezclas
+            logger.info("Actualizando fuente existente. Eliminando hechos antiguos del archivo ID: {}", a.getId());
+            hechoRepository.deleteByIdArchivo(a.getId());
+          });
 
       archivoRepository.save(archivo);
       importarHechosArchivo(archivo);
@@ -75,8 +81,10 @@ public class ArchivoService implements IArchivoService {
   }
 
   private void saveHecho(HechoEstatica hecho) {
+    // Buscar hecho con el mismo título Y del mismo archivo para evitar duplicados
     this.hechoRepository.findByTitulo(hecho.getTitulo())
         .stream()
+        .filter(h -> h.getIdArchivo().equals(hecho.getIdArchivo())) // FILTRAR POR ARCHIVO
         .findFirst()
         .ifPresent(h -> hecho.setId(h.getId()));
     this.hechoRepository.save(hecho);

@@ -133,7 +133,7 @@ public class Hecho {
     }
 
     public void agregarFuente(Fuente fuente, Long idHechoEnFuente) {
-        if (this.fuenteSet.stream().noneMatch(e -> e.getFuente().getNombre().equals(fuente.getNombre()))) {
+        if (this.fuenteSet.stream().noneMatch(e -> e.getFuente().getId().equals(fuente.getId()))) {
             HechoFuente hechoFuente = new HechoFuente();
             hechoFuente.setHecho(this);
             hechoFuente.setFuente(fuente);
