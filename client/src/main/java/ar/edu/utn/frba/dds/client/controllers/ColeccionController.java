@@ -53,6 +53,7 @@ public class ColeccionController {
         .block();
     List<ColeccionOutputDTO> colecciones = pagina != null ? pagina.getContent() : List.of();
     model.addAttribute("colecciones", colecciones);
+    model.addAttribute("titulo", "Colecciones");
     return "colecciones";
   }
 
