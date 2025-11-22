@@ -1,4 +1,3 @@
-/* Estilos aplicados únicamente a mains que usan la clase 'container' (no al main global del layout) */
 main.container {
     display: flex;
     flex-direction: column;
@@ -8,7 +7,7 @@ main.container {
     margin-top: 2rem;
     padding: 0 1.5rem;
     justify-content: start;
-    align-items: stretch; /* permitir que hijos controlen su alineamiento (ej. centro en editar-coleccion) */
+    align-items: stretch;
 }
 
 body {
@@ -98,6 +97,15 @@ body {
     gap: 0.4rem;
     color: #888;
     font-size: 0.9rem;
+}
+
+.vacio-container {
+    margin-top: 8rem;
+    padding-top: 3rem;
+    width: 100%;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .card-categoria {
@@ -236,7 +244,6 @@ main.editar-coleccion .form-coleccion {
     margin-bottom: 1.25rem;
 }
 
-/* Inputs y grupos dentro del formulario ocupen el 100% y tengan buen espaciado */
 .form-coleccion .form-group {
     width: 100%;
     margin-bottom: 1rem;
@@ -248,17 +255,15 @@ main.editar-coleccion .form-coleccion {
     border-radius: 8px;
 }
 
-/* Ajuste de la fila de botones: que quede dentro del form y centrada */
 .botones-formulario {
     display: flex;
-    justify-content: center; /* centrados horizontalmente */
+    justify-content: center;
     gap: 1rem;
     margin-top: 1.5rem;
     width: 100%;
     box-sizing: border-box;
 }
 
-/* Asegurar que los botones no se salgan del contenedor y tengan un tamaño coherente */
 .botones-formulario .btn {
     min-width: 120px;
     padding: .45rem 1rem;
@@ -351,12 +356,6 @@ main[data-coleccion-id] #usarUbicBtn:hover {
     border-color: #111 !important;
 }
 
-/* A partir de aquí quitamos/neutralizamos reglas muy específicas para la página de edición
-   porque `editarColeccion.css` debe encargarse del estilo de esa vista. */
-
-/* Eliminamos reglas específicas para el formulario de edición para que la vista use su CSS dedicado (editarColeccion.css). */
-
-/* Neutral: limitar ancho del contenedor de edición pero no forzar alineamientos ni estilos del formulario */
 .editar-coleccion-container {
     width: 100%;
     max-width: 1200px;
@@ -365,4 +364,38 @@ main[data-coleccion-id] #usarUbicBtn:hover {
     padding-right: 1.5rem;
 }
 
-/* No declarar aquí .form-coleccion ni .outer-form ni .botones-formulario: los estilos específicos están en editarColeccion.css */
+/* ========================================= */
+/* ESTILOS PARA PANTALLA DE COLECCIÓN */
+/* ========================================= */
+
+/* Contenedor principal de título y descripción */
+.titulo-descripcion {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Cuando no hay hechos, aumentar el gap para crear espacio vertical */
+.titulo-descripcion.sin-hechos {
+    gap: 35rem;
+}
+
+/* Contenedor de párrafos y modos de navegación (Algoritmos) */
+.parrafos-modos-navegacion {
+    margin-bottom: 1.2rem;
+}
+
+/* Peso de fuente para el label "Algoritmos:" */
+.parrafos-modos-navegacion > span {
+    font-weight: 500;
+}
+
+/* Contenedor de algoritmos/chips */
+.modos-navegacion-container {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}

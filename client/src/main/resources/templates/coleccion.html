@@ -32,7 +32,7 @@
         </div>
 
         <div th:if="${coleccion != null}">
-            <div class="titulo-descripcion" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; margin-bottom: 1.5rem;">
+            <div class="titulo-descripcion" th:classappend="${cantidad == 0 ? 'sin-hechos' : ''}">
                 <div class="colecciones-titulo-descripcion-container">
                     <h2 th:text="${coleccion.titulo}">Título Colección</h2>
                     <p th:text="${coleccion.descripcion}">Descripción de la colección</p>
@@ -45,9 +45,9 @@
                 </div>
             </div>
 
-            <div class="parrafos-modos-navegacion" style="margin-bottom: 1.2rem;">
-                <span style="font-weight: 500;">Algoritmos:</span>
-                <div class="modos-navegacion-container" id="algoritmos" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+            <div class="parrafos-modos-navegacion">
+                <span>Algoritmos:</span>
+                <div class="modos-navegacion-container" id="algoritmos">
                     <span th:each="consenso : ${coleccion.consensos}"
                           th:text="${consenso == 'ABSOLUTO' ? 'Mayoría Absoluta' : (consenso == 'MULTMENCIONES' ? 'Múltiples Menciones' : (consenso == 'MAYSIMPLE' ? 'Mayoría Simple' : consenso))}"
                           th:classappend="
@@ -61,6 +61,10 @@
 
             <div th:with="filtAction=@{/coleccion/{id}(id=${coleccion.id})}, filtClear=@{/coleccion/{id}(id=${coleccion.id})}, usarUbicBtnClass='btn btn-sm btn-outline-primary'">
                 <div th:insert="~{fragments/filtros :: filtros(actionUrl=${filtAction}, clearUrl=${filtClear})}"></div>
+            </div>
+
+            <div th:if="${cantidad == 0}" class="vacio-container">
+                <div th:insert="~{fragments/vacio :: vacio}"></div>
             </div>
 
             <div class="hecho-card" th:each="hecho: ${hechos}">
