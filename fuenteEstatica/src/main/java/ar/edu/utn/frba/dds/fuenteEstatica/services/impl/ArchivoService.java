@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.fuenteEstatica.services.impl;
 
+import ar.edu.utn.frba.dds.fuenteEstatica.clients.AgregadorClient;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.UtilsDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.dto.output.ArchivoOutputAgregadorDTO;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.Archivo;
@@ -18,19 +19,16 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 public class ArchivoService implements IArchivoService {
   private static final Logger logger = LoggerFactory.getLogger(ArchivoService.class);
-  private IArchivoRepository archivoRepository;
-  private IHechoRepository hechoRepository;
-  private final WebClient webClient;
+  private final IArchivoRepository archivoRepository;
+  private final IHechoRepository hechoRepository;
   private final UtilsDTO utilsDTO;
+  private final AgregadorClient agregadorClient;
 
-  public ArchivoService(IArchivoRepository archivoRepository, IHechoRepository hechoRepository, @Value("${servicio.agregador}") String urlAgregador,  @Value("${servicio.estatica}") String urlEstatica) {
+  public ArchivoService(IArchivoRepository archivoRepository, IHechoRepository hechoRepository, @Value("${servicio.estatica}") String urlEstatica, AgregadorClient agregadorClient) {
     this.archivoRepository = archivoRepository;
     this.hechoRepository = hechoRepository;
-    this.webClient = WebClient
-        .builder()
-        .baseUrl(urlAgregador)
-        .build();
     this.utilsDTO = new UtilsDTO(urlEstatica);
+    this.agregadorClient = agregadorClient;
   }
 
   @Override
@@ -45,18 +43,7 @@ public class ArchivoService implements IArchivoService {
       importarHechosArchivo(archivo);
 
       ArchivoOutputAgregadorDTO outputAgregadorDTO = this.utilsDTO.toOutputArchivoAgregador(archivo);
-      this.webClient.post()
-          .uri(uriBuilder -> {
-            URI finalUri = uriBuilder.path("/fuentes").build();
-            return finalUri;
-          })
-          .bodyValue(outputAgregadorDTO)
-          .retrieve()
-          .toBodilessEntity()
-          .doOnError(error -> {
-          })
-          .subscribe();
-
+      this.agregadorClient.incorporarFuente(outputAgregadorDTO);
     } catch (Exception e) {
       logger.error(e.getMessage());
     }
@@ -71,7 +58,7 @@ public class ArchivoService implements IArchivoService {
   private void importarHechosArchivo(Archivo archivo) {
     archivo.importarHechos()
         .doOnNext(this::saveHecho)
-        .blockLast(); // Para que espere a que termine
+        .blockLast();
   }
 
   private void saveHecho(HechoEstatica hecho) {
