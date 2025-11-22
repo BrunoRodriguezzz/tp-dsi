@@ -1,7 +1,9 @@
 package ar.edu.utn.frba.dds.servicioEstadisticas.clients;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionPageDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
+import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoPageDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
@@ -18,10 +20,10 @@ import java.util.List;
 @FeignClient(name = "agregador", configuration = ErrorConfigFeign.class)
 public interface AgregadorClient {
     @GetMapping("/colecciones")
-    ResponseEntity<Page<ColeccionInputDTO>> buscarColecciones(@RequestParam(name = "all", required = false) Boolean all);
+    ResponseEntity<ColeccionPageDTO> buscarColecciones(@RequestParam(name = "all", required = false) Boolean all);
 
     @GetMapping("/colecciones/{id}/hechos")
-    ResponseEntity<Page<HechoInputDTO>> buscarHechosColeccion(
+    ResponseEntity<HechoPageDTO> buscarHechosColeccion(
             @PathVariable("id") Long id,
             @RequestParam(name = "categoria", required = false) String categoria,
             @RequestParam(name = "fechaAcontecimientoInicio", required = false) LocalDateTime fechaAcontecimientoInicio,

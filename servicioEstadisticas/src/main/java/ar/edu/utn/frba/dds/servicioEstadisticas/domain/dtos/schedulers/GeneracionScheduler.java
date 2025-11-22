@@ -1,4 +1,4 @@
-package ar.edu.utn.frba.dds.servicioEstadisticas.schedulers;
+package ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.schedulers;
 
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IEstadisticaService;
 import org.springframework.scheduling.annotation.Scheduled;
