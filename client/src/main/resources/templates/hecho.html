@@ -63,7 +63,8 @@
                         <i class="fa-solid fa-location-dot" style="font-size: 1.3rem; padding-top: 0.2rem;"></i>
                         <div>
                             <p style="margin-bottom: 0rem; font-size: 0.9rem; font-weight: 600">Ubicación</p>
-                            <p style="margin-bottom: 0rem; font-size: 0.8rem;" th:text="|${hecho.getUbicacion()?.getProvincia()}, ${hecho?.getUbicacion()?.getMunicipio()}|">Sin ubicación</p>
+                            <p style="margin-bottom: 0rem; font-size: 0.8rem;" th:text="${hecho.ubicacion.provincia != null} ? ${hecho.ubicacion.provincia} + ', ' + ${hecho.ubicacion.municipio} : 'No disponible'"></p>
+
                         </div>
                     </div>
                     <div class="texto-mas-icono" style="align-items: start;">

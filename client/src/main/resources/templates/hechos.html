@@ -45,7 +45,7 @@
             </div>
             <div class="informacion-general">
                 <div class="fecha-ubicacion-fuente encolumnar">
-                    <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento}|"></p>
+                    <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento != null ? hecho.fechaAcontecimiento.toString().substring(0, 10) : 'Sin fecha'}|"></p>
                     <p class="info-fecha-ubicacion-fuente"
                        th:text="${
                                hecho.ubicacion == null or hecho.ubicacion.nombreProvincia == null
