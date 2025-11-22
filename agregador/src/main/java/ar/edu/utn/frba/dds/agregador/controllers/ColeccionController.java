@@ -93,6 +93,7 @@ public class ColeccionController {
     return ResponseEntity.status(HttpStatus.OK).body(coleccion);
   }
 
+  // consulta optimizada para mostrar info basica de coleccion en listados, asi no tengo que traer todos los hechos
   @GetMapping("/{id}/info")
   public ResponseEntity<ColeccionOutputDTO> buscarInfoColeccion(@PathVariable("id") Long id) {
     ColeccionOutputDTO coleccion = this.coleccionService.buscarInfoColeccion(id);

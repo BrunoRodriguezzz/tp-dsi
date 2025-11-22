@@ -212,7 +212,7 @@ public class ColeccionController {
   @GetMapping("/editarColeccion/{id}")
   public String editarColeccion(@PathVariable Long id, Model model) {
       ColeccionOutputDTO coleccion = getWebClient().get()
-        .uri("/colecciones/" + id)
+        .uri("/colecciones/" + id + "/info")
         .retrieve()
         .bodyToMono(ColeccionOutputDTO.class)
         .block();

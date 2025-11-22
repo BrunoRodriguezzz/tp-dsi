@@ -280,8 +280,18 @@ public class ColeccionService implements IColeccionService {
      coleccion.getCriterio().getFiltros().addAll(nuevosFiltrosEntity);
      coleccion.recalcularHechos();
 
-     this.coleccionRepository.save(coleccion);
-     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+     Coleccion coleccionGuardada = this.coleccionRepository.save(coleccion);
+
+     long cantidadTotal = this.coleccionRepository.countHechosByColeccionId(coleccionGuardada.getId());
+     long cantidadCurados;
+
+     if (coleccionGuardada.getConsensos() == null || coleccionGuardada.getConsensos().isEmpty()) {
+       cantidadCurados = cantidadTotal;
+     } else {
+       cantidadCurados = this.coleccionRepository.countHechosCuradosConConsensos(coleccionGuardada.getId());
+     }
+
+     return ColeccionOutputDTO.coleccionToDTOSinHechos(coleccionGuardada, cantidadTotal, cantidadCurados);
    }
 
    @Override
@@ -299,7 +309,18 @@ public class ColeccionService implements IColeccionService {
      coleccion.cargarHechos(hechosFuentes);
      coleccion.recalcularHechos();
 
-     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+     Coleccion coleccionGuardada = this.coleccionRepository.save(coleccion);
+
+     long cantidadTotal = this.coleccionRepository.countHechosByColeccionId(coleccionGuardada.getId());
+     long cantidadCurados;
+
+     if (coleccionGuardada.getConsensos() == null || coleccionGuardada.getConsensos().isEmpty()) {
+       cantidadCurados = cantidadTotal;
+     } else {
+       cantidadCurados = this.coleccionRepository.countHechosCuradosConConsensos(coleccionGuardada.getId());
+     }
+
+     return ColeccionOutputDTO.coleccionToDTOSinHechos(coleccionGuardada, cantidadTotal, cantidadCurados);
    }
 
    @Override
@@ -317,8 +338,18 @@ public class ColeccionService implements IColeccionService {
      List<Hecho> hechos = this.hechoRepository.findByFuentes(fuentes);
      coleccion.cargarHechos(hechos);
 
-     this.coleccionRepository.save(coleccion);
-     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+     Coleccion coleccionGuardada = this.coleccionRepository.save(coleccion);
+
+     long cantidadTotal = this.coleccionRepository.countHechosByColeccionId(coleccionGuardada.getId());
+     long cantidadCurados;
+
+     if (coleccionGuardada.getConsensos() == null || coleccionGuardada.getConsensos().isEmpty()) {
+       cantidadCurados = cantidadTotal;
+     } else {
+       cantidadCurados = this.coleccionRepository.countHechosCuradosConConsensos(coleccionGuardada.getId());
+     }
+
+     return ColeccionOutputDTO.coleccionToDTOSinHechos(coleccionGuardada, cantidadTotal, cantidadCurados);
    }
 
    @Override
@@ -337,8 +368,18 @@ public class ColeccionService implements IColeccionService {
      coleccion.getFuentes().removeAll(fuentesColeccion);
      coleccion.recalcularHechos();
 
-     this.coleccionRepository.save(coleccion);
-     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+     Coleccion coleccionGuardada = this.coleccionRepository.save(coleccion);
+
+     long cantidadTotal = this.coleccionRepository.countHechosByColeccionId(coleccionGuardada.getId());
+     long cantidadCurados;
+
+     if (coleccionGuardada.getConsensos() == null || coleccionGuardada.getConsensos().isEmpty()) {
+       cantidadCurados = cantidadTotal;
+     } else {
+       cantidadCurados = this.coleccionRepository.countHechosCuradosConConsensos(coleccionGuardada.getId());
+     }
+
+     return ColeccionOutputDTO.coleccionToDTOSinHechos(coleccionGuardada, cantidadTotal, cantidadCurados);
    }
 
    @Override
@@ -346,8 +387,18 @@ public class ColeccionService implements IColeccionService {
      Coleccion coleccion = this.findColecccionAux(id);
      coleccion.agregarConsenso(consenso);
 
-     this.coleccionRepository.save(coleccion);
-     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+     Coleccion coleccionGuardada = this.coleccionRepository.save(coleccion);
+
+     long cantidadTotal = this.coleccionRepository.countHechosByColeccionId(coleccionGuardada.getId());
+     long cantidadCurados;
+
+     if (coleccionGuardada.getConsensos() == null || coleccionGuardada.getConsensos().isEmpty()) {
+       cantidadCurados = cantidadTotal;
+     } else {
+       cantidadCurados = this.coleccionRepository.countHechosCuradosConConsensos(coleccionGuardada.getId());
+     }
+
+     return ColeccionOutputDTO.coleccionToDTOSinHechos(coleccionGuardada, cantidadTotal, cantidadCurados);
    }
 
    @Override
@@ -391,14 +442,26 @@ public class ColeccionService implements IColeccionService {
      }
 
      if (fuentesCambiaron || criterioCambio) {
+       coleccion.getHechos().clear();
+       this.coleccionRepository.flush();
+
        List<Fuente> fuentes = coleccion.getFuentes();
        List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentes);
-       coleccion.getHechos().clear();
        coleccion.cargarHechos(hechosFuentes);
      }
 
-     this.coleccionRepository.save(coleccion);
-     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+     Coleccion coleccionGuardada = this.coleccionRepository.save(coleccion);
+
+     long cantidadTotal = this.coleccionRepository.countHechosByColeccionId(coleccionGuardada.getId());
+     long cantidadCurados;
+
+     if (coleccionGuardada.getConsensos() == null || coleccionGuardada.getConsensos().isEmpty()) {
+       cantidadCurados = cantidadTotal;
+     } else {
+       cantidadCurados = this.coleccionRepository.countHechosCuradosConConsensos(coleccionGuardada.getId());
+     }
+
+     return ColeccionOutputDTO.coleccionToDTOSinHechos(coleccionGuardada, cantidadTotal, cantidadCurados);
    }
 
    @Override
