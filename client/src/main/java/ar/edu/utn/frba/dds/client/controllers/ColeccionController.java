@@ -77,7 +77,7 @@ public class ColeccionController {
       @RequestParam(name = "size", required = false, defaultValue = "10") Long size
   ) {
     ColeccionOutputDTO coleccion = getWebClient().get()
-        .uri("/colecciones/" + id)
+        .uri("/colecciones/" + id + "/info")
         .retrieve()
         .bodyToMono(ColeccionOutputDTO.class)
         .block();

@@ -33,6 +33,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,19 +59,21 @@ public class ColeccionService implements IColeccionService {
     this.hechoService = hechoService;
   }
 
+  @Transactional(readOnly = true)
   public Page<ColeccionOutputDTO> buscarColecciones(Pageable pageable) {
     Page<Coleccion> colecciones = this.coleccionRepository.findAll(pageable);
-    List <Hecho> hechosNuevos = this.hechoService
-            .actualizarHechos(colecciones
-                    .stream()
-                    .flatMap(coleccion -> coleccion
-                            .getFuentes()
-                            .stream()
-                            .filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY))
-                            )
-                    .toList());
-    colecciones.forEach(c -> c.cargarHechos(hechosNuevos));
-    return colecciones.map(ColeccionOutputDTO::coleccionToDTO);
+    return colecciones.map(coleccion -> {
+      long cantidadTotal = this.coleccionRepository.countHechosByColeccionId(coleccion.getId());
+      long cantidadCurados;
+
+      if (coleccion.getConsensos() == null || coleccion.getConsensos().isEmpty()) {
+        cantidadCurados = cantidadTotal;
+      } else {
+        cantidadCurados = this.coleccionRepository.countHechosCuradosConConsensos(coleccion.getId());
+      }
+
+      return ColeccionOutputDTO.coleccionToDTOSinHechos(coleccion, cantidadTotal, cantidadCurados);
+    });
   }
 
   public Page<HechoOutputDTO> buscarHechosColeccion(Long id, QueryParamsFiltro params, Pageable pageable) {
@@ -82,33 +85,51 @@ public class ColeccionService implements IColeccionService {
             params.fechaCargaInicio != null || params.fechaCargaFin != null;
 
     if (!tieneFiltros) {
-      Page<ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho> hechosPaginados = this.hechoRepository.findByColeccionId(id, pageable);
-      return hechosPaginados.map(ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO::HechoToDTO);
+      try {
+        Page<Long> idsPage = this.hechoRepository.findIdsByColeccionId(id, pageable);
+
+        if (idsPage.getContent().isEmpty()) {
+          return new PageImpl<>(List.of(), pageable, 0);
+        }
+
+        List<Hecho> hechos = this.hechoRepository.findByIdsWithJoinFetch(idsPage.getContent());
+
+        List<HechoOutputDTO> hechosDTO = hechos.stream()
+            .map(HechoOutputDTO::HechoToDTO)
+            .collect(Collectors.toList());
+
+        return new PageImpl<>(hechosDTO, pageable, idsPage.getTotalElements());
+      } catch (Exception e) {
+        log.error("❌ Error en estrategia de 2 queries", e);
+        throw e;
+      }
     }
 
-    Coleccion coleccion = this.findColecccionAux(id);
-    List<Hecho> hechosProxy = this.pedirHechosProxy(coleccion.getFuentes().stream().filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY)).toList());
-    coleccion.cargarHechos(hechosProxy);
+    try {
+      Specification<Hecho> spec = ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification.perteneceAColeccion(id);
+      spec = spec.and(ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification.noEliminado());
+      spec = spec.and(ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification.conFiltros(params));
 
-    List<Hecho> hechosFiltrados = coleccion.consultarHechos(params.instanciarFiltros());
+      Page<Hecho> hechosPaginados = this.hechoRepository.findAll(spec, pageable);
+      return hechosPaginados.map(HechoOutputDTO::HechoToDTO);
+    } catch (Exception e) {
+      log.error("❌ Error con Specifications, usando fallback en memoria", e);
+      Coleccion coleccion = this.findColecccionAux(id);
+      List<Hecho> hechosFiltrados = coleccion.consultarHechos(params.instanciarFiltros());
 
-    int total = hechosFiltrados.size();
-    int page = pageable.getPageNumber();
-    int size = pageable.getPageSize();
-    int fromIndex = Math.min(page * size, total);
-    int toIndex = Math.min(fromIndex + size, total);
-    List<Hecho> content = hechosFiltrados.subList(fromIndex, toIndex);
+      int total = hechosFiltrados.size();
+      int page = pageable.getPageNumber();
+      int size = pageable.getPageSize();
+      int fromIndex = Math.min(page * size, total);
+      int toIndex = Math.min(fromIndex + size, total);
+      List<Hecho> content = hechosFiltrados.subList(fromIndex, toIndex);
 
-    org.springframework.data.domain.Page<ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho> hechosPage =
-            new org.springframework.data.domain.PageImpl<>(content, pageable, total);
-
-    return hechosPage.map(ar.edu.utn.frba.dds.agregador.models.dtos.output.HechoOutputDTO::HechoToDTO);
+      return new PageImpl<>(content, pageable, total).map(HechoOutputDTO::HechoToDTO);
+    }
   }
 
   public List<HechoOutputDTO> buscarHechosCuradosColeccion(Long id, QueryParamsFiltro params) {
     Coleccion coleccion = this.findColecccionAux(id);
-    List<Hecho> hechosProxy = this.pedirHechosProxy(coleccion.getFuentes().stream().filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY)).toList());
-    coleccion.cargarHechos(hechosProxy);
     List<Hecho> hechosOutput = coleccion.consultarHechosCurados(params.instanciarFiltros());
     return HechoOutputDTO.mapHechoToDTO(hechosOutput);
   }
@@ -121,21 +142,27 @@ public class ColeccionService implements IColeccionService {
       return new PageImpl<>(List.of(), pageable, 0);
     }
 
-    List<Hecho> hechosProxy = this.pedirHechosProxy(coleccion.getFuentes().stream().filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY)).toList());
-    coleccion.cargarHechos(hechosProxy);
+    try {
+      Specification<Hecho> spec = ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification.perteneceAColeccion(id);
+      spec = spec.and(ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification.noEliminado());
+      spec = spec.and(ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification.tieneConsensos(consensos));
+      spec = spec.and(ar.edu.utn.frba.dds.agregador.models.repositories.specifications.HechoSpecification.conFiltros(params));
 
-    List<Hecho> hechosCurados = coleccion.consultarHechosCurados(params.instanciarFiltros());
+      Page<Hecho> hechosPaginados = this.hechoRepository.findAll(spec, pageable);
+      return hechosPaginados.map(HechoOutputDTO::HechoToDTO);
+    } catch (Exception e) {
+      log.error("Error al buscar hechos curados con Specifications, usando método alternativo", e);
+      List<Hecho> hechosCurados = coleccion.consultarHechosCurados(params.instanciarFiltros());
 
-    // Paginación en memoria
-    int total = hechosCurados.size();
-    int page = pageable.getPageNumber();
-    int size = pageable.getPageSize();
-    int fromIndex = Math.min(page * size, total);
-    int toIndex = Math.min(fromIndex + size, total);
-    List<Hecho> content = hechosCurados.subList(fromIndex, toIndex);
+      int total = hechosCurados.size();
+      int page = pageable.getPageNumber();
+      int size = pageable.getPageSize();
+      int fromIndex = Math.min(page * size, total);
+      int toIndex = Math.min(fromIndex + size, total);
+      List<Hecho> content = hechosCurados.subList(fromIndex, toIndex);
 
-    Page<Hecho> hechosPage = new PageImpl<>(content, pageable, total);
-    return hechosPage.map(HechoOutputDTO::HechoToDTO);
+      return new PageImpl<>(content, pageable, total).map(HechoOutputDTO::HechoToDTO);
+    }
   }
 
   public ColeccionOutputDTO buscarColeccion(Long id) {
@@ -143,6 +170,20 @@ public class ColeccionService implements IColeccionService {
     List<Hecho> hechosProxy = this.pedirHechosProxy(coleccion.getFuentes().stream().filter(f -> f.getTipoFuente().equals(TipoFuente.PROXY)).toList());
     coleccion.cargarHechos(hechosProxy);
     return ColeccionOutputDTO.coleccionToDTO(coleccion);
+  }
+
+  public ColeccionOutputDTO buscarInfoColeccion(Long id) {
+    Coleccion coleccion = this.findColecccionAux(id);
+    long cantidadTotal = this.coleccionRepository.countHechosByColeccionId(id);
+    long cantidadCurados;
+
+    if (coleccion.getConsensos() == null || coleccion.getConsensos().isEmpty()) {
+      cantidadCurados = cantidadTotal;
+    } else {
+      cantidadCurados = this.coleccionRepository.countHechosCuradosConConsensos(id);
+    }
+
+    return ColeccionOutputDTO.coleccionToDTOSinHechos(coleccion, cantidadTotal, cantidadCurados);
   }
 
   public List<String> incorporarHecho(Hecho hecho) {

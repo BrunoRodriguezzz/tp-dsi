@@ -20,6 +20,7 @@ public interface IColeccionService {
   public List<HechoOutputDTO> buscarHechosCuradosColeccion(Long id, QueryParamsFiltro params);
   public Page<HechoOutputDTO> buscarHechosCuradosColeccionPaginado(Long id, QueryParamsFiltro params, Pageable pageable);
   public ColeccionOutputDTO buscarColeccion(Long id);
+  public ColeccionOutputDTO buscarInfoColeccion(Long id);
 
   // Operaciones sobre colecciones
   public List<String> incorporarHecho(Hecho hecho);

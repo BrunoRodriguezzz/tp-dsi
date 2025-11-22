@@ -93,6 +93,15 @@ public class ColeccionController {
     return ResponseEntity.status(HttpStatus.OK).body(coleccion);
   }
 
+  @GetMapping("/{id}/info")
+  public ResponseEntity<ColeccionOutputDTO> buscarInfoColeccion(@PathVariable("id") Long id) {
+    ColeccionOutputDTO coleccion = this.coleccionService.buscarInfoColeccion(id);
+    if(coleccion == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(coleccion);
+  }
+
   @PostMapping()
   public ResponseEntity guardarColeccion(@RequestBody ColeccionInputDTO coleccion) {
     ValidadorInput.validarColeccionInput(coleccion);

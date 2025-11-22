@@ -6,17 +6,48 @@ import ar.edu.utn.frba.dds.agregador.models.domain.criterio.impl.*;
 import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.HechoFuente;
+import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.models.dtos.input.QueryParamsFiltro;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
+import ar.edu.utn.frba.dds.agregador.models.domain.consenso.Consenso;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HechoSpecification {
+
+    public static Specification<Hecho> perteneceAColeccion(Long coleccionId) {
+        return (root, query, cb) -> {
+            var subquery = query.subquery(Long.class);
+            var coleccionRoot = subquery.from(Coleccion.class);
+            var hechosJoin = coleccionRoot.join("hechos");
+
+            subquery.select(hechosJoin.get("id"))
+                    .where(cb.equal(coleccionRoot.get("id"), coleccionId));
+
+            return root.get("id").in(subquery);
+        };
+    }
+
+    public static Specification<Hecho> tieneConsensos(List<Consenso> consensosRequeridos) {
+        return (root, query, cb) -> {
+            if (consensosRequeridos == null || consensosRequeridos.isEmpty()) {
+                return cb.conjunction(); // No filter if no consensos
+            }
+
+            // El hecho debe tener TODOS los consensos requeridos
+            List<Predicate> predicates = new ArrayList<>();
+            for (Consenso consenso : consensosRequeridos) {
+                predicates.add(cb.isMember(consenso, root.get("consensos")));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+    }
 
     public static Specification<Hecho> noEliminado() {
         return (root, query, cb) -> cb.isFalse(root.get("estaEliminado"));

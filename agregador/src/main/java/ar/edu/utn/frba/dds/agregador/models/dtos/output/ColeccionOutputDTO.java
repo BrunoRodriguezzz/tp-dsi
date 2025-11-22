@@ -68,6 +68,24 @@ public class ColeccionOutputDTO {
     return coleccionDTO;
   }
 
+  public static ColeccionOutputDTO coleccionToDTOSinHechos(Coleccion coleccion, long cantidadHechos, long cantidadHechosCurados) {
+    ColeccionOutputDTO coleccionDTO = new ColeccionOutputDTO();
+    coleccionDTO.setId(coleccion.getId());
+    coleccionDTO.setTitulo(coleccion.getTitulo());
+    coleccionDTO.setDescripcion(coleccion.getDescripcion());
+    coleccionDTO.setCriterio(CriterioOutputDTO.criterioOutputDTO(coleccion.getCriterio()));
+    coleccionDTO.setConsensos(coleccion.getConsensos().stream().map(Enum::toString).collect(Collectors.toList()));
+
+    coleccionDTO.setCantidadHechos(cantidadHechos);
+    coleccionDTO.setCantidadHechosCurados(cantidadHechosCurados);
+
+    List<String> nombreFuentes = new ArrayList<>();
+    coleccion.getFuentes().forEach(f -> nombreFuentes.add(f.getNombre()));
+    coleccionDTO.fuentes = nombreFuentes;
+
+    return coleccionDTO;
+  }
+
   public static List<ColeccionOutputDTO> mapColeccionesToDTO(List<Coleccion> colecciones) {
     List<ColeccionOutputDTO> coleccionesDTO = colecciones.stream().map(ColeccionOutputDTO::coleccionToDTO).collect(Collectors.toList());
     return coleccionesDTO;

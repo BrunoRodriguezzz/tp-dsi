@@ -49,8 +49,33 @@ public interface IHechoRepository extends JpaRepository<Hecho, Long>, JpaSpecifi
 
     List<Hecho> findByCategoria(Categoria categoria);
 
-    @Query("SELECT h FROM Coleccion c JOIN c.hechos h WHERE c.id = :coleccionId")
-    Page<Hecho> findByColeccionId(@Param("coleccionId") Long coleccionId, Pageable pageable);
+    @Query("""
+        SELECT h.id 
+        FROM Hecho h 
+        WHERE h.estaEliminado = false 
+        AND EXISTS (
+            SELECT 1 
+            FROM Coleccion c 
+            JOIN c.hechos ch 
+            WHERE c.id = :coleccionId 
+            AND ch.id = h.id
+        )
+        ORDER BY h.id DESC
+        """)
+    Page<Long> findIdsByColeccionId(@Param("coleccionId") Long coleccionId, Pageable pageable);
+
+    @Query("""
+        SELECT DISTINCT h 
+        FROM Hecho h 
+        LEFT JOIN FETCH h.categoria 
+        LEFT JOIN FETCH h.ubicacion 
+        LEFT JOIN FETCH h.contribuyente 
+        LEFT JOIN FETCH h.fuenteSet fs 
+        LEFT JOIN FETCH fs.fuente 
+        WHERE h.id IN :ids
+        ORDER BY h.id DESC
+        """)
+    List<Hecho> findByIdsWithJoinFetch(@Param("ids") List<Long> ids);
 
     @Query("""
         SELECT h
