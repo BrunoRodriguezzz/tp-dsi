@@ -277,8 +277,11 @@ public class EstadisticaService implements IEstadisticaService {
 
         List<EstadisticaCombinacion> estadisticas = new ArrayList<>();
 
-        List<ColeccionInputDTO> colecciones = this.importadorService.importarColecciones();
-        List<HechoInputDTO> hechos = this.importadorService.importarHechos();
+        List<ColeccionInputDTO> colecciones = this.importadorService.importarColecciones().stream().map(c -> {
+          c.setHechos(c.getHechos().stream().filter(HechoInputDTO::datosCompletos).toList());
+          return c;
+        }).toList();
+        List<HechoInputDTO> hechos = this.importadorService.importarHechos().stream().filter(HechoInputDTO::datosCompletos).toList();
         List<SolicitudEliminacionInputDTO> solicitudes = this.importadorService.importarSolicitudes();
 
         HashMap<ClaveEstadistica, List<Hecho>> mapa = this.generarMapa(colecciones, hechos);

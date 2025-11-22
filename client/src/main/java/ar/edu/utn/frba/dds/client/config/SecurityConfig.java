@@ -25,6 +25,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Recursos estáticos y login público
                         .requestMatchers(
+                            "mapa",
                             "/login",
                             "/register",
                             "/colecciones",

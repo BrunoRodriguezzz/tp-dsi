@@ -30,4 +30,8 @@ public class HechoInputDTO {
   public Hecho convertirAHecho() {
     return new Hecho(this.id);
   }
+
+  public Boolean datosCompletos() {
+    return this.fechaAcontecimiento != null && this.getUbicacion().getProvincia() != null && this.getCategoria() != null;
+  }
 }

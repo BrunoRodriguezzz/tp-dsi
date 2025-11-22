@@ -45,6 +45,22 @@ public class HechoService {
     }
   }
 
+  public List<HechoDTO> obtenerHechosMapa() {
+    try {
+      return Objects.requireNonNull(WebClient.builder().baseUrl(agregadorURL)
+              .build()
+              .get()
+              .uri("/hechos?size=400")
+              .retrieve()
+              .bodyToMono(PaginadoHechoDTO.class)
+              .block())
+          .getContent();
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      return null;
+    }
+  }
+
   public PaginadoHechoDTO obtenerHechosAgregador() {
     try {
       return this.webApiCallerService.get(this.agregadorURL + "/hechos", PaginadoHechoDTO.class);

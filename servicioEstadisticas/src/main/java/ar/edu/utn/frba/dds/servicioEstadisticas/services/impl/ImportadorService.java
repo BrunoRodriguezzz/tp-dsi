@@ -4,6 +4,7 @@ import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.HechoInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.domain.dtos.SolicitudEliminacionInputDTO;
 import ar.edu.utn.frba.dds.servicioEstadisticas.services.IImportadorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,30 +13,25 @@ import java.util.List;
 
 @Service
 public class ImportadorService implements IImportadorService {
+    private final ClienteAgregador clienteAgregador;
 
-    private final WebClient webClient;
-
-    @Value("${servicio.agregador}")
-    private String urlAgregador;
-
-    public ImportadorService() {
-        this.webClient = WebClient.builder()
-                .baseUrl(urlAgregador)
-                .build();
+    @Autowired
+    public ImportadorService(ClienteAgregador clienteAgregador) {
+        this.clienteAgregador = clienteAgregador;
     }
 
     @Override
     public List<HechoInputDTO> importarHechos() {
-        return ClienteAgregador.generarHechosIndependientes();
+        return this.clienteAgregador.generarHechosIndependientes();
     }
 
     @Override
     public List<ColeccionInputDTO> importarColecciones() {
-        return ClienteAgregador.generarColecciones();
+        return this.clienteAgregador.generarColecciones();
     }
 
     @Override
     public List<SolicitudEliminacionInputDTO> importarSolicitudes() {
-        return ClienteAgregador.generarSolicitudesInputDTO();
+        return this.clienteAgregador.generarSolicitudesInputDTO();
     }
 }

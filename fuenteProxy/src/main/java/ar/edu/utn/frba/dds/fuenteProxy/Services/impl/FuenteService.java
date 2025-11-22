@@ -2,16 +2,19 @@ package ar.edu.utn.frba.dds.fuenteProxy.Services.impl;
 
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IFuenteService;
 import ar.edu.utn.frba.dds.fuenteProxy.Services.IHechoService;
+import ar.edu.utn.frba.dds.fuenteProxy.clients.AgregadorClient;
 import ar.edu.utn.frba.dds.fuenteProxy.models.domain.fuente.Fuente;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.UtilsDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.input.InputFuenteDTO;
 import ar.edu.utn.frba.dds.fuenteProxy.models.dtos.output.OutputFuenteAgregador;
 import ar.edu.utn.frba.dds.fuenteProxy.models.repositories.IFuenteRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
+@Slf4j
 @Service
 public class FuenteService implements IFuenteService {
   @Autowired
@@ -19,15 +22,12 @@ public class FuenteService implements IFuenteService {
   @Autowired
   private IHechoService hechoService;
 
-  private WebClient webClient;
-  private UtilsDTO utilsDTO;
+  private final UtilsDTO utilsDTO;
+  private final AgregadorClient agregadorClient;
 
-  public FuenteService (@Value("${servicio.agregador}") String urlAgregador, @Value("${servicio.proxy}") String urlProxy) {
-    this.webClient = WebClient
-        .builder()
-        .baseUrl(urlAgregador)
-        .build();
+  public FuenteService (@Value("${servicio.proxy}") String urlProxy, AgregadorClient agregadorClient) {
     this.utilsDTO = new UtilsDTO(urlProxy);
+    this.agregadorClient = agregadorClient;
   }
 
   @Override
@@ -43,6 +43,7 @@ public class FuenteService implements IFuenteService {
   }
 
   @Override
+  @Async
   public void guardarFuente(Fuente fuente) {
     this.fuenteRepository.findByNombre(fuente.getNombre()).stream()
             .findFirst()
@@ -52,11 +53,10 @@ public class FuenteService implements IFuenteService {
             .doOnNext(hechoService::guardarHecho)
             .blockLast(); // Para que espere a que termine
     OutputFuenteAgregador fuenteOutputDTO = this.utilsDTO.toOutputFuenteAgregador(fuente);
-    this.webClient.post()
-        .uri(uriBuilder -> uriBuilder.path("/fuentes").build())
-        .bodyValue(fuenteOutputDTO)
-        .retrieve()
-        .toBodilessEntity()
-        .subscribe();
+    try {
+      agregadorClient.incorporarFuente(fuenteOutputDTO);
+    } catch (Exception e) {
+        log.warn("Hubo un inconveniente al comunicar con el Agregador: {}", e.getMessage());
+    }
   }
 }
