@@ -53,6 +53,7 @@ public class ColeccionController {
         .block();
     List<ColeccionOutputDTO> colecciones = pagina != null ? pagina.getContent() : List.of();
     model.addAttribute("colecciones", colecciones);
+    model.addAttribute("titulo", "Colecciones");
     return "colecciones";
   }
 
@@ -199,6 +200,7 @@ public class ColeccionController {
       model.addAttribute("currentPage", 0);
       model.addAttribute("totalPages", 1);
     }
+    model.addAttribute("titulo", coleccion != null && coleccion.getTitulo() != null ? coleccion.getTitulo() : "");
 
     return "coleccion";
   }
