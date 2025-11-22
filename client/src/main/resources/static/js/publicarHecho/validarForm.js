@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function(){
         const nombre = document.getElementById('nombre')?.value;
         const apellido = document.getElementById('apellido')?.value;
         const fechaNac = document.getElementById('fechaNac')?.value;
-        if(!nombre || !apellido || !fechaNac){ errores.push('Datos de usuario (inicia sesión)'); }
 
         if(errores.length){
             ev.preventDefault();
