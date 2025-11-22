@@ -34,7 +34,7 @@ public class HomeController {
         return "sobreNosotros";
     }
 
-    @GetMapping("/privacidad")
+    @GetMapping("home/privacidad")
     public String privacidad(Model model){
         return "privacidad";
     }
