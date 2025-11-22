@@ -80,15 +80,11 @@ public class DinamicaService {
                 .build();
 
         try {
-            WebClient.create(dinamicaUrl)
-                    .post()
-                    .uri("/gestion")
-                    .bodyValue(dto)
-                    .retrieve()
-                    .onStatus(httpStatusCode -> httpStatusCode.is4xxClientError() || httpStatusCode.is5xxServerError(),
-                            clientResponse -> clientResponse.bodyToMono(String.class).map(RuntimeException::new))
-                    .bodyToMono(Void.class)
-                    .block();
+            this.webApiCallerService.post(
+                dinamicaUrl + "/gestion",
+                dto,
+                Void.class
+            );
         } catch (Exception e) {
             log.error("Error al gestionar el hecho", e);
         }
@@ -168,18 +164,7 @@ public class DinamicaService {
 
     public void modificar(HechoRevisadoForm hechoDTO) {
         try {
-            WebClient.builder().baseUrl(dinamicaUrl)
-                    .build()
-                    .put()
-                    .uri("/modificacion")
-                    .bodyValue(hechoDTO)
-                    .retrieve()
-                    .onStatus(
-                            httpStatusCode -> httpStatusCode.is4xxClientError() || httpStatusCode.is5xxServerError(),
-                            clientResponse -> clientResponse.bodyToMono(String.class).map(RuntimeException::new)
-                    )
-                    .bodyToMono(SolicitudModOutputDTO.class)
-                    .block();
+            this.webApiCallerService.put(this.dinamicaUrl + "/modificacion", hechoDTO, SolicitudModOutputDTO.class);
         } catch (Exception e) {
             log.error("Error al modificar el hecho con id {}: {}", hechoDTO.getId(), e.getMessage());
         }

@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.client.dtos.hecho;
 import ar.edu.utn.frba.dds.client.dtos.ContribuyenteDTO;
 import ar.edu.utn.frba.dds.client.dtos.UbicacionDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,4 +29,6 @@ public class HechoDTO {
     private String origen;
     private String fuente;
     private Boolean verificado;
+    @JsonProperty(required = false)
+    private String sugerenciaCambio;
 }

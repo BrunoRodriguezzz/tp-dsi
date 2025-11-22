@@ -13,11 +13,9 @@ import java.util.List;
 @Setter
 
 public class HechoRevisadoInputDTO {
-
     private Long         idAdministrador;
     private Long         id;
     private List<String> etiquetas;
     private EstadoHecho  estadoHecho;
     private String       sugerenciaDeCambio;
-
 }
