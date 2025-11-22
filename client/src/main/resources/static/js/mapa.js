@@ -97,7 +97,6 @@ function bindGeocoderInputEvents() {
 bindGeocoderInputEvents();
 
 geocoder.on('result', function (e) {
-    // almacenar resultado globalmente para que coleccion.js pueda leerlo si los inputs están vacíos
     try {
         window.__lastGeocoderResult = e.result;
     } catch (err) {

@@ -5,16 +5,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const descripcion = document.getElementById("descripcionModo");
     const tarjetas = document.querySelectorAll(".tarjeta");
 
-    console.log("Tarjetas encontradas:", tarjetas.length);
-
     function actualizarCantidadHechos(modoCurado) {
-        console.log("Actualizando cantidades. Modo curado:", modoCurado);
         tarjetas.forEach(tarjeta => {
             const cantidadElement = tarjeta.querySelector(".cantidad-hechos");
             const hechosCurados = tarjeta.getAttribute("data-hechos-curado");
             const hechosIrrestricto = tarjeta.getAttribute("data-hechos-irrestricto");
-
-            console.log("Tarjeta - Curados:", hechosCurados, "Irrestricto:", hechosIrrestricto);
 
             if (cantidadElement) {
                 if (modoCurado) {
@@ -22,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     cantidadElement.textContent = hechosIrrestricto + " hechos registrados";
                 }
-                console.log("Texto actualizado a:", cantidadElement.textContent);
             } else {
                 console.error("No se encontró elemento .cantidad-hechos en tarjeta");
             }
@@ -46,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     toggle.addEventListener("change", () => {
-        console.log("Toggle cambiado. Checked:", toggle.checked);
         if (toggle.checked) {
             estado.classList.remove("irrestricto");
             estado.classList.add("curado");
@@ -66,3 +59,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     actualizarEnlacesColecciones();
 });
+

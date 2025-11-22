@@ -87,7 +87,14 @@ public class HechoService {
 
   public HechoDTO obtenerHechoPorId(Long id) {
     try {
-      return this.webApiCallerService.get(this.agregadorURL + "/hechos/" + id, HechoDTO.class);
+        return WebClient.builder()
+                .baseUrl(agregadorURL)
+                .build()
+                .get()
+                .uri("/hechos/" + id)
+                .retrieve()
+                .bodyToMono(HechoDTO.class)
+                .block();
     } catch (Exception e) {
       return null;
     }
