@@ -63,6 +63,7 @@ public class HechoOutputDTO {
                 .provincia(hecho.getUbicacion().getProvincia())
                 .municipio(hecho.getUbicacion().getMunicipio())
                 .fechaAcontecimiento(hecho.getFechaAcontecimiento())
+                .contenidoMultimedia(hecho.getContenidoMultimedia())
                 .build();
     }
 

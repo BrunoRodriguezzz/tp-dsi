@@ -7,6 +7,7 @@ import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
 import ar.edu.utn.frba.dds.client.dtos.hecho.PaginadoHechoDTO;
 import ar.edu.utn.frba.dds.client.services.DinamicaService;
 import ar.edu.utn.frba.dds.client.services.HechoService;
+import ar.edu.utn.frba.dds.client.services.internal.StorageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +17,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +35,7 @@ import java.util.Map;
 public class HechoController {
   private final HechoService hechoService;
   private final DinamicaService dinamicaService;
+  private final StorageService  storageService;
   private final Logger LOGGER = LogManager.getLogger(HechoController.class);
 
   @GetMapping
@@ -257,7 +261,32 @@ public class HechoController {
 
   @PreAuthorize("hasAnyRole('ADMINISTRADOR', 'CONTRIBUYENTE')")
   @PostMapping("modificarHecho/{id}")
-  public String procesarModificacionHecho(@PathVariable Long id, @ModelAttribute HechoDTO hechoDTO, RedirectAttributes redirectAttributes) {
+  public String procesarModificacionHecho(@PathVariable Long id,
+                                          @ModelAttribute HechoDTO hechoDTO,
+                                          @RequestParam(value = "nuevosArchivos", required = false) MultipartFile[] nuevosArchivos,
+                                          @RequestParam(value = "eliminados", required = false) List<String> eliminados,
+                                          RedirectAttributes redirectAttributes) {
+
+      List<String> original = new ArrayList<>();
+      if (hechoDTO.getContenidoMultimedia() != null) {
+          original.addAll(hechoDTO.getContenidoMultimedia());
+      }
+
+      if (eliminados != null) {
+          original.removeAll(eliminados);
+      }
+
+      if (nuevosArchivos != null) {
+          for (MultipartFile file : nuevosArchivos) {
+              if (!file.isEmpty()) {
+                  String nombreGuardado = this.storageService.store(file);
+                  original.add(nombreGuardado);
+              }
+          }
+      }
+
+    hechoDTO.setContenidoMultimedia(original);
+
     boolean rta;
     if (hechoDTO.getOrigen() != null && hechoDTO.getOrigen().equals("CONTRIBUYENTE")) {
       rta = this.dinamicaService.modificarHecho(hechoDTO);

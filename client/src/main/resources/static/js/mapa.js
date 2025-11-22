@@ -221,3 +221,55 @@ if (filtrosCollapse) {
         map.resize();
     });
 }
+
+let clickMarker = new mapboxgl.Marker({ color: 'red' });
+
+// --- CLICK EN EL MAPA PARA SELECCIONAR UN PUNTO ---
+map.on('click', async function (e) {
+    const lat = e.lngLat.lat;
+    const lng = e.lngLat.lng;
+
+    // Mover marcador o crearlo
+    clickMarker.setLngLat([lng, lat]).addTo(map);
+
+    // Guardar en inputs
+    document.getElementById('latInput').value = lat;
+    document.getElementById('lngInput').value = lng;
+
+    // También los "legacy"
+    const latitudInput = document.getElementById('latitudInput');
+    if (latitudInput) latitudInput.value = lat;
+    const longitudInput = document.getElementById('longitudInput');
+    if (longitudInput) longitudInput.value = lng;
+
+    // Reverse geocoding para obtener municipio / provincia
+    const token = mapboxgl.accessToken;
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?types=place,region&language=es&access_token=${token}`;
+
+    try {
+        const resp = await fetch(url);
+        const data = await resp.json();
+
+        let municipio = "";
+        let provincia = "";
+
+        if (data.features && data.features.length > 0) {
+            data.features.forEach(f => {
+                if (f.place_type.includes("place")) municipio = f.text;
+                if (f.place_type.includes("region")) provincia = f.text;
+            });
+        }
+
+        document.getElementById('municipioInput').value = municipio;
+        document.getElementById('provinciaInput').value = provincia;
+
+        // (Opcional) llenar el texto del geocoder con la dirección encontrada
+        if (data.features[0] && data.features[0].place_name) {
+            setUbicacionText(data.features[0].place_name);
+        }
+
+    } catch (err) {
+        console.error("Error en reverse geocoding: ", err);
+    }
+});
+
