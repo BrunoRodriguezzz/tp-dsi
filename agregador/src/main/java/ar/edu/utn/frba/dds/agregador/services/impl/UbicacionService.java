@@ -42,16 +42,14 @@ public class UbicacionService implements IUbicacionService {
 
     @Override
     public Flux<Hecho> obtenerUbicacionesReactivo(Flux<Hecho> hechos) {
-        // Primero buscar todas las ubicaciones en BD
         return hechos
                 .flatMap(this::buscarUbicacionEnBD)
-                .collectList()
-                .flatMapMany(listaHechos -> {
-                    // Separar hechos con ubicación completa vs incompleta
+                .buffer(50)
+                .flatMap(chunk -> {
                     List<Hecho> conUbicacion = new ArrayList<>();
                     List<Hecho> sinUbicacion = new ArrayList<>();
 
-                    for (Hecho h : listaHechos) {
+                    for (Hecho h : chunk) {
                         if (h.getUbicacion().faltanDatos()) {
                             sinUbicacion.add(h);
                         } else {
@@ -59,17 +57,11 @@ public class UbicacionService implements IUbicacionService {
                         }
                     }
 
-                    // Si no hay hechos sin ubicación, devolver todos los que tienen
-                    if (sinUbicacion.isEmpty()) {
-                        return Flux.fromIterable(conUbicacion);
+                    Flux<Hecho> hechosProcesados = Flux.empty();
+                    if (!sinUbicacion.isEmpty()) {
+                        hechosProcesados = IAdapUbicacion.buscarUbicacionesReactivo(sinUbicacion);
                     }
 
-                    // Para los que faltan datos, consultar API en lotes de 50
-                    Flux<Hecho> hechosProcesados = Flux.fromIterable(sinUbicacion)
-                            .buffer(50)
-                            .flatMap(IAdapUbicacion::buscarUbicacionesReactivo);
-
-                    // Combinar ambos grupos
                     return Flux.concat(
                             Flux.fromIterable(conUbicacion),
                             hechosProcesados
@@ -92,5 +84,4 @@ public class UbicacionService implements IUbicacionService {
                 .map(Mono::just)       // Si lo encontró → devolver hecho con ubicación
                 .orElse(Mono.just(hecho)); // Si no → devolver el mismo hecho
     }
-
 }
