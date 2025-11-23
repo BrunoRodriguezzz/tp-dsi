@@ -42,7 +42,7 @@ public class ArchivoService implements IArchivoService {
 
       archivoRepository.save(archivo);
       importarHechosArchivo(archivo);
-
+      logger.info("Archivo {} importado correctamente.", archivo.getNombre());
       ArchivoOutputAgregadorDTO outputAgregadorDTO = this.utilsDTO.toOutputArchivoAgregador(archivo);
 
       try {
