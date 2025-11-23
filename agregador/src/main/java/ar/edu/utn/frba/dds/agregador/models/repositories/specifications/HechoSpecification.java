@@ -64,7 +64,10 @@ public class HechoSpecification {
 
             if (params.fuente != null && !params.fuente.isEmpty()) {
                 Join<Hecho, HechoFuente> hechoFuenteJoin = root.join("fuenteSet");
-                predicates.add(cb.equal(hechoFuenteJoin.get("fuente").get("nombre"), params.fuente));
+                predicates.add(cb.equal(
+                    cb.lower(cb.trim(hechoFuenteJoin.get("fuente").get("nombre"))),
+                    params.fuente.toLowerCase().trim()
+                ));
             }
 
             if (params.fechaAcontecimientoInicio != null) {

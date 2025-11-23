@@ -93,6 +93,9 @@ public class Hecho {
     @JoinColumn(name = "hecho_id", referencedColumnName = "id")
     private List<ContenidoMultimedia> contenidoMultimedia;
 
+    @Transient
+    private boolean esNuevoOModificado = false;
+
     public Hecho (String titulo, String descripcion, Categoria categoria, Ubicacion ubicacion, LocalDateTime fechaAcontecimiento, Origen origen) throws FechaInvalidaException, TituloInvalidoException, DescripcionInvalidaException {
         if (titulo == null || titulo.isBlank())
             throw new TituloInvalidoException("El título no puede estar vacío");
@@ -111,10 +114,11 @@ public class Hecho {
         this.fechaCarga = null;
         this.consensos = new ArrayList<>();
         this.fuenteSet = new HashSet<>();
+        this.esNuevoOModificado = true;
     }
 
     public void eliminar() {
-        if(this.estaEliminado) throw new HechoYaEliminadoException("El hecho ya fue eliminado", this);
+        if(this.estaEliminado != null && this.estaEliminado) throw new HechoYaEliminadoException("El hecho ya fue eliminado", this);
         this.estaEliminado = true;
     }
 
@@ -132,14 +136,16 @@ public class Hecho {
         return false;
     }
 
-    public void agregarFuente(Fuente fuente, Long idHechoEnFuente) {
-        if (this.fuenteSet.stream().noneMatch(e -> e.getFuente().getNombre().equals(fuente.getNombre()))) {
+    public boolean agregarFuente(Fuente fuente, Long idHechoEnFuente) {
+        if (this.fuenteSet.stream().noneMatch(e -> e.getFuente().getId().equals(fuente.getId()))) {
             HechoFuente hechoFuente = new HechoFuente();
             hechoFuente.setHecho(this);
             hechoFuente.setFuente(fuente);
             hechoFuente.setIdInternoFuente(idHechoEnFuente);
             this.fuenteSet.add(hechoFuente);
+            return true;
         }
+        return false;
     }
 
     public Long getIdInternoFuente(Fuente fuente) {
