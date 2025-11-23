@@ -53,6 +53,7 @@ public class FuenteService implements IFuenteService {
             .doOnNext(hechoService::guardarHecho)
             .blockLast(); // Para que espere a que termine
     OutputFuenteAgregador fuenteOutputDTO = this.utilsDTO.toOutputFuenteAgregador(fuente);
+    log.info("Por enviar la fuente al Agregador: {}", fuenteOutputDTO.getNombre());
     try {
       agregadorClient.incorporarFuente(fuenteOutputDTO);
     } catch (Exception e) {

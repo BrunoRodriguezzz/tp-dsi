@@ -35,19 +35,22 @@ import reactor.core.publisher.Flux;
 @Slf4j
 @Service
 public class HechoService implements IHechoService {
-  @Autowired
-  private IUbicacionService ubicacionService;
-  @Autowired
-  private INormalizadorService normalizadorService;
-
+  private final IUbicacionService ubicacionService;
+  private final INormalizadorService normalizadorService;
   private final IHechoRepository hechoRepository;
   private final IFuenteRepository fuenteRepository;
   private final ICategoriaRepository categoriaRepository;
 
-  public HechoService(IFuenteRepository fuenteRepository, IHechoRepository hechoRepository, ICategoriaRepository categoriaRepository) {
+  public HechoService(IFuenteRepository fuenteRepository, 
+                      IHechoRepository hechoRepository, 
+                      ICategoriaRepository categoriaRepository,
+                      IUbicacionService ubicacionService,
+                      INormalizadorService normalizadorService) {
     this.fuenteRepository = fuenteRepository;
     this.hechoRepository = hechoRepository;
     this.categoriaRepository = categoriaRepository;
+    this.ubicacionService = ubicacionService;
+    this.normalizadorService = normalizadorService;
   }
 
   @Override
@@ -138,15 +141,13 @@ public class HechoService implements IHechoService {
                       .doOnComplete(() -> log.info("🔁 Obtención de ubicaciones completada"));
             })
             // Guardado en BD
-            .collectList()
-            .doOnNext(list -> log.info("🔁 Resultado del pipeline - cantidad de hechos antes de guardar: {}", list == null ? 0 : list.size()))
-            .flatMapIterable(hechosParaGuardar -> {
+            .buffer(100)
+            .flatMap(hechosParaGuardar -> {
               if (hechosParaGuardar == null || hechosParaGuardar.isEmpty()) {
-                log.warn("⚠️ No hay hechos para guardar (pipeline vacío o con errores). hechosParaGuardar={}", 0);
-                return Collections.emptyList();
+                return Flux.empty();
               }
 
-              log.info("🗂 Guardando {} hechos en la base de datos...", hechosParaGuardar.size());
+              log.info("🗂 Guardando lote de {} hechos...", hechosParaGuardar.size());
               hechosParaGuardar.forEach(h -> {
                 if (h.getCategoria() != null) {
                   Categoria cat = h.getCategoria();
@@ -159,7 +160,7 @@ public class HechoService implements IHechoService {
               });
               List<Hecho> guardados = this.hechoRepository.saveAll(hechosParaGuardar);
               log.info("✅ Se guardaron {} hechos correctamente.", guardados.size());
-              return guardados;
+              return Flux.fromIterable(guardados);
             });
   }
 
