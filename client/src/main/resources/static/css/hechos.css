@@ -36,6 +36,12 @@
     font-size: 0.9rem
 }
 
+/* Asegurar que los badges de etiquetas también hagan wrap si es necesario */
+.badge {
+    word-wrap: break-word;
+    white-space: normal;
+}
+
 /* Hover de Botones */
 .btn-dark:hover {
     background-color: #1a1a1a;
@@ -50,8 +56,8 @@
     color: white;
 }
 
-/* Asegurar que los badges de etiquetas también hagan wrap si es necesario */
-.badge {
-    word-wrap: break-word;
-    white-space: normal;
+/* Estillos nuestros (no de bootstrap) para la Paginación */
+.pagination .page-link {
+    color: #000;
+    border-radius: 0.25rem;
 }
