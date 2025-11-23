@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import ar.edu.utn.frba.dds.agregador.services.INormalizadorService;
 import ar.edu.utn.frba.dds.agregador.services.IUbicacionService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -131,6 +130,13 @@ public class HechoService implements IHechoService {
                       .normalizarHechosReactivo(flux)
                       .doOnError(e -> log.error("❌ Error durante la normalización reactiva: {}", e.getMessage(), e))
                       .doOnComplete(() -> log.info("🔁 Normalización completada"));
+            })
+            .filter(h -> {
+                if (!h.isEsNuevoOModificado()) {
+                    log.info("⏭️ Hecho descartado por no tener modificaciones: {}", h.getTitulo());
+                    return false;
+                }
+                return true;
             })
             // Ubicaciones
             .transform(flux -> {

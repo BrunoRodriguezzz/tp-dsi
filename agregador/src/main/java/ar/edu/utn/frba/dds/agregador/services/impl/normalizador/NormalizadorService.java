@@ -94,7 +94,10 @@ public class NormalizadorService implements INormalizadorService {
                     hecho.getFuenteSet()
                             .stream()
                             .findFirst()
-                            .ifPresent(hf -> candidato.agregarFuente(hf.getFuente(), hf.getIdInternoFuente()));
+                            .ifPresent(hf -> {
+                                boolean agregado = candidato.agregarFuente(hf.getFuente(), hf.getIdInternoFuente());
+                                candidato.setEsNuevoOModificado(agregado);
+                            });
                     return candidato;
                 })
                 .defaultIfEmpty(hecho);

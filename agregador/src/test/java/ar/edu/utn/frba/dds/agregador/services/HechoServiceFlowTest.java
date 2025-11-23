@@ -59,6 +59,7 @@ public class HechoServiceFlowTest {
             Categoria c = new Categoria();
             c.setTitulo("Test");
             h.setCategoria(c);
+            h.setEsNuevoOModificado(true);
             hechos.add(h);
         }
 
@@ -102,6 +103,7 @@ public class HechoServiceFlowTest {
             Categoria c = new Categoria();
             c.setTitulo("Test " + i);
             h.setCategoria(c);
+            h.setEsNuevoOModificado(true);
             hechos.add(h);
         }
 
