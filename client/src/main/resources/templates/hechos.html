@@ -2,6 +2,7 @@
 <th:block th:fragment="additional-links">
     <link rel="stylesheet" th:href="@{/css/publicarHecho.css}">
     <link rel="stylesheet" th:href="@{/css/hechos.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
     <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
@@ -9,19 +10,18 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
 </th:block>
-<div th:fragment="contenido" class="container-responsive container">
-    <div class="container-principal">
-        <div class="container-secundario">
-            <div>
-                <h1 class="p1">Todos los Hechos</h1>
-                <p class="p2">Explora y filtra todos los hechos registrados en el sistema</p>
-                <p class="p3" th:text="|${cantidad} hechos mostrados|"></p>
-            </div>
-            <div class="botones-header">
-                <button class="btn btn-outline-secondary config-mostrarFiltros" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">Mostrar Filtros</button>
-                <a th:href="@{/publicarHecho}" class="btn btn-primary btn-dark config-nuevoHecho">+ Publicar Hecho</a>
-            </div>
+<div th:fragment="contenido" class="container py-4">
+    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+        <div>
+            <h2>Todos los Hechos</h2>
+            <p>Explora y filtra todos los hechos registrados en el sistema</p>
+            <p th:text="|${cantidad} hechos mostrados|"></p>
         </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+            <button class="btn btn-outline-secondary config-mostrarFiltros" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">Mostrar Filtros</button>
+            <a th:href="@{/publicarHecho}" class="btn btn-dark">+ Publicar Hecho</a>
+        </div>
+    </div>
 
         <div th:with="filtAction=@{/hechos}, filtClear=@{/hechos}">
             <div th:insert="~{fragments/filtros :: filtros(actionUrl=${filtAction}, clearUrl=${filtClear})}"></div>
@@ -31,47 +31,68 @@
             <div th:insert="~{fragments/vacio :: vacio}"></div>
         </div>
 
-        <div class="hecho-card" th:each="hecho: ${hechos}">
-            <div class="hecho-card-mas-opciones">
-                <div class="titulo-mas-descripcion">
-                    <h2 class="titulo-Hecho" th:text="${hecho.titulo}">Sin título</h2>
-                    <p class="descripcion" th:text="${hecho.descripcion}">Sin descripción</p>
-                </div>
-                <div class="opciones">
-                    <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Sin Categoría</p>
-                    <a href="verDetalle-hecho1.html" class="btn btn-primary btn-dark config-opciones" th:href="@{/hechos/{id}(id=${hecho.id})}">Ver Detalles</a>
-                    <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-red config-opciones">Solicitar Eliminacion</a>
-                </div>
-            </div>
-            <div class="informacion-general">
-                <div class="fecha-ubicacion-fuente encolumnar">
-                    <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento != null ? hecho.fechaAcontecimiento.toString().substring(0, 10) : 'Sin fecha'}|"></p>
-                    <p class="info-fecha-ubicacion-fuente"
-                       th:text="${
-                               hecho.ubicacion == null or hecho.ubicacion.nombreProvincia == null
-                               ? 'Sin provincia'
-                               : (hecho.ubicacion.municipio != null
-                                   ? 'Ubicación: ' + hecho.ubicacion.nombreProvincia + ', ' + hecho.ubicacion.municipio
-                                   : 'Ubicación: ' + hecho.ubicacion.nombreProvincia)
-                           }">
-                    </p>
+        <div class="card mb-3 hecho-card-hover" th:each="hecho: ${hechos}">
+            <div class="card-body">
+                <div class="row">
+                    <!-- Contenido Principal (Título y Descripción) -->
+                    <div class="col-12 col-md-8 col-lg-9">
+                        <h2 class="card-title h5 fw-semibold mb-2" th:text="${hecho.titulo}">Sin título</h2>
+                        <p class="card-text text-muted small mb-3" th:text="${hecho.descripcion}">Sin descripción</p>
 
-                    <p class="info-fecha-ubicacion-fuente" th:text="|Fuente: ${hecho.fuente}|"></p>
-                </div>
-                <div class="etiquetas">
-                    <div th:each="etiqueta, iterStat: ${hecho.etiquetas}" th:if="${iterStat.index < 3}">
-                        <p class="titulo-etiqueta etiqueta-interes" th:text="${etiqueta}">Sin etiqueta</p>
+                        <!-- Información General (Fecha, Ubicación, Fuente) -->
+                        <div class="row g-2 small text-secondary mb-3">
+                            <div class="col-12 col-md-4">
+                                <span th:text="|Fecha: ${hecho.fechaAcontecimiento != null ? hecho.fechaAcontecimiento.toString().substring(0, 10) : 'Sin fecha'}|"></span>
+                            </div>
+                            <div class="col-12 col-md-4">
+                        <span th:text="${
+                            hecho.ubicacion == null or hecho.ubicacion.nombreProvincia == null
+                            ? 'Sin provincia'
+                            : (hecho.ubicacion.municipio != null
+                                ? 'Ubicación: ' + hecho.ubicacion.nombreProvincia + ', ' + hecho.ubicacion.municipio
+                                : 'Ubicación: ' + hecho.ubicacion.nombreProvincia)
+                        }"></span>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <span th:text="|Fuente: ${hecho.fuente}|"></span>
+                            </div>
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="d-flex flex-wrap gap-2">
+                            <div th:each="etiqueta, iterStat: ${hecho.etiquetas}" th:if="${iterStat.index < 3}">
+                                <span class="badge bg-secondary" th:text="${etiqueta}">Sin etiqueta</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar con Categoría y Botones (ancho fijo 160px) -->
+                    <div class="col-12 col-md-4 col-lg-3">
+                        <div class="d-flex flex-column gap-2 align-items-center align-items-lg-end mt-3 mt-lg-0">
+                            <!-- Etiqueta de Categoría -->
+                            <div class="badge rounded-pill bg-white text-muted border border-secondary py-2 text-center fw-semibold small categoria-badge" th:text="${hecho.categoria}">
+                                Sin Categoría
+                            </div>
+
+                            <!-- Botones -->
+                            <a th:href="@{/hechos/{id}(id=${hecho.id})}" class="btn btn-dark boton-accion">
+                                Ver Detalles
+                            </a>
+                            <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-outline-danger boton-accion">
+                                Solicitar Eliminación
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
 
     <div th:if="${totalPages > 1}" style="margin: 2rem 0; text-align: center;">
         <div style="display: inline-flex; gap: 0.5rem; align-items: center;">
             <a th:if="${currentPage > 0}"
                th:href="@{/hechos(page=${currentPage - 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
-               class="btn btn-primary btn-dark config-opciones">Página Anterior</a>
+               class="btn btn-dark boton-accion">Página Anterior</a>
 
             <!-- Primera página -->
             <span th:if="${0 == currentPage}"
@@ -83,7 +104,7 @@
                style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; text-decoration: none; color: #333; border: 1px solid #ddd; border-radius: 4px;"></a>
 
             <span th:if="${currentPage > 3}" style="margin: 0 0.5rem;">...</span>
-                <span th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}" th:if="${i > 0 and i < totalPages - 1}">
+            <span th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}" th:if="${i > 0 and i < totalPages - 1}">
                 <span th:if="${i == currentPage}"
                       th:text="${i + 1}"
                       style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; background: #007bff; color: white; border-radius: 4px; font-weight: bold;"></span>
@@ -106,7 +127,7 @@
 
             <a th:if="${currentPage < totalPages - 1}"
                th:href="@{/hechos(page=${currentPage + 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
-               class="btn btn-primary btn-dark config-opciones">Página Siguiente</a>
+               class="btn btn-dark boton-accion">Página Siguiente</a>
         </div>
     </div>
 </div>
