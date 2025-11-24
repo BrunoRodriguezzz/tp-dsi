@@ -12,9 +12,8 @@ import com.opencsv.exceptions.CsvException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
-import javax.swing.*;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -75,8 +74,16 @@ public class ArchivoCSV implements TipoArchivo {
     }
 
     private CSVReader crearLectorCSV(String ruta) throws IOException {
-        // Saltar encabezados
-        return new CSVReaderBuilder(new FileReader(ruta))
+        // 1. Buscamos el archivo en los recursos del JAR (Classpath)
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream(ruta);
+
+        // Validación por si el nombre está mal o el archivo no se copió
+        if (is == null) {
+            throw new FileNotFoundException("No se encontró el archivo en los recursos: " + ruta);
+        }
+
+        // 2. Usamos InputStreamReader (con UTF-8 explícito para evitar problemas de tildes en Docker)
+        return new CSVReaderBuilder(new InputStreamReader(is, StandardCharsets.UTF_8))
                 .withSkipLines(1) // Saltar encabezados
                 .withCSVParser(new com.opencsv.CSVParserBuilder()
                         .withSeparator(',')
