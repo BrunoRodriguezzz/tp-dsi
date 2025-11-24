@@ -147,28 +147,37 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>${lombok.version}</version> <!-- ← USAR VARIABLE -->
+							<version>${lombok.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!-- No necesitamos definir <executions> si queremos que aplique a todo -->
+				<!-- Definimos versión explícita para asegurar -->
+				<version>3.2.4</version>
 
-				<!-- CONFIGURACIÓN GLOBAL DEL PLUGIN -->
-				<configuration>
-					<!-- ESTO APLICA A TODAS LAS EJECUCIONES -->
-					<classifier>exec</classifier>
-
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
+				<executions>
+					<!-- SOBREESCRIBIMOS LA EJECUCIÓN DEFAULT 'repackage' -->
+					<execution>
+						<id>repackage</id>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<!-- ESTO ES LA CLAVE: -->
+							<classifier>exec</classifier>
+							<excludes>
+								<exclude>
+									<groupId>org.projectlombok</groupId>
+									<artifactId>lombok</artifactId>
+								</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
