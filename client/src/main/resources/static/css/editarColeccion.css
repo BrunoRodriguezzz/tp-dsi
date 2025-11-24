@@ -243,3 +243,130 @@ input.form-control:focus, textarea.form-control:focus, select.form-select:focus 
         max-width: 72rem;
     }
 }
+
+/* ESTILOS QUE ESTABAN EN COLECCION (y no sé por qué estaban ahí)*/
+
+/* Centrado del contenedor de edición */
+main.editar-coleccion {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.container.editar-coleccion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+main.flex-grow-1 > .container.editar-coleccion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+main.flex-grow-1 > .container.editar-coleccion .form-coleccion {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.container.editar-coleccion .form-coleccion,
+main.editar-coleccion .form-coleccion {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 700px;
+    width: 100%;
+}
+
+@media (min-width: 900px) {
+    .container.editar-coleccion {
+        padding-top: 2.5rem;
+    }
+}
+
+.form-coleccion {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    margin: 1rem auto 2rem auto;
+    max-width: 600px;
+    width: 100%;
+    box-sizing: border-box;
+    background: #fff;
+    padding: 2.5rem 2rem 3rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.form-coleccion .form-section h3 {
+    font-size: 1.25rem;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.1;
+}
+
+.form-coleccion .form-section p {
+    margin: 0 0 1rem 0;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.form-coleccion .form-group h6 {
+    font-size: 0.95rem;
+    margin: 0 0 0.4rem 0;
+    font-weight: 600;
+}
+
+.form-coleccion .form-section {
+    margin-bottom: 1.25rem;
+}
+
+.form-coleccion .form-group {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.form-coleccion .form-control {
+    width: 100%;
+    box-sizing: border-box;
+    padding: .6rem .8rem;
+    border-radius: 8px;
+}
+
+.botones-formulario {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.botones-formulario .btn {
+    min-width: 120px;
+    padding: .45rem 1rem;
+}
+
+.botones-formulario .btn-cancelar {
+    background: transparent;
+}
+
+.outer-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.editar-coleccion-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
