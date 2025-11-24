@@ -156,25 +156,27 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!-- Aseguramos usar la misma versión que el padre -->
 				<version>3.2.5</version>
 
-				<executions>
-					<!-- 1. CRÍTICO: Bloqueamos la ejecución por defecto que rompe el JAR -->
-					<execution>
-						<id>repackage</id>
-						<phase>none</phase>
-					</execution>
+				<!-- 1. APAGADO GLOBAL: Esto "mata" la configuración que heredas del padre -->
+				<!-- Por defecto, le decimos al plugin que NO haga nada. -->
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 
-					<!-- 2. Creamos nuestra propia ejecución segura -->
+				<executions>
+					<!-- 2. ENCENDIDO MANUAL: Creamos una ejecución específica -->
 					<execution>
-						<id>build-exec-jar</id>
+						<id>repackage-exec</id>
 						<goals>
 							<goal>repackage</goal>
 						</goals>
 						<configuration>
-							<!-- Esto añade el sufijo -exec al ejecutable -->
+							<!-- Aquí sí permitimos que corra -->
+							<skip>false</skip>
+							<!-- Y le obligamos a usar el clasificador -->
 							<classifier>exec</classifier>
+
 							<excludes>
 								<exclude>
 									<groupId>org.projectlombok</groupId>
