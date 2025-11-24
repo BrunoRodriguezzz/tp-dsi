@@ -28,13 +28,30 @@
             <div th:insert="~{fragments/vacio :: vacio}"></div>
         </div>
 
-        <div class="card mb-3 hecho-card-hover" th:each="hecho: ${hechos}">
-            <div class="card-body">
-                <div class="row">
-                    <!-- Contenido Principal (Título y Descripción) -->
-                    <div class="col-12 col-md-8 col-lg-9">
-                        <h2 class="card-title h5 fw-semibold mb-2" th:text="${hecho.titulo}">Sin título</h2>
-                        <p class="card-text text-muted small mb-3" th:text="${hecho.descripcion}">Sin descripción</p>
+        <div class="hecho-card" th:each="hecho: ${hechos}">
+            <div class="hecho-card-mas-opciones">
+                <div class="titulo-mas-descripcion">
+                    <h2 class="titulo-Hecho" th:text="${hecho.titulo}">Sin título</h2>
+                    <p class="descripcion" th:text="${hecho.descripcion}">Sin descripción</p>
+                </div>
+                <div class="opciones">
+                    <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Sin Categoría</p>
+                    <a href="verDetalle-hecho1.html" class="btn btn-primary btn-dark config-opciones" th:href="@{/hechos/{id}(id=${hecho.id})}">Ver Detalles</a>
+                    <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-red config-opciones">Solicitar Eliminacion</a>
+                </div>
+            </div>
+            <div class="informacion-general">
+                <div class="fecha-ubicacion-fuente encolumnar">
+                    <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento != null ? hecho.fechaAcontecimiento.toString().substring(0, 10) : 'Sin fecha'}|"></p>
+                    <p class="info-fecha-ubicacion-fuente"
+                       th:text="${
+                               hecho.ubicacion == null or hecho.ubicacion.nombreProvincia == null
+                               ? 'Ubicación: Sin provincia'
+                               : (hecho.ubicacion.municipio != null
+                                   ? 'Ubicación: ' + hecho.ubicacion.nombreProvincia + ', ' + hecho.ubicacion.municipio
+                                   : 'Ubicación: ' + hecho.ubicacion.nombreProvincia)
+                           }">
+                    </p>
 
                         <!-- Información General (Fecha, Ubicación, Fuente) -->
                         <div class="row g-2 small text-secondary mb-3">

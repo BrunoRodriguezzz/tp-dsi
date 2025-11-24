@@ -18,10 +18,74 @@
     border-color: #adb5bd;
 }
 
-/* ===== CARDS DE HECHOS ===== */
-.hecho-card-hover {
-    transition: box-shadow 0.2s ease-in-out;
-    border: 1px solid #dee2e6;
+/* Container para cada hecho*/
+
+.hecho-card{
+    display:block;
+    justify-content: center;
+    align-items: start;
+    padding-left: 1.3vw;
+    padding-right: 1.3vw;
+    padding-bottom: 1.3vw;
+    margin-bottom:1.3vw;
+    border: solid var(--color-gray-300) 1px;
+    border-radius: 0.7rem
+}
+
+.hecho-card:hover{
+    box-shadow: 3px 3px 3px var(--color-gray-300);
+    transition: 0.2s;
+}
+
+/* Container para cada hecho*/
+
+.hecho-card-mas-opciones{
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 0.7vw;
+}
+
+.titulo-Hecho{
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: black;
+    margin-bottom: 0.5vw;
+}
+
+.titulo-mas-descripcion{
+    display: block;
+    flex: 1;
+}
+
+.opciones{
+    width: 10rem;
+    padding-left: 0rem;
+    margin-left: 1rem;
+}
+
+.descripcion{
+    margin-top: 0vw;
+    font-size: 0.9rem;
+    color:grey;
+}
+
+.fecha-ubicacion-fuente{
+    display:grid;
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.info-fecha-ubicacion-fuente{
+    width: 100%;
+    font-size: 0.85rem;
+    color: rgb(90, 88, 88);
+    text-align: left;
+}
+
+.informacion-general{
+    display:block;
+    margin-top: 0.9vw;
 }
 
 .hecho-card-hover:hover {
@@ -56,10 +120,4 @@
     background-color: #dc3545;
     border-color: #dc3545;
     color: white;
-}
-
-/* Estillos nuestros (agrega/sobrescribe cosas de bootstrap) para la Paginación */
-.pagination .page-link {
-    color: #000;
-    border-radius: 0.25rem;
 }

@@ -65,7 +65,8 @@ public class ArchivoService implements IArchivoService {
   }
 
   private void saveHecho(HechoEstatica hecho) {
-    this.hechoRepository.findByTitulo(hecho.getTitulo())
+    // Buscar duplicados solo dentro del mismo archivo, o sea por título e idArchivo
+    this.hechoRepository.findByTituloAndIdArchivo(hecho.getTitulo(), hecho.getIdArchivo())
         .stream()
         .findFirst()
         .ifPresent(h -> hecho.setId(h.getId()));
