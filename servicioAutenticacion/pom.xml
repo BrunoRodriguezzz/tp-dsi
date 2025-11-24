@@ -155,21 +155,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!-- Asegúrate que la versión coincida con la que usa tu proyecto padre,
-                     los logs decían 3.2.5, pero usa la que tengas definida -->
-				<executions>
-					<execution>
-						<id>repackage</id>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-						<configuration>
-							<!-- ESTO ES CRÍTICO: Genera el ejecutable con nombre distinto -->
-							<classifier>exec</classifier>
-						</configuration>
-					</execution>
-				</executions>
+				<!-- No necesitamos definir <executions> si queremos que aplique a todo -->
+
+				<!-- CONFIGURACIÓN GLOBAL DEL PLUGIN -->
 				<configuration>
+					<!-- ESTO APLICA A TODAS LAS EJECUCIONES -->
+					<classifier>exec</classifier>
+
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
