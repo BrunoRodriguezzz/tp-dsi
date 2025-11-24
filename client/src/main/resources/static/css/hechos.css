@@ -1,3 +1,6 @@
+/* Mal llamado hechos.css */
+/* Estilos de Card Hechos + Filtros + Paginación*/
+
 /* ===== Filtros ===== */
 
 .config-mostrarFiltros{
@@ -16,7 +19,6 @@
 }
 
 /* ===== CARDS DE HECHOS ===== */
-
 .hecho-card-hover {
     transition: box-shadow 0.2s ease-in-out;
     border: 1px solid #dee2e6;
@@ -26,14 +28,14 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Categoría y Botones con ancho fijo de 160px (10rem) */
+/*  ===== Categoría y Botones ===== */
 .categoria-badge,
 .boton-accion {
-    width: 160px;
+    width: 165px; /* ancho fijo */
     white-space: normal; /* Permite que el texto haga wrap */
     word-wrap: break-word; /* Rompe palabras largas si es necesario */
     overflow-wrap: break-word; /* Mejor soporte para palabras largas */
-    font-size: 0.9rem
+    font-size: 0.9rem;
 }
 
 /* Asegurar que los badges de etiquetas también hagan wrap si es necesario */
@@ -56,7 +58,7 @@
     color: white;
 }
 
-/* Estillos nuestros (no de bootstrap) para la Paginación */
+/* Estillos nuestros (agrega/sobrescribe cosas de bootstrap) para la Paginación */
 .pagination .page-link {
     color: #000;
     border-radius: 0.25rem;
