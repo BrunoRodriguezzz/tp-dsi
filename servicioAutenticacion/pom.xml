@@ -156,18 +156,24 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!-- Definimos versión explícita para asegurar -->
-				<version>3.2.4</version>
+				<!-- Aseguramos usar la misma versión que el padre -->
+				<version>3.2.5</version>
 
 				<executions>
-					<!-- SOBREESCRIBIMOS LA EJECUCIÓN DEFAULT 'repackage' -->
+					<!-- 1. CRÍTICO: Bloqueamos la ejecución por defecto que rompe el JAR -->
 					<execution>
 						<id>repackage</id>
+						<phase>none</phase>
+					</execution>
+
+					<!-- 2. Creamos nuestra propia ejecución segura -->
+					<execution>
+						<id>build-exec-jar</id>
 						<goals>
 							<goal>repackage</goal>
 						</goals>
 						<configuration>
-							<!-- ESTO ES LA CLAVE: -->
+							<!-- Esto añade el sufijo -exec al ejecutable -->
 							<classifier>exec</classifier>
 							<excludes>
 								<exclude>
