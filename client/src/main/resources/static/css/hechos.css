@@ -121,3 +121,38 @@
     border-color: #dc3545;
     color: white;
 }
+
+.config-categoria{
+    width: 100%;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.config-opciones{
+    width: 100%;
+    font-size: 0.9rem;
+    margin-bottom: 0.4vw;
+    white-space: nowrap;
+}
+
+.distancia-opciones{
+    margin-bottom: 0.4vw;
+}
+
+.btn-red {
+    background-color: white;
+    color: red;
+    border-color: rgb(250, 137, 137);
+}
+
+.btn-red:hover{
+    background-color: red;
+    border-color: red;
+    color: white;
+}
+
+.etiqueta-categoria {
+    text-align: center;
+}
+

@@ -11,9 +11,6 @@
         <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
         <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css"
               rel="stylesheet"/>
-        <!--
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-        -->
         <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
         <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
     </th:block>
@@ -70,11 +67,11 @@
                     <div class="opciones">
                         <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Sin Categoría</p>
                         <a class="btn btn-primary btn-dark config-opciones" th:href="@{/hechos/{id}(id=${hecho.id})}">Ver Detalles</a>
-                        <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-red config-opciones">Solicitar Eliminacion</a>
+                        <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-outline-danger config-opciones">Solicitar Eliminacion</a>
                     </div>
                 </div>
                 <div class="informacion-general">
-                    <div class="fecha-ubicacion-fuente encolumnar">
+                    <div class="fecha-ubicacion-fuente">
                         <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento}|"></p>
                         <p class="info-fecha-ubicacion-fuente" th:text="${
                                hecho.ubicacion == null or hecho.ubicacion.nombreProvincia == null
@@ -84,26 +81,6 @@
                                    : 'Ubicación: ' + hecho.ubicacion.nombreProvincia)
                            }"></p>
                         <p class="info-fecha-ubicacion-fuente" th:text="|Fuente: ${hecho.fuente}|"></p>
-                    </div>
-
-                    <!-- Sidebar con Categoría y Botones (ancho fijo 160px) -->
-                    <div class="col-12 col-md-4 col-lg-3">
-                        <div class="d-flex flex-column gap-2 align-items-center align-items-lg-end mt-3 mt-lg-0">
-                            <!-- Etiqueta de Categoría -->
-                            <div class="badge rounded-pill bg-white text-muted border border-secondary py-2 text-center fw-semibold small categoria-badge"
-                                 th:text="${hecho.categoria}">
-                                Sin Categoría
-                            </div>
-
-                            <!-- Botones -->
-                            <a th:href="@{/hechos/{id}(id=${hecho.id})}" class="btn btn-dark boton-accion">
-                                Ver Detalles
-                            </a>
-                            <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}"
-                               class="btn btn-outline-danger boton-accion">
-                                Solicitar Eliminación
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -128,7 +105,6 @@
                            class="page-link">1</a>
                     </li>
 
-                    <!-- Puntos suspensivos iniciales -->
                     <li th:if="${currentPage > 3}" class="page-item disabled">
                         <span class="page-link">...</span>
                     </li>
@@ -146,7 +122,6 @@
                         </li>
                     </th:block>
 
-                    <!-- Puntos suspensivos finales -->
                     <li th:if="${currentPage < totalPages - 4}" class="page-item disabled">
                         <span class="page-link">...</span>
                     </li>

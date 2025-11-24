@@ -37,11 +37,11 @@
                 <div class="opciones">
                     <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Sin Categoría</p>
                     <a href="verDetalle-hecho1.html" class="btn btn-primary btn-dark config-opciones" th:href="@{/hechos/{id}(id=${hecho.id})}">Ver Detalles</a>
-                    <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-red config-opciones">Solicitar Eliminacion</a>
+                    <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-outline-danger config-opciones">Solicitar Eliminacion</a>
                 </div>
             </div>
             <div class="informacion-general">
-                <div class="fecha-ubicacion-fuente encolumnar">
+                <div class="fecha-ubicacion-fuente">
                     <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento != null ? hecho.fechaAcontecimiento.toString().substring(0, 10) : 'Sin fecha'}|"></p>
                     <p class="info-fecha-ubicacion-fuente"
                        th:text="${
@@ -52,53 +52,10 @@
                                    : 'Ubicación: ' + hecho.ubicacion.nombreProvincia)
                            }">
                     </p>
-
-                        <!-- Información General (Fecha, Ubicación, Fuente) -->
-                        <div class="row g-2 small text-secondary mb-3">
-                            <div class="col-12 col-md-4">
-                                <span th:text="|Fecha: ${hecho.fechaAcontecimiento != null ? hecho.fechaAcontecimiento.toString().substring(0, 10) : 'Sin fecha'}|"></span>
-                            </div>
-                            <div class="col-12 col-md-4">
-                        <span th:text="${
-                            hecho.ubicacion == null or hecho.ubicacion.nombreProvincia == null
-                            ? 'Sin provincia'
-                            : (hecho.ubicacion.municipio != null
-                                ? 'Ubicación: ' + hecho.ubicacion.nombreProvincia + ', ' + hecho.ubicacion.municipio
-                                : 'Ubicación: ' + hecho.ubicacion.nombreProvincia)
-                        }"></span>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <span th:text="|Fuente: ${hecho.fuente}|"></span>
-                            </div>
-                        </div>
-
-                        <!-- Tags -->
-                        <div class="d-flex flex-wrap gap-2">
-                            <div th:each="etiqueta, iterStat: ${hecho.etiquetas}" th:if="${iterStat.index < 3}">
-                                <span class="badge bg-secondary" th:text="${etiqueta}">Sin etiqueta</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sidebar con Categoría y Botones (ancho fijo 160px) -->
-                    <div class="col-12 col-md-4 col-lg-3">
-                        <div class="d-flex flex-column gap-2 align-items-center align-items-lg-end mt-3 mt-lg-0">
-                            <!-- Etiqueta de Categoría -->
-                            <div class="badge rounded-pill bg-white text-muted border border-secondary py-2 text-center fw-semibold small categoria-badge" th:text="${hecho.categoria}">
-                                Sin Categoría
-                            </div>
-
-                            <!-- Botones -->
-                            <a th:href="@{/hechos/{id}(id=${hecho.id})}" class="btn btn-dark boton-accion">
-                                Ver Detalles
-                            </a>
-                            <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-outline-danger boton-accion">
-                                Solicitar Eliminación
-                            </a>
-                        </div>
-                    </div>
+                    <p class="info-fecha-ubicacion-fuente" th:text="|Fuente: ${hecho.fuente}|"></p>
                 </div>
             </div>
+        </div>
         </div>
 
 
