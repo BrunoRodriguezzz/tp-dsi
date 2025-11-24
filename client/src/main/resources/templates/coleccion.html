@@ -84,7 +84,7 @@
                         <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento}|"></p>
                         <p class="info-fecha-ubicacion-fuente" th:text="${
                                hecho.ubicacion == null or hecho.ubicacion.nombreProvincia == null
-                               ? 'Sin provincia'
+                               ? 'Ubicación: Sin provincia'
                                : (hecho.ubicacion.municipio != null
                                    ? 'Ubicación: ' + hecho.ubicacion.nombreProvincia + ', ' + hecho.ubicacion.municipio
                                    : 'Ubicación: ' + hecho.ubicacion.nombreProvincia)

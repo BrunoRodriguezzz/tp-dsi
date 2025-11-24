@@ -110,7 +110,7 @@ body{
 
 .titulo-mas-descripcion{
     display: block;
-    width: auto;
+    flex: 1;
 }
 
 .opciones{
@@ -128,7 +128,7 @@ body{
 .fecha-ubicacion-fuente{
     display:grid;
     width: 100%;
-    justify-content:space-between;
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .info-fecha-ubicacion-fuente{
@@ -252,4 +252,5 @@ body{
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
+
 

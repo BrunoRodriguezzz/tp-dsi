@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 
+@Slf4j
 public class Consensuador {
   private List<IStratConsenso> stratConsensos;
 
@@ -35,11 +37,20 @@ public class Consensuador {
                                otroHecho.getTitulo().equalsIgnoreCase(h.getTitulo()))
           .collect(Collectors.toList());
 
+      int consensosAntes = h.getConsensos() != null ? h.getConsensos().size() : 0;
+
       this.stratConsensos.forEach(strat -> {
         strat.consensuados(hechosMismoNombre, fuentes, h);
       });
+
+      int consensosDespues = h.getConsensos() != null ? h.getConsensos().size() : 0;
+
       hechosConsensuados.add(h);
     });
+
+    long totalConConsenso = hechosConsensuados.stream()
+            .filter(h -> h.getConsensos() != null && !h.getConsensos().isEmpty())
+            .count();
 
     return hechosConsensuados;
   }
