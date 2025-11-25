@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.agregador.models.repositories;
 
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
+import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,4 +36,6 @@ public interface IColeccionRepository extends JpaRepository<Coleccion, Long> {
            "NOT EXISTS (SELECT cc FROM c.consensos cc WHERE cc NOT MEMBER OF h.consensos)")
     long countHechosCuradosConConsensos(@Param("coleccionId") Long coleccionId);
 
+    @Query("SELECT c FROM Coleccion c JOIN c.fuentes f WHERE f = :fuente")
+    List<Coleccion> findByFuentes(@Param("fuente") Fuente fuente);
 }

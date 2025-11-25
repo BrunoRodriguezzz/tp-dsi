@@ -386,4 +386,41 @@ public class ColeccionController {
             .bodyToFlux(FuenteOutputDTO.class)
             .collectList();
   }
+
+  @GetMapping("/colecciones/{id}/actualizar")
+  public String actualizarColeccion(@PathVariable Long id) {
+    try {
+      log.info("📡 Solicitando actualización de colección ID: {}", id);
+
+      // Obtener la colección para saber qué fuentes tiene
+      ColeccionOutputDTO coleccion = getWebClient().get()
+              .uri("/colecciones/{id}/info", id)
+              .retrieve()
+              .bodyToMono(ColeccionOutputDTO.class)
+              .block();
+
+      if (coleccion != null && coleccion.getFuentes() != null && !coleccion.getFuentes().isEmpty()) {
+        // Actualizar cada fuente asociada a la colección
+        for (String nombreFuente : coleccion.getFuentes()) {
+          try {
+            log.info("🔄 Actualizando fuente: {}", nombreFuente);
+            getWebClient().post()
+                    .uri("/fuentes/{nombreFuente}/actualizar-colecciones", nombreFuente)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            log.info("✅ Fuente {} actualizada", nombreFuente);
+          } catch (Exception e) {
+            log.warn("⚠️ Error actualizando fuente {}: {}", nombreFuente, e.getMessage());
+          }
+        }
+        log.info("✅ Colección actualizada exitosamente");
+      }
+
+      return "redirect:/coleccion/" + id;
+    } catch (Exception e) {
+      log.error("❌ Error actualizando colección {}: {}", id, e.getMessage());
+      return "redirect:/coleccion/" + id;
+    }
+  }
 }

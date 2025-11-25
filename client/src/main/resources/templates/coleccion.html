@@ -32,6 +32,11 @@
                         data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">Mostrar
                     Filtros
                 </button>
+                <a th:if="${coleccion.id != null}" th:href="@{'/colecciones/' + ${coleccion.id} + '/actualizar'}">
+                    <button class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-clockwise"></i> Actualizar Colección
+                    </button>
+                </a>
                 <a th:if="${coleccion.id != null}" th:href="@{'/editarColeccion/' + ${coleccion.id}}">
                     <button class="btn btn-dark">Modificar Colección</button>
                 </a>
