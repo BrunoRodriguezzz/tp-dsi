@@ -112,7 +112,9 @@ public class ArchivoController {
             archivoEntity.setTipoArchivo(new ArchivoCSV());
 
             try {
+                log.info("✅ Archivo guardado físicamente en: {}", targetPath);
                 archivoService.guardarArchivoSync(archivoEntity);
+                log.info("🎉 Fuente estática creada exitosamente: {}", nombre);
                 return ResponseEntity.status(HttpStatus.CREATED)
                         .body("Fuente estática creada exitosamente desde archivo: " + nombreArchivo);
             } catch (Exception e) {

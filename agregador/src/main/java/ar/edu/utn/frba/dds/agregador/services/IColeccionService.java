@@ -37,4 +37,7 @@ public interface IColeccionService {
   public ColeccionOutputDTO actualizarColeccion(Long id, ColeccionInputDTO coleccion);
   public ColeccionOutputDTO agregarConsensoAColeccion(Long id, Consenso consenso);
   List<HechoOutputDTO> buscarHechosPorConsensos(Long idColeccion, List<Consenso> consensos);
+
+  // Actualizar colecciones cuando una fuente recibe nuevos hechos
+  void actualizarColeccionesDeFuente(String nombreFuente);
 }

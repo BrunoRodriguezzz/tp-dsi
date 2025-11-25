@@ -46,15 +46,23 @@ public class ArchivoService implements IArchivoService {
   }
 
   public void guardarArchivoSync(Archivo archivo) {
+      logger.info("💾 Guardando archivo en BD: {}", archivo.getNombre());
       archivoRepository.save(archivo);
+      logger.info("✅ Archivo guardado en BD con ID: {}", archivo.getId());
+
+      // Importar hechos de forma síncrona primero (para archivos grandes puede tardar)
+      logger.info("📥 Iniciando importación de hechos para archivo: {} (ID: {})", archivo.getNombre(), archivo.getId());
       importarHechosArchivo(archivo);
 
+      // Notificar al agregador DESPUÉS de que los hechos estén importados
       ArchivoOutputAgregadorDTO outputAgregadorDTO = this.utilsDTO.toOutputArchivoAgregador(archivo);
 
       try {
+        logger.info("📡 Notificando al agregador sobre la nueva fuente: {}", archivo.getNombre());
         this.agregadorClient.incorporarFuente(outputAgregadorDTO);
+        logger.info("✅ Agregador notificado exitosamente");
       } catch (Exception e) {
-        logger.warn("Hubo un inconveniente al comunicar con el Agregador: {}", e.getMessage());
+        logger.warn("⚠️ Hubo un inconveniente al comunicar con el Agregador: {}", e.getMessage());
       }
   }
 
@@ -65,9 +73,43 @@ public class ArchivoService implements IArchivoService {
   }
 
   private void importarHechosArchivo(Archivo archivo) {
+    logger.info("📥 Iniciando importación de hechos para archivo: {} (ID: {})", archivo.getNombre(), archivo.getId());
+    logger.info("📂 Ruta del archivo: {}", archivo.getRutaArchivo());
+
     archivo.importarHechos()
-        .doOnNext(this::saveHecho)
+        .buffer(100) // Procesar en lotes de 100 hechos
+        .doOnNext(lote -> {
+          logger.info("💾 Guardando lote de {} hechos", lote.size());
+          saveLoteHechos(lote);
+        })
         .blockLast();
+
+    logger.info("✅ Importación completada para archivo: {}", archivo.getNombre());
+  }
+
+  @Async
+  private void importarHechosArchivoAsync(Archivo archivo) {
+    logger.info("🔄 Importación asíncrona iniciada para: {}", archivo.getNombre());
+    logger.info("📂 Ruta del archivo: {}", archivo.getRutaArchivo());
+
+    try {
+      archivo.importarHechos()
+          .buffer(100) // Procesar en lotes de 100 hechos
+          .doOnNext(lote -> {
+            logger.info("💾 Guardando lote de {} hechos", lote.size());
+            saveLoteHechos(lote);
+          })
+          .blockLast();
+
+      logger.info("✅ Importación asíncrona completada para archivo: {}", archivo.getNombre());
+    } catch (Exception e) {
+      logger.error("❌ Error en importación asíncrona para archivo: {}", archivo.getNombre(), e);
+    }
+  }
+
+  private void saveLoteHechos(List<HechoEstatica> hechos) {
+    // Guardar todos los hechos del lote de una vez
+    hechoRepository.saveAll(hechos);
   }
 
   private void saveHecho(HechoEstatica hecho) {
