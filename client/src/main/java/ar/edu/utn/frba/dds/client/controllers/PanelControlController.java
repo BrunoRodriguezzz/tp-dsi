@@ -189,7 +189,7 @@ public class PanelControlController {
             .block();
 
         redirectAttributes.addFlashAttribute("mensaje",
-            String.format("Archivo '%s' importado exitosamente como fuente '%s'. Respuesta: %s",
+            String.format("Archivo '%s' importado exitosamente como fuente '%s'.",
                 nombreArchivo, nombreFuente, response));
       } catch (Exception e) {
         redirectAttributes.addFlashAttribute("error",

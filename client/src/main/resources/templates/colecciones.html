@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" th:replace="~{layout/base :: html}">
+<html lang="es" th:replace="~{layout/base :: html}" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Colecciones</title>
@@ -26,7 +26,7 @@
                         </label>
                         <span>Curado</span>
                     </div>
-                    <a class="btn-nueva" th:href="@{/nuevaColeccion}">
+                    <a class="btn-nueva" sec:authorize="hasAnyRole('ADMINISTRADOR')" th:href="@{/nuevaColeccion}">
                         + Nueva Colección
                     </a>
                 </div>
