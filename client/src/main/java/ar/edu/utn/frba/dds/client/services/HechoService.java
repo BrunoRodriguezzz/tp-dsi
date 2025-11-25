@@ -96,8 +96,7 @@ public class HechoService {
       log.info("Recibi: {}", paginado);
       return paginado;
     } catch (Exception e) {
-      log.error(e.getMessage());
-      e.printStackTrace();
+      log.error("Error al obtener hechos: {}", e.getMessage(), e);
       return null;
     }
   }

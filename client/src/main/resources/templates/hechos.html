@@ -55,7 +55,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     <div th:if="${totalPages > 1}" class="d-flex justify-content-center my-4">
         <nav aria-label="Paginación de hechos">
@@ -63,7 +62,7 @@
                 <!-- Botón Página Anterior -->
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                     <a th:if="${currentPage > 0}"
-                       th:href="@{/hechos(page=${currentPage - 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                       th:href="@{/hechos(page=${currentPage - 1}, size=${size}, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
                        class="btn btn-dark">Página Anterior</a>
                 </li>
 
@@ -71,7 +70,7 @@
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'active'">
                     <span th:if="${0 == currentPage}" class="page-link bg-primary border-primary text-white fw-bold">1</span>
                     <a th:if="${0 != currentPage}"
-                       th:href="@{/hechos(page=0, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                       th:href="@{/hechos(page=0, size=${size}, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
                        class="page-link">1</a>
                 </li>
 
@@ -85,7 +84,7 @@
                     <li class="page-item" th:classappend="${i == currentPage} ? 'active'">
                         <span th:if="${i == currentPage}" class="page-link bg-primary border-primary text-white fw-bold" th:text="${i + 1}"></span>
                         <a th:if="${i != currentPage}"
-                           th:href="@{/hechos(page=${i}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                           th:href="@{/hechos(page=${i}, size=${size}, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
                            class="page-link" th:text="${i + 1}"></a>
                     </li>
                 </th:block>
@@ -99,17 +98,18 @@
                 <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'active'">
                     <span th:if="${totalPages - 1 == currentPage}" class="page-link bg-primary border-primary text-white fw-bold" th:text="${totalPages}"></span>
                     <a th:if="${totalPages - 1 != currentPage}"
-                       th:href="@{/hechos(page=${totalPages - 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                       th:href="@{/hechos(page=${totalPages - 1}, size=${size}, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
                        class="page-link" th:text="${totalPages}"></a>
                 </li>
 
                 <!-- Botón Página Siguiente -->
                 <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
                     <a th:if="${currentPage < totalPages - 1}"
-                       th:href="@{/hechos(page=${currentPage + 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                       th:href="@{/hechos(page=${currentPage + 1}, size=${size}, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
                        class="btn btn-dark">Página Siguiente</a>
                 </li>
             </ul>
         </nav>
     </div>
+</div>
 </html>

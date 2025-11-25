@@ -59,11 +59,13 @@ public class HechoController {
       model.addAttribute("cantidad", paginado.getTotalElements());
       model.addAttribute("currentPage", paginado.getNumber());
       model.addAttribute("totalPages", paginado.getTotalPages());
+      model.addAttribute("size", paginado.getSize());
     } else {
       model.addAttribute("hechos", List.of());
       model.addAttribute("cantidad", 0);
       model.addAttribute("currentPage", 0);
-      model.addAttribute("totalPages", 1);
+      model.addAttribute("totalPages", 0);
+      model.addAttribute("size", size);
     }
     return "hechos";
   }
