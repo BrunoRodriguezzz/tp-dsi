@@ -80,38 +80,63 @@ public class ArchivoController {
                 nombre = nombreArchivo.replace(".csv", "").replace(".CSV", "");
             }
 
+            // Verificar si la fuente ya existe en la base de datos
             List<Archivo> archivosExistentes = archivoRepository.findByNombre(nombre);
             if (!archivosExistentes.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("La fuente '" + nombre + "' ya fue importada. No se puede importar dos veces la misma fuente.");
             }
 
+            // Determinar la ruta de destino
             Path targetPath = determinarRutaDestino(nombreArchivo);
 
-            if (!Files.exists(targetPath)) {
-                Files.copy(archivo.getInputStream(), targetPath);
+            // Verificar si el archivo ya existe físicamente
+            boolean archivoExisteFisicamente = Files.exists(targetPath);
+
+            if (!archivoExisteFisicamente) {
+                // Solo copiar si el archivo NO existe
+                try {
+                    Files.copy(archivo.getInputStream(), targetPath);
+                } catch (IOException e) {
+                    throw new IOException("No se pudo guardar el archivo: " + e.getMessage(), e);
+                }
             }
+
+            // Crear la entidad Archivo con ruta relativa
+            String rutaRelativa = "domain/src/test/resources/" + nombreArchivo;
 
             Archivo archivoEntity = new Archivo();
             archivoEntity.setNombre(nombre);
-            archivoEntity.setRutaArchivo(targetPath.toAbsolutePath().toString());
+            archivoEntity.setRutaArchivo(rutaRelativa);
             archivoEntity.setUltimaConsulta(LocalDateTime.now());
             archivoEntity.setTipoArchivo(new ArchivoCSV());
 
-            // Guardar el archivo (esto automáticamente importará los hechos)
-            archivoService.guardarArchivo(archivoEntity);
-
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("Fuente estática creada exitosamente desde archivo: " + nombreArchivo);
+            try {
+                archivoService.guardarArchivoSync(archivoEntity);
+                return ResponseEntity.status(HttpStatus.CREATED)
+                        .body("Fuente estática creada exitosamente desde archivo: " + nombreArchivo);
+            } catch (Exception e) {
+                if (!archivoExisteFisicamente && Files.exists(targetPath)) {
+                    try {
+                        Files.delete(targetPath);
+                    } catch (IOException deleteError) {
+                    }
+                }
+                throw e;
+            }
 
         } catch (IOException e) {
-            log.error("Error de I/O al procesar el archivo", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al guardar el archivo: " + e.getMessage());
         } catch (Exception e) {
-            log.error("Error al crear fuente estática desde archivo subido", e);
+            String errorMsg = e.getMessage();
+            if (errorMsg != null && errorMsg.contains("NumberFormatException")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Error: El archivo CSV tiene un formato incorrecto. Verifica que las columnas de latitud y longitud contengan números válidos.");
+            }
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al procesar el archivo: " + e.getMessage());
+                    .body("Error al procesar el archivo: " + errorMsg);
         }
     }
 

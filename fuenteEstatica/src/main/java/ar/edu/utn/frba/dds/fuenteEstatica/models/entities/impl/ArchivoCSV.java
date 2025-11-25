@@ -9,6 +9,7 @@ import com.opencsv.CSVReader;
 
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@Slf4j
 @Component
 public class ArchivoCSV implements TipoArchivo {
     @Override
@@ -41,7 +43,25 @@ public class ArchivoCSV implements TipoArchivo {
     private Flux<HechoEstatica> instanciarHechosSegunCSV(CSVReader lector) throws IOException, CsvException {
         List<String[]> filas = lector.readAll();
 
+        if (!filas.isEmpty() && esEncabezado(filas.get(0))) {
+            filas = filas.subList(1, filas.size());
+        }
+
         return this.crearListaDeHechosSegunFilas(filas);
+    }
+
+    private boolean esEncabezado(String[] fila) {
+        if (fila.length < 6) {
+            return false;
+        }
+
+        try {
+            Double.parseDouble(fila[3]);
+            Double.parseDouble(fila[4]);
+            return false;
+        } catch (NumberFormatException e) {
+            return true;
+        }
     }
 
     private Flux<HechoEstatica> crearListaDeHechosSegunFilas(List<String[]> filas) {
@@ -78,15 +98,23 @@ public class ArchivoCSV implements TipoArchivo {
 
         if (!file.isAbsolute()) {
             java.nio.file.Path currentPath = java.nio.file.Paths.get("").toAbsolutePath();
-            java.nio.file.Path absolutePath = currentPath.getParent().resolve(ruta);
+            java.nio.file.Path absolutePath;
+
+            if (currentPath.endsWith("fuenteEstatica")) {
+                absolutePath = currentPath.getParent().resolve(ruta);
+            } else {
+                absolutePath = currentPath.resolve(ruta);
+            }
 
             if (java.nio.file.Files.exists(absolutePath)) {
                 file = absolutePath.toFile();
+            } else {
+                throw new IOException("No se encontró el archivo en: " + absolutePath);
             }
         }
 
         return new CSVReaderBuilder(new FileReader(file))
-                .withSkipLines(1) // Saltar encabezados
+                .withSkipLines(0)
                 .withCSVParser(new com.opencsv.CSVParserBuilder()
                         .withSeparator(',')
                         .withQuoteChar('\"')
