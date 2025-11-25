@@ -12,7 +12,6 @@ import com.opencsv.exceptions.CsvException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
-import javax.swing.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -75,8 +74,18 @@ public class ArchivoCSV implements TipoArchivo {
     }
 
     private CSVReader crearLectorCSV(String ruta) throws IOException {
-        // Saltar encabezados
-        return new CSVReaderBuilder(new FileReader(ruta))
+        java.io.File file = new java.io.File(ruta);
+
+        if (!file.isAbsolute()) {
+            java.nio.file.Path currentPath = java.nio.file.Paths.get("").toAbsolutePath();
+            java.nio.file.Path absolutePath = currentPath.getParent().resolve(ruta);
+
+            if (java.nio.file.Files.exists(absolutePath)) {
+                file = absolutePath.toFile();
+            }
+        }
+
+        return new CSVReaderBuilder(new FileReader(file))
                 .withSkipLines(1) // Saltar encabezados
                 .withCSVParser(new com.opencsv.CSVParserBuilder()
                         .withSeparator(',')
