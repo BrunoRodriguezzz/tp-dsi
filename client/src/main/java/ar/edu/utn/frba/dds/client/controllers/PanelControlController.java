@@ -22,15 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.http.MediaType;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @RequestMapping("/panelControl")
@@ -120,94 +115,124 @@ public class PanelControlController {
         nombreFuente = nombreArchivo.replace(".csv", "").replace(".CSV", "");
       }
 
-      // Guardar el archivo temporalmente
-      Path tempDir = Files.createTempDirectory("csv-import-");
-      Path tempFile = tempDir.resolve(nombreArchivo);
-      Files.copy(archivo.getInputStream(), tempFile, StandardCopyOption.REPLACE_EXISTING);
-
-      // Validar estructura del CSV
+      // Validar estructura del archivo CSV
       try (BufferedReader reader = new BufferedReader(
           new InputStreamReader(archivo.getInputStream(), StandardCharsets.UTF_8))) {
 
         String primeraLinea = reader.readLine();
-        if (primeraLinea == null) {
+        if (primeraLinea == null || primeraLinea.trim().isEmpty()) {
           redirectAttributes.addFlashAttribute("error", "El archivo CSV está vacío");
-          Files.deleteIfExists(tempFile);
-          Files.deleteIfExists(tempDir);
           return "redirect:/panelControl/importarCSV";
         }
 
-        // Validar columnas requeridas
-        String[] columnas = primeraLinea.split(",");
-        boolean tieneTitulo = false, tieneDescripcion = false, tieneCategoria = false;
-        boolean tieneLatitud = false, tieneLongitud = false, tieneFecha = false;
-
-        for (String columna : columnas) {
-          // Normalizar: quitar tildes, convertir a minúsculas y quitar espacios
-          String columnaNormalizada = java.text.Normalizer.normalize(columna.trim(), java.text.Normalizer.Form.NFD)
-              .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")
-              .toLowerCase();
-
-          if (columnaNormalizada.contains("titulo")) tieneTitulo = true;
-          if (columnaNormalizada.contains("descripcion")) tieneDescripcion = true;
-          if (columnaNormalizada.contains("categoria")) tieneCategoria = true;
-          if (columnaNormalizada.contains("latitud")) tieneLatitud = true;
-          if (columnaNormalizada.contains("longitud")) tieneLongitud = true;
-          if (columnaNormalizada.contains("fecha")) tieneFecha = true;
-        }
-
-        if (!tieneTitulo || !tieneDescripcion || !tieneCategoria ||
-            !tieneLatitud || !tieneLongitud || !tieneFecha) {
+        // Validar que tenga al menos 6 columnas
+        String[] columnas = primeraLinea.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1); // Split respetando comillas
+        if (columnas.length < 6) {
           redirectAttributes.addFlashAttribute("error",
-              "El archivo CSV debe contener las columnas: Título, Descripción, Categoría, Latitud, Longitud, Fecha del hecho");
-          Files.deleteIfExists(tempFile);
-          Files.deleteIfExists(tempDir);
+              "El archivo CSV debe tener al menos 6 columnas: Título, Descripción, Categoría, Latitud, Longitud, Fecha");
           return "redirect:/panelControl/importarCSV";
         }
+
+        // Detectar si la primera línea es encabezado intentando parsear latitud/longitud
+        boolean primeraLineaEsEncabezado = false;
+        try {
+          Double.parseDouble(columnas[3].trim().replace("\"", ""));
+          Double.parseDouble(columnas[4].trim().replace("\"", ""));
+        } catch (NumberFormatException e) {
+          primeraLineaEsEncabezado = true;
+        }
+
+        // Obtener la línea de datos a validar
+        String[] datosAValidar;
+        if (primeraLineaEsEncabezado) {
+          // Si hay encabezado, leer la siguiente línea
+          String segundaLinea = reader.readLine();
+          if (segundaLinea == null || segundaLinea.trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error",
+                "El archivo CSV solo contiene encabezados, debe incluir al menos un hecho");
+            return "redirect:/panelControl/importarCSV";
+          }
+          datosAValidar = segundaLinea.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+        } else {
+          // Si no hay encabezado, usar la primera línea
+          datosAValidar = columnas;
+        }
+
+        // Validar que los datos tengan 6 columnas
+        if (datosAValidar.length < 6) {
+          redirectAttributes.addFlashAttribute("error",
+              "Los datos del CSV deben tener 6 columnas por fila");
+          return "redirect:/panelControl/importarCSV";
+        }
+
+        // Validar que latitud y longitud sean números
+        try {
+          Double.parseDouble(datosAValidar[3].trim().replace("\"", ""));
+          Double.parseDouble(datosAValidar[4].trim().replace("\"", ""));
+        } catch (NumberFormatException e) {
+          redirectAttributes.addFlashAttribute("error",
+              "Las columnas de Latitud y Longitud deben contener números válidos");
+          return "redirect:/panelControl/importarCSV";
+        }
+
+        // Validar formato de fecha (dd/MM/yyyy)
+        String fecha = datosAValidar[5].trim().replace("\"", "");
+        if (!fecha.matches("\\d{2}/\\d{2}/\\d{4}")) {
+          redirectAttributes.addFlashAttribute("error",
+              "La columna de Fecha debe tener el formato dd/MM/yyyy (ejemplo: 15/03/2019)");
+          return "redirect:/panelControl/importarCSV";
+        }
+      } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("error",
+            "Error al validar el archivo CSV: " + e.getMessage());
+        return "redirect:/panelControl/importarCSV";
       }
 
-      // Llamar al servicio de fuente estática para crear la fuente desde el CSV
-      String rutaArchivo = tempFile.toAbsolutePath().toString();
-
       try {
-        // Construir los parámetros para la llamada al servicio de fuente estática
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("nombre", nombreFuente);
-        formData.add("rutaArchivo", rutaArchivo);
-        formData.add("tipoArchivo", "CSV");
+        // Construir el body multipart
+        org.springframework.http.client.MultipartBodyBuilder builder = new org.springframework.http.client.MultipartBodyBuilder();
+        builder.part("archivo", archivo.getResource());
+        builder.part("nombre", nombreFuente);
 
-        // Llamar al servicio de fuente estática
+        // Usar el nuevo endpoint que acepta MultipartFile directamente
         String response = WebClient.builder()
             .baseUrl(fuenteEstaticaURL)
             .build()
             .post()
-            .uri("/archivos")
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .bodyValue(formData)
+            .uri("/archivos/upload")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .bodyValue(builder.build())
             .retrieve()
+            .onStatus(
+                status -> status.value() == 409, // HTTP 409 Conflict
+                clientResponse -> clientResponse.bodyToMono(String.class)
+                    .map(body -> new RuntimeException(body))
+            )
             .bodyToMono(String.class)
             .block();
 
         redirectAttributes.addFlashAttribute("mensaje",
-            String.format("Archivo '%s' importado exitosamente como fuente '%s'. Respuesta: %s",
-                nombreArchivo, nombreFuente, response));
+            String.format("Archivo '%s' importado exitosamente como fuente '%s'",
+                nombreArchivo, nombreFuente));
+      } catch (RuntimeException e) {
+        String errorMsg = e.getMessage();
+        if (errorMsg != null && !errorMsg.isEmpty()) {
+          redirectAttributes.addFlashAttribute("error", errorMsg);
+        } else {
+          redirectAttributes.addFlashAttribute("error",
+              "Error al comunicarse con el servicio de fuente estática: " + e.getMessage());
+        }
+        return "redirect:/panelControl/importarCSV";
       } catch (Exception e) {
         redirectAttributes.addFlashAttribute("error",
             "Error al comunicarse con el servicio de fuente estática: " + e.getMessage());
-        e.printStackTrace();
-        // Limpiar el archivo temporal en caso de error
-        Files.deleteIfExists(tempFile);
-        Files.deleteIfExists(tempDir);
         return "redirect:/panelControl/importarCSV";
       }
 
-      // Nota: El archivo temporal se dejará para que el servicio de fuente estática lo procese
-      // Idealmente, el servicio debería limpiarlo después de procesarlo
 
     } catch (Exception e) {
       redirectAttributes.addFlashAttribute("error",
           "Error al procesar el archivo: " + e.getMessage());
-      e.printStackTrace();
     }
 
     return "redirect:/panelControl/importarCSV";

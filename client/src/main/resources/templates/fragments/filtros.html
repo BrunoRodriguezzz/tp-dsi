@@ -1,15 +1,15 @@
-<div th:fragment="filtros (actionUrl, clearUrl)">
+<th:block th:fragment="filtros (actionUrl, clearUrl)">
     <div class="collapse" id="filtrosCollapse">
         <div class="card card-body mb-3">
             <form id="filtrosForm" th:action="${actionUrl}" method="get">
                 <div class="row">
-                    <div class="input-mapa col-12 col-md-6">
-                        <p style="color: black">Ingrese su Ubicación deseada</p>
-                        <div id="geocoder" class="ubicacion-input"></div>
-                        <div style="margin-top:0.5rem;">
-                            <button type="button" id="usarUbicBtn" class="btn btn-sm btn-outline-primary">Usar ubicación</button>
-                        </div>
+                    <div class="col-12 col-md-6 mb-3 mb-md-0">
+                        <p class="text-dark mb-2">Ingrese su Ubicación deseada</p>
+                        <div id="geocoder" class="mb-2"></div>
                         <div id="map" class="map mapa"></div>
+                        <button type="button" id="btnGPS" class="btn btn-sm btn-outline-primary w-100 mt-1">
+                            <i class="bi bi-geo-alt-fill"></i> Mi Ubicación Actual
+                        </button>
                         <input type="hidden" id="latInput" name="lat" th:value="${param.lat}">
                         <input type="hidden" id="lngInput" name="lng" th:value="${param.lng}">
                         <input type="hidden" id="latitudInput" name="latitud" th:value="${param.latitud}">
@@ -18,8 +18,9 @@
                         <input type="hidden" id="municipioInput" name="municipio" th:value="${param.municipio}">
                         <input type="hidden" id="provinciaInput" name="provincia" th:value="${param.provincia}">
                     </div>
+
                     <div class="col-12 col-md-6">
-                        <div class="col-md-4 mb-12 w-100 filtro-input row">
+                        <div class="row mb-3">
                             <div class="col-6">
                                 <label for="fechaAcontecimientoInicio" class="form-label">Fecha desde</label>
                                 <input type="date" class="form-control" id="fechaAcontecimientoInicio" name="fechaAcontecimientoInicio" th:value="${param.fechaAcontecimientoInicio}">
@@ -28,22 +29,23 @@
                                 <label for="fechaAcontecimientoFin" class="form-label">Fecha hasta</label>
                                 <input type="date" class="form-control" id="fechaAcontecimientoFin" name="fechaAcontecimientoFin" th:value="${param.fechaAcontecimientoFin}">
                             </div>
-
                         </div>
-                        <div class="col-md-4 mb-12 w-100 filtro-input">
+
+                        <div class="mb-3">
                             <label for="categoria" class="form-label">Categoría</label>
                             <input type="text" class="form-control" id="categoria" name="categoria" th:value="${param.categoria}">
                         </div>
-                        <div class="col-md-4 mb-12 w-100 filtro-input">
+
+                        <div class="mb-3">
                             <label for="fuente" class="form-label">Fuente</label>
                             <input type="text" class="form-control" id="fuente" name="fuente" th:value="${param.fuente}">
                         </div>
-                        <div class="text-end buttons">
-                            <button type="submit" class="btn btn-primary btn-dark">Filtrar</button>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <button type="submit" class="btn btn-dark">Filtrar</button>
                             <button type="button" class="btn btn-outline-secondary" onclick="limpiarFiltros()">Limpiar</button>
                         </div>
                     </div>
-
                 </div>
             </form>
         </div>
@@ -51,8 +53,8 @@
 
     <script>
         function limpiarFiltros() {
-            // Redirigir a la URL base sin query params
             window.location.href = window.location.origin + window.location.pathname;
         }
     </script>
-</div>
+    <script th:src="@{/js/mapa.js}"></script>
+</th:block>

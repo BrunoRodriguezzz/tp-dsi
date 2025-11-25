@@ -61,6 +61,7 @@ public class ErrorHandlerController {
   // Business
   @ExceptionHandler(value = HechoYaExistenteException.class)
   public ResponseEntity<HechoYaExistenteExceptionDTO> handleHechoYaExistenteException(HechoYaExistenteException exception){
+    Sentry.captureException(exception);
     HechoYaExistenteExceptionDTO error = HechoYaExistenteExceptionDTO.builder()
         .message(exception.getMessage())
         .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
@@ -72,6 +73,7 @@ public class ErrorHandlerController {
 
   @ExceptionHandler(value = HechoYaEliminadoException.class)
   public ResponseEntity<HechoYaEliminadoExceptionDTO> handleHechoYaEliminadoException(HechoYaEliminadoException exception){
+    Sentry.captureException(exception);
     HechoYaEliminadoExceptionDTO error = HechoYaEliminadoExceptionDTO.builder()
         .message(exception.getMessage())
         .error(HttpStatus.BAD_REQUEST.getReasonPhrase())

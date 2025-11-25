@@ -8,14 +8,12 @@ import ar.edu.utn.frba.dds.fuenteEstatica.models.entities.HechoEstatica;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.IArchivoRepository;
 import ar.edu.utn.frba.dds.fuenteEstatica.models.repositories.IHechoRepository;
 import ar.edu.utn.frba.dds.fuenteEstatica.services.IArchivoService;
-import java.net.URI;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class ArchivoService implements IArchivoService {
@@ -35,11 +33,19 @@ public class ArchivoService implements IArchivoService {
   @Override
   @Async
   public void guardarArchivo(Archivo archivo) {
-      archivoRepository.findByNombre(archivo.getNombre())
-          .stream()
-          .findFirst()
-          .ifPresent(a -> archivo.setId(a.getId()));
+      archivoRepository.save(archivo);
+      importarHechosArchivo(archivo);
 
+      ArchivoOutputAgregadorDTO outputAgregadorDTO = this.utilsDTO.toOutputArchivoAgregador(archivo);
+
+      try {
+        this.agregadorClient.incorporarFuente(outputAgregadorDTO);
+      } catch (Exception e) {
+        logger.warn("Hubo un inconveniente al comunicar con el Agregador: {}", e.getMessage());
+      }
+  }
+
+  public void guardarArchivoSync(Archivo archivo) {
       archivoRepository.save(archivo);
       importarHechosArchivo(archivo);
       logger.info("Archivo {} importado correctamente.", archivo.getNombre());
@@ -65,7 +71,8 @@ public class ArchivoService implements IArchivoService {
   }
 
   private void saveHecho(HechoEstatica hecho) {
-    this.hechoRepository.findByTitulo(hecho.getTitulo())
+    // Buscar duplicados solo dentro del mismo archivo, o sea por título e idArchivo
+    this.hechoRepository.findByTituloAndIdArchivo(hecho.getTitulo(), hecho.getIdArchivo())
         .stream()
         .findFirst()
         .ifPresent(h -> hecho.setId(h.getId()));

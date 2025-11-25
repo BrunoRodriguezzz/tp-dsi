@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.client.services;
 
 import ar.edu.utn.frba.dds.client.dtos.Params;
+import ar.edu.utn.frba.dds.client.dtos.SolicitudEliminacionConHechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.SolicitudEliminacionDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDinamicaDTO;
@@ -95,8 +96,7 @@ public class HechoService {
       log.info("Recibi: {}", paginado);
       return paginado;
     } catch (Exception e) {
-      log.error(e.getMessage());
-      e.printStackTrace();
+      log.error("Error al obtener hechos: {}", e.getMessage(), e);
       return null;
     }
   }
@@ -126,15 +126,26 @@ public class HechoService {
     }
   }
 
-  public boolean enviarSolicitudEliminacion(SolicitudEliminacionDTO solicitud) {
+  public SolicitudEliminacionConHechoDTO enviarSolicitudEliminacion(SolicitudEliminacionDTO solicitud) {
     try {
       log.info("Enviando solicitud de eliminación: {}", solicitud);
-      webApiCallerService.post(agregadorURL + "/solicitudesEliminacion", solicitud, Void.class);
+
+      SolicitudEliminacionConHechoDTO respuesta = WebClient.builder()
+          .baseUrl(agregadorURL + "/solicitudesEliminacion")
+          .build()
+          .post()
+          .bodyValue(solicitud) // <-- Aquí estaba el error
+          .retrieve()
+          .bodyToMono(SolicitudEliminacionConHechoDTO.class)
+          .block(); // Si estás en código imperativo
+
+      log.info("Respuesta del agregador: {}", respuesta);
       log.info("Solicitud de eliminación enviada exitosamente");
-      return true;
+      return respuesta;
+
     } catch (Exception e) {
       log.error("Error al enviar solicitud de eliminación: {}", e.getMessage(), e);
-      return false;
+      return null;
     }
   }
 }
