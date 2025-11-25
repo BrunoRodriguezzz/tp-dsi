@@ -6,8 +6,10 @@
                     <div class="col-12 col-md-6 mb-3 mb-md-0">
                         <p class="text-dark mb-2">Ingrese su Ubicación deseada</p>
                         <div id="geocoder" class="mb-2"></div>
-                        <button type="button" id="usarUbicBtn" class="btn btn-sm btn-outline-primary mb-3">Usar ubicación</button>
-                        <div id="map" class="mapa"></div>
+                        <div id="map" class="map mapa"></div>
+                        <button type="button" id="btnGPS" class="btn btn-sm btn-outline-primary w-100 mt-1">
+                            <i class="bi bi-geo-alt-fill"></i> Mi Ubicación Actual
+                        </button>
                         <input type="hidden" id="latInput" name="lat" th:value="${param.lat}">
                         <input type="hidden" id="lngInput" name="lng" th:value="${param.lng}">
                         <input type="hidden" id="latitudInput" name="latitud" th:value="${param.latitud}">
@@ -54,4 +56,5 @@
             window.location.href = window.location.origin + window.location.pathname;
         }
     </script>
+    <script th:src="@{/js/mapa.js}"></script>
 </th:block>

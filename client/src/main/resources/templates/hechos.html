@@ -23,7 +23,6 @@
     </div>
 
     <div th:replace="~{fragments/filtros :: filtros(actionUrl=@{/hechos}, clearUrl=@{/hechos})}"></div>
-
         <div th:if="${cantidad == 0}">
             <div th:insert="~{fragments/vacio :: vacio}"></div>
         </div>
@@ -56,8 +55,7 @@
                 </div>
             </div>
         </div>
-        </div>
-
+    </div>
 
     <div th:if="${totalPages > 1}" class="d-flex justify-content-center my-4">
         <nav aria-label="Paginación de hechos">
@@ -114,7 +112,4 @@
             </ul>
         </nav>
     </div>
-</div>
-<script th:src="@{/js/mapa.js}"></script>
-</div>
 </html>
