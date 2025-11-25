@@ -147,23 +147,45 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>${lombok.version}</version> <!-- ← USAR VARIABLE -->
+							<version>${lombok.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>3.4.5</version>
+				<version>3.2.5</version>
+
+				<!-- 1. APAGADO GLOBAL: Esto "mata" la configuración que heredas del padre -->
+				<!-- Por defecto, le decimos al plugin que NO haga nada. -->
 				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
+					<skip>true</skip>
 				</configuration>
+
+				<executions>
+					<!-- 2. ENCENDIDO MANUAL: Creamos una ejecución específica -->
+					<execution>
+						<id>repackage-exec</id>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<!-- Aquí sí permitimos que corra -->
+							<skip>false</skip>
+							<!-- Y le obligamos a usar el clasificador -->
+							<classifier>exec</classifier>
+
+							<excludes>
+								<exclude>
+									<groupId>org.projectlombok</groupId>
+									<artifactId>lombok</artifactId>
+								</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

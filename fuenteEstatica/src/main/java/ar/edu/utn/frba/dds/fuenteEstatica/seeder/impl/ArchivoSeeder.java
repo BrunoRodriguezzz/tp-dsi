@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class ArchivoSeeder implements CommandLineRunner {
     private final ArchivoCSV archivoCSV;
     private final IArchivoService archivoService;
-    @Value("${path.csv}")
+    @Value("${nombre.csv}")
     private String rutaArchivo;
     @Value("${nombre.csv}")
     private String nombreArchivo;
