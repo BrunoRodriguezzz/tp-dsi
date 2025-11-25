@@ -55,14 +55,12 @@ body{
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     font-size: 0.9rem;
-    white-space: nowrap;
 }
 
 .config-mostrarFiltros{
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     font-size: 0.9rem;
-    white-space: nowrap;
     color: #000 !important;
     border-color: #dee2e6;
 }
@@ -147,14 +145,12 @@ body{
     width: 100%;
     font-size: 0.75rem;
     font-weight: 600;
-    white-space: nowrap;
 }
 
 .config-opciones{
     width: 100%;
     font-size: 0.9rem;
     margin-bottom: 0.4vw;
-    white-space: nowrap;
 }
 
 .distancia-opciones{
