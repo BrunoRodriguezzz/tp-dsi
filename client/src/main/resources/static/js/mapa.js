@@ -13,7 +13,7 @@ const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     mapboxgl: mapboxgl,
     placeholder: 'Buscar una ubicación...',
-    marker: true,
+    marker: false,
     language: 'es'
 });
 
@@ -109,6 +109,8 @@ geocoder.on('result', function (e) {
     const coords = e.result.geometry.coordinates; // [long, lat]
     const lat = coords[1];
     const lng = coords[0];
+
+    clickMarker.setLngLat(coords).addTo(map);
 
     const latInput = document.getElementById('latInput');
     if (latInput) {
