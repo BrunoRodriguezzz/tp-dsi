@@ -1,6 +1,7 @@
 package ar.edu.utn.frba.dds.client.controllers;
 
 import ar.edu.utn.frba.dds.client.dtos.Params;
+import ar.edu.utn.frba.dds.client.dtos.SolicitudEliminacionConHechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.SolicitudEliminacionDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoRevisadoForm;
@@ -58,11 +59,13 @@ public class HechoController {
       model.addAttribute("cantidad", paginado.getTotalElements());
       model.addAttribute("currentPage", paginado.getNumber());
       model.addAttribute("totalPages", paginado.getTotalPages());
+      model.addAttribute("size", paginado.getSize());
     } else {
       model.addAttribute("hechos", List.of());
       model.addAttribute("cantidad", 0);
       model.addAttribute("currentPage", 0);
-      model.addAttribute("totalPages", 1);
+      model.addAttribute("totalPages", 0);
+      model.addAttribute("size", size);
     }
     return "hechos";
   }
@@ -157,13 +160,22 @@ public class HechoController {
       solicitud.setFechaCreacion(LocalDateTime.now());
       solicitud.setIdContribuyente(null);
 
-      boolean exito = hechoService.enviarSolicitudEliminacion(solicitud);
+      SolicitudEliminacionConHechoDTO exito = hechoService.enviarSolicitudEliminacion(solicitud);
 
-      if (exito) {
+      if (exito != null && !exito.getEstado().equals("SPAM")) {
         redirect.addFlashAttribute("exito", "Solicitud de eliminación enviada correctamente.");
         return "redirect:/hechos/misHechos";
-      } else {
-        // Mantener los datos en caso de error
+      }
+      if (exito != null && exito.getEstado().equals("SPAM")) {
+        HechoDTO hecho = hechoService.obtenerHechoPorId(id);
+        model.addAttribute("hecho", hecho);
+        model.addAttribute("idHecho", id);
+        model.addAttribute("titulo", "Eliminación");
+        model.addAttribute("fundamento", fundamento);
+        model.addAttribute("error", "Su solicitud fue detectada como SPAM");
+        return "eliminarHecho";
+      }
+      else {
         HechoDTO hecho = hechoService.obtenerHechoPorId(id);
         model.addAttribute("hecho", hecho);
         model.addAttribute("idHecho", id);

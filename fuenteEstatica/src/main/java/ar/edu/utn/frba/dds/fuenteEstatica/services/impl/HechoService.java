@@ -111,7 +111,16 @@ public class HechoService implements IHechoService {
             archivo.setUltimaConsulta(LocalDateTime.now());
             archivoRepository.save(archivo);
         } else {
-            hechos = this.hechoRepository.findAll(HechoSpecification.conFiltro(filtroEstatica));
+            // Filtrar solo los hechos de este archivo específico
+            hechos = this.hechoRepository.findByIdArchivo(id);
+            
+            // Si hay filtros adicionales, aplicarlos
+            if (filtroEstatica != null && !filtroEstatica.esVacio()) {
+                hechos = this.hechoRepository.findAll(
+                    HechoSpecification.conFiltro(filtroEstatica)
+                        .and(HechoSpecification.porIdArchivo(id))
+                );
+            }
         }
 
         return UtilsDTO.toOutputArchivo(archivo, hechos);

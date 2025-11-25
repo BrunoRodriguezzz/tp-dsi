@@ -37,10 +37,11 @@ public class HechoOutputDTO {
       hechoDTO.setContribuyente(null);
     }
 
-    hecho.getFuenteSet()
+    String fuentes = hecho.getFuenteSet()
             .stream()
-            .findFirst()
-            .ifPresent(f -> hechoDTO.setFuente(f.getFuente().getNombre()));
+            .map(f -> f.getFuente().getNombre())
+            .collect(Collectors.joining(", "));
+    hechoDTO.setFuente(fuentes.isEmpty() ? "Sin fuente" : fuentes);
     hechoDTO.setOrigen(hecho.getOrigen().name());
     return hechoDTO;
   }
