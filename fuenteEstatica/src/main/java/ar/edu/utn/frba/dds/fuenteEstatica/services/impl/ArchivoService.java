@@ -53,7 +53,8 @@ public class ArchivoService implements IArchivoService {
       // Importar hechos de forma síncrona primero (para archivos grandes puede tardar)
       logger.info("📥 Iniciando importación de hechos para archivo: {} (ID: {})", archivo.getNombre(), archivo.getId());
       importarHechosArchivo(archivo);
-    
+
+      // Notificar al agregador DESPUÉS de que los hechos estén importados
       ArchivoOutputAgregadorDTO outputAgregadorDTO = this.utilsDTO.toOutputArchivoAgregador(archivo);
 
       try {

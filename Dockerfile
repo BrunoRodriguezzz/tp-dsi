@@ -1,7 +1,10 @@
+# --- DEFINIMOS LOS ARGUMENTOS GLOBALES ---
+# (Docker requiere re-declararlos dentro de cada etapa)
+
 # --- ETAPA 1: BUILD ---
 FROM maven:3.9-eclipse-temurin-17 AS build
 
-# IMPORTANTE: Recibimos el argumento aquí
+# Recibimos el nombre del servicio como argumento de construcción
 ARG serviceName
 
 WORKDIR /app
@@ -9,29 +12,23 @@ COPY . .
 
 RUN mvn -N install
 
-# Esta es tu línea de compilación
+# Usamos la variable. Si serviceName está vacío, esto fallará, lo cual es bueno.
 RUN mvn clean package -pl ${serviceName} -am -DskipTests -Dproject.build.sourceEncoding=UTF-8 -Dfile.encoding=UTF-8
 
 # --- ETAPA 2: RUNTIME ---
 FROM eclipse-temurin:17-jre-alpine AS production
 
+# Necesitamos re-declarar los ARG aquí para usarlos en esta etapa
 ARG serviceName
 ARG servicePort
 
 WORKDIR /app
 
-# Copiamos TODOS los jars generados en target
-COPY --from=build /app/${serviceName}/target/*.jar ./
+# Copiamos usando la variable
+COPY --from=build /app/${serviceName}/target/*.jar app.jar
 
-# Tu script de selección inteligente
-RUN if ls *exec.jar 1> /dev/null 2>&1; then \
-      mv *exec.jar app.jar; \
-    else \
-      mv *.jar app.jar; \
-    fi
-
-# Limpieza opcional
-RUN rm -f *.original 2>/dev/null || true
-
+# NOTA: EXPOSE es solo documentación en Docker, no abre el puerto mágicamente.
+# La apertura real la hace Dokploy en la configuración de red.
 EXPOSE ${servicePort}
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
