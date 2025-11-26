@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface IContribuyenteRepository extends JpaRepository<Contribuyente,Long> {
 
-    Optional<Contribuyente> findById(Long id);
+    Optional<Contribuyente> findByIdUsuario(Long idUsuario);
 }

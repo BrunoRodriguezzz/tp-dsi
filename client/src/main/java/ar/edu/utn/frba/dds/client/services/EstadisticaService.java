@@ -2,6 +2,7 @@ package ar.edu.utn.frba.dds.client.services;
 
 import ar.edu.utn.frba.dds.client.dtos.estadisticas.*;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class EstadisticaService {
     private final WebClient webClient;
@@ -28,7 +30,12 @@ public class EstadisticaService {
     }
 
     public EstadisticaCategoriaDTO getRankingCategorias(){
-        return this.webApiCallerService.get(this.estadisticasServiceUrl + "/categorias/mayorCantidadHechos", EstadisticaCategoriaDTO.class);
+        try{
+            return this.webApiCallerService.get(this.estadisticasServiceUrl + "/categorias/mayorCantidadHechos", EstadisticaCategoriaDTO.class);
+        } catch (Exception e) {
+            log.error("Error al obtener el ranking de categorías desde el servicio, utilizando datos mockeados: {}", e.getMessage());
+            return null;
+        }
     }
 
     public List<EstadisticaProvinciaXCategoriaDTO> getCategoriasPorProvincias(){

@@ -211,7 +211,7 @@ public class UserService implements IUserService {
 
     private Boolean comprobarUsuarioRegistrado(Usuario contribuyente){
 
-        Optional<Contribuyente> contribuyentes = this.contribuyentesRepository.findById(contribuyente.getIdUsuario());
+        Optional<Contribuyente> contribuyentes = this.contribuyentesRepository.findByIdUsuario(contribuyente.getIdUsuario());
 
         if(contribuyentes.isEmpty()){
             return false;

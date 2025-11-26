@@ -95,6 +95,6 @@ public class AdapImpHDinamico implements IAdapImpH {
 
     @Override
     public Flux<Hecho> importarNuevos(WebClient webClient, Fuente fuente) {
-        return null;
+        return Flux.empty();
     }
 }

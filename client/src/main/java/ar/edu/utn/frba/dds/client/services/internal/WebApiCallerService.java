@@ -157,6 +157,23 @@ public class WebApiCallerService {
   }
 
   /**
+   * Ejecuta una llamada HTTP POST con multipart/form-data
+   */
+  public <T> T postMultipart(String url, org.springframework.http.client.MultipartBodyBuilder bodyBuilder, Class<T> responseType) {
+    return executeWithTokenRetry(accessToken ->
+        webClient
+            .post()
+            .uri(url)
+            .header("Authorization", "Bearer " + accessToken)
+            .contentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA)
+            .bodyValue(bodyBuilder.build())
+            .retrieve()
+            .bodyToMono(responseType)
+            .block()
+    );
+  }
+
+  /**
    * Ejecuta una llamada HTTP PATCH
    */
   public <T> T patch(String url, Object body, Class<T> responseType) {

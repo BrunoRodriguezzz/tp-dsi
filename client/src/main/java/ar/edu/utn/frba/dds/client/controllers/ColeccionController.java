@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.services.ColeccionService;
 import ar.edu.utn.frba.dds.client.dtos.hecho.PaginadoHechoDTO;
 
+import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -286,12 +287,14 @@ public class ColeccionController {
 
       coleccionInputDTO.setConsensos(form.getConsensos());
 
-      getWebClient().put()
-          .uri("/colecciones/" + id)
-          .bodyValue(coleccionInputDTO)
-          .retrieve()
-          .toBodilessEntity()
-          .block();
+//      getWebClient().put()
+//          .uri("/colecciones/" + id)
+//          .bodyValue(coleccionInputDTO)
+//          .retrieve()
+//          .toBodilessEntity()
+//          .block();
+
+        coleccionService.modificarColeccion(coleccionInputDTO, id);
 
       return "redirect:/colecciones";
     } catch (Exception e) {
@@ -309,6 +312,7 @@ public class ColeccionController {
             .bodyToFlux(FuenteOutputDTO.class)
             .collectList()
             .block();
+    model.addAttribute("titulo", "Crear Coleccion");
     model.addAttribute("fuentes", fuentes);
     return "nuevaColeccion";
   }
@@ -362,12 +366,14 @@ public class ColeccionController {
 
       coleccionInputDTO.setConsensos(form.getConsensos());
 
-      getWebClient().post()
-          .uri("/colecciones")
-          .bodyValue(coleccionInputDTO)
-          .retrieve()
-          .toBodilessEntity()
-          .block();
+//      getWebClient().post()
+//          .uri("/colecciones")
+//          .bodyValue(coleccionInputDTO)
+//          .retrieve()
+//          .toBodilessEntity()
+//          .block();
+
+      coleccionService.enviarColeccion(coleccionInputDTO);
 
       return "redirect:/colecciones";
     } catch (Exception e) {
@@ -385,5 +391,34 @@ public class ColeccionController {
             .retrieve()
             .bodyToFlux(FuenteOutputDTO.class)
             .collectList();
+  }
+
+  @GetMapping("/colecciones/{id}/actualizar")
+  public String actualizarColeccion(@PathVariable Long id) {
+    try {
+      log.info("📡 Solicitando actualización de colección ID: {}", id);
+
+      // Obtener la colección para saber qué fuentes tiene
+      ColeccionOutputDTO coleccion = coleccionService.obtenerColeccionInfoPorId(id);
+
+      if (coleccion != null && coleccion.getFuentes() != null && !coleccion.getFuentes().isEmpty()) {
+        // Actualizar cada fuente asociada a la colección
+        for (String nombreFuente : coleccion.getFuentes()) {
+          try {
+            log.info("🔄 Actualizando fuente: {}", nombreFuente);
+            coleccionService.actualizarFuente(nombreFuente);
+            log.info("✅ Fuente {} actualizada", nombreFuente);
+          } catch (Exception e) {
+            log.warn("⚠️ Error actualizando fuente {}: {}", nombreFuente, e.getMessage());
+          }
+        }
+        log.info("✅ Colección actualizada exitosamente");
+      }
+
+      return "redirect:/coleccion/" + id;
+    } catch (Exception e) {
+      log.error("❌ Error actualizando colección {}: {}", id, e.getMessage());
+      return "redirect:/coleccion/" + id;
+    }
   }
 }

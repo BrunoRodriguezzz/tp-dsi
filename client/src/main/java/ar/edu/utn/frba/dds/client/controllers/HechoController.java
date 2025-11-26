@@ -215,7 +215,7 @@ public class HechoController {
     return "redirect:/panelControl";
   }
 
-  @PreAuthorize("hasRole('ADMINISTRADOR')")
+  @PreAuthorize("hasAnyRole('ADMINISTRADOR','CONTRIBUYENTE')")
   @GetMapping("/pendientes/{id}")
   public String verDetalleHechoPendiente(@PathVariable Long id, Model model) {
     HechoDTO hecho = this.dinamicaService.buscarPendienteID(id);
@@ -225,7 +225,7 @@ public class HechoController {
       model.addAttribute("titulo", hecho.getTitulo());
       return "hecho";
     } else {
-      return "redirect:/panelControl";
+      return "redirect:/hechos";
     }
   }
 
