@@ -13,7 +13,7 @@
                 aria-haspopup="true">
             <span th:id="${selectedSpanId}"></span>
         </button>
-        <ul class="dropdown-menu" th:attr="aria-labelledby=${dropdownId}" role="menu">
+        <ul class="dropdown-menu overflow-auto" th:attr="aria-labelledby=${dropdownId}" role="menu" style="max-height: 300px;">
             <li th:each="item : ${dropdownItems}">
                 <button class="dropdown-item"
                         type="button"

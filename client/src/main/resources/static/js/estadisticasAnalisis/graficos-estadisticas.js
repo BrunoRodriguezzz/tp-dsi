@@ -276,15 +276,26 @@ const datosSpam = {
 const EstadisticasApp = {
     tab1: {
         chart: null,
-        datos: window.datosColecciones || datosColecciones,
-        
+        datos: window.datosColecciones || {},
+
         inicializar() {
             const canvas = document.getElementById('provinciaChart');
             if (!canvas) return;
 
-            if (!this.datos || Object.keys(this.datos).length === 0) return;
+            // CAMBIO 1: Validar que datos no esté vacío
+            if (!this.datos || Object.keys(this.datos).length === 0) {
+                console.log("Tab 1: No hay datos de colecciones disponibles");
+                return;
+            }
+
             const [coleccionInicial] = Object.keys(this.datos);
             const datosIniciales = this.datos[coleccionInicial];
+
+            // CAMBIO 2: Validar que datosIniciales exista
+            if (!datosIniciales || Object.keys(datosIniciales).length === 0) {
+                console.log("Tab 1: Colección inicial sin datos");
+                return;
+            }
 
             console.log("Colección: ", coleccionInicial);
             console.log("Labels:", Object.keys(datosIniciales));
@@ -295,82 +306,96 @@ const EstadisticasApp = {
                 values: Object.values(datosIniciales)
             });
 
-            /*
-            this.chart = crearGraficoBarras(canvas, {
-                labels: datosIniciales.provincias,
-                values: datosIniciales.valores
-            });
-            */
             actualizarElementoTexto('selectedColeccion', coleccionInicial);
             this.actualizarResultado(coleccionInicial);
         },
-        
+
         actualizar(coleccion) {
             const datos = this.datos[coleccion];
             console.log("Datos: ", datos);
-            console.log("Valores: ", datos.valores)
-            if (!datos || !this.chart) return;
-            
+
+            // CAMBIO 3: Validar antes de actualizar
+            if (!datos || !this.chart) {
+                console.log("Tab 1: No se puede actualizar - datos o chart inexistentes");
+                return;
+            }
+
             // Actualizar gráfico
-            //this.chart.data.datasets[0].data = datos.valores;
             this.chart.data.datasets[0].data = Object.values(datos);
             this.chart.data.labels = Object.keys(datos);
             this.chart.update();
-            
+
             // Actualizar resultado
             this.actualizarResultado(coleccion);
         },
 
         actualizarResultado(coleccion) {
             const datos = this.datos[coleccion];
+
+            // CAMBIO 4: Validar datos antes de buscar resultado
+            if (!datos || Object.keys(datos).length === 0) return;
+
             const resultado = encontrarEnPosicion({
                 labels: Object.keys(datos),
                 values: Object.values(datos)
             });
-            /*
-            const resultado = encontrarMaximo({
-                labels: datos.provincias,
-                values: datos.valores
-            });
-             */
+
             actualizarElementoTexto('selectedColeccion', coleccion);
             actualizarElementoTexto('resultColeccion', coleccion);
             actualizarElementoTexto('resultProvincia', resultado.label);
             actualizarElementoTexto('resultCantidad', resultado.valor);
         }
     },
-    
+
     tab2: {
         chart: null,
-        datos: window.rankingCategorias || datosCategorias,
-        
+        datos: window.rankingCategorias || [],
+
         inicializar() {
             const canvas = document.getElementById('categoriaChart');
             if (!canvas) return;
-            
-            this.chart = crearGraficoPie(canvas,
-                {
-                    labels: this.datos.map(item => item.categoria),
-                    values: this.datos.map(item => item.total),
-                    colors: this.datos.map(item => item.color)
-                });
+
+            // CAMBIO 5: Validar que el array no esté vacío
+            if (!this.datos || this.datos.length === 0) {
+                console.log("Tab 2: No hay datos de categorías disponibles");
+                return;
+            }
+
+            this.chart = crearGraficoPie(canvas, {
+                labels: this.datos.map(item => item.categoria),
+                values: this.datos.map(item => item.total),
+                colors: this.datos.map(item => item.color)
+            });
+
             this.actualizarRanking();
             this.actualizarResultado();
         },
-        
+
         actualizarRanking() {
             console.log('Ranking actualizado para Tab 2');
         },
-        
+
         actualizarResultado() {
-            // const resultado = encontrarMaximo(this.datos);
+            // CAMBIO 6: Validar antes de buscar resultados
+            if (!this.datos || this.datos.length === 0) return;
+
             const resultado = encontrarEnPosicion({
                 labels: this.datos.map(item => item.categoria),
                 values: this.datos.map(item => item.total)
             });
+
+            // CAMBIO 7: Validar que exista segundo elemento
+            if (this.datos.length < 2) {
+                actualizarElementoTexto('categoriaTop', resultado.label);
+                actualizarElementoTexto('cantidadTop', resultado.valor);
+                actualizarElementoTexto('categoriaSegunda', 'N/A');
+                actualizarElementoTexto('cantidadSegunda', '0');
+                return;
+            }
+
             const segundoMayor = encontrarEnPosicion({
-                    labels: this.datos.map(item => item.categoria),
-                    values: this.datos.map(item => item.total)
+                labels: this.datos.map(item => item.categoria),
+                values: this.datos.map(item => item.total)
             }, 1);
 
             actualizarElementoTexto('categoriaTop', resultado.label);
@@ -385,15 +410,29 @@ const EstadisticasApp = {
 
     tab3: {
         chart: null,
-        datos: window.categoriasPorProvincia || datosCategoriaPorProvincia,
-        
+        datos: window.categoriasPorProvincia || [],
+
         inicializar() {
             const canvas = document.getElementById('categoriaProvinciaChart');
             if (!canvas) return;
+
+            // CAMBIO 8: Validar que el array no esté vacío
+            if (!this.datos || this.datos.length === 0) {
+                console.log("Tab 3: No hay datos de categorías por provincia disponibles");
+                return;
+            }
+
             console.log(this.datos);
 
             // Tomar el primer objeto del array
             const categoriaInicial = this.datos[0];
+
+            // CAMBIO 9: Validar que categoriaInicial tenga provincias
+            if (!categoriaInicial.provinciasConHechos ||
+                Object.keys(categoriaInicial.provinciasConHechos).length === 0) {
+                console.log("Tab 3: Categoría inicial sin provincias");
+                return;
+            }
 
             // Extraer nombre de la categoría
             const nombreCategoria = categoriaInicial.categoria;
@@ -402,14 +441,6 @@ const EstadisticasApp = {
             const provincias = Object.keys(categoriaInicial.provinciasConHechos);
             const valores = Object.values(categoriaInicial.provinciasConHechos);
 
-            /*
-            const [categoriaInicial] = Object.keys(this.datos);
-            const datosIniciales = this.datos[categoriaInicial];
-
-            console.log("Categoria Inicial: ", categoriaInicial);
-            console.log("datosIniciales: ", datosIniciales);
-
-             */
             this.chart = crearGraficoBarras(canvas, {
                 labels: provincias,
                 values: valores
@@ -421,29 +452,41 @@ const EstadisticasApp = {
             actualizarElementoTexto('selectedCategoriaP', nombreCategoria);
             this.actualizarResultado(nombreCategoria);
         },
-        
+
         actualizar(categoria) {
             const datos = this.datos.find(d => d.categoria === categoria);
-            if (!datos || !this.chart) return;
+
+            // CAMBIO 10: Validar antes de actualizar
+            if (!datos || !this.chart || !datos.provinciasConHechos) {
+                console.log("Tab 3: No se puede actualizar - datos inexistentes");
+                return;
+            }
+
             console.log("Datos:", datos);
             console.log("Data: ", Object.values(datos.provinciasConHechos));
             console.log("Labels: ", Object.keys(datos.provinciasConHechos));
+
             // Actualizar gráfico
             this.chart.data.datasets[0].data = Object.values(datos.provinciasConHechos);
             this.chart.data.labels = Object.keys(datos.provinciasConHechos);
             this.chart.update();
-            
+
             // Actualizar resultado
             this.actualizarResultado(categoria);
         },
-        
+
         actualizarResultado(categoria) {
             const datos = this.datos.find(d => d.categoria === categoria);
+
+            // CAMBIO 11: Validar datos antes de buscar resultado
+            if (!datos || !datos.provinciasConHechos ||
+                Object.keys(datos.provinciasConHechos).length === 0) return;
+
             const resultado = encontrarEnPosicion({
                 labels: Object.keys(datos.provinciasConHechos),
                 values: Object.values(datos.provinciasConHechos)
             });
-            
+
             actualizarElementoTexto('selectedCategoriaP', categoria);
             actualizarElementoTexto('resultCategoriaP', categoria);
             actualizarElementoTexto('resultProvinciaP', resultado.label);
@@ -453,16 +496,29 @@ const EstadisticasApp = {
 
     tab4: {
         chart: null,
-        datos: window.horariosPorCategoria || datosCategoriaHora,
-        
+        datos: window.horariosPorCategoria || [],
+
         inicializar() {
             const canvas = document.getElementById('horaChart');
             if (!canvas) return;
+
+            // CAMBIO 12: Validar que el array no esté vacío
+            if (!this.datos || this.datos.length === 0) {
+                console.log("Tab 4: No hay datos de horarios disponibles");
+                return;
+            }
+
             console.log("Datos:", this.datos);
+
+            // CAMBIO 13: Validar que el primer elemento tenga horasConHechos
+            if (!this.datos[0].horasConHechos ||
+                Object.keys(this.datos[0].horasConHechos).length === 0) {
+                console.log("Tab 4: Primera categoría sin horas");
+                return;
+            }
+
             const categoriaInicial = this.datos[0].categoria;
-            // const [categoriaInicial] = Object.keys(this.datos);
-            // const datosIniciales = this.datos[categoriaInicial];
-            
+
             this.chart = crearGraficoLinea(canvas, {
                 labels: Object.keys(this.datos[0].horasConHechos),
                 values: Object.values(this.datos[0].horasConHechos)
@@ -470,35 +526,57 @@ const EstadisticasApp = {
                 backgroundColor: 'rgba(245, 158, 11, 0.1)',
                 borderColor: '#F59E0B'
             });
-            
+
             actualizarElementoTexto('selectedCategoriaH', categoriaInicial);
             this.actualizarResultado(categoriaInicial);
         },
-        
+
         actualizar(categoria) {
-            const datos = this.datos.find(h=>h.categoria === categoria);
-            if (!datos || !this.chart) return;
-            
+            const datos = this.datos.find(h => h.categoria === categoria);
+
+            // CAMBIO 14: Validar antes de actualizar
+            if (!datos || !this.chart || !datos.horasConHechos) {
+                console.log("Tab 4: No se puede actualizar - datos inexistentes");
+                return;
+            }
+
             // Actualizar gráfico
             this.chart.data.datasets[0].data = Object.values(datos.horasConHechos);
             this.chart.data.labels = Object.keys(datos.horasConHechos);
             this.chart.update();
-            
+
             // Actualizar resultado
             this.actualizarResultado(categoria);
         },
-        
+
         actualizarResultado(categoria) {
-            const datos = this.datos.find(h=>h.categoria === categoria);
+            const datos = this.datos.find(h => h.categoria === categoria);
+
+            // CAMBIO 15: Validar datos antes de buscar resultado
+            if (!datos || !datos.horasConHechos ||
+                Object.keys(datos.horasConHechos).length === 0) return;
+
             const resultado = encontrarEnPosicion({
                 labels: Object.keys(datos.horasConHechos),
                 values: Object.values(datos.horasConHechos)
             });
+
+            // CAMBIO 16: Validar que existan al menos 2 horas
+            if (Object.keys(datos.horasConHechos).length < 2) {
+                actualizarElementoTexto('selectedCategoriaH', categoria);
+                actualizarElementoTexto('resultCategoriaH', categoria);
+                actualizarElementoTexto('resultHoraMaxima', resultado.label);
+                actualizarElementoTexto('resultCantidadH', resultado.valor);
+                actualizarElementoTexto('resultHoraSegunda', 'N/A');
+                actualizarElementoTexto('resultCantidadSegundaH', '0');
+                return;
+            }
+
             const segundoMaximo = encontrarEnPosicion({
                 labels: Object.keys(datos.horasConHechos),
                 values: Object.values(datos.horasConHechos)
             }, 1);
-            
+
             actualizarElementoTexto('selectedCategoriaH', categoria);
             actualizarElementoTexto('resultCategoriaH', categoria);
             actualizarElementoTexto('resultHoraMaxima', resultado.label);
@@ -510,27 +588,48 @@ const EstadisticasApp = {
 
     tab5: {
         chart: null,
-        datos: datosSpam,
-        
+        datos: {
+            labels: ['Spam', 'No Spam'],
+            values: [window.spam || 0, window.noSpam || 0],
+            colors: ['#EF4444', '#10B981']
+        },
+
         inicializar() {
             const canvas = document.getElementById('spamChart');
             if (!canvas) return;
-            
+
+            // CAMBIO 17: Validar que haya al menos una solicitud
+            const total = this.datos.values.reduce((a, b) => a + b, 0);
+            if (total === 0) {
+                console.log("Tab 5: No hay solicitudes disponibles");
+                return;
+            }
+
             this.chart = crearGraficoDonut(canvas, this.datos);
             this.actualizarResultado();
         },
-        
+
         actualizarResultado() {
             const total = this.datos.values.reduce((a, b) => a + b, 0);
+
+            // CAMBIO 18: Validar total antes de calcular porcentaje
+            if (total === 0 || !this.chart) {
+                actualizarElementoTexto('porcentajeSpam', '(0%)');
+                actualizarElementoTexto('porcentaje', '0%');
+                actualizarElementoTexto('porcentajeNoSpam', '(0%)');
+                return;
+            }
+
             const spam = this.datos.values[0];
             const porcentajeSpam = Math.round((spam / total) * 100);
 
-            this.chart.data.datasets[0].data =this.datos.values;
+            this.chart.data.datasets[0].data = this.datos.values;
             this.chart.update();
 
-            actualizarElementoTexto('porcentajeSpam', '('+ porcentajeSpam + '%)');
+            actualizarElementoTexto('porcentajeSpam', '(' + porcentajeSpam + '%)');
             actualizarElementoTexto('porcentaje', porcentajeSpam + '%');
-            actualizarElementoTexto('porcentajeNoSpam', '('+ (100-porcentajeSpam) + '%)');
+            actualizarElementoTexto('porcentajeNoSpam', '(' + (100 - porcentajeSpam) + '%)');
+
             console.log(`Total solicitudes: ${total}`);
             console.log(`Spam: ${spam} (${porcentajeSpam}%)`);
         }
@@ -555,16 +654,16 @@ document.addEventListener('click', function(e) {
     // Tab 1: Colección por Provincia
     if (e.target.matches('[data-coleccion]')) {
         const coleccion = e.target.getAttribute('data-coleccion');
-        console.log("NUEVA: ", coleccion)
+        console.log("NUEVA: ", coleccion);
         EstadisticasApp.tab1.actualizar(coleccion);
     }
-    
+
     // Tab 3: Categoría por Provincia
     if (e.target.matches('[data-categoria-p]')) {
         const categoria = e.target.getAttribute('data-categoria-p');
         EstadisticasApp.tab3.actualizar(categoria);
     }
-    
+
     // Tab 4: Categoría por Hora
     if (e.target.matches('[data-categoria-h]')) {
         const categoria = e.target.getAttribute('data-categoria-h');

@@ -113,16 +113,28 @@
         )}"></div>
 
                 <div class="card-body">
-                    <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('provinciaChart')}"></div>
+                    <!-- CAMBIO 1: Mostrar gráfico solo si hay colecciones -->
+                    <div th:if="${hayColecciones}">
+                        <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('provinciaChart')}"></div>
 
-                    <div class="bg-primary bg-opacity-10 result-box" th:if="${totalColecciones > 0}">
-                        <p class="text-primary mb-0">
-                            <strong>Resultado:</strong>
-                            En la colección "<strong id="resultColeccion" th:text="${colecciones[0]}"></strong>",
-                            la mayor cantidad de hechos se concentra en
-                            <strong id="resultProvincia" th:text="${resultProvincia}"></strong>
-                            con <strong id="resultCantidad" th:text="${resultCantidad}"></strong> hechos reportados.
-                        </p>
+                        <div class="bg-primary bg-opacity-10 result-box">
+                            <p class="text-primary mb-0">
+                                <strong>Resultado:</strong>
+                                En la colección "<strong id="resultColeccion" th:text="${colecciones[0]}"></strong>",
+                                la mayor cantidad de hechos se concentra en
+                                <strong id="resultProvincia" th:text="${resultProvincia}"></strong>
+                                con <strong id="resultCantidad" th:text="${resultCantidad}"></strong> hechos reportados.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- CAMBIO 2: Mensaje cuando no hay datos -->
+                    <div th:unless="${hayColecciones}" class="alert alert-info d-flex align-items-center" role="alert">
+                        <i class="bi bi-info-circle me-2 fs-4"></i>
+                        <div>
+                            <h6 class="mb-1">No hay colecciones disponibles</h6>
+                            <p class="mb-0 small">Aún no se han registrado colecciones en el sistema.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -134,38 +146,50 @@
                 <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: cardHeaderSimple('bi bi-bar-chart', 'Hechos por Categoría')}"></div>
 
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('categoriaChart')}"></div>
+                    <!-- CAMBIO 3: Mostrar contenido solo si hay categorías -->
+                    <div th:if="${hayCategorias}">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('categoriaChart')}"></div>
+                            </div>
+                            <div class="col-lg-4">
+                                <h6 class="fw-bold mb-3">Ranking de Categorías</h6>
+                                <th:block th:each="item, iterStat : ${rankingCategorias}" th:if="${iterStat.index < 5}">
+                                    <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem(
+            ${iterStat.index == 0 ? '#3B82F6' :
+              (iterStat.index == 1 ? '#EF4444' :
+              (iterStat.index == 2 ? '#10B981' :
+              (iterStat.index == 3 ? '#F59E0B' : '#0dcaf0')))},
+            ${item.key},
+            ${item.value},
+            ${iterStat.index == 0 ? 'bg-primary' :
+              (iterStat.index == 1 ? 'bg-danger' :
+              (iterStat.index == 2 ? 'bg-success' :
+              (iterStat.index == 3 ? 'bg-warning' : 'bg-info')))}
+        )}"></div>
+                                </th:block>
+                            </div>
                         </div>
-                        <div class="col-lg-4">
-                            <h6 class="fw-bold mb-3">Ranking de Categorías</h6>
-                            <th:block th:each="item, iterStat : ${rankingCategorias}" th:if="${iterStat.index < 5}">
-                                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: rankingItem(
-        ${iterStat.index == 0 ? '#3B82F6' :
-          (iterStat.index == 1 ? '#EF4444' :
-          (iterStat.index == 2 ? '#10B981' :
-          (iterStat.index == 3 ? '#F59E0B' : '#0dcaf0')))},
-        ${item.key},
-        ${item.value},
-        ${iterStat.index == 0 ? 'bg-primary' :
-          (iterStat.index == 1 ? 'bg-danger' :
-          (iterStat.index == 2 ? 'bg-success' :
-          (iterStat.index == 3 ? 'bg-warning' : 'bg-info')))}
-    )}"></div>
-                            </th:block>
+
+                        <div class="bg-success bg-opacity-10 result-box">
+                            <p class="text-success mb-0">
+                                <strong>Resultado:</strong>
+                                La categoría con mayor cantidad de hechos reportados es
+                                <strong id="categoriaTop" th:text="${categoriaTop}"></strong>
+                                con <strong id="cantidadTop" th:text="${cantidadTop}"></strong> hechos,
+                                seguida por <strong id="categoriaSegunda" th:text="${categoriaSegunda}"></strong>
+                                con <strong id="cantidadSegunda" th:text="${cantidadSegunda}"></strong> hechos.
+                            </p>
                         </div>
                     </div>
 
-                    <div class="bg-success bg-opacity-10 result-box">
-                        <p class="text-success mb-0">
-                            <strong>Resultado:</strong>
-                            La categoría con mayor cantidad de hechos reportados es
-                            <strong id="categoriaTop" th:text="${categoriaTop}"></strong>
-                            con <strong id="cantidadTop" th:text="${cantidadTop}"></strong> hechos,
-                            seguida por <strong id="categoriaSegunda" th:text="${categoriaSegunda}"></strong>
-                            con <strong id="cantidadSegunda" th:text="${cantidadSegunda}"></strong> hechos.
-                        </p>
+                    <!-- CAMBIO 4: Mensaje cuando no hay categorías -->
+                    <div th:unless="${hayCategorias}" class="alert alert-info d-flex align-items-center" role="alert">
+                        <i class="bi bi-info-circle me-2 fs-4"></i>
+                        <div>
+                            <h6 class="mb-1">No hay categorías disponibles</h6>
+                            <p class="mb-0 small">Aún no se han registrado hechos por categoría en el sistema.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -184,16 +208,28 @@
         )}"></div>
 
                 <div class="card-body">
-                    <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('categoriaProvinciaChart')}"></div>
+                    <!-- CAMBIO 5: Mostrar gráfico solo si hay categorías por provincia -->
+                    <div th:if="${hayCategoriasPorProvincia}">
+                        <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('categoriaProvinciaChart')}"></div>
 
-                    <div class="bg-success bg-opacity-10 result-box">
-                        <p class="text-success mb-0">
-                            <strong>Resultado:</strong>
-                            Para la categoría "<strong id="resultCategoriaP" th:text="${resultCategoriaP}"></strong>",
-                            la provincia con mayor cantidad de hechos es
-                            <strong id="resultProvinciaP" th:text="${resultProvinciaP}"></strong>
-                            con <strong id="resultCantidadP" th:text="${resultCantidadP}"></strong> hechos reportados.
-                        </p>
+                        <div class="bg-success bg-opacity-10 result-box">
+                            <p class="text-success mb-0">
+                                <strong>Resultado:</strong>
+                                Para la categoría "<strong id="resultCategoriaP" th:text="${resultCategoriaP}"></strong>",
+                                la provincia con mayor cantidad de hechos es
+                                <strong id="resultProvinciaP" th:text="${resultProvinciaP}"></strong>
+                                con <strong id="resultCantidadP" th:text="${resultCantidadP}"></strong> hechos reportados.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- CAMBIO 6: Mensaje cuando no hay datos -->
+                    <div th:unless="${hayCategoriasPorProvincia}" class="alert alert-info d-flex align-items-center" role="alert">
+                        <i class="bi bi-info-circle me-2 fs-4"></i>
+                        <div>
+                            <h6 class="mb-1">No hay datos de categorías por provincia</h6>
+                            <p class="mb-0 small">Aún no se han registrado hechos categorizados por provincia.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -212,18 +248,30 @@
         )}"></div>
 
                 <div class="card-body">
-                    <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('horaChart')}"></div>
+                    <!-- CAMBIO 7: Mostrar gráfico solo si hay horarios -->
+                    <div th:if="${hayHorarios}">
+                        <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('horaChart')}"></div>
 
-                    <div class="bg-warning bg-opacity-10 result-box">
-                        <p class="text-warning-emphasis mb-0">
-                            <strong>Resultado:</strong>
-                            Los hechos de la categoría "<strong id="resultCategoriaH" th:text="${resultCategoriaH}"></strong>"
-                            ocurren con mayor frecuencia a las
-                            <strong id = "resultHoraMaxima" th:text="${resultHoraMaxima}"></strong>
-                            con <strong id = "resultCantidadH" th:text="${resultCantidadH}"></strong> reportes,
-                            seguido por las <strong id = "resultHoraSegunda" th:text="${resultHoraSegunda}"></strong>
-                            con <strong id = "resultCantidadSegundaH" th:text="${resultCantidadSegundaH}"></strong> reportes.
-                        </p>
+                        <div class="bg-warning bg-opacity-10 result-box">
+                            <p class="text-warning-emphasis mb-0">
+                                <strong>Resultado:</strong>
+                                Los hechos de la categoría "<strong id="resultCategoriaH" th:text="${resultCategoriaH}"></strong>"
+                                ocurren con mayor frecuencia a las
+                                <strong id = "resultHoraMaxima" th:text="${resultHoraMaxima}"></strong>
+                                con <strong id = "resultCantidadH" th:text="${resultCantidadH}"></strong> reportes,
+                                seguido por las <strong id = "resultHoraSegunda" th:text="${resultHoraSegunda}"></strong>
+                                con <strong id = "resultCantidadSegundaH" th:text="${resultCantidadSegundaH}"></strong> reportes.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- CAMBIO 8: Mensaje cuando no hay horarios -->
+                    <div th:unless="${hayHorarios}" class="alert alert-info d-flex align-items-center" role="alert">
+                        <i class="bi bi-info-circle me-2 fs-4"></i>
+                        <div>
+                            <h6 class="mb-1">No hay datos horarios disponibles</h6>
+                            <p class="mb-0 small">Aún no se han registrado hechos con información horaria.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -235,34 +283,45 @@
                 <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: cardHeaderSimple('bi bi-exclamation-triangle', 'Análisis de Solicitudes de Eliminación')}"></div>
 
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('spamChart')}"></div>
-                        </div>
-                        <div class="col-lg-6">
-                            <h6 class="fw-bold mb-3">Clasificación de Solicitudes</h6>
-
-                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: clasificacionItem('#EF4444', 'Spam', ${cantSpam}, 'bg-danger')}"></div>
-                            <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: clasificacionItem('#10B981', 'No Spam', ${cantNoSpam}, 'bg-success')}"></div>
-
-                            <div class="p-3 bg-secondary bg-opacity-10 rounded">
-                                <h6 class="fw-bold mb-2">Resumen Total</h6>
-                                <p class="small mb-1">Total de solicitudes procesadas: <strong th:text="${cantSpam} + ${cantNoSpam}"></strong></p>
-                                <!-- <p class="small mb-0">Porcentaje de spam: <strong th:text="(${cantSpam} / (${cantSpam} + ${cantNoSpam})) * 100 + '%'">X%</strong></p> -->
-                                <p class="small mb-0">Porcentaje de spam: <strong id="porcentaje"></strong></p>
+                    <!-- CAMBIO 9: Mostrar gráfico solo si hay solicitudes -->
+                    <div th:if="${haySolicitudes}">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: chartContainer('spamChart')}"></div>
                             </div>
+                            <div class="col-lg-6">
+                                <h6 class="fw-bold mb-3">Clasificación de Solicitudes</h6>
+
+                                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: clasificacionItem('#EF4444', 'Spam', ${cantSpam}, 'bg-danger')}"></div>
+                                <div th:replace="~{estadisticasAnalisis/fragments/tabsContent :: clasificacionItem('#10B981', 'No Spam', ${cantNoSpam}, 'bg-success')}"></div>
+
+                                <div class="p-3 bg-secondary bg-opacity-10 rounded">
+                                    <h6 class="fw-bold mb-2">Resumen Total</h6>
+                                    <p class="small mb-1">Total de solicitudes procesadas: <strong th:text="${cantSpam} + ${cantNoSpam}"></strong></p>
+                                    <p class="small mb-0">Porcentaje de spam: <strong id="porcentaje"></strong></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-danger bg-opacity-10 result-box">
+                            <p class="text-danger mb-0">
+                                <strong>Resultado:</strong>
+                                De un total de <strong th:text="${cantSpam} + ${cantNoSpam}"></strong> solicitudes de eliminación,
+                                <strong th:text="${cantSpam}"></strong> <strong id="porcentajeSpam"></strong>
+                                corresponden a spam, mientras que
+                                <strong th:text="${cantNoSpam}"></strong> <strong id="porcentajeNoSpam"></strong>
+                                son reportes legítimos que requieren revisión.
+                            </p>
                         </div>
                     </div>
 
-                    <div class="bg-danger bg-opacity-10 result-box">
-                        <p class="text-danger mb-0">
-                            <strong>Resultado:</strong>
-                            De un total de <strong th:text="${cantSpam} + ${cantNoSpam}"></strong> solicitudes de eliminación,
-                            <strong th:text="${cantSpam}"></strong> <strong id="porcentajeSpam"></strong>
-                            corresponden a spam, mientras que
-                            <strong th:text="${cantNoSpam}"></strong> <strong id="porcentajeNoSpam"></strong>
-                            son reportes legítimos que requieren revisión.
-                        </p>
+                    <!-- CAMBIO 10: Mensaje cuando no hay solicitudes -->
+                    <div th:unless="${haySolicitudes}" class="alert alert-info d-flex align-items-center" role="alert">
+                        <i class="bi bi-info-circle me-2 fs-4"></i>
+                        <div>
+                            <h6 class="mb-1">No hay solicitudes registradas</h6>
+                            <p class="mb-0 small">Aún no se han procesado solicitudes de eliminación en el sistema.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -270,19 +329,15 @@
 
     </div>
 
+    <!-- CAMBIO 11: Validar datos antes de asignar a window -->
     <script th:inline="javascript">
         /*<![CDATA[*/
-        window.datosColecciones = [[${coleccionPorProvincia}]];
+        // Solo asignar si hay colecciones
+        window.datosColecciones = [[${hayColecciones}]] ? [[${coleccionPorProvincia}]] : {};
 
         // Paleta de colores
-        // Paleta secundaria "randoms"
         const paletaExtra = [
-            "#F97316", // naranja fuerte
-            "#6366F1", // índigo
-            "#84CC16", // verde lima
-            "#D946EF", // violeta
-            "#FACC15", // amarillo
-            "#22C55E" // verde
+            "#F97316", "#6366F1", "#84CC16", "#D946EF", "#FACC15", "#22C55E"
         ];
 
         function generarColorDePaleta() {
@@ -291,20 +346,30 @@
         }
 
         const coloresFijos = ["#3B82F6","#EF4444","#10B981","#F59E0B","#0dcaf0"];
-        window.rankingCategorias = Object.entries([[${rankingCategorias}]]).map(([categoria, total], index) => {
-            return {
-                categoria: categoria,
-                total: total,
-                color: index < coloresFijos.length
-                    ? coloresFijos[index]
-                    : generarColorDePaleta()
-            };
-        });
 
-        window.categoriasPorProvincia = [[${categoriasPorProvincia}]];
+        // Solo asignar si hay categorías
+        window.rankingCategorias = [[${hayCategorias}]]
+            ? Object.entries([[${rankingCategorias}]]).map(([categoria, total], index) => {
+                return {
+                    categoria: categoria,
+                    total: total,
+                    color: index < coloresFijos.length
+                        ? coloresFijos[index]
+                        : generarColorDePaleta()
+                };
+            })
+            : [];
+
+        window.categoriasPorProvincia = [[${hayCategoriasPorProvincia}]]
+            ? [[${categoriasPorProvincia}]]
+            : [];
+
         window.spam = [[${cantSpam}]];
         window.noSpam = [[${cantNoSpam}]];
-        window.horariosPorCategoria = [[${horariosPorCategoria}]];
+
+        window.horariosPorCategoria = [[${hayHorarios}]]
+            ? [[${horariosPorCategoria}]]
+            : [];
         /*]]>*/
     </script>
 
