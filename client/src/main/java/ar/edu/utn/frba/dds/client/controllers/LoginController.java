@@ -3,7 +3,6 @@ package ar.edu.utn.frba.dds.client.controllers;
 import ar.edu.utn.frba.dds.client.dtos.auth.Rol;
 import ar.edu.utn.frba.dds.client.dtos.auth.UsuarioDTO;
 import ar.edu.utn.frba.dds.client.services.AuthApiService;
-import ar.edu.utn.frba.dds.servicioAutenticacion.domain.models.Usuario;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login(Model model, @RequestParam(value = "error", required = false) String error) {
-        model.addAttribute("usuario", new Usuario());
+        model.addAttribute("usuario", new UsuarioDTO());
         if (error != null) {
             model.addAttribute("error", "Usuario o contraseña incorrectos, revise los campos e intente de nuevo.");
         }
@@ -55,7 +54,7 @@ public class LoginController {
             return "redirect:/login";
 
         } catch (Exception e) {
-            model.addAttribute("usuario", new Usuario());
+            model.addAttribute("usuario", new UsuarioDTO());
             model.addAttribute("error", e.getMessage());
             return "login";
         }
