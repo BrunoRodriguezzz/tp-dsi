@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 RUN mvn -N install
-
+RUN echo "SERVICE NAME = ${serviceName}"
 # Esta es tu línea de compilación
 RUN mvn clean package -pl ${serviceName} -am -DskipTests -Dproject.build.sourceEncoding=UTF-8 -Dfile.encoding=UTF-8
 
