@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-// , configuration = ErrorConfigFeign.class
-@FeignClient(name = "agregador")
+
+@FeignClient(name = "agregador", configuration = ErrorConfigFeign.class)
 public interface AgregadorClient {
     @PostMapping("/fuentes")
     ResponseEntity<FuenteOutputDTO> incorporarFuente(@RequestBody FuenteOutputDTO fuente);
