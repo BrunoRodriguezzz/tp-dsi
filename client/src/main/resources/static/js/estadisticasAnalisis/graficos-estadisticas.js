@@ -167,6 +167,67 @@ function encontrarEnPosicion(datos, posicion = 0) {
     return null;
 }
 
+// ===============================================
+// NUEVA FUNCIÓN: Encontrar máximo por ranking
+// ===============================================
+/**
+ * Encuentra el N-ésimo valor más alto en un conjunto de datos
+ * @param {Object} datos - Objeto con arrays de labels y values
+ * @param {number} posicion - Posición en el ranking (0 = máximo, 1 = segundo, etc.)
+ * @returns {Object} Objeto con valor, label e índice original
+ */
+function encontrarMaximoPorRanking(datos, posicion = 0) {
+
+    // Validar que la posición solicitada exista
+    if (posicion < 0 || posicion >= datos.values.length) {
+        console.warn(`Posición ${posicion} fuera de rango`);
+        return { valor: 0, label: "N/A", indice: -1 };
+    }
+
+    // Crear array de objetos para mantener la relación label-valor-índice
+    const pares = datos.values.map((valor, indice) => ({
+        valor: valor,
+        label: datos.labels[indice],
+        indiceOriginal: indice
+    }));
+
+    // Ordenar por valor de forma descendente (mayor a menor)
+    pares.sort((a, b) => b.valor - a.valor);
+
+    // Retornar el elemento en la posición solicitada
+    return {
+        valor: pares[posicion].valor,
+        label: pares[posicion].label,
+        indice: pares[posicion].indiceOriginal
+    };
+}
+
+// ===============================================
+// FUNCIÓN AUXILIAR: Encontrar múltiples máximos
+// ===============================================
+/**
+ * Encuentra los N valores más altos en un conjunto de datos
+ * @param {Object} datos - Objeto con arrays de labels y values
+ * @param {number} cantidad - Cantidad de resultados a retornar
+ * @returns {Array} Array de objetos ordenados por valor descendente
+ */
+function encontrarTopN(datos, cantidad = 5) {
+    if (!datos || !Array.isArray(datos.values) || !Array.isArray(datos.labels)) {
+        return [];
+    }
+
+    const pares = datos.values.map((valor, indice) => ({
+        valor: valor,
+        label: datos.labels[indice],
+        indice: indice
+    }));
+
+    // Ordenar y tomar los primeros N
+    return pares
+        .sort((a, b) => b.valor - a.valor)
+        .slice(0, Math.min(cantidad, pares.length));
+}
+
 function actualizarElementoTexto(elementId, texto) {
     const elemento = document.getElementById(elementId);
     if (elemento) {
@@ -379,10 +440,11 @@ const EstadisticasApp = {
             // CAMBIO 6: Validar antes de buscar resultados
             if (!this.datos || this.datos.length === 0) return;
 
-            const resultado = encontrarEnPosicion({
+            // CAMBIO: Usar encontrarMaximoPorRanking en lugar de encontrarEnPosicion
+            const resultado = encontrarMaximoPorRanking({
                 labels: this.datos.map(item => item.categoria),
                 values: this.datos.map(item => item.total)
-            });
+            }, 0); // Posición 0 = el máximo
 
             // CAMBIO 7: Validar que exista segundo elemento
             if (this.datos.length < 2) {
@@ -393,10 +455,10 @@ const EstadisticasApp = {
                 return;
             }
 
-            const segundoMayor = encontrarEnPosicion({
+            const segundoMayor = encontrarMaximoPorRanking({
                 labels: this.datos.map(item => item.categoria),
                 values: this.datos.map(item => item.total)
-            }, 1);
+            }, 1); // Posición 1 = el segundo máximo
 
             actualizarElementoTexto('categoriaTop', resultado.label);
             actualizarElementoTexto('cantidadTop', resultado.valor);
@@ -556,10 +618,11 @@ const EstadisticasApp = {
             if (!datos || !datos.horasConHechos ||
                 Object.keys(datos.horasConHechos).length === 0) return;
 
-            const resultado = encontrarEnPosicion({
+            // CAMBIO: Usar encontrarMaximoPorRanking
+            const resultado = encontrarMaximoPorRanking({
                 labels: Object.keys(datos.horasConHechos),
                 values: Object.values(datos.horasConHechos)
-            });
+            }, 0);
 
             // CAMBIO 16: Validar que existan al menos 2 horas
             if (Object.keys(datos.horasConHechos).length < 2) {
@@ -572,10 +635,11 @@ const EstadisticasApp = {
                 return;
             }
 
-            const segundoMaximo = encontrarEnPosicion({
+            // CAMBIO: Usar encontrarMaximoPorRanking para el segundo
+            const segundoMaximo = encontrarMaximoPorRanking({
                 labels: Object.keys(datos.horasConHechos),
                 values: Object.values(datos.horasConHechos)
-            }, 1);
+            }, 1); // Ahora SÍ busca el segundo valor más alto
 
             actualizarElementoTexto('selectedCategoriaH', categoria);
             actualizarElementoTexto('resultCategoriaH', categoria);
