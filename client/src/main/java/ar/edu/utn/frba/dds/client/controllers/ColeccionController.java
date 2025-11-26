@@ -30,7 +30,7 @@ public class ColeccionController {
   @Value("${mapbox.token:}")
   private String mapboxToken;
 
-  @Value("${servicio.agregador}")
+  @Value("${servicio.apiGateway}")
   private String agregadorUrl;
 
   public ColeccionController(ColeccionService coleccionService) {

@@ -45,6 +45,11 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.POST, "/hechos/**").permitAll()
                         .pathMatchers(HttpMethod.PUT, "/hechos/**").authenticated()
                         .pathMatchers(HttpMethod.DELETE, "/hechos/**").authenticated()
+                        // Fuentes públicas (GET), crear/editar requiere autenticación
+                        .pathMatchers(HttpMethod.GET, "/fuentes/**").permitAll()
+                        .pathMatchers(HttpMethod.POST, "/fuentes/**").authenticated()
+                        .pathMatchers(HttpMethod.PUT, "/fuentes/**").authenticated()
+                        .pathMatchers(HttpMethod.DELETE, "/fuentes/**").authenticated()
                         // Solicitudes de eliminación
                         .pathMatchers(HttpMethod.POST, "/solicitudesEliminacion/**").permitAll() // Cualquiera puede solicitar eliminar
                         .pathMatchers(HttpMethod.GET, "/solicitudesEliminacion/**").authenticated()
