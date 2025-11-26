@@ -1,0 +1,220 @@
+/* --- Estilos para la vista de colección tipo imagen 2 --- */
+
+.hecho-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px 0 rgba(16,30,54,0.04);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  align-items: flex-start;
+}
+.card-col-izq {
+  flex: 1 1 70%;
+}
+.card-col-der {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+}
+.card-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.card-desc {
+  color: #444;
+  margin-bottom: 1rem;
+}
+.card-info-row {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+.card-etiquetas {
+  margin-bottom: 1rem;
+}
+.card-etiqueta {
+  display: inline-block;
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 0.2em 0.8em;
+  margin-right: 0.5em;
+  margin-bottom: 0.3em;
+  font-size: 0.95em;
+  color: #222;
+  border: 1px solid #e0e0e0;
+}
+.card-footer {
+  color: #888;
+  font-size: 0.95em;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.card-categoria {
+  background: #f7f7f7;
+  color: #666;
+  border-radius: 16px;
+  padding: 0.4em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  margin-bottom: 1em;
+  border: 1px solid #e0e0e0;
+}
+.card-botones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.card-botones .btn-dark {
+  background: #111;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  padding: 0.5em 1.2em;
+  margin-bottom: 0.3em;
+}
+.card-botones .btn-red {
+  background: #fff;
+  color: #e53935;
+  border: 1.5px solid #e53935;
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.5em 1.2em;
+  transition: background 0.2s, color 0.2s;
+}
+.card-botones .btn-red:hover {
+  background: #e53935;
+  color: #fff;
+}
+
+/* --- Botones de modo de navegación --- */
+.modos-navegacion-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.modo-navegacion-btn {
+  background: #f5f5f5;
+  color: #333;
+  border: none;
+  border-radius: 16px;
+  padding: 0.4em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  margin-right: 0.5em;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  outline: none;
+}
+.modo-navegacion-btn.active {
+  background: #1976d2;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(25,118,210,0.12);
+}
+.modo-navegacion-btn.curado {
+  background: #ede7f6;
+  color: #7b1fa2;
+}
+.modo-navegacion-btn.irrestricto {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+/* --- Botones de algoritmos --- */
+#algoritmos {
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.filtro-algoritmo {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.4em 1.2em;
+  font-size: 1em;
+  border: 1.5px solid #e0e0e0;
+  background: #fff;
+  color: #222;
+  margin-right: 0.5em;
+  margin-bottom: 0.3em;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.filtro-algoritmo[data-algoritmo*="Multiples"] {
+  background: #e8f5e9;
+  color: #388e3c;
+  border: 1.5px solid #388e3c;
+}
+.filtro-algoritmo[data-algoritmo*="Simple"] {
+  background: #e3f2fd;
+  color: #1976d2;
+  border: 1.5px solid #1976d2;
+}
+.filtro-algoritmo[data-algoritmo*="Absoluta"] {
+  background: #f3e5f5;
+  color: #8e24aa;
+  border: 1.5px solid #8e24aa;
+}
+
+/* --- Botones superiores --- */
+.titulos-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.btn-filtro {
+  background: #fff;
+  color: #222;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.5em 1.2em;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.btn-filtro:hover {
+  background: #f5f5f5;
+}
+.btn-outline-primary {
+  background: #fff;
+  color: #111;
+  border: 1.5px solid #111;
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 0.5em 1.2em;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.btn-outline-primary:hover {
+  background: #111;
+  color: #fff;
+}
+
+/* --- Títulos y descripciones --- */
+.colecciones-titulo-descripcion-container h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.2em;
+}
+.colecciones-titulo-descripcion-container p {
+  color: #444;
+  font-size: 1.1rem;
+  margin-bottom: 0.5em;
+}
+
+@media (max-width: 900px) {
+  .hecho-card {
+    flex-direction: column;
+    padding: 1.2rem;
+  }
+  .card-col-der {
+    align-items: flex-start;
+    margin-top: 1rem;
+  }
+}

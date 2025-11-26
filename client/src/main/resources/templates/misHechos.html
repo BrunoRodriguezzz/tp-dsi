@@ -17,10 +17,6 @@
             <a th:href="@{/publicarHecho}" class="btn btn-primary btn-dark config-nuevoHecho">+ Publicar Nuevo Hecho</a>
         </div>
 
-        <div th:if="${cantidad == 0}"
-             th:insert="~{fragments/vacio :: vacio}">
-        </div>
-
         <div class="hecho-card" th:each="hecho:${hechos}">
             <div class="hecho-card-mas-opciones">
                 <div class="titulo-mas-descripcion">
