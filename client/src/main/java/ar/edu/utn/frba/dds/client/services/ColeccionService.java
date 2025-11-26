@@ -25,7 +25,7 @@ public class ColeccionService {
 
   public ColeccionService(
       WebApiCallerService webApiCallerService,
-      @Value("${servicio.agregador}") String hechoServiceUrl) {
+      @Value("${servicio.apiGateway}") String hechoServiceUrl) {
     this.webClient = WebClient.builder().build();
     this.webApiCallerService = webApiCallerService;
     this.hechoServiceUrl = hechoServiceUrl;

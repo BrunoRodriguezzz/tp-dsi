@@ -13,7 +13,7 @@ spring:
         - id: agregador-service
           uri: lb://agregador
           predicates:
-            - Path=/colecciones/**, /hechos/**, /solicitudesEliminacion/**, /media/**
+            - Path=/colecciones/**, /hechos/**, /solicitudesEliminacion/**, /media/**, /fuentes/**
 
         - id: dinamica-service
           uri: lb://fuente-dinamica

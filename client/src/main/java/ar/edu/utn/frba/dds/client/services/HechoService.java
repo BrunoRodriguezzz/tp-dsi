@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +25,7 @@ import java.util.Objects;
 public class HechoService {
   private final WebApiCallerService webApiCallerService;
 
-  @Value("${servicio.agregador}")
+  @Value("${servicio.apiGateway}")
   private String agregadorURL;
 
   public HechoService(
@@ -47,7 +49,10 @@ public class HechoService {
     }
   }
 
-  public List<HechoDTO> obtenerHechosMapa() {
+  public List<HechoDTO> obtenerHechosMapa(LocalDateTime fechaAcontecimientoInicio,
+                                          LocalDateTime fechaAcontecimientoFin,
+                                          String categoria,
+                                          String fuente) {
     try {
       final int size = 16 * 1024 * 1024; // 16 MB
       final ExchangeStrategies strategies = ExchangeStrategies.builder()
@@ -63,6 +68,22 @@ public class HechoService {
                       .uri(uriBuilder -> uriBuilder
                               .path("/hechos")
                               .queryParam("all", true)
+                                .queryParamIfPresent("fechaAcontecimientoInicio",
+                                        fechaAcontecimientoInicio != null ?
+                                                java.util.Optional.of(fechaAcontecimientoInicio.toString()) :
+                                                java.util.Optional.empty())
+                                .queryParamIfPresent("fechaAcontecimientoFin",
+                                        fechaAcontecimientoFin != null ?
+                                                java.util.Optional.of(fechaAcontecimientoFin.toString()) :
+                                                java.util.Optional.empty())
+                                .queryParamIfPresent("categoria",
+                                        categoria != null && !categoria.isEmpty() ?
+                                                java.util.Optional.of(categoria) :
+                                                java.util.Optional.empty())
+                                .queryParamIfPresent("fuente",
+                                        fuente != null && !fuente.isEmpty() ?
+                                                java.util.Optional.of(fuente) :
+                                                java.util.Optional.empty())
                               .build())
                       .retrieve()
                       .bodyToMono(PaginadoHechoDTO.class)

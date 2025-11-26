@@ -8,7 +8,42 @@
     <link rel="stylesheet" th:href="@{/css/mapa.css}">
 </th:block>
 <div th:fragment="contenido" class="container">
-    <div id="map"></div>
+    <div class="row mt-4 mb-4">
+        <div class="col-12 col-md-9 min-h300" id="map"></div>
+        <div class="col-12 col-md-3 info-panel mt-md-0 mt-3">
+            <h2>Explorar Hechos en el Mapa</h2>
+            <p>Este mapa interactivo muestra múltiples puntos que representan hechos reportados por los usuarios. Puedes hacer clic en los puntos para ver más detalles sobre cada hecho.</p>
+            <h3>Filtros</h3>
+            <form th:action="@{/mapa}" method="get">
+                <div class="mb-3">
+                    <label for="categoria" class="form-label">Categoría:</label>
+                    <input type="text" id="categoria" name="categoria" class="form-control" th:value="${categoria}">
+                </div>
+                <div class="mb-3">
+                    <label for="fechaDesde" class="form-label">Fecha Desde:</label>
+                    <input type="datetime-local" id="fechaDesde" name="fechaDesde" class="form-control"
+                           th:value="${fechaDesde}">
+                </div>
+                <div class="mb-3">
+                    <label for="fechaHasta" class="form-label">Fecha Hasta:</label>
+                    <input type="datetime-local" id="fechaHasta" name="fechaHasta" class="form-control"
+                           th:value="${fechaHasta}">
+                </div>
+                <div class="mb-3">
+                    <label for="fuente" class="form-label">Fuente:</label>
+                    <select id="fuente" name="fuente" class="form-select">
+                        <option value="">-- Seleccionar Fuente --</option>
+                        <option th:each="fuente : ${fuentes}"
+                                th:value="${fuente.nombre}"
+                                th:text="${fuente.nombre}"
+                                th:selected="${fuente.nombre == fuenteSeleccionada}">
+                        </option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+            </form>
+        </div>
+    </div>
 
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.js"></script>
 
