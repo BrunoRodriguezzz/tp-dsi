@@ -10,11 +10,14 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -94,26 +97,17 @@ public class ArchivoCSV implements TipoArchivo {
     }
 
     private CSVReader crearLectorCSV(String ruta) throws IOException {
-        java.io.File file = new java.io.File(ruta);
+        // 1. Buscamos el archivo dentro del JAR (classpath)
+        ClassPathResource resource = new ClassPathResource(ruta);
 
-        if (!file.isAbsolute()) {
-            java.nio.file.Path currentPath = java.nio.file.Paths.get("").toAbsolutePath();
-            java.nio.file.Path absolutePath;
-
-            if (currentPath.endsWith("fuenteEstatica")) {
-                absolutePath = currentPath.getParent().resolve(ruta);
-            } else {
-                absolutePath = currentPath.resolve(ruta);
-            }
-
-            if (java.nio.file.Files.exists(absolutePath)) {
-                file = absolutePath.toFile();
-            } else {
-                throw new IOException("No se encontró el archivo en: " + absolutePath);
-            }
+        // 2. Verificamos si existe antes de intentar abrirlo
+        if (!resource.exists()) {
+            throw new IOException("No se encontró el archivo en el classpath (resources): " + ruta);
         }
 
-        return new CSVReaderBuilder(new FileReader(file))
+        // 3. Usamos InputStreamReader en lugar de FileReader
+        // Esto funciona tanto en tu IDE local como dentro del Docker en Railway
+        return new CSVReaderBuilder(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))
                 .withSkipLines(0)
                 .withCSVParser(new com.opencsv.CSVParserBuilder()
                         .withSeparator(',')
