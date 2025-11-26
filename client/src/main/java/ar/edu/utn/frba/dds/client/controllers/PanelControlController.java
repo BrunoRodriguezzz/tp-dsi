@@ -236,7 +236,7 @@ public class PanelControlController {
       model.addAttribute("cantidadSolicitudes", solicitudes.stream().filter(s -> "PENDIENTE".equalsIgnoreCase(s.getEstado())).count());
 
       String username = authentication.getName();
-      UsuarioLogueadoDTO usuarioLogueado = new UsuarioLogueadoDTO("Mariana", "Perez", username);
+      UsuarioLogueadoDTO usuarioLogueado = new UsuarioLogueadoDTO("Valentin", "Bravo", username);
       model.addAttribute("usuarioLogueado", usuarioLogueado);
 
     } catch (Exception e) {
@@ -245,7 +245,7 @@ public class PanelControlController {
       model.addAttribute("cantidadSolicitudes", 0);
 
       String username = authentication.getName();
-      UsuarioLogueadoDTO usuarioLogueado = new UsuarioLogueadoDTO("Mariana", "Perez", username);
+      UsuarioLogueadoDTO usuarioLogueado = new UsuarioLogueadoDTO("Valentin", "Bravo", username);
       model.addAttribute("usuarioLogueado", usuarioLogueado);
     }
     return "panelControl/solicitudes";
@@ -256,7 +256,7 @@ public class PanelControlController {
   public String aceptarSolicitud(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
     try {
       String username = authentication.getName();
-      solicitudesService.aceptarSolicitud(id, "Mariana", "Perez");
+      solicitudesService.aceptarSolicitud(id, "Valentin", "Bravo");
       redirectAttributes.addFlashAttribute("mensaje", "Solicitud aceptada correctamente");
     } catch (Exception e) {
       redirectAttributes.addFlashAttribute("error", "Error al aceptar la solicitud: " + e.getMessage());
@@ -269,7 +269,7 @@ public class PanelControlController {
   public String rechazarSolicitud(@PathVariable Long id, Authentication authentication, RedirectAttributes redirectAttributes) {
     try {
       String username = authentication.getName();
-      solicitudesService.rechazarSolicitud(id, "Mariana", "Perez");
+      solicitudesService.rechazarSolicitud(id, "Valentin", "Bravo");
       redirectAttributes.addFlashAttribute("mensaje", "Solicitud rechazada correctamente");
     } catch (Exception e) {
       redirectAttributes.addFlashAttribute("error", "Error al rechazar la solicitud: " + e.getMessage());
