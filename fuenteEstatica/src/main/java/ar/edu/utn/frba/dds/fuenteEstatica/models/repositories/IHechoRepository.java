@@ -15,8 +15,6 @@ public interface IHechoRepository extends JpaRepository<HechoEstatica, Long>, Jp
 
     List<HechoEstatica> findByTitulo(String titulo);
 
-    List<HechoEstatica> findByTituloAndIdArchivo(String titulo, Long idArchivo);
-
     @Modifying
     @Transactional
     @Query("DELETE FROM HechoEstatica h WHERE h.idArchivo = :idArchivo")

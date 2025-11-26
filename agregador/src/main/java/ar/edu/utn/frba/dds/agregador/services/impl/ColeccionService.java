@@ -34,6 +34,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -245,22 +246,14 @@ public class ColeccionService implements IColeccionService {
       return ColeccionOutputDTO.coleccionToDTO(coleccionGuardada);
    }
 
-   @Transactional
+   @Async
    public void importarYAsociarHechos(Long idColeccion, List<Fuente> fuentesColeccion) {
-     log.info("🔄 Iniciando importación y asociación de hechos para colección ID: {}", idColeccion);
-     fuentesColeccion.forEach(fuente -> {
-       log.info("📥 Importando hechos de fuente: {}", fuente.getNombre());
-       fuente.importarHechosNuevos().blockLast();
-     });
-
+     fuentesColeccion.forEach(fuente -> fuente.importarHechosNuevos().blockLast());
      List<Hecho> hechosFuentes = this.hechoRepository.findByFuentes(fuentesColeccion);
-     log.info("📊 Total de hechos encontrados: {}", hechosFuentes.size());
 
      if(!fuentesColeccion.isEmpty()){
        applicationContext.getBean(ColeccionService.class).asociarHechos(idColeccion, hechosFuentes);
      }
-
-     log.info("✅ Importación y asociación de hechos completada para colección ID: {}", idColeccion);
    }
 
    @Transactional
@@ -566,40 +559,5 @@ public class ColeccionService implements IColeccionService {
             .toList();
         return HechoOutputDTO.mapHechoToDTO(hechosFiltrados);
     }
-
-  @Override
-  @Transactional
-  public void actualizarColeccionesDeFuente(String nombreFuente) {
-    Fuente fuente = fuenteRepository.findByNombre(nombreFuente);
-    if (fuente == null) {
-      return;
-    }
-
-    List<Coleccion> colecciones = coleccionRepository.findByFuentes(fuente);
-
-    if (colecciones.isEmpty()) {
-      return;
-    }
-
-    try {
-      fuente.importarHechosNuevos().blockLast();
-    } catch (Exception e) {
-      // Continuar con hechos existentes en BD
-    }
-
-    List<Fuente> fuenteList = List.of(fuente);
-    List<Hecho> hechosFuente = hechoRepository.findByFuentes(fuenteList);
-
-    if (hechosFuente == null || hechosFuente.isEmpty()) {
-      return;
-    }
-
-    colecciones.forEach(coleccion -> {
-      coleccion.cargarHechos(hechosFuente);
-    });
-
-    coleccionRepository.saveAll(colecciones);
-  }
 }
-
 

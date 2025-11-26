@@ -6,9 +6,7 @@ import ar.edu.utn.frba.dds.agregador.models.domain.fuentes.Fuente;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
 import java.util.List;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class AlgConsensoAbsoluto implements IStratConsenso {
   @Getter
   private static final AlgConsensoAbsoluto instance = new AlgConsensoAbsoluto();

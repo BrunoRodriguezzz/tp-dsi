@@ -1,7 +1,5 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoiZmVybmFuZG8xN2EiLCJhIjoiY21nbnk3MDg2MXpteTJucHJsdDllNzZuZCJ9.KuFr7I-l2wBE6ONQk3GpGw';
 
-
-
 let map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v10',
@@ -9,18 +7,13 @@ let map = new mapboxgl.Map({
     zoom: 15
 });
 
-const btnGPS = document.getElementById('btnGPS');
-if (btnGPS) {
-    btnGPS.addEventListener('click', miUbiacion);
-}
-
 map.addControl(new mapboxgl.NavigationControl());
 
 const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     mapboxgl: mapboxgl,
     placeholder: 'Buscar una ubicación...',
-    marker: false,
+    marker: true,
     language: 'es'
 });
 
@@ -116,8 +109,6 @@ geocoder.on('result', function (e) {
     const coords = e.result.geometry.coordinates; // [long, lat]
     const lat = coords[1];
     const lng = coords[0];
-
-    clickMarker.setLngLat(coords).addTo(map);
 
     const latInput = document.getElementById('latInput');
     if (latInput) {
@@ -281,120 +272,3 @@ map.on('click', async function (e) {
     }
 });
 
-function miUbiacion() {
-    // Verificar si el navegador soporta geolocalización
-    if (!navigator.geolocation) {
-        alert("Tu navegador no soporta la geolocalización.");
-        return;
-    }
-
-    // Mostrar estado de carga (opcional, visual)
-    const originalText = btnGPS.innerHTML;
-    btnGPS.innerHTML = 'Buscando...';
-    btnGPS.disabled = true;
-
-    navigator.geolocation.getCurrentPosition(
-        async (position) => {
-            // 1. OBTENER COORDENADAS
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-
-            // 2. MOVER EL MAPA Y EL MARCADOR
-            map.flyTo({
-                center: [lng, lat],
-                zoom: 14,
-                essential: true
-            });
-
-            clickMarker.setLngLat([lng, lat]).addTo(map);
-
-            // 3. LLENAR INPUTS NUMÉRICOS (Lat/Lng)
-            // Inputs principales
-            const latInput = document.getElementById('latInput');
-            if (latInput) latInput.value = lat;
-            const lngInput = document.getElementById('lngInput');
-            if (lngInput) lngInput.value = lng;
-
-            // Inputs legacy/compatibilidad
-            const latitudInput = document.getElementById('latitudInput');
-            if (latitudInput) latitudInput.value = lat;
-            const longitudInput = document.getElementById('longitudInput');
-            if (longitudInput) longitudInput.value = lng;
-
-            // 4. REVERSE GEOCODING (Coordenadas -> Texto/Provincia/Municipio)
-            const token = mapboxgl.accessToken;
-            // Pedimos tipos place, region y address
-            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?types=place,region,address,poi&language=es&access_token=${token}`;
-
-            try {
-                const resp = await fetch(url);
-                const data = await resp.json();
-
-                let municipio = "";
-                let provincia = "";
-                let direccionCompleta = "";
-
-                if (data.features && data.features.length > 0) {
-                    // La mejor coincidencia suele ser la primera (address o poi)
-                    direccionCompleta = data.features[0].place_name;
-
-                    // Buscar contexto para provincia y municipio
-                    data.features.forEach(f => {
-                        if (f.place_type.includes("place")) municipio = f.text;
-                        if (f.place_type.includes("region")) provincia = f.text;
-                    });
-
-                    // Si no encontró municipio en los features principales, buscar en el contexto del primer resultado
-                    if (!municipio && data.features[0].context) {
-                        const munCtx = data.features[0].context.find(c => c.id.startsWith('place'));
-                        if (munCtx) municipio = munCtx.text;
-                    }
-                    if (!provincia && data.features[0].context) {
-                        const provCtx = data.features[0].context.find(c => c.id.startsWith('region'));
-                        if (provCtx) provincia = provCtx.text;
-                    }
-                }
-
-                // Llenar inputs de texto
-                const municipioInput = document.getElementById('municipioInput');
-                if (municipioInput) municipioInput.value = municipio;
-
-                const provinciaInput = document.getElementById('provinciaInput');
-                if (provinciaInput) provinciaInput.value = provincia;
-
-                // Llenar el input visible del geocoder o el hidden de ubicación
-                setUbicacionText(direccionCompleta);
-
-                // Actualizar visualmente el input del geocoder de Mapbox si existe
-                // (Esto es un truco visual para que el usuario vea la dirección en la barra de búsqueda)
-                const geocoderInput = document.querySelector('.mapboxgl-ctrl-geocoder--input');
-                if (geocoderInput) geocoderInput.value = direccionCompleta;
-
-            } catch (err) {
-                console.error("Error en reverse geocoding GPS: ", err);
-            } finally {
-                // Restaurar botón
-                btnGPS.innerHTML = originalText;
-                btnGPS.disabled = false;
-            }
-
-        },
-        (error) => {
-            console.error("Error obteniendo ubicación:", error);
-            let msg = "No se pudo obtener la ubicación.";
-            if (error.code === 1) msg = "Permiso de ubicación denegado.";
-            if (error.code === 2) msg = "Ubicación no disponible.";
-            if (error.code === 3) msg = "Se agotó el tiempo de espera.";
-            alert(msg);
-
-            // Restaurar botón
-            btnGPS.innerHTML = originalText;
-            btnGPS.disabled = false;
-        },
-        {
-            enableHighAccuracy: true, // Intentar usar GPS real
-            timeout: 10000,
-            maximumAge: 0
-        }
-    )
-}

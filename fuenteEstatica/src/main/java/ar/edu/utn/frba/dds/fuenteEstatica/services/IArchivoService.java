@@ -5,6 +5,5 @@ import java.util.List;
 
 public interface IArchivoService {
   public void guardarArchivo(Archivo archivo);
-  public void guardarArchivoSync(Archivo archivo);
   public List<Archivo> obtenerArchivos();
 }

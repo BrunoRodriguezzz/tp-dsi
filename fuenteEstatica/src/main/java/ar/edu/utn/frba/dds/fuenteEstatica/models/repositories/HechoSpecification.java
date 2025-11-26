@@ -37,8 +37,4 @@ public class HechoSpecification {
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
-
-    public static Specification<HechoEstatica> porIdArchivo(Long idArchivo) {
-        return (root, query, cb) -> cb.equal(root.get("idArchivo"), idArchivo);
-    }
 }

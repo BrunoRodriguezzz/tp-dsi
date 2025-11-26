@@ -37,8 +37,7 @@ public class SecurityConfig {
                             "/home/**",
                             "/css/**",
                             "/js/**",
-                            "/images/**",
-                            "lost.png")
+                            "/images/**")
                         .permitAll()
                         // Ejemplo: Acceso a alumnos: ADMIN y DOCENTE
                         //.requestMatchers("/alumnos/**").hasAnyRole("ADMIN", "DOCENTE")
