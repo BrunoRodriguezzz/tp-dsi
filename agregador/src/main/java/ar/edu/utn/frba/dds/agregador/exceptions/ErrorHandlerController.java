@@ -18,7 +18,6 @@ public class ErrorHandlerController {
   @ExceptionHandler(value = RuntimeException.class)
   //ResponseEntity es una clase envoltorio que representa toda una respuesta HTTP
   public ResponseEntity<ExceptionDTO> handleRuntimeException(RuntimeException exception){
-    Sentry.captureException(exception);
     ExceptionDTO error = ExceptionDTO.builder()
         .message(exception.getMessage())
         .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
