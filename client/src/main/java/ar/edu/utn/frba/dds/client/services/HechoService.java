@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -47,16 +48,29 @@ public class HechoService {
 
   public List<HechoDTO> obtenerHechosMapa() {
     try {
-      return Objects.requireNonNull(WebClient.builder().baseUrl(agregadorURL)
-              .build()
-              .get()
-              .uri("/hechos?size=400")
-              .retrieve()
-              .bodyToMono(PaginadoHechoDTO.class)
-              .block())
-          .getContent();
+      final int size = 16 * 1024 * 1024; // 16 MB
+      final ExchangeStrategies strategies = ExchangeStrategies.builder()
+              .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
+              .build();
+
+      // 2. Aplicamos la estrategia al builder
+      return Objects.requireNonNull(WebClient.builder()
+                      .baseUrl(agregadorURL)
+                      .exchangeStrategies(strategies)  // Aumentamos el buffer a 16 MB
+                      .build()
+                      .get()
+                      .uri(uriBuilder -> uriBuilder
+                              .path("/hechos")
+                              .queryParam("all", true)
+                              .build())
+                      .retrieve()
+                      .bodyToMono(PaginadoHechoDTO.class)
+                      .block())
+              .getContent();
+
     } catch (Exception e) {
-      System.out.println(e.getMessage());
+      // Recomendación: Imprime la excepción completa, no solo el mensaje
+      log.error("Error obteniendo hechos del mapa", e);
       return null;
     }
   }

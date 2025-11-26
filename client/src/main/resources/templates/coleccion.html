@@ -1,53 +1,51 @@
 <!DOCTYPE html>
 <html lang="es" th:replace="~{layout/base :: html}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${coleccion != null} ? coleccion.titulo : 'Colección no encontrada'">Coleccion</title>
     <th:block th:fragment="additional-links">
-        <link rel="stylesheet" th:href="@{/css/styles.css}">
-        <link rel="stylesheet" th:href="@{/css/components.css}">
-        <link rel="stylesheet" th:href="@{/css/header.css}">
-        <link rel="stylesheet" th:href="@{/css/footer.css}">
         <link rel="stylesheet" th:href="@{/css/coleccion.css}">
-        <link rel="stylesheet" th:href="@{/css/publicarHecho.css}">
+        <link rel="stylesheet" th:href="@{/css/mapaEmbed.css}">
         <link rel="stylesheet" th:href="@{/css/hechos.css}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta3/css/bootstrap-select.min.css">
         <link href="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.css" rel="stylesheet">
-        <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet"/>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css">
-        <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css"
+              rel="stylesheet"/>
         <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
         <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
     </th:block>
 </head>
-<body>
-<div th:fragment="contenido">
-    <main class="container" th:attr="data-coleccion-id=${coleccion.id}">
-        <div th:if="${coleccion == null}">
-            <h2>Colección no encontrada</h2>
-            <p>La colección solicitada no existe.</p>
+<div th:fragment="contenido" class="container py-4" th:attr="data-coleccion-id=${coleccion.id}">
+    <div th:if="${coleccion == null}">
+        <h2>Colección no encontrada</h2>
+        <p>La colección solicitada no existe.</p>
+    </div>
+
+    <div th:if="${coleccion != null}">
+        <div class="titulo-descripcion" th:classappend="${cantidad == 0 ? 'sin-hechos' : ''}">
+            <div class="colecciones-titulo-descripcion-container">
+                <h2 th:text="${coleccion.titulo}">Título Colección</h2>
+                <p th:text="${coleccion.descripcion}">Descripción de la colección</p>
+            </div>
+            <div class="titulos-buttons">
+                <button class="btn btn-outline-secondary config-mostrarFiltros" data-bs-toggle="collapse"
+                        data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">Mostrar
+                    Filtros
+                </button>
+                <a th:if="${coleccion.id != null}" th:href="@{'/colecciones/' + ${coleccion.id} + '/actualizar'}">
+                    <button class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-clockwise"></i> Actualizar Colección
+                    </button>
+                </a>
+                <a th:if="${coleccion.id != null}" th:href="@{'/editarColeccion/' + ${coleccion.id}}">
+                    <button class="btn btn-dark">Modificar Colección</button>
+                </a>
+            </div>
         </div>
 
-        <div th:if="${coleccion != null}">
-            <div class="titulo-descripcion" th:classappend="${cantidad == 0 ? 'sin-hechos' : ''}">
-                <div class="colecciones-titulo-descripcion-container">
-                    <h2 th:text="${coleccion.titulo}">Título Colección</h2>
-                    <p th:text="${coleccion.descripcion}">Descripción de la colección</p>
-                </div>
-                <div class="titulos-buttons">
-                    <button class="btn btn-outline-secondary config-mostrarFiltros" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">Mostrar Filtros</button>
-                    <a th:if="${coleccion.id != null}" th:href="@{'/editarColeccion/' + ${coleccion.id}}">
-                        <button class="nav-item btn btn-outline-primary">Modificar Colección</button>
-                    </a>
-                </div>
-            </div>
-
-            <div class="parrafos-modos-navegacion">
-                <span>Algoritmos:</span>
-                <div class="modos-navegacion-container" id="algoritmos">
+        <div class="parrafos-modos-navegacion">
+            <span>Algoritmos:</span>
+            <div class="modos-navegacion-container" id="algoritmos">
                     <span th:each="consenso : ${coleccion.consensos}"
                           th:text="${consenso == 'ABSOLUTO' ? 'Mayoría Absoluta' : (consenso == 'MULTMENCIONES' ? 'Múltiples Menciones' : (consenso == 'MAYSIMPLE' ? 'Mayoría Simple' : consenso))}"
                           th:classappend="
@@ -56,16 +54,14 @@
                             (${consenso} == 'ABSOLUTO' ? 'chip chip-morado' : 'chip'))">
                         Algoritmo
                     </span>
-                </div>
             </div>
+        </div>
 
-            <div th:with="filtAction=@{/coleccion/{id}(id=${coleccion.id})}, filtClear=@{/coleccion/{id}(id=${coleccion.id})}, usarUbicBtnClass='btn btn-sm btn-outline-primary'">
-                <div th:insert="~{fragments/filtros :: filtros(actionUrl=${filtAction}, clearUrl=${filtClear})}"></div>
-            </div>
+        <div th:replace="~{fragments/filtros :: filtros(actionUrl=@{/coleccion/{id}(id=${coleccion.id})}, clearUrl=@{/coleccion/{id}(id=${coleccion.id})})}"></div>
 
-            <div th:if="${cantidad == 0}" class="vacio-container">
-                <div th:insert="~{fragments/vacio :: vacio}"></div>
-            </div>
+        <div th:if="${cantidad == 0}" class="vacio-container">
+            <div th:insert="~{fragments/vacio :: vacio}"></div>
+        </div>
 
             <div class="hecho-card" th:each="hecho: ${hechos}">
                 <div class="hecho-card-mas-opciones">
@@ -76,76 +72,88 @@
                     <div class="opciones">
                         <p class="etiqueta-categoria config-categoria distancia-opciones" th:text="${hecho.categoria}">Sin Categoría</p>
                         <a class="btn btn-primary btn-dark config-opciones" th:href="@{/hechos/{id}(id=${hecho.id})}">Ver Detalles</a>
-                        <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-red config-opciones">Solicitar Eliminacion</a>
+                        <a th:href="@{/hechos/eliminacion/{id}(id=${hecho.id})}" class="btn btn-outline-danger config-opciones">Solicitar Eliminacion</a>
                     </div>
                 </div>
                 <div class="informacion-general">
-                    <div class="fecha-ubicacion-fuente encolumnar">
+                    <div class="fecha-ubicacion-fuente">
                         <p class="info-fecha-ubicacion-fuente" th:text="|Fecha: ${hecho.fechaAcontecimiento}|"></p>
                         <p class="info-fecha-ubicacion-fuente" th:text="${
                                hecho.ubicacion == null or hecho.ubicacion.nombreProvincia == null
-                               ? 'Sin provincia'
+                               ? 'Ubicación: Sin provincia'
                                : (hecho.ubicacion.municipio != null
                                    ? 'Ubicación: ' + hecho.ubicacion.nombreProvincia + ', ' + hecho.ubicacion.municipio
                                    : 'Ubicación: ' + hecho.ubicacion.nombreProvincia)
                            }"></p>
                         <p class="info-fecha-ubicacion-fuente" th:text="|Fuente: ${hecho.fuente}|"></p>
                     </div>
-                    <div class="etiquetas">
-                        <div th:each="etiqueta, iterStat: ${hecho.etiquetas}" th:if="${iterStat.index < 3}">
-                            <p class="titulo-etiqueta etiqueta-interes" th:text="${etiqueta}">Sin etiqueta</p>
-                        </div>
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <div th:if="${totalPages > 1}" style="margin: 2rem 0; text-align: center;">
-                <div style="display: inline-flex; gap: 0.5rem; align-items: center;">
-                    <a th:if="${currentPage > 0}"
-                       th:href="@{/coleccion/{id}(id=${coleccion.id}, page=${currentPage - 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
-                       class="btn btn-primary btn-dark config-opciones">Página Anterior</a>
+        <div th:if="${totalPages > 1}" class="d-flex justify-content-center my-4">
+            <nav aria-label="Paginación de hechos">
+                <ul class="pagination flex-wrap gap-2">
+                    <!-- Botón Página Anterior -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a th:if="${currentPage > 0}"
+                           th:href="@{/coleccion/{id}(id=${coleccion.id}, page=${currentPage - 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                           class="btn btn-dark">Página Anterior</a>
+                    </li>
 
-                    <span th:if="${0 == currentPage}"
-                          th:text="1"
-                          style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; background: #007bff; color: white; border-radius: 4px; font-weight: bold;"></span>
-                    <a th:if="${0 != currentPage}"
-                       th:href="@{/coleccion/{id}(id=${coleccion.id}, page=0, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
-                       th:text="1"
-                       style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; text-decoration: none; color: #333; border: 1px solid #ddd; border-radius: 4px;"></a>
+                    <!-- Primera página -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'active'">
+                        <span th:if="${0 == currentPage}"
+                              class="page-link bg-primary border-primary text-white fw-bold">1</span>
+                        <a th:if="${0 != currentPage}"
+                           th:href="@{/coleccion/{id}(id=${coleccion.id}, page=0, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                           class="page-link">1</a>
+                    </li>
 
-                    <span th:if="${currentPage > 3}" style="margin: 0 0.5rem;">...</span>
-                    <span th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}" th:if="${i > 0 and i < totalPages - 1}">
-                        <span th:if="${i == currentPage}"
-                              th:text="${i + 1}"
-                              style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; background: #007bff; color: white; border-radius: 4px; font-weight: bold;"></span>
-                        <a th:if="${i != currentPage}"
-                           th:href="@{/coleccion/{id}(id=${coleccion.id}, page=${i}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
-                           th:text="${i + 1}"
-                           style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; text-decoration: none; color: #333; border: 1px solid #ddd; border-radius: 4px;"></a>
-                    </span>
+                    <li th:if="${currentPage > 3}" class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
 
-                    <span th:if="${currentPage < totalPages - 4}" style="margin: 0 0.5rem;">...</span>
+                    <!-- Páginas intermedias -->
+                    <th:block th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                              th:if="${i > 0 and i < totalPages - 1}">
+                        <li class="page-item" th:classappend="${i == currentPage} ? 'active'">
+                            <span th:if="${i == currentPage}"
+                                  class="page-link bg-primary border-primary text-white fw-bold"
+                                  th:text="${i + 1}"></span>
+                            <a th:if="${i != currentPage}"
+                               th:href="@{/coleccion/{id}(id=${coleccion.id}, page=${i}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                               class="page-link" th:text="${i + 1}"></a>
+                        </li>
+                    </th:block>
 
-                    <span th:if="${totalPages - 1 == currentPage}"
-                          th:text="${totalPages}"
-                          style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; background: #007bff; color: white; border-radius: 4px; font-weight: bold;"></span>
-                    <a th:if="${totalPages - 1 != currentPage}"
-                       th:href="@{/coleccion/{id}(id=${coleccion.id}, page=${totalPages - 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
-                       th:text="${totalPages}"
-                       style="padding: 0.4rem 0.8rem; margin: 0 0.2rem; text-decoration: none; color: #333; border: 1px solid #ddd; border-radius: 4px;"></a>
+                    <li th:if="${currentPage < totalPages - 4}" class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
 
-                    <a th:if="${currentPage < totalPages - 1}"
-                       th:href="@{/coleccion/{id}(id=${coleccion.id}, page=${currentPage + 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
-                       class="btn btn-primary btn-dark config-opciones">Página Siguiente</a>
-                </div>
-            </div>
+                    <!-- Última página -->
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'active'">
+                        <span th:if="${totalPages - 1 == currentPage}"
+                              class="page-link bg-primary border-primary text-white fw-bold"
+                              th:text="${totalPages}"></span>
+                        <a th:if="${totalPages - 1 != currentPage}"
+                           th:href="@{/coleccion/{id}(id=${coleccion.id}, page=${totalPages - 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                           class="page-link" th:text="${totalPages}"></a>
+                    </li>
 
-         </div>
-     </main>
+                    <!-- Botón Página Siguiente -->
+                    <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
+                        <a th:if="${currentPage < totalPages - 1}"
+                           th:href="@{/coleccion/{id}(id=${coleccion.id}, page=${currentPage + 1}, size=10, fechaAcontecimientoInicio=${param.fechaAcontecimientoInicio}, fechaAcontecimientoFin=${param.fechaAcontecimientoFin}, categoria=${param.categoria}, lat=${param.lat}, lng=${param.lng}, fuente=${param.fuente})}"
+                           class="btn btn-dark">Página Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    </div>
 
     <script th:src="@{/js/mapa.js}"></script>
-
-     <th:block th:fragment="additional-scripts"></th:block>
+    <th:block th:fragment="additional-scripts"></th:block>
 </div>
-</body>
 </html>

@@ -100,12 +100,29 @@
             <small class="form-text text-muted">Podés seleccionar uno o más consensos.</small>
         </div>
         <div class="botones-formulario mt-4">
-            <button type="submit" class="btn btn-dark">Crear Colección</button>
+            <button type="submit" class="btn btn-dark" id="btnCrearColeccion">Crear Colección</button>
             <a th:href="@{/colecciones}" class="btn btn-outline-secondary btn-cancelar">Cancelar</a>
         </div>
     </form>
+
+    <!-- Spinner de carga -->
+    <div id="loadingSpinner" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 30px; border-radius: 10px; text-align: center;">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p style="margin-top: 15px; font-weight: 500;">Creando colección...</p>
+        </div>
+    </div>
+
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.15.0/mapbox-gl.js"></script>
     <script th:src="@{/js/mapa.js}"></script>
+    <script>
+        document.querySelector('.form-coleccion').addEventListener('submit', function(e) {
+            const spinner = document.getElementById('loadingSpinner');
+            spinner.style.display = 'flex';
+        });
+    </script>
 </div>
 </html>
