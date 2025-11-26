@@ -6,6 +6,7 @@ import ar.edu.utn.frba.dds.client.dtos.PaginaDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.PaginadoHechoDTO;
 import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class ColeccionService {
   private final WebClient webClient;
@@ -66,7 +68,13 @@ public class ColeccionService {
   }
 
   public ColeccionOutputDTO obtenerColeccionInfoPorId(Long id) {
-    return webApiCallerService.get(this.hechoServiceUrl + "/colecciones/" + id + "/info", ColeccionOutputDTO.class);
+    try{
+      return webApiCallerService.get(this.hechoServiceUrl + "/colecciones/" + id + "/info", ColeccionOutputDTO.class);
+    }
+    catch(Exception e) {
+      log.error(e.getMessage());
+      return null;
+    }
   }
 
   // TODO: esto llama a todos los hechos del agrgador, no a los de una coleccion en particular
@@ -79,14 +87,29 @@ public class ColeccionService {
   }
 
   public void enviarColeccion(ColeccionInputDTO coleccionInputDTO) {
+    try{
       webApiCallerService.post(this.hechoServiceUrl + "/colecciones",coleccionInputDTO, Void.class);
+    }
+    catch(Exception e) {
+      log.error(e.getMessage());
+    }
   }
 
-  public void modificarColeccion(ColeccionInputDTO coleccionInputDTO, Long id){
+  public void modificarColeccion(ColeccionInputDTO coleccionInputDTO, Long id) {
+    try{
       webApiCallerService.put(this.hechoServiceUrl +  "/colecciones/" + id,coleccionInputDTO, Void.class);
+    }
+    catch(Exception e) {
+      log.error(e.getMessage());
+    }
   }
 
   public void actualizarFuente(String nombreFuente) {
+    try{
       webApiCallerService.post(this.hechoServiceUrl + "/fuentes/" + nombreFuente + "/actualizar-colecciones", java.util.Collections.emptyMap(), String.class);
+    }
+    catch(Exception e) {
+      log.error(e.getMessage());
+    }
   }
 }

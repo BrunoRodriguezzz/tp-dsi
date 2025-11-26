@@ -48,6 +48,13 @@ public class FuenteService {
         builder.part("archivo", archivo.getResource());
         builder.part("nombre", nombreFuente);
 
-        return webApiCallerService.postMultipart(urlGateway + "/archivos/upload", builder, String.class);
+        try{
+            return webApiCallerService.postMultipart(urlGateway + "/archivos/upload", builder, String.class);
+        }
+        catch(Exception e) {
+            log.error("Error al importar el archivo CSV: {}", e.getMessage());
+            return "Error al importar el archivo CSV: " + e.getMessage();
+        }
+
     }
 }

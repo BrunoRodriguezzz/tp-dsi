@@ -86,8 +86,15 @@ public class AuthApiService {
     }
 
     public List<UsuarioDTO> obtenerTodosLosUsuarios() {
-        List<UsuarioDTO> response = webApiCallerService.getList(authServiceUrl + "/users", UsuarioDTO.class);
-        return response != null ? response : List.of();
+        try {
+            List<UsuarioDTO> response = webApiCallerService.getList(authServiceUrl + "/users", UsuarioDTO.class);
+            return response != null ? response : List.of();
+        }
+        catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException("Error al obtener usuarios: " + e.getMessage(), e);
+        }
+
     }
 
     public UsuarioDTO crearUsuario(@Valid UsuarioDTO usuarioDTO) {
@@ -115,10 +122,16 @@ public class AuthApiService {
     }
 
     public UsuarioDTO actualizarUsuario(Long id, @Valid UsuarioDTO usuarioDTO) {
-        UsuarioDTO response = webApiCallerService.put(authServiceUrl + "/user/" + id, usuarioDTO, UsuarioDTO.class);
-        if (response == null) {
-            throw new RuntimeException("Error al actualizar usuario en el servicio externo");
+        try {
+            UsuarioDTO response = webApiCallerService.put(authServiceUrl + "/user/" + id, usuarioDTO, UsuarioDTO.class);
+            if (response == null) {
+                throw new RuntimeException("Error al actualizar usuario en el servicio externo");
+            }
+            return response;
         }
-        return response;
+        catch (Exception e) {
+            log.error(e.getMessage());
+            throw new RuntimeException("Error al actualizar usuario: " + e.getMessage(), e);
+        }
     }
 }
