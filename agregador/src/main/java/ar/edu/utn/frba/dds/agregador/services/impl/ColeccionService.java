@@ -19,11 +19,8 @@ import ar.edu.utn.frba.dds.agregador.services.IColeccionService;
 import ar.edu.utn.frba.dds.agregador.models.domain.colecciones.Coleccion;
 import ar.edu.utn.frba.dds.agregador.services.IHechoService;
 import ar.edu.utn.frba.dds.agregador.models.domain.hechos.Hecho;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -208,6 +205,7 @@ public class ColeccionService implements IColeccionService {
     return this.deleteHechoFromColeccion(hecho);
   }
 
+  @Transactional
   @Override
   public ColeccionOutputDTO guardarColeccion(ColeccionInputDTO coleccionInputDTO) {
       List<Fuente> fuentesColeccion = new ArrayList<>();
@@ -240,7 +238,7 @@ public class ColeccionService implements IColeccionService {
 
       Coleccion coleccionGuardada = this.coleccionRepository.saveAndFlush(nuevaColeccion);
 
-      applicationContext.getBean(ColeccionService.class).importarYAsociarHechos(coleccionGuardada.getId(), fuentesColeccion);
+      this.importarYAsociarHechos(coleccionGuardada.getId(), fuentesColeccion);
 
       return ColeccionOutputDTO.coleccionToDTO(coleccionGuardada);
    }
