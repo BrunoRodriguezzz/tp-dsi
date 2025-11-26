@@ -29,4 +29,8 @@ public class FiltroEstatica {
     public boolean nuevos() {
         return this.nuevos != null && this.nuevos;
     }
+
+    public boolean esVacio() {
+        return this.idHecho == null && this.fecha == null && !nuevos();
+    }
 }
