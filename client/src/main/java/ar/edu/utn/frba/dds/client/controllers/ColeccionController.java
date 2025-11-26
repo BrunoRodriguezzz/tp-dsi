@@ -5,6 +5,7 @@ import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
 import ar.edu.utn.frba.dds.client.services.ColeccionService;
 import ar.edu.utn.frba.dds.client.dtos.hecho.PaginadoHechoDTO;
 
+import ar.edu.utn.frba.dds.client.services.internal.WebApiCallerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -286,12 +287,14 @@ public class ColeccionController {
 
       coleccionInputDTO.setConsensos(form.getConsensos());
 
-      getWebClient().put()
-          .uri("/colecciones/" + id)
-          .bodyValue(coleccionInputDTO)
-          .retrieve()
-          .toBodilessEntity()
-          .block();
+//      getWebClient().put()
+//          .uri("/colecciones/" + id)
+//          .bodyValue(coleccionInputDTO)
+//          .retrieve()
+//          .toBodilessEntity()
+//          .block();
+
+        coleccionService.modificarColeccion(coleccionInputDTO, id);
 
       return "redirect:/colecciones";
     } catch (Exception e) {
@@ -309,6 +312,7 @@ public class ColeccionController {
             .bodyToFlux(FuenteOutputDTO.class)
             .collectList()
             .block();
+    model.addAttribute("titulo", "Crear Coleccion");
     model.addAttribute("fuentes", fuentes);
     return "nuevaColeccion";
   }
@@ -362,12 +366,14 @@ public class ColeccionController {
 
       coleccionInputDTO.setConsensos(form.getConsensos());
 
-      getWebClient().post()
-          .uri("/colecciones")
-          .bodyValue(coleccionInputDTO)
-          .retrieve()
-          .toBodilessEntity()
-          .block();
+//      getWebClient().post()
+//          .uri("/colecciones")
+//          .bodyValue(coleccionInputDTO)
+//          .retrieve()
+//          .toBodilessEntity()
+//          .block();
+
+      coleccionService.enviarColeccion(coleccionInputDTO);
 
       return "redirect:/colecciones";
     } catch (Exception e) {
@@ -404,11 +410,12 @@ public class ColeccionController {
         for (String nombreFuente : coleccion.getFuentes()) {
           try {
             log.info("🔄 Actualizando fuente: {}", nombreFuente);
-            getWebClient().post()
-                    .uri("/fuentes/{nombreFuente}/actualizar-colecciones", nombreFuente)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+//            getWebClient().post()
+//                    .uri("/fuentes/{nombreFuente}/actualizar-colecciones", nombreFuente)
+//                    .retrieve()
+//                    .bodyToMono(String.class)
+//                    .block();
+            coleccionService.actualizarFuente(nombreFuente);
             log.info("✅ Fuente {} actualizada", nombreFuente);
           } catch (Exception e) {
             log.warn("⚠️ Error actualizando fuente {}: {}", nombreFuente, e.getMessage());

@@ -1,5 +1,6 @@
 package ar.edu.utn.frba.dds.client.services;
 
+import ar.edu.utn.frba.dds.client.dtos.ColeccionInputDTO;
 import ar.edu.utn.frba.dds.client.dtos.ColeccionOutputDTO;
 import ar.edu.utn.frba.dds.client.dtos.PaginaDTO;
 import ar.edu.utn.frba.dds.client.dtos.hecho.HechoDTO;
@@ -71,5 +72,17 @@ public class ColeccionService {
       return paginado.getContent();
     }
     return List.of();
+  }
+
+  public void enviarColeccion(ColeccionInputDTO coleccionInputDTO) {
+      webApiCallerService.post(this.hechoServiceUrl + "/colecciones",coleccionInputDTO, Void.class);
+  }
+
+  public void modificarColeccion(ColeccionInputDTO coleccionInputDTO, Long id){
+      webApiCallerService.put(this.hechoServiceUrl +  "/colecciones/" + id,coleccionInputDTO, Void.class);
+  }
+
+  public void actualizarFuente(String nombreFuente) {
+      webApiCallerService.post("/fuentes/{nombreFuente}/actualizar-colecciones",nombreFuente, String.class);
   }
 }
