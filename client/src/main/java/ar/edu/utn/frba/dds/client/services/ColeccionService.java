@@ -65,6 +65,10 @@ public class ColeccionService {
         .orElse(null);
   }
 
+  public ColeccionOutputDTO obtenerColeccionInfoPorId(Long id) {
+    return webApiCallerService.get(this.hechoServiceUrl + "/colecciones/" + id + "/info", ColeccionOutputDTO.class);
+  }
+
   // TODO: esto llama a todos los hechos del agrgador, no a los de una coleccion en particular
   public List<HechoDTO> obtenerHechosPorColeccionId(Long coleccionId) {
     PaginadoHechoDTO paginado = hechoService.obtenerHechosAgregador();
@@ -83,6 +87,6 @@ public class ColeccionService {
   }
 
   public void actualizarFuente(String nombreFuente) {
-      webApiCallerService.post("/fuentes/{nombreFuente}/actualizar-colecciones",nombreFuente, String.class);
+      webApiCallerService.post(this.hechoServiceUrl + "/fuentes/" + nombreFuente + "/actualizar-colecciones", java.util.Collections.emptyMap(), String.class);
   }
 }

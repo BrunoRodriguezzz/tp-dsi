@@ -399,22 +399,13 @@ public class ColeccionController {
       log.info("📡 Solicitando actualización de colección ID: {}", id);
 
       // Obtener la colección para saber qué fuentes tiene
-      ColeccionOutputDTO coleccion = getWebClient().get()
-              .uri("/colecciones/{id}/info", id)
-              .retrieve()
-              .bodyToMono(ColeccionOutputDTO.class)
-              .block();
+      ColeccionOutputDTO coleccion = coleccionService.obtenerColeccionInfoPorId(id);
 
       if (coleccion != null && coleccion.getFuentes() != null && !coleccion.getFuentes().isEmpty()) {
         // Actualizar cada fuente asociada a la colección
         for (String nombreFuente : coleccion.getFuentes()) {
           try {
             log.info("🔄 Actualizando fuente: {}", nombreFuente);
-//            getWebClient().post()
-//                    .uri("/fuentes/{nombreFuente}/actualizar-colecciones", nombreFuente)
-//                    .retrieve()
-//                    .bodyToMono(String.class)
-//                    .block();
             coleccionService.actualizarFuente(nombreFuente);
             log.info("✅ Fuente {} actualizada", nombreFuente);
           } catch (Exception e) {

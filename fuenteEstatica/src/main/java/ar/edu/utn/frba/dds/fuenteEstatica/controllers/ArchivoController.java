@@ -90,16 +90,29 @@ public class ArchivoController {
             // Determinar la ruta de destino
             Path targetPath = determinarRutaDestino(nombreArchivo);
 
+            log.info("📂 Ruta de destino determinada: {}", targetPath);
+
             // Verificar si el archivo ya existe físicamente
             boolean archivoExisteFisicamente = Files.exists(targetPath);
 
+            log.info("📝 Archivo existe físicamente: {}", archivoExisteFisicamente);
+
             if (!archivoExisteFisicamente) {
-                // Solo copiar si el archivo NO existe
+                Path parentDir = targetPath.getParent();
+                if (!Files.exists(parentDir)) {
+                    log.info("📁 Creando directorio: {}", parentDir);
+                    Files.createDirectories(parentDir);
+                }
+
                 try {
                     Files.copy(archivo.getInputStream(), targetPath);
+                    log.info("✅ Archivo guardado físicamente en: {}", targetPath);
                 } catch (IOException e) {
+                    log.error("❌ Error al guardar archivo: {}", e.getMessage());
                     throw new IOException("No se pudo guardar el archivo: " + e.getMessage(), e);
                 }
+            } else {
+                log.info("⚠️ El archivo ya existe, no se sobrescribe");
             }
 
             // Crear la entidad Archivo con ruta relativa
@@ -112,7 +125,6 @@ public class ArchivoController {
             archivoEntity.setTipoArchivo(new ArchivoCSV());
 
             try {
-                log.info("✅ Archivo guardado físicamente en: {}", targetPath);
                 archivoService.guardarArchivoSync(archivoEntity);
                 log.info("🎉 Fuente estática creada exitosamente: {}", nombre);
                 return ResponseEntity.status(HttpStatus.CREATED)
