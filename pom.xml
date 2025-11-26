@@ -36,6 +36,10 @@
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-cloud.version>2023.0.1</spring-cloud.version>
+
+    <!-- VERSIONES DE SENTRY (AGREGADAS) -->
+    <sentry.version>7.14.0</sentry.version>
+    <sentry-plugin.version>3.1.0</sentry-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -44,6 +48,15 @@
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>
         <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- SENTRY BOM: Gestiona las versiones para todos los hijos -->
+      <dependency>
+        <groupId>io.sentry</groupId>
+        <artifactId>sentry-bom</artifactId>
+        <version>${sentry.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -100,7 +113,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-rest</artifactId>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -112,13 +124,14 @@
         <configuration>
           <source>17</source>
           <target>17</target>
-          <parameters>true</parameters> <annotationProcessorPaths>
-          <path>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
-          </path>
-        </annotationProcessorPaths>
+          <parameters>true</parameters>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>1.18.30</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
     </plugins>

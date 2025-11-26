@@ -30,6 +30,7 @@ public class ErrorHandlerController {
 
   @ExceptionHandler(value = NotFoundException.class)
   public ResponseEntity<NotFoundExceptionDTO> handleNotFoundException(NotFoundException exception){
+    Sentry.captureException(exception);
     NotFoundExceptionDTO error = NotFoundExceptionDTO.builder()
         .message(exception.getMessage())
         .error(HttpStatus.NOT_FOUND.getReasonPhrase())

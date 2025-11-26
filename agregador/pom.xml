@@ -20,40 +20,25 @@
 		<java.version>17</java.version>
 	</properties>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>3.2.4</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<!-- spring-cloud-dependencies heredado del POM padre -->
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!-- Eureka Client y Actuator heredados del POM padre -->
+		<!-- Eureka y Actuator vienen del padre -->
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
 			<version>0.11.5</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
@@ -73,7 +58,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-
 		<dependency>
 			<groupId>ar.edu.utn.frba.dds</groupId>
 			<artifactId>domain</artifactId>
@@ -86,31 +70,36 @@
 			<scope>test</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>io.sentry</groupId>
-            <artifactId>sentry-spring-boot-starter-jakarta</artifactId>
-            <version>8.26.0</version>
-        </dependency>
+		<!-- SENTRY: Sin versión, usa la definida en el padre -->
+		<dependency>
+			<groupId>io.sentry</groupId>
+			<artifactId>sentry-spring-boot-starter-jakarta</artifactId>
+		</dependency>
+		<!-- Opcional: Para logs mejorados -->
+		<dependency>
+			<groupId>io.sentry</groupId>
+			<artifactId>sentry-logback</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20240303</version>
 		</dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>1.10.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -141,10 +130,10 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>io.sentry</groupId>
 				<artifactId>sentry-maven-plugin</artifactId>
-				<version>0.10.0</version>
 				<extensions>true</extensions>
 				<configuration>
 					<debugSentryCli>true</debugSentryCli>
@@ -161,5 +150,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
