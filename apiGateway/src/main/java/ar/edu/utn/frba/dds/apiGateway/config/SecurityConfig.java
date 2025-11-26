@@ -66,6 +66,7 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.PATCH, "/api/fuenteDinamica/modificacion").permitAll()
                         // Estadísticas requiere autenticación
                         .pathMatchers("/estadisticas/**").authenticated()
+                        .pathMatchers("/archivos/**").authenticated()
                         // Por defecto, todo lo demás requiere autenticación
                         .anyExchange().authenticated()
                 );

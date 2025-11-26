@@ -15,6 +15,11 @@ spring:
           predicates:
             - Path=/colecciones/**, /hechos/**, /solicitudesEliminacion/**, /media/**, /fuentes/**
 
+        - id: estatica-service
+          uri: lb://fuente-estatica
+          predicates:
+            - Path=/archivos/**
+
         - id: dinamica-service
           uri: lb://fuente-dinamica
           predicates:

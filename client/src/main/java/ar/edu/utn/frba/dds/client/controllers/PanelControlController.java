@@ -36,9 +36,6 @@ public class PanelControlController {
   private final SolicitudesService solicitudesService;
   private final DinamicaService dinamicaService;
 
-  @Value("${servicio.estatica}")
-  private String fuenteEstaticaURL;
-
   public PanelControlController(HechoService hechoService, FuenteService fuenteService, SolicitudesService solicitudesService, DinamicaService dinamicaService) {
     this.hechoService = hechoService;
     this.fuenteService = fuenteService;
@@ -189,27 +186,7 @@ public class PanelControlController {
       }
 
       try {
-        // Construir el body multipart
-        org.springframework.http.client.MultipartBodyBuilder builder = new org.springframework.http.client.MultipartBodyBuilder();
-        builder.part("archivo", archivo.getResource());
-        builder.part("nombre", nombreFuente);
-
-        // Usar el nuevo endpoint que acepta MultipartFile directamente
-        String response = WebClient.builder()
-            .baseUrl(fuenteEstaticaURL)
-            .build()
-            .post()
-            .uri("/archivos/upload")
-            .contentType(MediaType.MULTIPART_FORM_DATA)
-            .bodyValue(builder.build())
-            .retrieve()
-            .onStatus(
-                status -> status.value() == 409, // HTTP 409 Conflict
-                clientResponse -> clientResponse.bodyToMono(String.class)
-                    .map(body -> new RuntimeException(body))
-            )
-            .bodyToMono(String.class)
-            .block();
+        String response = fuenteService.importarCSV(archivo, nombreFuente);
 
         redirectAttributes.addFlashAttribute("mensaje",
             String.format("Archivo '%s' importado exitosamente como fuente '%s'",
@@ -217,7 +194,13 @@ public class PanelControlController {
       } catch (RuntimeException e) {
         String errorMsg = e.getMessage();
         if (errorMsg != null && !errorMsg.isEmpty()) {
-          redirectAttributes.addFlashAttribute("error", errorMsg);
+          // Verificar si es un error de conflicto (fuente duplicada)
+          if (errorMsg.contains("409") || errorMsg.contains("Conflict") || errorMsg.contains("ya fue importada")) {
+            redirectAttributes.addFlashAttribute("error",
+                "La fuente '" + nombreFuente + "' ya fue importada. No se puede importar dos veces la misma fuente.");
+          } else {
+            redirectAttributes.addFlashAttribute("error", errorMsg);
+          }
         } else {
           redirectAttributes.addFlashAttribute("error",
               "Error al comunicarse con el servicio de fuente estática: " + e.getMessage());
