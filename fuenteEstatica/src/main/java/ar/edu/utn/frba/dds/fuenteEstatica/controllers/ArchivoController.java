@@ -103,7 +103,7 @@ public class ArchivoController {
             }
 
             // Crear la entidad Archivo con ruta relativa
-            String rutaRelativa = "domain/src/test/resources/" + nombreArchivo;
+            String rutaRelativa = "fuenteEstatica/src/main/resources/" + nombreArchivo;
 
             Archivo archivoEntity = new Archivo();
             archivoEntity.setNombre(nombre);
@@ -148,24 +148,23 @@ public class ArchivoController {
 
         Path workspacePath;
         if (currentPath.endsWith("fuenteEstatica")) {
-            workspacePath = currentPath.getParent();
-        } else {
             workspacePath = currentPath;
+        } else {
+            workspacePath = currentPath.resolve("fuenteEstatica");
         }
 
-        // Construir la ruta a domain/src/test/resources
-        Path domainResourcesPath = workspacePath
-            .resolve("domain")
+        // Construir la ruta a fuenteEstatica/src/main/resources
+        Path fuenteEstaticaResourcesPath = workspacePath
             .resolve("src")
-            .resolve("test")
+            .resolve("main")
             .resolve("resources");
 
         // Verificar si existe, si no, crearla
-        if (!Files.exists(domainResourcesPath)) {
-            Files.createDirectories(domainResourcesPath);
+        if (!Files.exists(fuenteEstaticaResourcesPath)) {
+            Files.createDirectories(fuenteEstaticaResourcesPath);
         }
 
-        return domainResourcesPath.resolve(nombreArchivo);
+        return fuenteEstaticaResourcesPath.resolve(nombreArchivo);
     }
 }
 
