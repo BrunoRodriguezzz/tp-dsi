@@ -49,6 +49,7 @@ public class AuthApiService {
             return response;
         } catch (WebClientResponseException e) {
             try {
+                log.warn("Error al conectar el servicio de autenticacion: {}",e.getMessage());
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode errorBody = mapper.readTree(e.getResponseBodyAsString());
 
