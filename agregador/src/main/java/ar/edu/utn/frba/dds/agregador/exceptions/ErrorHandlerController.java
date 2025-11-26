@@ -7,7 +7,6 @@ import ar.edu.utn.frba.dds.agregador.exceptions.dtos.NotFoundExceptionDTO;
 import ar.edu.utn.frba.dds.agregador.exceptions.dtos.RequestExceptionDTO;
 import ar.edu.utn.frba.dds.agregador.exceptions.exceptions.*;
 
-import io.sentry.Sentry;
 import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
