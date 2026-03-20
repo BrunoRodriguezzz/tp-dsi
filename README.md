@@ -1,80 +1,170 @@
-# java-base-project
+# MetaMapa — Plataforma Colaborativa de Eventos Geolocalizados
 
-Esta es una plantilla de proyecto diseñada para: 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/BrunoRodriguezzz/tp-dsi)
 
-* Java 17. :warning: Si bien el proyecto no lo limita explícitamente, el comando `mvn verify` no funcionará con versiones más antiguas de Java. 
-* JUnit 5. :warning: La versión 5 de JUnit es la más nueva del framework y presenta algunas diferencias respecto a la versión "clásica" (JUnit 4). Para mayores detalles, ver: 
-  *  [Apunte de herramientas](https://docs.google.com/document/d/1VYBey56M0UU6C0689hAClAvF9ILE6E7nKIuOqrRJnWQ/edit#heading=h.dnwhvummp994)
-  *  [Entrada de Blog (en inglés)](https://www.baeldung.com/junit-5-migration) 
-  *  [Entrada de Blog (en español)](https://www.paradigmadigital.com/dev/nos-espera-junit-5/)
-* Maven 3.8.1 o superior
+**MetaMapa** es una plataforma distribuida diseñada para agregar, normalizar y visualizar hechos (eventos) geolocalizados provenientes de diversas fuentes. Permite a los usuarios explorar mapas de eventos, contribuir con nuevos datos y organizar la información en colecciones curadas mediante algoritmos de consenso y criterios de filtrado avanzados.
 
-## Ejecutar tests
+---
 
+## 🏗️ Arquitectura del Sistema
+
+El sistema utiliza una arquitectura de **microservicios** desacoplados, construida con **Spring Boot 3** y **Spring Cloud**. La comunicación entre servicios se gestiona a través de un API Gateway y un registro de servicios (Eureka).
+
+### Topología de Servicios y Flujo de Datos
+
+```mermaid
+graph TD
+    subgraph "Infraestructura"
+        REG["serviceRegistry (Eureka)"]
+        GW["apiGateway (Spring Cloud Gateway)"]
+    end
+
+    subgraph "Fuentes de Datos (Fuentes)"
+        FE["fuenteEstatica (Ingesta CSV)"]
+        FD["fuenteDinamica (Aportes de Usuarios)"]
+        FP["fuenteProxy (APIs Externas)"]
+    end
+
+    subgraph "Procesamiento Central"
+        AG["agregador (Hub Central)"]
+        AU["servicioAutenticacion (JWT)"]
+        ST["servicioEstadisticas (Analítica)"]
+    end
+
+    subgraph "Presentación"
+        CL["client (Thymeleaf/Mapbox)"]
+    end
+
+    CL -->|Solicitudes| GW
+    GW -->|Rutas| AG
+    GW -->|Rutas| AU
+    AG -->|Sincroniza| FE
+    AG -->|Sincroniza| FD
+    AG -->|Sincroniza| FP
+    ST -->|Importa Datos| AG
+    
+    FE & FD & FP & AG & AU & ST -.->|Registro| REG
 ```
-mvn test
+
+---
+
+## 🛠️ Stack Tecnológico
+
+*   **Backend:** Java 17, Spring Boot 3.2.5, Spring Cloud (2023.0.1).
+*   **Descubrimiento de Servicios:** Netflix Eureka.
+*   **Seguridad:** JWT (JSON Web Tokens) y encriptación BCrypt.
+*   **Base de Datos:** MySQL 8 con Hibernate/JPA para persistencia.
+*   **Frontend:** Thymeleaf, Mapbox GL JS para visualización geoespacial, Bootstrap 5.
+*   **Procesamiento de Datos:** Project Reactor (Programación Reactiva/Flux) y OpenCSV.
+
+---
+
+## 📦 Mapa de Módulos
+
+| Módulo | Puerto | Responsabilidad |
+| :--- | :--- | :--- |
+| `serviceRegistry` | 8088 | Servidor Eureka para el descubrimiento de servicios. |
+| `apiGateway` | 8086 | Punto de entrada único, enrutamiento y validación de JWT. |
+| `agregador` | 8082 | Hub central de hechos normalizados y gestión de colecciones. |
+| `fuenteDinamica` | 8081 | Gestión del ciclo de vida de eventos reportados por la comunidad. |
+| `fuenteEstatica` | 8084 | Procesamiento y servicio de datos desde archivos CSV. |
+| `fuenteProxy` | 8083 | Sincronización con instancias externas de MetaMapa y APIs de terceros. |
+| `servicioAutenticacion`| 8087 | Gestión de usuarios, roles y emisión de tokens de seguridad. |
+| `servicioEstadisticas` | 8085 | Motor de analítica multidimensional y reportes. |
+| `domain` | N/A | Librería compartida de entidades JPA y lógica de negocio. |
+| `client` | Var | Aplicación web para el usuario final. |
+
+---
+
+## 🧩 Modelo de Dominio
+
+El núcleo del sistema es la entidad **Hecho**, la cual se enriquece con datos de ubicación y categorías normalizadas.
+
+```mermaid
+classDiagram
+    class Hecho {
+        +Integer hecho_id
+        +String titulo
+        +String descripcion
+        +Date fecha_acontecimiento
+        +Boolean esta_eliminado
+    }
+    class Ubicacion {
+        +String latitud
+        +String longitud
+    }
+    class Fuente {
+        +String nombre
+        +String tipo_fuente
+    }
+    class Coleccion {
+        +String titulo
+        +String descripcion
+    }
+    class Criterio {
+    }
+    class Filtro {
+        +String tipo_filtro
+        +String valor
+    }
+
+    Hecho --> Ubicacion : "ubicacion_id"
+    Hecho --> Fuente : "fuente_id"
+    Coleccion "1" *-- "1" Criterio : "criterio_id"
+    Criterio "1" *-- "many" Filtro : "filtros"
+    Coleccion "many" o-- "many" Hecho : "hechos_asociados"
 ```
 
-## Validar el proyecto de forma exahustiva
+---
 
+## 🚀 Procesos Clave
+
+### 1. Pipeline de Ingesta Reactiva
+El `Agregador` utiliza un flujo no bloqueante para procesar registros de forma eficiente:
+1. **Normalización:** Resolución de sinónimos de categorías y estandarización de formatos.
+2. **Enriquecimiento:** Validación de límites administrativos y metadatos geográficos.
+3. **Persistencia en Lote:** Optimización de I/O mediante guardado por bloques.
+
+### 2. Sistema de Consenso
+Para garantizar la veracidad de los datos, se aplican estrategias de validación entre fuentes:
+*   **Consenso Absoluto:** El hecho debe figurar en todas las fuentes disponibles.
+*   **Mayoría Simple:** Presente en más del 50% de las fuentes.
+*   **Múltiples Menciones:** Reportado por al menos dos fuentes con atributos idénticos.
+
+### 3. Moderación y Seguridad
+*   **Solicitudes de Eliminación:** Requieren fundamentación mínima y pasan por un filtro de spam (TF-IDF).
+*   **Seguridad:** Autenticación centralizada vía JWT con validación en el Gateway para proteger los microservicios internos.
+
+---
+
+## ⚙️ Configuración y Ejecución
+
+### Requisitos Previos
+*   Java 17+.
+*   Maven 3.8+.
+*   MySQL 8.0.
+*   Token de Mapbox (configurar en el cliente).
+
+### Compilación General
+Desde la raíz del proyecto:
+```bash
+mvn clean install -DskipTests
 ```
-mvn clean verify
-```
 
-Este comando hará lo siguiente:
+### Ejecución (Orden Recomendado)
+1. `serviceRegistry` (Puerto 8088)
+2. `servicioAutenticacion` (Puerto 8087)
+3. `apiGateway` (Puerto 8086)
+4. Otros microservicios (`agregador`, fuentes, `servicioEstadisticas`).
 
- 1. Ejecutará los tests
- 2. Validará las convenciones de formato mediante checkstyle
- 3. Detectará la presencia de (ciertos) code smells
- 4. Validará la cobertura del proyecto
+---
 
-## Entrega del proyecto
+## 🧪 Estrategia de Testing
 
-Para entregar el proyecto, crear un tag llamado `entrega-final`. Es importante que antes de realizarlo se corra la validación
-explicada en el punto anterior. Se recomienda hacerlo de la siguiente forma:
+El proyecto cuenta con una suite de pruebas integral:
+*   **Unitarias:** Validación de algoritmos de consenso y lógica de comparación de hechos.
+*   **Integración:** Pruebas de pipelines reactivos (`StepVerifier`) y comunicación entre microservicios.
+*   **Seed Data:** Sistema de carga automática de datasets históricos para facilitar el desarrollo.
 
-```
-mvn clean verify && git tag entrega-final && git push origin HEAD --tags
-```
-
-## Configuración del IDE (IntelliJ)
-
-### Usar el SDK de Java 17
-
-1. En **File/Project Structure...**, ir a **Project Settings | Project**
-2. En **Project SDK** seleccionar la versión 17 y en **Project language level** seleccionar `17 - Sealed types, always-strict floating-point semantics`
-
-![image](https://user-images.githubusercontent.com/39303639/228126065-221b9851-fb96-4f7f-a8e1-010732dc7ef6.png)
-
-### Usar fin de linea unix
-1. En **File/Settings...**, ir a **Editor | Code Style**.
-2. En la lista **Line separator**, seleccionar `Unix and OS X (\n)`.
-
-![image](https://user-images.githubusercontent.com/39303639/228126546-352289fa-8feb-4b39-99db-d8b860915fea.png)
-
-### Tabular con dos espacios
-
-1. En **File/Settings...**, ir a **Editor | Code Style | Java | Tabs and Indents**.
-2. Cambiar **Tab size**, **Indent** y **Continuation indent** a 2, 2 y 4 respectivamente:
-
-![image](https://user-images.githubusercontent.com/39303639/228127009-8c84ea72-969b-4e05-b311-45e3688a4164.png)
-
-### Ordenar los imports
-
-1. En **File/Settings...**, ir a **Editor | Code Style | Java | Imports**.
-2. Cambiar **Class count to use import with '*'** y **Names count to use static import with '*'** a un número muy alto (ej: 99).
-3. En **Import Layout**, dejarlo como se muestra a continuación:
-    - `import static all other imports`
-    - `<blank line>`
-    - `import all other imports`
-
-![image](https://user-images.githubusercontent.com/39303639/228126787-36f9ecff-27f2-4b99-bf11-a6bd89f67087.png)
-
-### Instalar y configurar Checkstyle
-
-1. Instalar el plugin https://plugins.jetbrains.com/plugin/1065-checkstyle-idea:
-2. En **File/Settings...**, ir a **Tools | Checkstyle**.
-3. Configurarlo activando los Checks de Google y la versión de Checkstyle `== 9.0.1`:
-
-![image](https://github.com/dds-utn/java-base-project/assets/11719816/b1edc122-4675-4f8d-bffc-9e3d3366fac6)
-
+---
+*Este proyecto fue desarrollado como parte de la cátedra de Diseño de Sistemas de Información (DSI).*
